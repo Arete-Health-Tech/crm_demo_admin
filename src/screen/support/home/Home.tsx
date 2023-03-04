@@ -68,7 +68,7 @@ const Home = () => {
         <Grid container>
           {[
             {
-              name: 'Register Patient',
+              name: 'Capture Prescription',
               description:
                 "Register patient on the platform after doctor's visit and upload the prescription.",
               icon: <PersonAdd fontSize="medium" />,

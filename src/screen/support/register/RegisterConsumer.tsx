@@ -168,7 +168,7 @@ const RegisterConsumer = () => {
   const fetchConsumerDataByUhid = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:3000/prod/api/v1/consumer/findConsumer?',
+        'https://backend.aretehealth.tech/prod/api/v1/consumer/findConsumer?',
         { params: { search: consumer.uid } }
       );
       if (response.data) {
@@ -211,25 +211,27 @@ const RegisterConsumer = () => {
           <Typography color="white" variant="h6">
             Patient Registration
           </Typography>
-          <Typography variant="body2" color="lightgray">
+          <Typography variant="body2" color="lightgray" sx={{ pb: 2 }}>
             Register Patient here for further tasks on the registered patient
           </Typography>
         </Stack>
       </Stack>
-      <TextField
-        value={consumer.uid}
-        onChange={(e) => updateConsumerState('uid', e.target.value)}
-        fullWidth
-        size="small"
-        type="text"
-        placeholder="33XXX"
-        label="UHID"
-        onBlur={fetchConsumerDataByUhid}
-        error={validations.uid.value}
-        helperText={validations.uid.message}
-      />
+
       {/* <TextField>{uhidData}</TextField> */}
       <Stack p={1} spacing={2} height="80vh">
+        <TextField
+          // sx={{ px: 0.5 }}
+          value={consumer.uid}
+          onChange={(e) => updateConsumerState('uid', e.target.value)}
+          fullWidth
+          size="small"
+          type="text"
+          placeholder="33XXX"
+          label="UHID"
+          onBlur={fetchConsumerDataByUhid}
+          error={validations.uid.value}
+          helperText={validations.uid.message}
+        />
         <Stack direction="row" spacing={2}>
           <TextField
             value={consumer.firstName}
@@ -355,7 +357,7 @@ const RegisterConsumer = () => {
           </Button>
         ) : (
           <Button size="large" onClick={registerConsumer} variant="contained">
-            Register
+            Next
           </Button>
         )}
       </Stack>

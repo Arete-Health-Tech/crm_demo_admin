@@ -57,7 +57,7 @@ const SupportTabs = (props: Props) => {
           />
           <BottomNavigationAction
             onClick={() => navigate('/register')}
-            label="Register"
+            label="Capture Prescription"
             value="register"
             icon={<PersonAddOutlined />}
           />

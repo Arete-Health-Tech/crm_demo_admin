@@ -290,6 +290,7 @@ const CreatePrescription = () => {
                   getOptionLabel={(option) => option.name}
                   renderInput={(params) => (
                     <TextField
+                      required
                       onChange={(e) => findService(e.target.value)}
                       {...params}
                       label="Service"

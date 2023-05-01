@@ -652,7 +652,33 @@ const EstimateWidget = (props: Props) => {
                   additionalAmount: +e.target.value
                 });
               }}
+            />{' '}
+          </Stack>
+          <Stack my={1} direction="row" spacing={2}>
+            <TextField
+              fullWidth
+              label="Blood Amount"
+              size="small"
+              placeholder="eg: 500000"
+              onChange={(e) => {
+                setEstimateFields({
+                  ...estimateFileds,
+                  bloodAmount: +e.target.value
+                });
+              }}
             />
+            <TextField
+              fullWidth
+              label="Miscellenous Charges"
+              size="small"
+              placeholder="eg: 500000"
+              onChange={(e) => {
+                setEstimateFields({
+                  ...estimateFileds,
+                  additionalAmount: +e.target.value
+                });
+              }}
+            />{' '}
           </Stack>
         </Box>
       </Box>

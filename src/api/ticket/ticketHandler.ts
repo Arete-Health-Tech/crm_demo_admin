@@ -32,7 +32,10 @@ export type iCreateTicket = {
   caregiver_name: string | null;
 };
 
-export const createTicketHandler = async (prescription: iCreateTicket) => {
+export const createTicketHandler = async (
+  prescription: iCreateTicket,
+  upload: boolean
+) => {
   const prescriptionData = new FormData();
   prescriptionData.append('consumer', prescription.consumer);
   prescriptionData.append(
@@ -57,9 +60,16 @@ export const createTicketHandler = async (prescription: iCreateTicket) => {
   prescription.service &&
     prescriptionData.append('service', prescription.service._id);
 
-  /* @ts-ignore */
-  const blob = await (await fetch(prescription.image)).blob();
-  prescriptionData.append('image', blob);
+  console.log(prescription.image);
+
+  if (!upload) {
+    /* @ts-ignore */
+    const blob = await (await fetch(prescription.image)).blob();
+    prescriptionData.append('image', blob);
+    console.log(blob);
+  } else {
+    prescriptionData.append('image', prescription.image as string);
+  }
 
   return await createTicket(prescriptionData);
 };

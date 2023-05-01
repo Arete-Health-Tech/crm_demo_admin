@@ -60,6 +60,7 @@ export interface iPrescrition {
 }
 
 export interface iTicket {
+  includes(arg0: (data: any) => boolean): unknown;
   _id: string;
   consumer: iConsumer[];
   prescription: iPrescription[];

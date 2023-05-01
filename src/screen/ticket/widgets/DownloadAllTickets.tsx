@@ -10,7 +10,6 @@ import useTicketStore from '../../../store/ticketStore';
 import Papa from 'papaparse';
 import FileSaver from 'file-saver';
 import { ageSetter } from '../../../utils/ageReturn';
-import { iTicket } from '../../../types/store/consumer';
 
 type Props = {};
 

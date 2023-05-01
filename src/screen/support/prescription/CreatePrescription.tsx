@@ -70,6 +70,7 @@ const initialPrescription = {
 const CreatePrescription = () => {
   const { departments, doctors } = useServiceStore();
   // const [medicine, setMedicine] = useState('');
+
   const [openCamera, setOpenCamera] = useState(false);
   const [foundServices, setFoundServices] = useState<iService[]>([]);
   const camera = useRef<Webcam>(null);
@@ -81,7 +82,9 @@ const CreatePrescription = () => {
   const [diagnostics, setDiagnostics] = useState<string[]>([]);
   const defaultValidation = { message: '', value: false };
   const [isCaregiver, setIsCaregiver] = useState(false);
+  const [upload,setUpload]=useState(false)
   const [disableButton, setDisableButton] = useState(false);
+   const [selected, setSelected] = useState(null);
 
   const findService = async (query: string) => {
     try {
@@ -162,22 +165,29 @@ const CreatePrescription = () => {
       // service === false
     );
   };
+ 
+
   const handelUploadPrescription = async () => {
     setDisableButton(true);
     const validationCheck = validation();
     if (validationCheck === true) {
-      const ticket: any = structuredClone(prescription);
-      delete ticket.department;
-      delete ticket.subDepartment;
-      ticket.consumer = id;
-      ticket.departments = [prescription.department];
-      ticket.diagnostics = diagnostics;
-      ticket.followup = ticket.followup ? ticket.followup : null;
-      await createTicketHandler(ticket);
-      setPrescription(structuredClone(initialPrescription));
-      setDiagnostics([]);
-      setDisableButton(false);
-      navigate('/');
+      try {
+        const ticket: any = structuredClone(prescription);
+        delete ticket.department;
+        delete ticket.subDepartment;
+        ticket.consumer = id;
+        ticket.departments = [prescription.department];
+        ticket.diagnostics = diagnostics;
+        ticket.followup = ticket.followup ? ticket.followup : null;
+        console.log(ticket);
+        await createTicketHandler(ticket,upload);  
+        setPrescription(structuredClone(initialPrescription));
+        setDiagnostics([]);
+        setDisableButton(false);
+        navigate('/');
+      } catch (error) {
+        console.log(error);
+      }
     } else {
       setDisableButton(false);
     }
@@ -189,7 +199,9 @@ const CreatePrescription = () => {
       await getDoctorsHandler();
     })();
   }, []);
-
+const handleClick = (value) => {
+  setSelected(value);
+};
   return (
     <>
       <Box display={openCamera ? 'none' : 'block'}>
@@ -413,6 +425,29 @@ const CreatePrescription = () => {
               )}
             </Stack>
           </Box>
+          <Box my={1.5}>
+            <Typography color="gray" id="demo-simple-select-label">
+              Is Pharmacy advised
+            </Typography>
+            <Stack flexWrap={'wrap'} flexDirection="row">
+              <Button
+                size="small"
+                sx={{ m: 0.4 }}
+                variant={selected === 'yes' ? 'contained' : 'outlined'}
+                onClick={() => handleClick('yes')}
+              >
+                Yes
+              </Button>
+              <Button
+                size="small"
+                sx={{ m: 0.4 }}
+                variant={selected === 'no' ? 'contained' : 'outlined'}
+                onClick={() => handleClick('no')}
+              >
+                No
+              </Button>
+            </Stack>
+          </Box>
 
           <Box my={1.8}>
             <Typography color="gray" id="demo-simple-select-label">
@@ -476,6 +511,7 @@ const CreatePrescription = () => {
                       Prescription Image
                     </Typography>
                     <Stack spacing={0.5}>
+                      {' '}
                       {prescription.image === null && (
                         <Button
                           onClick={() => setOpenCamera(true)}
@@ -486,7 +522,7 @@ const CreatePrescription = () => {
                           Capture
                         </Button>
                       )}
-                      {prescription.image !== null && (
+                      {prescription.image !== null ? (
                         <>
                           <Button
                             fullWidth
@@ -508,6 +544,26 @@ const CreatePrescription = () => {
                             Delete
                           </Button>
                         </>
+                      ) : (
+                        <Button
+                          variant="contained"
+                          component="label"
+                          onClick={() => setUpload(true)}
+                        >
+                          Upload
+                          <input
+                            hidden
+                            accept="image/jpeg"
+                            type="file"
+                            onChange={(e) =>
+                              changePrescriptionValue(
+                                'image',
+                                /* @ts-ignore */
+                                e.target.files[0]
+                              )
+                            }
+                          />
+                        </Button>
                       )}
                     </Stack>
                   </CardContent>
@@ -563,9 +619,9 @@ const CreatePrescription = () => {
             audio={false}
             screenshotFormat="image/jpeg"
             ref={camera}
-            videoConstraints={{
-              facingMode: { exact: 'environment' }
-            }}
+            // videoConstraints={{
+            //   facingMode: { exact: 'environment' }
+            // }}
           />
         ) : (
           <Box>

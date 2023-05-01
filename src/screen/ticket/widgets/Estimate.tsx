@@ -215,6 +215,7 @@ const Estimate = (props: Props) => {
   };
 
   const handleCreateEstimate = () => {
+    console.log(estimateFileds);
     createEstimateHandler(estimateFileds);
   };
 

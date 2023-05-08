@@ -484,7 +484,9 @@ const CreatePrescription = () => {
                         >
                           Capture
                         </Button>
+                        
                       )}
+                      
                       {prescription.image !== null && (
                         <>
                           <Button
@@ -562,9 +564,9 @@ const CreatePrescription = () => {
             audio={false}
             screenshotFormat="image/jpeg"
             ref={camera}
-            videoConstraints={{
-              facingMode: { exact: 'environment' }
-            }}
+            // videoConstraints={{
+            //   facingMode: { exact: 'environment' }
+            // }}
           />
         ) : (
           <Box>

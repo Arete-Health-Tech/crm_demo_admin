@@ -153,7 +153,7 @@ const SingleTicketDetails = (props: Props) => {
                 #{currentTicket?.consumer[0].uid}
               </Typography>
             </Box>
-          </Box>
+          </Box>    
           <Box
             width="40%"
             display={'flex '}
@@ -172,7 +172,7 @@ const SingleTicketDetails = (props: Props) => {
           </Box>
         </Box>
         <Stack bgcolor="#F1F5F7" height="90vh" direction="column">
-          <Box p={1} height="15%">
+          <Box p={1} height="50%">
             <Box bgcolor={'white'} p={2} borderRadius={2}>
               <StageCard stage={currentTicket && currentTicket?.stage} />
             </Box>
@@ -459,7 +459,7 @@ const SingleTicketDetails = (props: Props) => {
         )}
 
         {/* Lead View  */}
-
+                                                                                      
         <Box
           height="7vh"
           p={1}

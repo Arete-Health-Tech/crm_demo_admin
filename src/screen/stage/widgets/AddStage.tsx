@@ -36,11 +36,19 @@ const AddStage = (props: Props) => {
   const { stages } = useServiceStore();
   const [openModal, setOpenModal] = useState(false);
   const [message, setMessage] = useState('');
-  const [stage, setStage] = useState<Stage>({
+  const [stage, setStage] = useState<iStage>({
     name: '',
     code: 0,
     description: '',
-    parent: ''
+    parent: '',
+    children: [
+      {
+        code: 0,
+        description: '',
+        name: '',
+        _id:''
+      }
+    ]
   });
 
   type Stage = Omit<iStage, '_id'>;

@@ -901,7 +901,7 @@ const Estimate = (props: Props) => {
                   Services Details
                 </Typography>
                 <Box my={1}>
-                  {estimateFileds.service.length > 0 ? (
+                  {estimateFileds.service.length >= 0 ? (
                     estimateFileds.service.map((item, index: number) => (
                       <Chip
                         size="small"

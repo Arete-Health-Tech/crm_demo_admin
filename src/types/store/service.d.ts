@@ -60,6 +60,14 @@ export interface iService {
 }
 
 export interface iStage {
+  children: [
+    {
+      code: Number,
+      description: String,
+      name: String,
+      _id: String
+    }
+  ];
   _id?: string;
   name: string;
   code: number;

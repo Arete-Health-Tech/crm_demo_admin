@@ -82,6 +82,7 @@ const CreatePrescription = () => {
   const defaultValidation = { message: '', value: false };
   const [isCaregiver, setIsCaregiver] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
+   const [selected, setSelected] = useState(null);
 
   const findService = async (query: string) => {
     try {
@@ -189,6 +190,10 @@ const CreatePrescription = () => {
       await getDoctorsHandler();
     })();
   }, []);
+
+  const handleClick = (value) => {
+    setSelected(value);
+  };
 
   return (
     <>
@@ -410,6 +415,29 @@ const CreatePrescription = () => {
                   </Button>
                 )
               )}
+            </Stack>
+          </Box>
+          <Box my={1.5}>
+            <Typography color="gray" id="demo-simple-select-label">
+              Is Pharmacy advised
+            </Typography>
+            <Stack flexWrap={'wrap'} flexDirection="row">
+              <Button
+                size="small"
+                sx={{ m: 0.4 }}
+                variant={selected === 'yes' ? 'contained' : 'outlined'}
+                onClick={() => handleClick('yes')}
+              >
+                Yes
+              </Button>
+              <Button
+                size="small"
+                sx={{ m: 0.4 }}
+                variant={selected === 'no' ? 'contained' : 'outlined'}
+                onClick={() => handleClick('no')}
+              >
+                No
+              </Button>
             </Stack>
           </Box>
 

@@ -64,6 +64,7 @@ const Ticket = () => {
     );
   };
 
+
   const departmentFilterRule = (department: string) => {
     return filterTickets.departments.length > 0
       ? filterTickets.departments.includes(department)
@@ -125,7 +126,7 @@ const Ticket = () => {
     setSearchedData(e.target.value);
     console.log(e.target.value);
   };
-
+  
   // Data After Search
 
   useEffect(() => {
@@ -149,6 +150,7 @@ const Ticket = () => {
   }, [searchTerm]);
   console.log(tickets);
   console.log(filteredTicket);
+  console.log(checkFilterLength());
   return (
     <Box height={'100vh'} display="flex" position="fixed" width="100%">
       <Box width="25%" position="sticky" top={0}>
@@ -194,7 +196,7 @@ const Ticket = () => {
             /> */}
             <TicketFilter filterLength={checkFilterLength()} />
           </Stack>
-        </Box>
+        </Box >
         {/* <Box
           position="relative"
           p={1}
@@ -250,9 +252,11 @@ const Ticket = () => {
                 />
               ))}
         </Box> */}
+        <Box >
         <PaginationTicket
           tickets={filteredTicket.length > 0 ? filteredTicket : tickets}
         />
+        </Box>
       </Box>
 
       <Box bgcolor="#E2ECFB" width="75%">

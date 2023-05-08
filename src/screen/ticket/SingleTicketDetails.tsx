@@ -181,7 +181,7 @@ const SingleTicketDetails = (props: Props) => {
               </div>
             </Box>
           </Box>
-          <Box p={1} height="82.5%" position="relative" bgcolor="#F1F5F7">
+          <Box p={1} height="100%" position="relative" bgcolor="#F1F5F7">
             <TabContext value={value}>
               <Box
                 sx={{ borderBottom: 1, borderColor: 'divider' }}

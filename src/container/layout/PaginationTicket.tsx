@@ -4,7 +4,7 @@ import { useState } from 'react';
 import TicketCard from '../../screen/ticket/widgets/TicketCard';
 import { Box, Pagination } from '@mui/material';
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 20;
 
 function PaginationTicket({ tickets }) {
   const [currentPage, setCurrentPage] = useState(1);
@@ -23,11 +23,15 @@ function PaginationTicket({ tickets }) {
       <Box
         position="relative"
         p={1}
-        height={'87vh'}
+        height={'95vh'}
+    
         sx={{
-          overflowY: 'scroll',
+          mt:"30px",
+          overflowY: 'scroll',     
           '&::-webkit-scrollbar ': {
-            // display: 'none'
+            //  display: 'flex',
+
+            
           }
         }}
       >

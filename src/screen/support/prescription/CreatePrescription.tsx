@@ -307,7 +307,7 @@ const handleClick = (value) => {
                       {...params}
                       label="Service"
                     />
-                  )}
+                  )} 
                 />
                 <FormHelperText error={validations.service.value}>
                   {validations.service.message}

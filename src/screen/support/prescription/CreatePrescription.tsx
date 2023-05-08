@@ -417,7 +417,7 @@ const CreatePrescription = () => {
               )}
             </Stack>
           </Box>
-          <Box my={1.5}>
+          {/* <Box my={1.5}>
             <Typography color="gray" id="demo-simple-select-label">
               Is Pharmacy advised
             </Typography>
@@ -439,7 +439,7 @@ const CreatePrescription = () => {
                 No
               </Button>
             </Stack>
-          </Box>
+          </Box> */}
 
           <Box my={1.8}>
             <Typography color="gray" id="demo-simple-select-label">

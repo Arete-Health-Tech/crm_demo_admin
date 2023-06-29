@@ -199,17 +199,9 @@ const CreatePrescription = () => {
       await getDoctorsHandler();
     })();
   }, []);
-<<<<<<< HEAD
-
-  const handleClick = (value) => {
-    setSelected(value);
-  };
-
-=======
 const handleClick = (value) => {
   setSelected(value);
 };
->>>>>>> dev
   return (
     <>
       <Box display={openCamera ? 'none' : 'block'}>
@@ -433,11 +425,7 @@ const handleClick = (value) => {
               )}
             </Stack>
           </Box>
-<<<<<<< HEAD
-          {/* <Box my={1.5}>
-=======
           <Box my={1.5}>
->>>>>>> dev
             <Typography color="gray" id="demo-simple-select-label">
               Is Pharmacy advised
             </Typography>
@@ -459,11 +447,7 @@ const handleClick = (value) => {
                 No
               </Button>
             </Stack>
-<<<<<<< HEAD
-          </Box> */}
-=======
           </Box>
->>>>>>> dev
 
           <Box my={1.8}>
             <Typography color="gray" id="demo-simple-select-label">
@@ -539,12 +523,7 @@ const handleClick = (value) => {
                         </Button>
                         
                       )}
-<<<<<<< HEAD
-                      
-                      {prescription.image !== null && (
-=======
                       {prescription.image !== null ? (
->>>>>>> dev
                         <>
                           <Button
                             fullWidth
@@ -641,9 +620,9 @@ const handleClick = (value) => {
             audio={false}
             screenshotFormat="image/jpeg"
             ref={camera}
-            // videoConstraints={{
-            //   facingMode: { exact: 'environment' }
-            // }}
+            videoConstraints={{
+              facingMode: { exact: 'environment' }
+            }}
           />
         ) : (
           <Box>

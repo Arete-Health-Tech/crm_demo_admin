@@ -1,9 +1,3 @@
-<<<<<<< HEAD
-import { Box, Paper, Step, StepConnector, StepContent, StepLabel, Stepper } from '@mui/material';
-import { useEffect, useState } from 'react';
-import useServiceStore from '../../../store/serviceStore';
-import { iStage } from '../../../types/store/service';
-=======
 import {
   Box,
 
@@ -18,7 +12,6 @@ import { apiClient } from '../../../api/apiClient';
 
 // import { makeStyles } from '@material-ui/core/styles';
 
->>>>>>> dev
 type Props = {
   stage: string | undefined;
 };
@@ -47,62 +40,6 @@ const stages = [
 
 
 const StageCard = (props: Props) => {
-<<<<<<< HEAD
-  const { stages } = useServiceStore();
-  const [currentStageIndex, setCurrentStageIndex] = useState<number>(0);
-  const [selectedData, setSelectedData] = useState("");
-
-  const getCurrentStage = () => {
-    const index = stages.findIndex((stage) => stage._id === props.stage);
-    console.log(index);
-    setCurrentStageIndex(index);
-  };
-  useEffect(() => {
-    getCurrentStage();
-  }, [props.stage]);
-  console.log(stages)
-  const HandleClick = (e: any) => {
-    setSelectedData(e)
-  }
-  
-  return (
-    <Box>
-      <Stepper activeStep={currentStageIndex} alternativeLabel>
-        {stages.map(
-          (label: iStage, index) =>
-            label.parent === null && (
-              <Step key={label._id}>
-                <StepLabel onClick={() => HandleClick(label._id)}>{label.name}</StepLabel>
-                {selectedData === label._id ? label.children.map((item, index) => {
-                  const childId = `${label._id}-${item._id}`;
-                  console.log(item.name)
-                  return (
-                    <>
-                      <Box>
-                        <Stepper alternativeLabel>
-
-                          <Step key={childId}>
-                            <StepLabel key={index}>
-                              {item.name}
-                            </StepLabel>
-                          </Step >
-                        </Stepper>
-                      </Box>
-                    </>
-
-                  )
-                })
-                  : ""}
-              </Step>
-
-            )
-
-
-        )}
-      </Stepper>
-
-    </Box >
-=======
  
   
          const [activeStep, setActiveStep] = useState(0);
@@ -254,7 +191,6 @@ console.log(consumer);
         ))}
       </Box>
     </Box>
->>>>>>> dev
   );
 };
 

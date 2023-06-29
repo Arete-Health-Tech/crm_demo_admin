@@ -667,11 +667,7 @@ const EstimateWidget = (props: Props) => {
                 });
               }}
             />
-<<<<<<< HEAD
-             <TextField
-=======
             <TextField
->>>>>>> dev
               fullWidth
               label="Miscellenous Charges"
               size="small"
@@ -682,11 +678,7 @@ const EstimateWidget = (props: Props) => {
                   additionalAmount: +e.target.value
                 });
               }}
-<<<<<<< HEAD
-            />
-=======
             />{' '}
->>>>>>> dev
           </Stack>
         </Box>
       </Box>

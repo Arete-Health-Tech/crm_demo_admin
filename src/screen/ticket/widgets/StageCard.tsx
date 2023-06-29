@@ -8,6 +8,7 @@ import {
   Stepper
 } from '@mui/material';
 import {  useState } from 'react';
+import { apiClient } from '../../../api/apiClient';
 
 // import { makeStyles } from '@material-ui/core/styles';
 
@@ -75,7 +76,14 @@ const StageCard = (props: Props) => {
        };
 
 
+console.log(' I am here');
 
+let consumerId: any;
+const url = new URL(`http://localhost:3000/prod/api/v1/ticket/${consumerId}`); 
+const searchParams = new URLSearchParams(url.search);
+const consumer = searchParams.get('consumerId');
+
+console.log(consumer);
         
        const handleSubStageComplete = (subStage) => () => {
          const currentStage = stages[activeStep];

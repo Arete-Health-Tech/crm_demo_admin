@@ -97,7 +97,9 @@ const SingleTicketDetails = (props: Props) => {
     return departments.find((department: iDepartment) => department._id === id)
       ?.name;
   };
-
+  const handleClick = () => {
+    console.log('hello');
+  };
   return (
     <Stack height={'100vh'} direction="row">
       <Box width="60%">
@@ -127,7 +129,7 @@ const SingleTicketDetails = (props: Props) => {
               gridTemplateColumns="repeat(5, 1fr)"
               columnGap={2}
             >
-              <Box display="grid" gridTemplateColumns="repeat(2,1fr)">
+                <Box display="grid" gridTemplateColumns="repeat(2,1fr)">
                 {currentTicket?.consumer[0].gender === 'M' ? (
                   <Box display="flex" alignItems="center">
                     <Male fontSize="inherit" /> <Typography>Male</Typography>{' '}
@@ -172,12 +174,14 @@ const SingleTicketDetails = (props: Props) => {
           </Box>
         </Box>
         <Stack bgcolor="#F1F5F7" height="90vh" direction="column">
-          <Box p={1} height="50%">
+          <Box p={1} height="60%">
             <Box bgcolor={'white'} p={2} borderRadius={2}>
-              <StageCard stage={currentTicket && currentTicket?.stage} />
+              <div onClick={handleClick}>
+                <StageCard stage={currentTicket && currentTicket?.stage} />
+              </div>
             </Box>
           </Box>
-          <Box p={1} height="82.5%" position="relative" bgcolor="#F1F5F7">
+          <Box p={1} height="100%" position="relative" bgcolor="#F1F5F7">
             <TabContext value={value}>
               <Box
                 sx={{ borderBottom: 1, borderColor: 'divider' }}

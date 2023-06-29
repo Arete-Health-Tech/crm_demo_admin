@@ -13,6 +13,7 @@ export const createTicket = async (prescription: any) => {
       'Content-Type': 'multipart/form-data'
     }
   });
+ console.log("hello")
   console.log(data);
 };
 export const sendTextMessage = async (message: string, consumerId: string) => {

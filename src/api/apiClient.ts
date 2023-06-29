@@ -9,8 +9,8 @@ enum StatusCode {
   InternalServerError = 500
 }
 
-export const SERVER_URL = 'https://backend.aretehealth.tech/prod/api/v1/';
-// export const SERVER_URL = 'http://localhost:3000/prod/api/v1/';
+// export const SERVER_URL = 'https://backend.aretehealth.tech/prod/api/v1/';
+export const SERVER_URL = 'http://localhost:3000/prod/api/v1/';
 
 const headers: Readonly<Record<string, string | boolean>> = {
   Accept: 'application/json',
@@ -18,6 +18,7 @@ const headers: Readonly<Record<string, string | boolean>> = {
   // 'Access-Control-Allow-Credentials': true,
   // 'X-Requested-With': 'XMLHttpRequest'
 };
+
 // We can use the following function to inject the JWT token through an interceptor
 // We get the `accessToken` from the localStorage that we set when we authenticate
 

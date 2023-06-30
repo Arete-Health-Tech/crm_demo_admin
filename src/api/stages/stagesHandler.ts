@@ -1,11 +1,17 @@
 import useServiceStore from '../../store/serviceStore';
 import { iStage } from '../../types/store/service';
-import { createStage, getStages } from './stages';
+import { createStage, getStages, getSubStages } from './stages';
 
 export const getStagesHandler = async () => {
   const { setStages } = useServiceStore.getState();
   const stages = await getStages();
   setStages(stages);
+};
+
+export const getSubStagesHandler = async () => {
+  const { setSubStages } = useServiceStore.getState();
+  const subStages = await getSubStages();
+  setSubStages(subStages);
 };
 
 export const createStageHandler = async (stage: iStage) => {

@@ -60,7 +60,6 @@ export interface iPrescrition {
 }
 
 export interface iTicket {
-  includes(arg0: (data: any) => boolean): unknown;
   _id: string;
   consumer: iConsumer[];
   prescription: iPrescription[];
@@ -70,11 +69,17 @@ export interface iTicket {
   stage: string;
   createdAt: string;
   creator: iCreator[];
+  subStageCode: {
+    active: boolean;
+    code: number;
+  };
 }
 
 export interface iTicketStore {
   tickets: iTicket[];
   setTickets: (tickets: iTicket[]) => void;
+  searchByName: string;
+  setSearchByName: (name: string) => void;
   notes: iNote[];
   setNotes: (notes: iNote[]) => void;
   reminders: iReminder[];

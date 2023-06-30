@@ -40,7 +40,8 @@ const AddStage = (props: Props) => {
     name: '',
     code: 0,
     description: '',
-    parent: ''
+    parent: '',
+    child: []
   });
 
   type Stage = Omit<iStage, '_id'>;

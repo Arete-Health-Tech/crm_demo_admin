@@ -36,7 +36,10 @@ import { ageSetter } from '../../utils/ageReturn';
 import Estimate from './widgets/Estimate';
 import useServiceStore from '../../store/serviceStore';
 import { getDoctorsHandler } from '../../api/doctor/doctorHandler';
-import { getStagesHandler } from '../../api/stages/stagesHandler';
+import {
+  getStagesHandler,
+  getSubStagesHandler
+} from '../../api/stages/stagesHandler';
 import Rx from '../../assets/Rx.svg';
 import Bulb from '../../assets/Vector.svg';
 import NotesWidget from './widgets/NotesWidget';
@@ -61,6 +64,7 @@ const SingleTicketDetails = (props: Props) => {
   const [value, setValue] = useState('1');
   const [script, setScript] = useState<iScript>();
   const [isScript, setIsScript] = useState(false);
+  const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -71,21 +75,28 @@ const SingleTicketDetails = (props: Props) => {
     setCurrentTicket(fetchTicket);
   };
 
-  useEffect(() => {
-    (async function () {
-      getTicketInfo(ticketID);
+useEffect(() => {
+  (async function () {
+    try {
+      await getTicketInfo(ticketID);
       await getDoctorsHandler();
       await getStagesHandler();
+      await getSubStagesHandler();
       await getAllReminderHandler(ticketID!);
       if (currentTicket) {
         const script = await getSingleScript(
-          currentTicket?.prescription[0].service._id,
+          currentTicket?.prescription[0]?.service?._id,
           currentTicket?.stage
         );
         setScript(script);
       }
-    })();
-  }, [ticketID, currentTicket]);
+    } catch (error) {
+      // Handle the error here
+      console.error('An error occurred:', error);
+    }
+  })();
+}, [ticketID, currentTicket, ticketUpdateFlag]);
+
 
   const { reminders } = useTicketStore();
 
@@ -97,9 +108,7 @@ const SingleTicketDetails = (props: Props) => {
     return departments.find((department: iDepartment) => department._id === id)
       ?.name;
   };
-  const handleClick = () => {
-    console.log('hello');
-  };
+
   return (
     <Stack height={'100vh'} direction="row">
       <Box width="60%">
@@ -129,7 +138,7 @@ const SingleTicketDetails = (props: Props) => {
               gridTemplateColumns="repeat(5, 1fr)"
               columnGap={2}
             >
-                <Box display="grid" gridTemplateColumns="repeat(2,1fr)">
+              <Box display="grid" gridTemplateColumns="repeat(2,1fr)">
                 {currentTicket?.consumer[0].gender === 'M' ? (
                   <Box display="flex" alignItems="center">
                     <Male fontSize="inherit" /> <Typography>Male</Typography>{' '}
@@ -174,14 +183,15 @@ const SingleTicketDetails = (props: Props) => {
           </Box>
         </Box>
         <Stack bgcolor="#F1F5F7" height="90vh" direction="column">
-          <Box p={1} height="60%">
+          <Box p={1} height="30%">
             <Box bgcolor={'white'} p={2} borderRadius={2}>
-              <div onClick={handleClick}>
-                <StageCard stage={currentTicket && currentTicket?.stage} />
-              </div>
+              <StageCard
+                currentTicket={currentTicket}
+                setTicketUpdateFlag={setTicketUpdateFlag}
+              />
             </Box>
           </Box>
-          <Box p={1} height="100%" position="relative" bgcolor="#F1F5F7">
+          <Box p={1} height="78%" position="relative" bgcolor="#F1F5F7">
             <TabContext value={value}>
               <Box
                 sx={{ borderBottom: 1, borderColor: 'divider' }}

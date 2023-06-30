@@ -6,6 +6,11 @@ export const getStages = async () => {
   return data;
 };
 
+export const getSubStages = async () => {
+  const { data } = await apiClient.get('/stage/subStage');
+  return data;
+};
+
 export const createStage = async (stage: iStage) => {
   const { data } = await apiClient.post('/stage', stage);
   return data;

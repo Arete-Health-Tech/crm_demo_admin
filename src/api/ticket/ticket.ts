@@ -1,8 +1,8 @@
 import { iNote, iReminder } from '../../types/store/ticket';
 import { apiClient } from '../apiClient';
 
-export const getTicket = async () => {
-  const { data } = await apiClient.get('/ticket');
+export const getTicket = async (name: string) => {
+  const { data } = await apiClient.get(`/ticket/?name=${name}`);
   return data;
 };
 
@@ -13,9 +13,21 @@ export const createTicket = async (prescription: any) => {
       'Content-Type': 'multipart/form-data'
     }
   });
- console.log("hello")
   console.log(data);
 };
+
+export const updateTicketData = async (payload: {
+  stageCode?: number;
+  subStageCode?: {
+    active: boolean;
+    code: number;
+  };
+  ticket: string | undefined;
+}) => {
+  const { data } = await apiClient.put('/ticket/ticketUpdate', payload);
+  console.log(data);
+};
+
 export const sendTextMessage = async (message: string, consumerId: string) => {
   console.log(message, consumerId);
   const { data } = await apiClient.post('/flow/message', {

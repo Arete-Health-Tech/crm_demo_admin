@@ -73,6 +73,15 @@ export interface iStage {
   code: number;
   description: string;
   parent: null | string;
+  child: number[];
+}
+
+export interface iSubStage {
+  _id?: string;
+  name: string;
+  code: number;
+  description: string;
+  parent: null | string;
 }
 
 export interface iScript {
@@ -94,6 +103,8 @@ export interface iServiceStore {
   setWards: (wards: IWard[]) => void;
   stages: iStage[];
   setStages: (stages: iStage[]) => void;
+  subStages: iSubStage[];
+  setSubStages: (stages: iStage[]) => void;
   scripts: iScript[];
   setScripts: (scripts: iScript[]) => void;
   allServices: iAllServices;

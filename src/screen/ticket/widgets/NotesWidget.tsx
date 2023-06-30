@@ -20,7 +20,7 @@ const NotesWidget = (props: Props) => {
     padding: '1rem',
     'input:focus': {
       outline: 'none'
-    }
+    } 
   };
   const { ticketID } = useParams();
 

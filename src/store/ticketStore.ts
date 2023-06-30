@@ -4,6 +4,8 @@ import { iTicketStore } from '../types/store/ticket';
 const useTicketStore = create<iTicketStore>((set, get) => ({
   tickets: [],
   setTickets: (tickets) => set({ tickets }),
+  searchByName: 'undefined',
+  setSearchByName: (searchByName) => set({ searchByName }),
   notes: [],
   setNotes: (notes) => set({ notes }),
   reminders: [],

@@ -41,6 +41,7 @@ const AddStage = (props: Props) => {
     code: 0,
     description: '',
     parent: '',
+     child:[],
     children: [
       {
         code: 0,

@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   InputAdornment,
@@ -18,129 +19,170 @@ import { getDepartmentsHandler } from '../../api/department/departmentHandler';
 import { Outlet, useMatch, useNavigate } from 'react-router-dom';
 import DefaultScreen from '../../components/DefaultScreen';
 import { ArrowBack } from '@mui/icons-material';
-import TicketFilter from '../../screen/ticket/widgets/TicketFilter';
+import TicketFilter, {
+  ticketFilterCount
+} from '../../screen/ticket/widgets/TicketFilter';
 import DownloadAllTickets from '../../screen/ticket/widgets/DownloadAllTickets';
 import dayjs from 'dayjs';
 import CustomPagination from './CustomPagination';
+import { UNDEFINED } from '../../constantUtils/constant';
+import {
+  getStagesHandler,
+  getSubStagesHandler
+} from '../../api/stages/stagesHandler';
+import useServiceStore from '../../store/serviceStore';
 
 const Ticket = () => {
-  const { tickets, filterTickets, setSearchByName } = useTicketStore();
-  const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
-  const [searchName, setSearchName] = useState<string>('undefined');
+  const {
+    tickets,
+    filterTickets,
+    setSearchByName,
+    searchByName,
+    ticketCount,
+    setTickets,
+    ticketCache,
+    emptyDataText
+  } = useTicketStore();
+  // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
+  const [searchName, setSearchName] = useState<string>(UNDEFINED);
+  const [searchError, setSearchError] = useState<string>(
+    'Type to search & Enter'
+  );
   const [pageCount, setPageCount] = useState<number>(1);
-  const [pageNumber, setPageNumber] = useState<number>(0);
+  // const [filterCount, setFilterCount] = useState(0);
+  // const [pageNumber, setPageNumber] = useState<number>(1);
   const [page, setPage] = useState<number>(1);
 
-  const handlePagination = (
+  const handlePagination = async (
     event: React.ChangeEvent<unknown>,
-    page: number
+    pageNo: number
   ) => {
-    console.log('val', page);
-    setPageNumber(page - 1);
-    setPage(page);
+    console.log('val', pageNo);
+    if (pageNo !== page) {
+      setTickets([]);
+      if (
+        ticketCache[pageNo] &&
+        ticketCache[pageNo]?.length > 0 &&
+        searchName === UNDEFINED &&
+        ticketFilterCount(filterTickets) < 1
+      ) {
+        setTickets(ticketCache[pageNo]);
+      } else {
+        await getTicketHandler(searchName, pageNo, 'false', filterTickets);
+      }
+      setPage(pageNo);
+    }
   };
 
   useEffect(() => {
-    setPageCount(Math.ceil(tickets.length / 10));
-    setPage(1);
+    setPageCount(Math.ceil(ticketCount / 10));
     // console.log("ticket count",tickets )
-  }, [tickets, filteredTickets]);
+  }, [tickets, searchByName]);
 
   const fetchTicketsOnEmpthySearch = async () => {
-    setSearchName('undefined');
-    setSearchByName('undefined');
-    await getTicketHandler('undefined');
+    setSearchName(UNDEFINED);
+    setSearchByName(UNDEFINED);
+    await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
     setPage(1);
   };
 
-  const handleSeachName = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  ) => {
-    const value = e.target.value;
+  // const handleSeachName = (
+  //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+  // ) => {
+  //   const value = e.target.value;
+  //   if (value) {
+  //     inputSearch.current = value
+  //   }
+  //   if (value === '') {
+  //     fetchTicketsOnEmpthySearch();
+  //   }
+  // };
+
+  const handleSearchKeyPress = async (e: any) => {
+    const value = e.target?.value;
     if (value) {
       setSearchName(value);
     }
-    if (value === '') {
-      fetchTicketsOnEmpthySearch();
-    }
-  };
-
-  const handleKeyPress = async (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (searchName && searchName !== 'undefined') {
-      if (e.key === 'Enter') {
-        await getTicketHandler(searchName);
-        setSearchByName(searchName);
-      } else {
+    if (e.key === 'Enter') {
+      setTickets([]);
+      console.log('search name', value);
+      if (value === '') {
         fetchTicketsOnEmpthySearch();
+        setSearchError('Type to search & Enter');
+        return;
       }
+      await getTicketHandler(value, 1, 'false', filterTickets);
+      setSearchByName(value);
+      setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
+      setPage(1);
     }
   };
 
-  const checkFilterLength = () => {
-    let filterLength = 0;
-    if (filterTickets.startDate > 0 && filterTickets.endDate > 0) {
-      filterLength =
-        filterTickets.departments.length +
-        filterTickets.admissionType.length +
-        filterTickets.diagnosticType.length +
-        1;
-    } else {
-      filterLength =
-        filterTickets.departments.length +
-        filterTickets.admissionType.length +
-        filterTickets.diagnosticType.length;
-    }
-    return filterLength;
-  };
+  // const checkFilterLength = () => {
+  //   let filterLength = 0;
+  //   if (filterTickets.startDate > 0 && filterTickets.endDate > 0) {
+  //     filterLength =
+  //       filterTickets.stageList.length +
+  //       filterTickets.admissionType.length +
+  //       filterTickets.diagnosticType.length +
+  //       1;
+  //   } else {
+  //     filterLength =
+  //       filterTickets.stageList.length +
+  //       filterTickets.admissionType.length +
+  //       filterTickets.diagnosticType.length;
+  //   }
+  //   return filterLength;
+  // };
 
-  const filterFn = () => {
-    const filteredData = tickets.filter(
-      (item: iTicket) =>
-        departmentFilterRule(item.prescription[0].departments[0]) &&
-        admissionFilterRule(item.prescription[0].admission) &&
-        diagnosticsFilterRule(item.prescription[0].diagnostics) &&
-        dateRule(item.createdAt)
-    );
-    setPageCount(Math.ceil(filteredData.length / 10));
-    setFilteredTickets(filteredData);
-  };
+  // const filterFn = () => {
+  //   const filteredData = tickets.filter(
+  //     (item: iTicket) =>
+  //       departmentFilterRule(item.prescription[0].departments[0]) &&
+  //       admissionFilterRule(item.prescription[0].admission) &&
+  //       diagnosticsFilterRule(item.prescription[0].diagnostics) &&
+  //       dateRule(item.createdAt)
+  //   );
+  //   setPageCount(Math.ceil(ticketCount / 10));
+  //   setFilteredTickets(filteredData);
+  // };
 
-  const departmentFilterRule = (department: string) => {
-    return filterTickets.departments.length > 0
-      ? filterTickets.departments.includes(department)
-      : true;
-  };
+  // const departmentFilterRule = (department: string) => {
+  //   return filterTickets.departments.length > 0
+  //     ? filterTickets.departments.includes(department)
+  //     : true;
+  // };
 
-  const admissionFilterRule = (admission: string) => {
-    return filterTickets.admissionType.length > 0
-      ? filterTickets.admissionType.includes(admission)
-      : true;
-  };
+  // const admissionFilterRule = (admission: string) => {
+  //   return filterTickets.admissionType.length > 0
+  //     ? filterTickets.admissionType.includes(admission)
+  //     : true;
+  // };
 
-  const diagnosticsFilterRule = (diagnostics: string[]) => {
-    if (filterTickets.diagnosticType.length > 0) {
-      let diagnosticsResult =
-        diagnostics.length > 0
-          ? diagnostics.every((item) =>
-              filterTickets.diagnosticType.includes(item)
-            )
-          : false;
+  // const diagnosticsFilterRule = (diagnostics: string[]) => {
+  //   if (filterTickets.diagnosticType.length > 0) {
+  //     let diagnosticsResult =
+  //       diagnostics.length > 0
+  //         ? diagnostics.every((item) =>
+  //             filterTickets.diagnosticType.includes(item)
+  //           )
+  //         : false;
 
-      return diagnosticsResult;
-    } else return true;
-  };
+  //     return diagnosticsResult;
+  //   } else return true;
+  // };
 
-  const dateRule = (createdAt: string) => {
-    const createdDate = dayjs(createdAt).unix() * 1000;
-    if (filterTickets.startDate > 0 && filterTickets.endDate > 0) {
-      const isTicketofDate =
-        createdDate >= filterTickets.startDate &&
-        createdDate < filterTickets.endDate
-          ? true
-          : false;
-      return isTicketofDate;
-    } else return true;
-  };
+  // const dateRule = (createdAt: string) => {
+  //   const createdDate = dayjs(createdAt).unix() * 1000;
+  //   if (filterTickets.startDate > 0 && filterTickets.endDate > 0) {
+  //     const isTicketofDate =
+  //       createdDate >= filterTickets.startDate &&
+  //       createdDate < filterTickets.endDate
+  //         ? true
+  //         : false;
+  //     return isTicketofDate;
+  //   } else return true;
+  // };
 
   const navigate = useNavigate();
 
@@ -152,23 +194,24 @@ const Ticket = () => {
   window.onload = redirectTicket;
 
   useEffect(() => {
-    // setPageCount(Math.ceil(tickets.length/10));
     (async function () {
-      await getTicketHandler(searchName);
+      await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+      await getStagesHandler();
+      await getSubStagesHandler();
       await getDoctorsHandler();
       await getDepartmentsHandler();
-      const ticketFilteredLength = checkFilterLength();
-      if (ticketFilteredLength > 0) {
-        filterFn();
-        setPageCount(Math.ceil(ticketFilteredLength / 10));
-      }
+      //   const ticketFilteredLength = checkFilterLength();
+      //   if (ticketFilteredLength > 0) {
+      //     filterFn();
+      //     setPageCount(Math.ceil(ticketCount / 10));
+      //   }
     })();
-  }, [filterTickets]);
+  }, []);
 
   return (
     <Box height={'100vh'} display="flex" position="fixed" width="100%">
       <Box width="25%" position="sticky" top={0}>
-        <Box p={1} height={'13vh'} borderBottom={0.5} borderColor="#f0f0f0">
+        <Box p={1} height={'16vh'} borderBottom={0.5} borderColor="#f0f0f0">
           <Stack
             direction="row"
             justifyContent="space-between"
@@ -193,24 +236,25 @@ const Ticket = () => {
               placeholder="Search Leads"
               id="outlined-start-adornment"
               variant="standard"
+              helperText={searchError}
               InputProps={{
-                disableUnderline: true,
+                // disableUnderline: true,
                 startAdornment: (
                   <InputAdornment position="start">
                     <SearchIcon />
                   </InputAdornment>
                 )
               }}
-              onChange={handleSeachName}
-              onKeyDown={handleKeyPress}
+              // onChange={handleSeachName}
+              onKeyDown={handleSearchKeyPress}
             />
-            <TicketFilter filterLength={checkFilterLength()} />
+            <TicketFilter />
           </Stack>
         </Box>
         <Box
           position="relative"
           p={1}
-          height={'87vh'}
+          height={'86vh'}
           sx={{
             overflowY: 'scroll',
             '&::-webkit-scrollbar ': {
@@ -218,31 +262,34 @@ const Ticket = () => {
             }
           }}
         >
-          {checkFilterLength() > 0
-            ? filteredTickets
-              ? filteredTickets.length > 0
-                ? filteredTickets
-                    .slice(10 * pageNumber, 10 + 10 * pageNumber)
-                    .map((item: iTicket) => (
-                      <TicketCard key={item._id} patientData={item} />
-                    ))
-                : 'No Match Found'
-              : 'Loading ...'
-            : tickets.length > 0
-            ? tickets
-                .slice(10 * pageNumber, 10 + 10 * pageNumber)
-                .map((item: iTicket) => (
-                  <TicketCard key={item._id} patientData={item} />
-                ))
-            : [0, 1, 2, 3, 4, 5].map((_, index) => (
-                <Skeleton
-                  key={index}
-                  variant="rectangular"
-                  sx={{ borderRadius: 2, my: 1 }}
-                  width="100%"
-                  height="20%"
-                />
-              ))}
+          {tickets.length > 0 ? (
+            tickets.map((item: iTicket) => (
+              <TicketCard key={item._id} patientData={item} />
+            ))
+          ) : emptyDataText !== '' ? (
+            <Alert
+              sx={{
+                marginTop: '40px',
+                height: '25vh',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}
+              severity="error"
+            >
+              NO DATA FOUND
+            </Alert>
+          ) : (
+            [0, 1, 2, 3, 4, 5].map((_, index) => (
+              <Skeleton
+                key={index}
+                variant="rectangular"
+                sx={{ borderRadius: 2, my: 1 }}
+                width="100%"
+                height="20%"
+              />
+            ))
+          )}
           <div>
             <CustomPagination
               handlePagination={handlePagination}

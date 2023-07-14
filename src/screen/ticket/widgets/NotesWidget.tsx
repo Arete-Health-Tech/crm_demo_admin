@@ -3,24 +3,27 @@ import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   createNotesHandler,
-  getAllNotesHandler
+  getAllNotesHandler,
+  getTicketHandler
 } from '../../../api/ticket/ticketHandler';
 import useTicketStore from '../../../store/ticketStore';
 import { ReactComponent as NoResultFoundSVG } from '../../../assets/images/no-result-found.svg';
 import dayjs from 'dayjs';
 import { iNote } from '../../../types/store/ticket';
 import { Send, StickyNote2Outlined } from '@mui/icons-material';
+import { UNDEFINED } from '../../../constantUtils/constant';
 
-type Props = {};
+type Props = { setTicketUpdateFlag: any };
 
 const NotesWidget = (props: Props) => {
+  const { filterTickets, searchByName } = useTicketStore();
   const TextInput = {
     border: 0,
     width: '100%',
     padding: '1rem',
     'input:focus': {
       outline: 'none'
-    } 
+    }
   };
   const { ticketID } = useParams();
 
@@ -29,7 +32,14 @@ const NotesWidget = (props: Props) => {
       text: note,
       ticket: ticketID!
     };
-    createNotesHandler(data);
+    await createNotesHandler(data);
+    setTimeout(() => {
+      (async function () {
+        await getTicketHandler(searchByName, 1, 'false', filterTickets);
+        props.setTicketUpdateFlag(data);
+      })();
+    }, 800);
+
     setNote('');
   };
 

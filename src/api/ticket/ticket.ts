@@ -1,8 +1,16 @@
 import { iNote, iReminder } from '../../types/store/ticket';
 import { apiClient } from '../apiClient';
 
-export const getTicket = async (name: string) => {
-  const { data } = await apiClient.get(`/ticket/?name=${name}`);
+export const getTicket = async (
+  name: string,
+  pageNumber: number = 1,
+  downloadAll: string,
+  selectedFilters: any
+) => {
+  const params = new URLSearchParams(selectedFilters).toString();
+  const { data } = await apiClient.get(
+    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&${params}`
+  );
   return data;
 };
 
@@ -17,15 +25,28 @@ export const createTicket = async (prescription: any) => {
 };
 
 export const updateTicketData = async (payload: {
-  stageCode?: number;
-  subStageCode?: {
+  stageCode: number;
+  subStageCode: {
+    active: boolean;
+    code: number;
+  };
+  modifiedDate?: Date;
+  ticket: string | undefined;
+}) => {
+  const { data } = await apiClient.put('/ticket/ticketUpdate', payload);
+  console.log(data);
+};
+
+export const updateTicketSubStage = async (payload: {
+  subStageCode: {
     active: boolean;
     code: number;
   };
   ticket: string | undefined;
 }) => {
-  const { data } = await apiClient.put('/ticket/ticketUpdate', payload);
+  const { data } = await apiClient.put('/ticket/subStageUpdate', payload);
   console.log(data);
+  return Promise.resolve(data);
 };
 
 export const sendTextMessage = async (message: string, consumerId: string) => {

@@ -6,6 +6,7 @@ export const getStagesHandler = async () => {
   const { setStages } = useServiceStore.getState();
   const stages = await getStages();
   setStages(stages);
+  return stages;
 };
 
 export const getSubStagesHandler = async () => {

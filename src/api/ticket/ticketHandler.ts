@@ -1,5 +1,5 @@
 import useTicketStore from '../../store/ticketStore';
-import { iNote, iReminder } from '../../types/store/ticket';
+import { iNote, iReminder, iTicketFilter } from '../../types/store/ticket';
 import {
   createNewNote,
   getAllNotes,
@@ -8,11 +8,39 @@ import {
   getAllReminders,
   createNewReminder
 } from './ticket';
+import { UNDEFINED } from '../../constantUtils/constant';
 
-export const getTicketHandler = async (name: string) => {
-  const { setTickets } = useTicketStore.getState();
-  const tickets = await getTicket(name);
-  const sortedTickets = tickets.reverse();
+export const getTicketHandler = async (
+  name: string,
+  pageNumber: number = 1,
+  downloadAll: 'true' | 'false' = 'false',
+  selectedFilters: iTicketFilter
+) => {
+  const {
+    setTickets,
+    setTicketCount,
+    setTicketCache,
+    ticketCache,
+    setEmptyDataText,
+    setDownloadTickets
+  } = useTicketStore.getState();
+  const data = await getTicket(name, pageNumber, downloadAll, selectedFilters);
+  const sortedTickets = data.tickets;
+  const count = data.count;
+
+  if (sortedTickets.length < 1) {
+    setEmptyDataText('No Data Found');
+  } else {
+    setEmptyDataText('');
+  }
+  if (name === UNDEFINED && downloadAll === 'false') {
+    setTicketCache({ ...ticketCache, [pageNumber]: sortedTickets });
+  }
+  if (downloadAll === 'true') {
+    setDownloadTickets(sortedTickets);
+    return sortedTickets;
+  }
+  setTicketCount(count);
   setTickets(sortedTickets);
 };
 
@@ -74,6 +102,7 @@ export const createNotesHandler = async (note: iNote) => {
   const { notes, setNotes } = useTicketStore.getState();
   const noteAdded = await createNewNote(note);
   setNotes([...notes, noteAdded]);
+  return Promise.resolve(noteAdded);
 };
 
 export const getAllReminderHandler = async (ticketId: string) => {

@@ -8,6 +8,8 @@ import {
   FormControlLabel,
   FormGroup,
   IconButton,
+  MenuItem,
+  Select,
   Stack,
   styled,
   TextField,
@@ -16,19 +18,32 @@ import {
   Typography
 } from '@mui/material';
 import { Box } from '@mui/system';
-import dayjs from 'dayjs';
-import React, { useState } from 'react';
-import { getDepartmentsHandler } from '../../../api/department/departmentHandler';
-import { getDoctorsHandler } from '../../../api/doctor/doctorHandler';
-import useTicketStore from '../../../store/ticketStore';
+// import dayjs from 'dayjs';
+import React, { useReducer, useState } from 'react';
 
-type Props = {
-  filterLength: number;
-};
+import useTicketStore from '../../../store/ticketStore';
+import { getStagesHandler } from '../../../api/stages/stagesHandler';
+
+import { iTicketFilter } from '../../../types/store/ticket';
+import { getRepresntativesHandler } from '../../../api/representive/representativeHandler';
+import {
+  selectedFiltersReducer,
+  ticketFilterTypes
+} from '../ticketStateReducers/filter';
+import { filterActions } from '../ticketStateReducers/actions/filterAction';
+import { UNDEFINED } from '../../../constantUtils/constant';
+import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 
 const drawerWidth = 450;
 
-const TicketFilter = ({ filterLength }: Props) => {
+export const ticketFilterCount = (selectedFilters: iTicketFilter) => {
+  const stageListCount = selectedFilters['stageList'].length;
+  const representativeCount = selectedFilters['representative'] ? 1 : 0;
+  const total = stageListCount + representativeCount;
+  return total;
+};
+
+const TicketFilter = () => {
   const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     '& .MuiBadge-badge': {
       right: -3,
@@ -37,30 +52,63 @@ const TicketFilter = ({ filterLength }: Props) => {
       padding: '0 4px'
     }
   }));
+  const initialFilters: ticketFilterTypes = {
+    stageList: [],
+    representative: null
+  };
 
-  const { setFilterTickets } = useTicketStore();
-
+  const { setFilterTickets, searchByName } = useTicketStore();
+  // const [ticketFilters, setTicketFilters] = useState<iTicketFilter>({
+  //   stageList: [],
+  //   admissionType: [],
+  //   diagnosticType: [],
+  //   startDate: NaN,
+  //   endDate: NaN
+  // });
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const [admissionType, setAdmissionType] = React.useState<string[]>(() => []);
   const [diagnosticsType, setDiagnosticsType] = React.useState<string[]>(
     () => []
   );
-  const [departmentsList, setDepartmentsList] = React.useState<string[]>(
-    () => []
+  const [stagesLabel, setStagesLabels] = React.useState<any>([]);
+  const [representativeLabel, setRepresentativeLabel] = React.useState<any>([]);
+  // const [selectedStageList, setSelectedStageList] = React.useState<string[]>(
+  //   () => []
+  // );
+  const [selectedFilters, dispatchFilter] = useReducer(
+    selectedFiltersReducer,
+    initialFilters
   );
   const [startDate, setStartDate] = React.useState<string>();
   const [endDate, setEndDate] = React.useState<string>();
+  const [currentReperesentative, setCurrentRepresentative] = useState('');
+  const [filterCount, setFilterCount] = useState(0);
+  console.log('selected', selectedFilters);
 
-  const handleDepartmentsList = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    index
-  ) => {
-    if (!departmentsList.includes(e.target.value)) {
-      setDepartmentsList((prev) => [...departmentsList, e.target.value]);
-    } else {
-      setDepartmentsList(
-        departmentsList.filter((item) => item !== e.target.value)
-      );
+  const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    console.log('val', value);
+    if (selectedFilters.stageList.includes(value)) {
+      const modifiedStageList = selectedFilters.stageList;
+      modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
+      console.log(modifiedStageList, 'moda');
+      dispatchFilter({
+        type: filterActions.STAGES,
+        payload: [...modifiedStageList]
+      });
+      return;
+    }
+    dispatchFilter({
+      type: filterActions.STAGES,
+      payload: [...selectedFilters.stageList, value]
+    });
+  };
+
+  const handleRepresentative = (e: any) => {
+    const value = e.target.value;
+    if (value) {
+      setCurrentRepresentative(value);
+      dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: value });
     }
   };
 
@@ -81,66 +129,89 @@ const TicketFilter = ({ filterLength }: Props) => {
     setIsFilterOpen(true);
   };
 
-  const departments = [
-    {
-      label: 'General and Laparoscopic',
-      id: '63ce58474dca242deb6a4d41'
-    },
-    {
-      label: 'Surgical oncology ',
-      id: '63ce59964dca242deb6a4d4c'
-    },
-    {
-      label: 'GI surgery',
-      id: '63de1ab09c1af160749af88d'
-    },
-    { label: 'Neurology', id: '63de1a5d9c1af160749af884' }
-  ];
+  // const departments = [
+  //   {
+  //     label: 'General and Laparoscopic',
+  //     id: '63ce58474dca242deb6a4d41'
+  //   },
+  //   {
+  //     label: 'Surgical oncology ',
+  //     id: '63ce59964dca242deb6a4d4c'
+  //   },
+  //   {
+  //     label: 'GI surgery',
+  //     id: '63de1ab09c1af160749af88d'
+  //   },
+  //   { label: 'Neurology', id: '63de1a5d9c1af160749af884' }
+  // ];
 
   React.useEffect(() => {
-    (async function () {
-      getDepartmentsHandler();
-      getDoctorsHandler();
+    (async () => {
+      const fetchedStageData = await getStagesHandler();
+      const fetchedRepresentative = await getRepresntativesHandler();
+      const transformStages = fetchedStageData.map(({ _id, name }) => {
+        return {
+          id: _id,
+          label: name
+        };
+      });
+      const transformRepresentative = fetchedRepresentative.map(
+        ({ _id, firstName, lastName }) => {
+          const labelName = `${firstName} ${lastName}`;
+          return {
+            id: _id,
+            label: labelName
+          };
+        }
+      );
+      setRepresentativeLabel(transformRepresentative);
+      setStagesLabels(transformStages);
     })();
-  });
+  }, []);
 
-  const handleApplyFilter = () => {
-    console.log(startDate, 'Start');
-    console.log(endDate, 'End');
-
-    console.log(dayjs(endDate).diff(dayjs(startDate), 'days'), Difference);
-
-    setFilterTickets({
-      departments: departmentsList,
-      admissionType: admissionType,
-      diagnosticType: diagnosticsType,
-      startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
-      endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
-    });
+  const handleApplyFilter = async () => {
+    // console.log(startDate, 'Start');
+    // console.log(endDate, 'End');
+    // console.log(dayjs(endDate).diff(dayjs(startDate), 'days'), Difference);
+    // setTicketFilters({
+    //   stageList: selectedStageList,
+    //   admissionType: admissionType,
+    //   diagnosticType: diagnosticsType,
+    //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
+    //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
+    // });
     setIsFilterOpen(false);
+    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    setFilterCount(ticketFilterCount(selectedFilters));
+    setFilterTickets(selectedFilters);
+    console.log('filter dtata', selectedFilters);
   };
 
-  const handleClearFilter = () => {
-    setFilterTickets({
-      departments: [],
-      admissionType: [],
-      diagnosticType: [],
-      startDate: 0,
-      endDate: 0
-    });
-    setDepartmentsList((prev) => []);
-    setAdmissionType((prev) => []);
-    setDiagnosticsType((prev) => []);
-    setStartDate((prev) => '');
-    setEndDate((prev) => '');
+  const handleClearFilter = async () => {
+    dispatchFilter({ type: filterActions.STAGES, payload: [] });
+    dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
+    setCurrentRepresentative('');
+    setFilterCount(ticketFilterCount(selectedFilters));
+    // setTicketFilters({
+    //   stageList: [],
+    //   admissionType: [],
+    //   diagnosticType: [],
+    //   startDate: 0,
+    //   endDate: 0
+    // });
+    // setSelectedStageList((prev) => []);
+    // setAdmissionType((prev) => []);
+    // setDiagnosticsType((prev) => []);
+    // setStartDate((prev) => '');
+    // setEndDate((prev) => '');
   };
 
   return (
     <Box>
       <IconButton onClick={handleFilterOpen}>
         <StyledBadge
-          invisible={filterLength <= 0}
-          badgeContent={filterLength}
+          invisible={filterCount <= 0}
+          badgeContent={filterCount}
           color="primary"
         >
           <FilterList />
@@ -179,32 +250,49 @@ const TicketFilter = ({ filterLength }: Props) => {
               >
                 Apply
               </Button>
-              {filterLength > 0 && (
+              {filterCount > 0 && (
                 <Button onClick={handleClearFilter} endIcon={<ClearAll />}>
                   Clear Filters
                 </Button>
               )}
             </Stack>
           </Box>
-          <Box p={2}>
-            <Typography variant="subtitle1" fontWeight={500}>
-              Select Departments
-            </Typography>
-            <FormGroup>
-              {departments.map((department, index: number) => (
-                <FormControlLabel
-                  key={department.id}
-                  control={
-                    <Checkbox
-                      checked={departmentsList.includes(department.id)}
-                      value={department.id}
-                      onChange={(e) => handleDepartmentsList(e, index)}
-                    />
-                  }
-                  label={department.label}
-                />
-              ))}
-            </FormGroup>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box p={2}>
+              <Typography variant="subtitle1" fontWeight={500}>
+                Select Stages
+              </Typography>
+              <FormGroup>
+                {stagesLabel.map(({ id, label }) => (
+                  <FormControlLabel
+                    key={id}
+                    control={
+                      <Checkbox
+                        value={id}
+                        onChange={handleStageList}
+                        checked={selectedFilters.stageList.includes(id)}
+                      />
+                    }
+                    label={label}
+                  />
+                ))}
+              </FormGroup>
+            </Box>
+            <Box py={2} px={4}>
+              <Typography variant="subtitle1" fontWeight={500}>
+                Created By
+              </Typography>
+              <Select
+                size="medium"
+                onChange={handleRepresentative}
+                value={currentReperesentative}
+                sx={{ height: '35px' }}
+              >
+                {representativeLabel?.map(({ id, label }, index) => {
+                  return <MenuItem value={id}>{label}</MenuItem>;
+                })}
+              </Select>
+            </Box>
           </Box>
           <Box p={2}>
             <Typography variant="subtitle1" fontWeight={500}>

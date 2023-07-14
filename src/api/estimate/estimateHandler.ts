@@ -4,6 +4,7 @@ import { createEstimate, uploadAndSendEstimate } from './estimate';
 export const createEstimateHandler = async (estimate: iEstimate) => {
   const createdEstimate = await createEstimate(estimate);
   console.log(createdEstimate);
+  return Promise.resolve(createEstimate);
 };
 
 export const uploadAndSendEstimateHandler = async (

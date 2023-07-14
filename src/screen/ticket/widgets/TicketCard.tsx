@@ -3,10 +3,11 @@ import MaleIcon from '@mui/icons-material/Male';
 import { iTicket } from '../../../types/store/ticket';
 import useServiceStore from '../../../store/serviceStore';
 import FemaleIcon from '@mui/icons-material/Female';
-import TransgenderIcon from '@mui/icons-material/Transgender';
 import dayjs from 'dayjs';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ageSetter } from '../../../utils/ageReturn';
+import { Grid, LinearProgress } from '@mui/material';
+import useTicketStore from '../../../store/ticketStore';
 
 type Props = {
   patientData: iTicket;
@@ -26,6 +27,8 @@ const TicketCard = (props: Props) => {
   const navigate = useNavigate();
 
   const { ticketID } = useParams();
+  const { tickets } = useTicketStore();
+  console.log(tickets);
 
   return (
     <Box
@@ -66,20 +69,20 @@ const TicketCard = (props: Props) => {
           </Typography>
           <Box display="flex" alignItems="center">
             <Typography variant="body2">
-              {ageSetter(props.patientData.consumer[0].dob)}
+              {props.patientData.consumer[0].dob
+                ? ageSetter(props.patientData.consumer[0].dob)
+                : null}
             </Typography>
             {props.patientData.consumer[0].gender === 'M' ? (
               <MaleIcon fontSize="inherit" />
             ) : props.patientData.consumer[0].gender === 'F' ? (
               <FemaleIcon />
-            ) : (
-              <TransgenderIcon />
-            )}
+            ) : null}
           </Box>
         </Box>
         <Box>
           <Typography variant="body2">
-            UHID{props.patientData.consumer[0].uid}
+            {props.patientData.consumer[0].uid}
           </Typography>
         </Box>
       </Box>
@@ -92,36 +95,47 @@ const TicketCard = (props: Props) => {
       </Typography>
       <Box
         sx={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(3, 2fr)',
-          columnGap: 2,
-          placeContent: 'start'
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: 2,
+          marginTop: 1
         }}
       >
         {props.patientData.prescription[0].admission && (
           <Chip
             label={props.patientData.prescription[0].admission}
-            color="primary"
+            color="success"
             size="small"
           />
         )}
 
+        {/* // D STARTS HERE__________________________ */}
         {props.patientData.prescription[0].diagnostics.length > 0 && (
           <Chip label="Diagnostics" color="primary" size="small" />
         )}
-        <Chip
-          size="small"
-          disabled={props.patientData.estimate.length === 0 ? true : false}
-          label={
-            props.patientData.estimate[0]?.paymentType === 0
-              ? 'Cash'
-              : props.patientData.estimate[0]?.paymentType === 1
-              ? 'Insurance'
-              : props.patientData.estimate[0]?.paymentType === 2
-              ? 'CGHS| ECHS'
-              : 'Payment Type Not Available'
-          }
-        />
+        {props.patientData.estimate[0]?.paymentType && (
+          <Chip
+            // D ENDS HERE__________________________
+            size="small"
+            label={
+              props.patientData.estimate[0].paymentType === 1
+                ? 'Cash'
+                : props.patientData.estimate[0].paymentType === 2
+                ? 'Insurance'
+                : props.patientData.estimate[0].paymentType === 3
+                ? 'CGHS| ECHS'
+                : ''
+            }
+            sx={{
+              display: 'block',
+              backgroundColor: 'blue',
+              color: 'white',
+              borderRadius: '4px',
+              padding: '4px 8px'
+            }}
+          />
+        )}
+
         <Chip
           sx={{
             display: props.patientData.estimate.length === 0 ? 'none' : ''
@@ -143,6 +157,14 @@ const TicketCard = (props: Props) => {
         Created At:
         {dayjs(props.patientData.createdAt).format('DD/MMM/YYYY , HHMM')}hrs
       </Typography>
+      <Grid container spacing={1} alignItems="center">
+        <Grid item xs={10}>
+          <LinearProgress variant="determinate" value={50} />
+        </Grid>
+        <Grid item xs={2}>
+          {`${50}%`}
+        </Grid>
+      </Grid>
     </Box>
   );
 };

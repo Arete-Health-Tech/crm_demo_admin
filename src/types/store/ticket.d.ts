@@ -38,7 +38,7 @@ export interface iEstimate {
   bloodAmount: number;
   additionalAmount: number;
   prescription: string;
-  ticket: string;
+  ticket: string | undefined;
   creator?: string;
   total?: number;
   createdAt?: Date;
@@ -73,13 +73,22 @@ export interface iTicket {
     active: boolean;
     code: number;
   };
+  modifiedDate: Date | string | null;
 }
 
 export interface iTicketStore {
   tickets: iTicket[];
   setTickets: (tickets: iTicket[]) => void;
+  ticketCount: number;
+  setTicketCount: (count: number) => void;
   searchByName: string;
   setSearchByName: (name: string) => void;
+  ticketCache: any;
+  setTicketCache: (ticketCache: any) => void;
+  emptyDataText: string;
+  setEmptyDataText: (emptyDataText: string) => void;
+  downloadTickets: iTicket[];
+  setDownloadTickets: (downloadTickets: iTicket[]) => void;
   notes: iNote[];
   setNotes: (notes: iNote[]) => void;
   reminders: iReminder[];
@@ -106,11 +115,12 @@ export interface iReminder {
 }
 
 export interface iTicketFilter {
-  departments: string[];
-  admissionType: string[];
-  diagnosticType: string[];
-  startDate: number;
-  endDate: number;
+  stageList: any[];
+  representative: string | null;
+  admissionType?: string[];
+  diagnosticType?: string[];
+  startDate?: number;
+  endDate?: number;
 }
 
 export interface iCreator {

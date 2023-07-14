@@ -48,9 +48,14 @@ import QueryResolutionWidget from './widgets/QueryResolutionWidget';
 import { getSingleScript } from '../../api/script/script';
 import PrescriptionTabsWidget from './widgets/PrescriptionTabsWidget';
 import AddNewTaskWidget from './widgets/AddNewTaskWidget';
-import { getAllReminderHandler } from '../../api/ticket/ticketHandler';
+import {
+  getAllReminderHandler,
+  getTicketHandler
+} from '../../api/ticket/ticketHandler';
 import MessagingWidget from './widgets/whatsapp/WhatsappWidget';
 import ShowPrescription from './widgets/ShowPrescriptionModal';
+import { updateTicketSubStage } from '../../api/ticket/ticket';
+import { UNDEFINED } from '../../constantUtils/constant';
 
 dayjs.extend(relativeTime);
 
@@ -58,13 +63,44 @@ type Props = {};
 
 const SingleTicketDetails = (props: Props) => {
   const { ticketID } = useParams();
-  const { tickets } = useTicketStore();
-  const { doctors, departments } = useServiceStore();
+  const { tickets, filterTickets } = useTicketStore();
+  const { doctors, departments, stages } = useServiceStore();
   const [currentTicket, setCurrentTicket] = useState<iTicket>();
   const [value, setValue] = useState('1');
   const [script, setScript] = useState<iScript>();
   const [isScript, setIsScript] = useState(false);
   const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
+
+  // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
+
+  const handlePhoneCall = async (e: React.SyntheticEvent) => {
+    const currentSubStageCode = currentTicket?.subStageCode?.code;
+    const stageDetail: any = stages?.find(
+      ({ _id }) => currentTicket?.stage === _id
+    );
+    const noOfChilds = stageDetail?.child?.length || 3;
+    if (
+      currentSubStageCode &&
+      currentSubStageCode > noOfChilds - 3 &&
+      currentSubStageCode < noOfChilds
+    ) {
+      const payload = {
+        subStageCode: {
+          active: true,
+          code: 3
+        },
+        ticket: currentTicket?._id
+      };
+
+      const result = await updateTicketSubStage(payload);
+      setTimeout(() => {
+        (async function () {
+          await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+          setTicketUpdateFlag(result);
+        })();
+      }, 1000);
+    }
+  };
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -75,13 +111,9 @@ const SingleTicketDetails = (props: Props) => {
     setCurrentTicket(fetchTicket);
   };
 
-useEffect(() => {
-  (async function () {
-    try {
-      await getTicketInfo(ticketID);
-      await getDoctorsHandler();
-      await getStagesHandler();
-      await getSubStagesHandler();
+  useEffect(() => {
+    (async function () {
+      getTicketInfo(ticketID);
       await getAllReminderHandler(ticketID!);
       if (currentTicket) {
         const script = await getSingleScript(
@@ -90,13 +122,8 @@ useEffect(() => {
         );
         setScript(script);
       }
-    } catch (error) {
-      // Handle the error here
-      console.error('An error occurred:', error);
-    }
-  })();
-}, [ticketID, currentTicket, ticketUpdateFlag]);
-
+    })();
+  }, [ticketID, tickets, currentTicket, ticketUpdateFlag]);
 
   const { reminders } = useTicketStore();
 
@@ -164,7 +191,7 @@ useEffect(() => {
                 #{currentTicket?.consumer[0].uid}
               </Typography>
             </Box>
-          </Box>    
+          </Box>
           <Box
             width="40%"
             display={'flex '}
@@ -172,7 +199,10 @@ useEffect(() => {
             alignItems="center"
           >
             <a href={`tel:${currentTicket?.consumer[0].phone}`}>
-              <IconButton sx={{ bgcolor: 'green', color: 'white' }}>
+              <IconButton
+                sx={{ bgcolor: 'green', color: 'white' }}
+                onClick={handlePhoneCall}
+              >
                 <Call />
               </IconButton>
             </a>
@@ -184,7 +214,7 @@ useEffect(() => {
         </Box>
         <Stack bgcolor="#F1F5F7" height="90vh" direction="column">
           <Box p={1} height="30%">
-            <Box bgcolor={'white'} p={2} borderRadius={2}>
+            <Box bgcolor={'white'} p={1.5} borderRadius={2}>
               <StageCard
                 currentTicket={currentTicket}
                 setTicketUpdateFlag={setTicketUpdateFlag}
@@ -210,7 +240,7 @@ useEffect(() => {
                 <MessagingWidget />
               </TabPanel>
               <TabPanel sx={{ p: 0, height: '100%' }} value="2">
-                <NotesWidget />
+                <NotesWidget setTicketUpdateFlag={setTicketUpdateFlag} />
               </TabPanel>
               <TabPanel sx={{ p: 0, height: '100%' }} value="3">
                 <QueryResolutionWidget />
@@ -230,7 +260,7 @@ useEffect(() => {
           display="flex"
           alignItems="center"
         >
-          <Estimate />
+          <Estimate setTicketUpdateFlag={setTicketUpdateFlag} />
         </Box>
 
         {isScript ? (
@@ -473,7 +503,7 @@ useEffect(() => {
         )}
 
         {/* Lead View  */}
-                                                                                      
+
         <Box
           height="7vh"
           p={1}

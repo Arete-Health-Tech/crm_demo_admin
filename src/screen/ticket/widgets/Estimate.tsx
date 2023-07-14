@@ -41,8 +41,10 @@ import {
   serviceAdded
 } from '../../../types/store/service';
 import { iEstimate } from '../../../types/store/ticket';
+import { getTicketHandler } from '../../../api/ticket/ticketHandler';
+import { UNDEFINED } from '../../../constantUtils/constant';
 
-type Props = {};
+type Props = { setTicketUpdateFlag: any };
 
 const drawerWidth = 1200;
 
@@ -79,6 +81,7 @@ const Estimate = (props: Props) => {
     prescription: ticket?.prescription[0]._id!,
     ticket: ticketID!
   });
+  console.log('====================ticket id', ticketID);
 
   type AlertType = {
     services: string;
@@ -98,6 +101,7 @@ const Estimate = (props: Props) => {
   const [services, setServices] = useState<iService[]>();
   const [searchServiceValue, setSearchServiceValue] = useState('');
   const { wards, doctors } = useServiceStore();
+  const { filterTickets, searchByName } = useTicketStore();
 
   const [alert, setAlert] = useState<AlertType>({
     investigation: '',
@@ -214,9 +218,19 @@ const Estimate = (props: Props) => {
     );
   };
 
-  const handleCreateEstimate = () => {
-    console.log(estimateFileds);
-    createEstimateHandler(estimateFileds);
+  const handleCreateEstimate = async () => {
+    const result = await createEstimateHandler({
+      ...estimateFileds,
+      ticket: ticketID
+    });
+
+    setTimeout(() => {
+      (async function () {
+        await getTicketHandler(searchByName, 1, 'false', filterTickets);
+        props.setTicketUpdateFlag(result);
+        setIsEstimateOpen(false);
+      })();
+    }, 800);
   };
 
   return (
@@ -781,7 +795,7 @@ const Estimate = (props: Props) => {
                   onClick={handleCreateEstimate}
                   endIcon={<SendOutlined />}
                 >
-                  Send Estimate
+                  Send Estimatey
                 </Button>
               </Box>
 
@@ -902,7 +916,7 @@ const Estimate = (props: Props) => {
                   Services Details
                 </Typography>
                 <Box my={1}>
-                  {estimateFileds.service.length >= 0 ? (
+                  {estimateFileds.service.length > 0 ? (
                     estimateFileds.service.map((item, index: number) => (
                       <Chip
                         size="small"

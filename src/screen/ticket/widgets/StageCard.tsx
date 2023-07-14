@@ -1,14 +1,35 @@
-import { Box, MenuItem, Select, Step, StepLabel, Stepper } from '@mui/material';
+import {
+  Box,
+  FormControl,
+  LinearProgress,
+  MenuItem,
+  Select,
+  Step,
+  StepLabel,
+  Stepper,
+  Typography
+} from '@mui/material';
 import { useEffect, useState } from 'react';
 import useServiceStore from '../../../store/serviceStore';
 import { iStage, iSubStage } from '../../../types/store/service';
 import { iTicket } from '../../../types/store/ticket';
 import { updateTicketData } from '../../../api/ticket/ticket';
+import { getTicketHandler } from '../../../api/ticket/ticketHandler';
+import { UNDEFINED } from '../../../constantUtils/constant';
+import useTicketStore from '../../../store/ticketStore';
 
 type Props = {
-  currentTicket: iTicket | undefined;
+  currentTicket: iTicket | any;
   setTicketUpdateFlag: any;
 };
+
+function getTotalDaysFromDate(date: Date) {
+  if (!date) return -1;
+  const today = new Date();
+  const timeDiff = Math.abs(today.getTime() - date.getTime());
+  const totalDays = Math.round(timeDiff / (1000 * 3600 * 24));
+  return totalDays;
+}
 
 const StageCard = (props: Props) => {
   const { stages, subStages } = useServiceStore();
@@ -18,10 +39,12 @@ const StageCard = (props: Props) => {
   );
   const { currentTicket, setTicketUpdateFlag } = props;
 
-  const [currentStageIndex, setCurrentStageIndex] = useState<number>(0);
+  const [lastModifiedDate, setLastModifiedDate] = useState<number>(0);
   const [currentStage, setCurrentStage] = useState<any>({});
   const [changeStageName, setChangeStageName] = useState<string>('');
+  const [progressCount, setProgressCount] = useState<number>(0);
   const [nextStage, setNextStage] = useState<string>('');
+  const { filterTickets, searchByName } = useTicketStore();
   // const getCurrentStage = () => {
   //   const index = stages.findIndex(
   //     (stage) => stage._id === currentTicket?.stage
@@ -46,18 +69,21 @@ const StageCard = (props: Props) => {
       const stageName = stageDetail?.name || '';
       setChangeStageName(stageName);
       setCurrentStage(stageDetail);
+      setProgressCount(stageDetail?.code * 20 || 0);
       setNextStage('');
-      if (
-        currentTicket?.subStageCode?.code === stageDetail?.child?.length &&
-        stageDetail?.code <= 5
-      ) {
+      setLastModifiedDate(
+        currentTicket?.modifiedDate
+          ? getTotalDaysFromDate(new Date(currentTicket?.modifiedDate))
+          : -1
+      );
+      if (currentTicket?.subStageCode?.code > 3 && stageDetail?.code <= 5) {
         const nextStageIndex = stageDetail?.code;
         setNextStage(stages[nextStageIndex]?.name || '');
       }
     }
   }, [currentTicket, stages, subStages, changeStageName]);
 
-  const handleStages = (e: any) => {
+  const handleStages = async (e: any) => {
     console.log('selected', e.target.value);
     setChangeStageName(e.target.value);
     const payload = {
@@ -69,36 +95,92 @@ const StageCard = (props: Props) => {
       ticket: currentTicket?._id
     };
     updateTicketData(payload);
-
-    setTimeout(() => setTicketUpdateFlag(payload), 800);
+    // window.location.reload();
+    setTimeout(() => {
+      (async function () {
+        const result = await getTicketHandler(
+          searchByName,
+          1,
+          'false',
+          filterTickets
+        );
+        setTicketUpdateFlag(result);
+      })();
+    }, 800);
   };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      <Box>
-        <Select
-          size="small"
-          name="stages"
-          onChange={handleStages}
-          value={changeStageName || ''}
-          sx={{ height: '35px' }}
+      {lastModifiedDate > -1 && (
+        <Typography fontSize={'13px'} variant="body2" color="black">
+          {`Last update ${lastModifiedDate} days ago`}
+        </Typography>
+      )}
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: '100%', mr: 1 }}>
+          <LinearProgress
+            variant="determinate"
+            value={progressCount}
+            sx={{
+              height: '10px',
+              '& .MuiLinearProgress-bar': {
+                backgroundColor: '#3949AC'
+              }
+            }}
+          />
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+          <Typography variant="body2" color="black">
+            {progressCount}%
+          </Typography>
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          marginBottom: '7px',
+          marginTop: '3px'
+        }}
+      >
+        <Typography
+          marginRight={'12px'}
+          variant="body2"
+          color="black"
+          fontSize={15}
+          fontWeight={500}
         >
-          {validStageList?.map(({ name, parent, code }: iStage, index) => {
-            return (
-              parent === null && (
-                <MenuItem
-                  value={name}
-                  disabled={![changeStageName, nextStage].includes(name)}
-                >
-                  {name}
-                </MenuItem>
-              )
-            );
-          })}
-        </Select>
+          Current Stage -:{' '}
+        </Typography>
+        <FormControl variant="standard">
+          <Select
+            size="small"
+            name="stages"
+            onChange={handleStages}
+            value={changeStageName || ''}
+            sx={{ height: '16px', outline: 'none' }}
+          >
+            {validStageList?.map(({ name, parent, code }: iStage, index) => {
+              return (
+                parent === null && (
+                  <MenuItem
+                    value={name}
+                    disabled={![changeStageName, nextStage].includes(name)}
+                  >
+                    {name}
+                  </MenuItem>
+                )
+              );
+            })}
+          </Select>
+        </FormControl>
       </Box>
       <Stepper
-        activeStep={currentTicket?.subStageCode?.code || 0}
+        activeStep={
+          currentStage?.child?.length > 3
+            ? currentTicket?.subStageCode?.code
+            : currentTicket?.subStageCode?.code - 1 || 0
+        }
         alternativeLabel
         sx={{ height: '50px', marginTop: '10px' }}
       >
@@ -113,80 +195,3 @@ const StageCard = (props: Props) => {
 };
 
 export default StageCard;
-// const StageCard = (props: Props) => {
-//   const { stages } = useServiceStore();
-//   const [currentStageIndex, setCurrentStageIndex] = useState<number>(0);
-
-//   const getCurrentStage = () => {
-//     const index = stages.findIndex((stage) => stage._id === props.stage);
-//     setCurrentStageIndex(index);
-//   };
-
-//    const stagesLevel= stages.map((label ) =>{
-//     return (label)
-//    } )
-// console.log(stagesLevel);
-
-//   useEffect(() => {
-//     getCurrentStage();
-//   }, [props.stage]);
-
-//   const parentStageId = '6447bb8c554bff9e9eacc3a3'; // The ID of the parent stage
-// const parentStage = stages.find((stage) => stage._id === parentStageId);
-
-// console.log(parentStage,"substages");
-// console.log(stages.filter((stage) => stage.parent === parentStageId));
-
-
-//   return (
-//     <Box>
-//       <Stepper activeStep={currentStageIndex} alternativeLabel>
-//         {stages.map(
-//           (label: iStage, index) =>
-//             label.parent === null && (
-//               <Step key={label._id}>      
-//                 <StepLabel>{label.name}</StepLabel>
-               
-//               </Step>
-              
-//             )
-//         )}
-//       </Stepper>
-    
-      
-      
-    
-
-
-
-// <Stepper activeStep={currentStageIndex} alternativeLabel>
-//   {stages.map((label: iStage, index) => {
-//     if (label.parent === null) {
-//       const subStages = stages.filter((childLabel: iStage) => childLabel.parent?.toString() === label._id);
-//       return (
-//         <Step key={label._id}>
-//           <StepLabel>{label.name}</StepLabel>
-//           <StepContent>
-//             <div style={{ display: 'flex'}}>
-//               {subStages.map((subStage: iStage) => (
-//                 <Step key={subStage._id}  >
-//                   <StepLabel className="substage-label" style={{ flexDirection:"row",}} >{subStage.name}</StepLabel>
-//                 </Step>
-//               ))}
-//             </div>
-//           </StepContent>
-//         </Step>
-//       );
-//     }
-//   })}
-// </Stepper>
-
-
-
-//     </Box>
-
-//   );
-
-// };
-
-// export default StageCard;

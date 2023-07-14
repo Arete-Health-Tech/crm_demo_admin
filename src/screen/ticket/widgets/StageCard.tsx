@@ -1,12 +1,16 @@
 import {
   Box,
+  Button,
   FormControl,
+  InputLabel,
   LinearProgress,
   MenuItem,
+  Modal,
   Select,
   Step,
   StepLabel,
   Stepper,
+  TextField,
   Typography
 } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -33,6 +37,13 @@ function getTotalDaysFromDate(date: Date) {
 
 const StageCard = (props: Props) => {
   const { stages, subStages } = useServiceStore();
+
+ const [open, setOpen] = useState(false);
+ const [textValue, setTextValue] = useState('');
+ const [file, setFile] = useState(null);
+ const [lose, setLose] = useState('');
+ const [openLose, setOpenLose] = useState(false);
+
   const [validStageList, setValidStageList] = useState<iStage[] | []>([]);
   const [validSubStageList, setValidSubStageList] = useState<iSubStage[] | []>(
     []
@@ -109,6 +120,42 @@ const StageCard = (props: Props) => {
     }, 800);
   };
 
+
+  const handleOpen = () => {
+    console.log('Open Modal');
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleTextChange = (event) => {
+    setTextValue(event.target.value);
+  };
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleSubmit = () => {
+    // Handle form submission logic here
+    console.log('Text Value:', textValue);
+    console.log('File:', file);
+    setOpen(false);
+  };
+
+  const handleOpenLose = () => {
+    setOpenLose(true);
+  };
+
+  const handleCloseLose = () => {
+    setOpenLose(false);
+  };
+
+  const handleChangeLose = (event) => {
+    setLose(event.target.value);
+  };
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       {lastModifiedDate > -1 && (
@@ -140,7 +187,7 @@ const StageCard = (props: Props) => {
           display: 'flex',
           alignItems: 'center',
           marginBottom: '7px',
-          marginTop: '3px'
+          marginTop: '20px'
         }}
       >
         <Typography
@@ -148,10 +195,11 @@ const StageCard = (props: Props) => {
           variant="body2"
           color="black"
           fontSize={15}
-          fontWeight={500}
+          fontWeight={600}
         >
           Current Stage -:{' '}
         </Typography>
+
         <FormControl variant="standard">
           <Select
             size="small"
@@ -174,6 +222,147 @@ const StageCard = (props: Props) => {
             })}
           </Select>
         </FormControl>
+      </Box>
+      <Box>
+        <Button
+          variant="contained"
+          style={{
+            backgroundColor: 'green',
+            marginRight: '10px',
+            marginLeft: '550px',
+         marginTop:"-60px",
+            width: '60px',
+            height: '40px'
+          }}
+          onClick={handleOpen}
+        >
+          WON
+        </Button>
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 700,
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              height: 400,
+              borderRadius: 10,
+              p: 4,
+              justifyContent: 'center',
+              textAlign: 'center',
+              backgroundColor: '#e8eaf6'
+            }}
+          >
+            <Typography id="modal-modal-title" variant="h5" component="h1">
+              Verify Payment
+            </Typography>
+            <TextField
+              label="Payment Reference ID"
+              value={textValue}
+              onChange={handleTextChange}
+              fullWidth
+              multiline
+              margin="normal"
+              style={{ backgroundColor: 'whitesmoke' }}
+            />
+            <Typography id="modal-modal-title">Or</Typography>
+            <Typography id="modal-modal-title" component="h2">
+              Upload Receipt sent by hospital
+            </Typography>
+            <TextField
+              type="file"
+              onChange={handleFileChange}
+              fullWidth
+              margin="normal"
+              style={{ backgroundColor: 'whitesmoke' }}
+            />{' '}
+            <TextField
+              label="Write Notes"
+              value={textValue}
+              onChange={handleTextChange}
+              fullWidth
+              multiline
+              margin="normal"
+              style={{ backgroundColor: 'whitesmoke' }}
+            />
+            <Button variant="contained" onClick={handleSubmit}>
+              Submit
+            </Button>
+          </Box>
+        </Modal>
+        <Button
+          variant="contained"
+          style={{
+            backgroundColor: 'red',
+marginTop:"-60px",
+            width: '60px',
+            height: '40px',
+             
+          }}
+          onClick={handleOpenLose}
+        >
+          LOST
+        </Button>{' '}
+        <Modal
+          open={openLose}
+          onClose={handleCloseLose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: 700,
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              height: 250,
+              borderRadius: 10,
+              p: 4,
+              backgroundColor: '#e8eaf6'
+            }}
+          >
+            <Typography id="modal-modal-title" variant="h5" component="h1">
+              Reason for closing lead
+            </Typography>
+            <br />
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label">
+                {' '}
+                Reason for closing lead
+              </InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={lose}
+                label="Reason for closing lead"
+                onChange={handleChangeLose}
+                style={{ backgroundColor: 'whitesmoke' }}
+              >
+                <MenuItem value={10}>Financial Problem</MenuItem>
+                <MenuItem value={20}>Problem number 2</MenuItem>
+                <MenuItem value={30}>Problem number 3</MenuItem>
+                <MenuItem value={40}>Problem number 4</MenuItem>
+              </Select>
+            </FormControl>
+            <br />
+            <br />
+
+            <Button variant="contained" onClick={handleSubmit}>
+              Submit
+            </Button>
+          </Box>
+        </Modal>
       </Box>
       <Stepper
         activeStep={

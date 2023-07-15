@@ -60,7 +60,7 @@ export interface iService {
 }
 
 export interface iStage {
-  children: [
+  children?: [
     {
       code: Number,
       description: String,

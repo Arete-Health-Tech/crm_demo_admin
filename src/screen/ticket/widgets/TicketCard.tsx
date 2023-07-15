@@ -8,13 +8,24 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { ageSetter } from '../../../utils/ageReturn';
 import { Grid, LinearProgress } from '@mui/material';
 import useTicketStore from '../../../store/ticketStore';
+import { useEffect, useState } from 'react';
+import { iStage } from '../../../types/store/service';
 
 type Props = {
   patientData: iTicket;
 };
 
 const TicketCard = (props: Props) => {
-  const { doctors, departments, allServices } = useServiceStore();
+  const { doctors, departments, allServices, stages } = useServiceStore();
+
+  const [currentStage, setCurrentStage] = useState<iStage>({
+    _id: '',
+    name: '',
+    code: 1,
+    description: '',
+    parent: null,
+    child: []
+  });
 
   const doctorSetter = (id: string) => {
     return doctors.find((element) => element._id === id)?.name;
@@ -29,6 +40,13 @@ const TicketCard = (props: Props) => {
   const { ticketID } = useParams();
   const { tickets } = useTicketStore();
   console.log(tickets);
+
+  useEffect(() => {
+    const stageDetail: any = stages?.find(
+      ({ _id }) => props.patientData?.stage === _id
+    );
+    setCurrentStage(stageDetail);
+  }, [stages]);
 
   return (
     <Box
@@ -158,11 +176,11 @@ const TicketCard = (props: Props) => {
         {dayjs(props.patientData.createdAt).format('DD/MMM/YYYY , HHMM')}hrs
       </Typography>
       <Grid container spacing={1} alignItems="center">
-        <Grid item xs={10}>
-          <LinearProgress variant="determinate" value={50} />
+        <Grid item xs={8}>
+          <LinearProgress variant="determinate" value={(currentStage?.code * 20) || 0} />
         </Grid>
-        <Grid item xs={2}>
-          {`${50}%`}
+        <Grid item xs={4}>
+          <Typography fontSize={'14px'} fontWeight={500}>{`(${(currentStage?.code * 20) || 0}%) ${currentStage?.name ||  'N/A'}`}</Typography>
         </Grid>
       </Grid>
     </Box>

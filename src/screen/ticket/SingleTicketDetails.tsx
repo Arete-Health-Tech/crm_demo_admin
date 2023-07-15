@@ -180,12 +180,12 @@ const SingleTicketDetails = (props: Props) => {
                     <Transgender />
                     <Typography>Others</Typography>
                   </Box>
-                ) : (
-                  <Typography>Not Specified</Typography>
-                )}
+                ) : null}
               </Box>
-              <Typography variant="body1">
-                {ageSetter(currentTicket?.consumer[0].dob!)}
+              <Typography fontSize="small">
+                {currentTicket?.consumer[0].dob
+                  ? ageSetter(currentTicket.consumer[0].dob)
+                  : ''}
               </Typography>
               <Typography variant="body1">
                 #{currentTicket?.consumer[0].uid}
@@ -221,7 +221,13 @@ const SingleTicketDetails = (props: Props) => {
               />
             </Box>
           </Box>
-          <Box p={1} height="100%" style={{marginBottom:"20px"}} position="relative" bgcolor="#F1F5F7">
+          <Box
+            p={1}
+            height="100%"
+            style={{ marginBottom: '20px' }}
+            position="relative"
+            bgcolor="#F1F5F7"
+          >
             <TabContext value={value}>
               <Box
                 sx={{ borderBottom: 1, borderColor: 'divider' }}

@@ -113,7 +113,7 @@ const TicketCard = (props: Props) => {
         {props.patientData.prescription[0].diagnostics.length > 0 && (
           <Chip label="Diagnostics" color="primary" size="small" />
         )}
-        {props.patientData.estimate[0]?.paymentType && (
+        {/* {props.patientData.estimate[0]?.paymentType && (
           <Chip
             // D ENDS HERE__________________________
             size="small"
@@ -134,7 +134,7 @@ const TicketCard = (props: Props) => {
               padding: '4px 8px'
             }}
           />
-        )}
+        )} */}
 
         <Chip
           sx={{

@@ -5,7 +5,8 @@ import {
   FilePresentOutlined,
   PictureAsPdf,
   RemoveRedEye,
-  SendOutlined
+  SendOutlined,
+  SkipNext
 } from '@mui/icons-material';
 import {
   Alert,
@@ -20,6 +21,7 @@ import {
   InputLabel,
   MenuItem,
   Radio,
+  Modal,
   RadioGroup,
   Select,
   Stack,
@@ -102,6 +104,14 @@ const Estimate = (props: Props) => {
   const [searchServiceValue, setSearchServiceValue] = useState('');
   const { wards, doctors } = useServiceStore();
   const { filterTickets, searchByName } = useTicketStore();
+  
+const [textFieldValue, setTextFieldValue] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+   const [open, setOpen] = useState(false);
+  
+// D STARTS HERE__________________________
+
+  const [submittedData, setSubmittedData] = useState(['']);
 
   const [alert, setAlert] = useState<AlertType>({
     investigation: '',
@@ -232,16 +242,104 @@ const Estimate = (props: Props) => {
       })();
     }, 800);
   };
+const handleSubmit = (event) => {
+    event.preventDefault();
 
+    if (textFieldValue.trim() === '') {
+      setErrorMessage('This field is required');
+    } else {
+
+      // D STARTS HERE__________________________
+      setSubmittedData([...submittedData, textFieldValue]);
+      setTextFieldValue(''); 
+     setErrorMessage('Your Reason has been Submitted');
+      // D ENDS HERE____________________________
+    }
+  };
+
+  const handleTextFieldChange = (event) => {
+    setTextFieldValue(event.target.value);
+    setErrorMessage('');
+  };
+
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '40%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 40,
+    p: 4,
+    width: '50%', 
+    height: '40%',
+    display: 'flex', 
+    flexDirection: 'column', 
+    justifyContent: 'center' 
+   
+  };
+
+ 
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   return (
     <div>
-      <Button
-        onClick={() => setIsEstimateOpen(true)}
-        variant="contained"
-        endIcon={<Add />}
+      <div>
+        <Button
+          style={{ marginRight: '20px', marginLeft: '50px' }}
+          onClick={() => setIsEstimateOpen(true)}
+          variant="contained"
+          endIcon={<Add />}
+        >
+          Create Estimate
+        </Button>
+        <Button onClick={handleOpen} variant="contained" endIcon={<SkipNext />}>
+          Skip Estimate
+        </Button>
+      </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
       >
-        Create Estimate
-      </Button>
+        <Box sx={style}>
+          <Box sx={{ top: '50%' }}>
+            <Typography id="modal-modal-title" variant="h6" component="h2">
+              Reason to Skip
+            </Typography>
+          </Box>
+          <div>
+            <form onSubmit={handleSubmit}>
+              <TextField
+                id="outlined-multiline-flexible"
+                margin="normal"
+                fullWidth
+                multiline
+                maxRows={10}
+                value={textFieldValue}
+                onChange={handleTextFieldChange}
+                required
+              />
+              {errorMessage && (
+                <Typography color="alert">{errorMessage}</Typography>
+              )}
+              <Box
+                sx={{
+                  mt: 2,
+                  display: 'flex',
+                  justifyContent: 'flex-end',
+                  width: '100%'
+                }}
+              >
+                <Button type="submit" variant="contained">
+                  Submit
+                </Button>
+              </Box>
+            </form>
+          </div>
+        </Box>
+      </Modal>
       <Drawer
         sx={{
           display: { xs: 'none', sm: 'block' },
@@ -790,12 +888,15 @@ const Estimate = (props: Props) => {
                   <PictureAsPdf />
                   Preview Estimate
                 </Typography>
+                <Button onClick={handlePreview}>
+                  {!isPreview ? 'Preview Estimate' : 'Edit Estimate'}
+                </Button>
 
                 <Button
                   onClick={handleCreateEstimate}
                   endIcon={<SendOutlined />}
                 >
-                  Send Estimatey
+                  Send Estimate
                 </Button>
               </Box>
 

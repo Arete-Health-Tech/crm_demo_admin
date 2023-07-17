@@ -11,6 +11,7 @@ const CustomPagination = (props: iPageProp) => {
   return (
     <div>
       <Pagination
+        color="primary"
         size="small"
         page={page}
         onChange={handlePagination}

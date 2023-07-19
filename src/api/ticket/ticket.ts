@@ -5,11 +5,12 @@ export const getTicket = async (
   name: string,
   pageNumber: number = 1,
   downloadAll: string,
-  selectedFilters: any
+  selectedFilters: any,
+  ticketId?: string | null,
 ) => {
   const params = new URLSearchParams(selectedFilters).toString();
   const { data } = await apiClient.get(
-    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&${params}`
+    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&${params}`
   );
   return data;
 };
@@ -68,8 +69,8 @@ export const createNewNote = async (note: iNote) => {
   return data;
 };
 
-export const getAllReminders = async (ticketId: string) => {
-  const { data } = await apiClient.get(`task/reminder/${ticketId}`);
+export const getAllReminders = async () => {
+  const { data } = await apiClient.get(`task/allReminder/`);
   return data;
 };
 

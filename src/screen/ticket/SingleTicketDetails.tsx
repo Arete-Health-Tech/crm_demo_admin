@@ -28,7 +28,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import { Suspense, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useTicketStore from '../../store/ticketStore';
-import { iTicket } from '../../types/store/ticket';
+import { iReminder, iTicket } from '../../types/store/ticket';
 import StageCard from './widgets/StageCard';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -63,13 +63,14 @@ type Props = {};
 
 const SingleTicketDetails = (props: Props) => {
   const { ticketID } = useParams();
-  const { tickets, filterTickets } = useTicketStore();
+  const { tickets, filterTickets, reminders } = useTicketStore();
   const { doctors, departments, stages } = useServiceStore();
   const [currentTicket, setCurrentTicket] = useState<iTicket>();
   const [value, setValue] = useState('1');
   const [script, setScript] = useState<iScript>();
   const [isScript, setIsScript] = useState(false);
   const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
+  const [singleReminder, setSingleReminder] = useState<iReminder[] | any[]>([]);
 
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
@@ -109,24 +110,33 @@ const SingleTicketDetails = (props: Props) => {
   const getTicketInfo = (ticketID: string | undefined) => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
     setCurrentTicket(fetchTicket);
+    return fetchTicket
   };
 
   useEffect(() => {
     (async function () {
-      getTicketInfo(ticketID);
-      await getAllReminderHandler(ticketID!);
+      const ticketData =  getTicketInfo(ticketID);
       if (currentTicket) {
+        setSingleReminder([])
         const script = await getSingleScript(
           currentTicket?.prescription[0]?.service?._id,
           currentTicket?.stage
-        );
+        )
+        reminders?.map((data)=>{
+          // console.log("maping", data?.ticket === ticketData?._id);
+          if(data?.ticket === ticketData?._id){
+            setSingleReminder([...singleReminder, data])
+          }
+        }
+          )
         setScript(script);
       }
     })();
-  }, [ticketID, tickets, currentTicket, ticketUpdateFlag]);
+  }, [ticketID, tickets, currentTicket, ticketUpdateFlag,reminders.length,reminders]);
 
-  const { reminders } = useTicketStore();
 
+  // console.log("reminders in single layout",reminders)
+  // console.log("after singleReminder",singleReminder);
   const doctorSetter = (id: string) => {
     return doctors.find((doctor: iDoctor) => doctor._id === id)?.name;
   };
@@ -469,37 +479,33 @@ const SingleTicketDetails = (props: Props) => {
                 </Stack>
               </Box>
               <Box>
-                {reminders.length > 0 ? (
-                  reminders.map((reminder, index) => {
-                    return (
-                      dayjs(reminder.date).diff(new Date(), 'days') > 0 && (
+                {singleReminder[0] ? (
                         <Box
                           display="flex"
                           justifyContent="space-between"
                           alignItems="center"
                           p={2}
-                          bgcolor={index % 2 === 0 ? '#f5f5f7' : 'white'}
+                          bgcolor={'white'}
                         >
                           <Box>
-                            <Typography>{reminder.title}</Typography>
+                            <Typography>{singleReminder[0].title}</Typography>
                             <Chip
                               size="small"
                               variant="outlined"
                               color="primary"
-                              label={dayjs(reminder.date).format(
+                              label={dayjs(singleReminder[0].date).format(
                                 'DD/MMM/YYYY hh:mm A '
                               )}
                             />
                           </Box>
                           <Box>
-                            <Tooltip title={reminder.description}>
+                            <Tooltip title={singleReminder[0].description}>
                               <InfoOutlined />
                             </Tooltip>
                           </Box>
                         </Box>
-                      )
-                    );
-                  })
+
+                  
                 ) : (
                   <Typography p={1}>No Reminders Available</Typography>
                 )}

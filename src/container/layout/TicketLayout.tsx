@@ -2,18 +2,26 @@ import {
   Alert,
   Box,
   Button,
+  Chip,
   InputAdornment,
+  Modal,
   Skeleton,
   Stack,
-  TextField
+  TextField,
+  Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import CloseIcon from '@mui/icons-material/Close';
 
 import { useEffect, useState, useRef } from 'react';
-import { getTicketHandler } from '../../api/ticket/ticketHandler';
+import {
+  getAllReminderHandler,
+  getTicketHandler
+} from '../../api/ticket/ticketHandler';
 import useTicketStore from '../../store/ticketStore';
 import TicketCard from '../../screen/ticket/widgets/TicketCard';
-import { iTicket } from '../../types/store/ticket';
+import { iReminder, iTicket } from '../../types/store/ticket';
 import { getDoctorsHandler } from '../../api/doctor/doctorHandler';
 import { getDepartmentsHandler } from '../../api/department/departmentHandler';
 import { Outlet, useMatch, useNavigate } from 'react-router-dom';
@@ -31,6 +39,8 @@ import {
   getSubStagesHandler
 } from '../../api/stages/stagesHandler';
 import useServiceStore from '../../store/serviceStore';
+import './styles.css';
+import { getTicket } from '../../api/ticket/ticket';
 
 const Ticket = () => {
   const {
@@ -41,15 +51,23 @@ const Ticket = () => {
     ticketCount,
     setTickets,
     ticketCache,
-    emptyDataText
+    setTicketCache,
+    emptyDataText,
+    reminders,
+    setReminders
   } = useTicketStore();
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
+  const [reminderList, setReminderList] = useState<any[]>([]);
+  const [alarmReminderedList, setAlamarReminderList] = useState<iReminder[]>(
+    []
+  );
+  const [ticketReminderPatient, setTicketReminderPatient] = useState<any>(null);
   const [searchError, setSearchError] = useState<string>(
     'Type to search & Enter'
   );
   const [pageCount, setPageCount] = useState<number>(1);
-  // const [filterCount, setFilterCount] = useState(0);
+  const [showReminderModal, setShowReminderModal] = useState(false);
   // const [pageNumber, setPageNumber] = useState<number>(1);
   const [page, setPage] = useState<number>(1);
 
@@ -200,13 +218,115 @@ const Ticket = () => {
       await getSubStagesHandler();
       await getDoctorsHandler();
       await getDepartmentsHandler();
-      //   const ticketFilteredLength = checkFilterLength();
-      //   if (ticketFilteredLength > 0) {
-      //     filterFn();
-      //     setPageCount(Math.ceil(ticketCount / 10));
-      //   }
+      await getAllReminderHandler();
     })();
   }, []);
+
+  const isAlamredReminderExist = (reminder: iReminder) => {
+    const result = reminderList?.findIndex((data) => data === reminder?._id);
+    if (result < 0) {
+      return true;
+    }
+    return false;
+  };
+
+  const handleCloseModal = async () => {
+    console.log('alaram list', alarmReminderedList);
+
+    // clearInterval(alarmInterval);
+    const data = await getTicket(
+      UNDEFINED,
+      1,
+      'false',
+      filterTickets,
+      alarmReminderedList[0]?.ticket
+    );
+    const tiketIndex = ticketCache[1].findIndex(
+      (currentData) => currentData?._id === alarmReminderedList[0]._id
+    );
+    let count = 0;
+    reminderList.forEach((id) => {
+      if (alarmReminderedList[0]._id === id) {
+        count++;
+      }
+    });
+
+    if (count < 2) {
+      if (tiketIndex > -1) {
+        let cacheList = ticketCache[1];
+        let removedTicket = cacheList.splice(tiketIndex, 1);
+        setTicketCache({ ...ticketCache, 1: [...removedTicket, ...cacheList] });
+        setTickets([...removedTicket, ...cacheList]);
+      } else {
+        setTicketCache({
+          ...ticketCache,
+          1: [data?.tickets[0], ...ticketCache[1]]
+        });
+        setTickets([data?.tickets[0], ...ticketCache[1]]);
+      }
+    }
+    const result = await getAllReminderHandler();
+    setTimeout(() => {
+      setPage(1);
+      let list = alarmReminderedList;
+      list.splice(0, 1);
+      setShowReminderModal(false);
+      setAlamarReminderList([]);
+      setReminderList(result);
+    }, 500);
+  };
+
+  useEffect(() => {
+    // console.log('gotham FULL', reminders, 'remindelist', reminderList);
+
+    reminders?.forEach((reminderDetail, index) => {
+      let alarmInterval: any;
+      alarmInterval = setInterval(() => {
+        const currentTime = new Date();
+        if (
+          reminderDetail &&
+          reminderDetail.date <= currentTime.getTime() &&
+          reminderDetail.date + 10000 > currentTime.getTime() &&
+          isAlamredReminderExist(reminderDetail)
+        ) {
+          console.log('interval tick SUCCESS');
+          (async () => {
+            if (!reminderList.includes(reminderDetail._id)) {
+              setShowReminderModal(true);
+              const data = await getTicket(
+                UNDEFINED,
+                1,
+                'false',
+                filterTickets,
+                reminderDetail?.ticket
+              );
+              // const tiketIndex = ticketCache[1].findIndex((currentData)=>(currentData?._id === reminderDetail._id))
+              // if(tiketIndex > -1){
+              //   let cacheList =  ticketCache[1];
+              //   let removedTicket = cacheList.splice(tiketIndex,1)
+              //   setTicketCache ({...ticketCache,1:[...removedTicket,...cacheList]})
+              // }else{
+              // setTicketCache({
+              //   ...ticketCache,
+              //   1: [data?.tickets[0], ...ticketCache[1]]
+              // });
+              // }
+              console.log('ticket DATA', data);
+              setTicketReminderPatient(data?.tickets[0]);
+              setAlamarReminderList([...alarmReminderedList, reminderDetail]);
+              setReminderList([...reminderList, reminderDetail?._id]);
+            }
+          })();
+
+          clearInterval(alarmInterval);
+        }
+      }, 10000);
+
+      return () => {
+        clearInterval(alarmInterval);
+      };
+    });
+  }, [reminders]);
 
   return (
     <Box height={'100vh'} display="flex" position="fixed" width="100%">
@@ -248,7 +368,7 @@ const Ticket = () => {
               // onChange={handleSeachName}
               onKeyDown={handleSearchKeyPress}
             />
-            <TicketFilter />
+            <TicketFilter setPage={setPage} />
           </Stack>
         </Box>
         <Box
@@ -301,6 +421,71 @@ const Ticket = () => {
       </Box>
       <Box bgcolor="#E2ECFB" width="75%">
         {currentRoute ? <DefaultScreen /> : <Outlet />}
+      </Box>
+      <Box>
+        <Modal
+          open={showReminderModal}
+          // onClose={() => handleCloseModal()}
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              bgcolor: 'white',
+              width: '600px',
+              height: '400px',
+              top: '50%',
+              left: '50%',
+              border: '0px solid transparent',
+              borderRadius: '8px',
+              transform: 'translate(-50%, -50%)',
+              padding: '10px'
+            }}
+          >
+            <div
+              onClick={handleCloseModal}
+              style={{
+                display: 'flex',
+                justifyContent: 'end',
+                cursor: 'pointer'
+              }}
+            >
+              <CloseIcon fontSize="large" />
+            </div>
+            <div className="buzz-animation">
+              <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
+            </div>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column'
+              }}
+            >
+              {ticketReminderPatient && (
+                <Typography>{`Reminder for ${(
+                  ticketReminderPatient?.consumer[0]?.firstName || 'N/A'
+                ).toUpperCase()} ${(
+                  ticketReminderPatient?.consumer[0]?.lastName || 'N/A'
+                ).toUpperCase()}`}</Typography>
+              )}{' '}
+              <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
+                {alarmReminderedList[0]?.title.toUpperCase() || 'N/A'}
+              </Typography>
+              <Typography margin={'12px'}>
+                {alarmReminderedList[0]?.description || 'N/A'}
+              </Typography>
+              <Chip
+                size="medium"
+                variant="outlined"
+                color="primary"
+                label={dayjs(alarmReminderedList[0]?.date).format(
+                  'DD/MMM/YYYY hh:mm A '
+                )}
+              />
+            </Box>
+          </Box>
+        </Modal>
       </Box>
     </Box>
   );

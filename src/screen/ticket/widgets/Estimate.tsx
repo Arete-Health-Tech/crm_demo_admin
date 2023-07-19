@@ -83,7 +83,6 @@ const Estimate = (props: Props) => {
     prescription: ticket?.prescription[0]._id!,
     ticket: ticketID!
   });
-  console.log('====================ticket id', ticketID);
 
   type AlertType = {
     services: string;

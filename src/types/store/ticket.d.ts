@@ -110,7 +110,7 @@ export interface iReminder {
   date: number;
   title: string;
   description: string;
-  ticket: string;
+  ticket: string | undefined;
   creator?: string;
 }
 

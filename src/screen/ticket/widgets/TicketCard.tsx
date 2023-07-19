@@ -1,6 +1,6 @@
 import { Box, Chip, Typography } from '@mui/material';
 import MaleIcon from '@mui/icons-material/Male';
-import { iTicket } from '../../../types/store/ticket';
+import { iReminder, iTicket } from '../../../types/store/ticket';
 import useServiceStore from '../../../store/serviceStore';
 import FemaleIcon from '@mui/icons-material/Female';
 import dayjs from 'dayjs';
@@ -39,7 +39,7 @@ const TicketCard = (props: Props) => {
 
   const { ticketID } = useParams();
   const { tickets } = useTicketStore();
-  console.log(tickets);
+  // console.log(tickets);
 
   useEffect(() => {
     const stageDetail: any = stages?.find(
@@ -47,6 +47,8 @@ const TicketCard = (props: Props) => {
     );
     setCurrentStage(stageDetail);
   }, [stages]);
+
+
 
   return (
     <Box

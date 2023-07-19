@@ -21,6 +21,7 @@ import { updateTicketData } from '../../../api/ticket/ticket';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../constantUtils/constant';
 import useTicketStore from '../../../store/ticketStore';
+import { apiClient } from '../../../api/apiClient';
 
 type Props = {
   currentTicket: iTicket | any;
@@ -38,11 +39,12 @@ function getTotalDaysFromDate(date: Date) {
 const StageCard = (props: Props) => {
   const { stages, subStages } = useServiceStore();
 
- const [open, setOpen] = useState(false);
- const [textValue, setTextValue] = useState('');
- const [file, setFile] = useState(null);
- const [lose, setLose] = useState('');
- const [openLose, setOpenLose] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [paymentIDValue, setPaymentIDValue] = useState('');
+  const [noteTextValue, setNoteTextValue] = useState('');
+  const [file, setFile] = useState(null);
+  const [lose, setLose] = useState('');
+  const [openLose, setOpenLose] = useState(false);
 
   const [validStageList, setValidStageList] = useState<iStage[] | []>([]);
   const [validSubStageList, setValidSubStageList] = useState<iSubStage[] | []>(
@@ -120,7 +122,6 @@ const StageCard = (props: Props) => {
     }, 800);
   };
 
-
   const handleOpen = () => {
     console.log('Open Modal');
     setOpen(true);
@@ -130,17 +131,66 @@ const StageCard = (props: Props) => {
   };
 
   const handleTextChange = (event) => {
-    setTextValue(event.target.value);
+    setPaymentIDValue(event.target.value);
+  };
+
+  const handleNoteTextChange = (event: any) => {
+    setNoteTextValue(event.target.value);
   };
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     // Handle form submission logic here
-    console.log('Text Value:', textValue);
-    console.log('File:', file);
+
+    let isPayloadEmpty = true;
+
+    const formdata = new FormData();
+    formdata.append(
+      'ticket',
+      currentTicket._id
+    );
+    formdata.append(
+      'consumer',
+      `${currentTicket?.consumer[0]._id}/${currentTicket?.consumer[0]?.firstName}`
+    );
+    if (paymentIDValue) {
+      formdata.append('paymentRefId', paymentIDValue);
+      isPayloadEmpty = false;
+    }
+
+    if (file) {
+      formdata.append('image', file);
+      isPayloadEmpty = false;
+    }
+
+    if (noteTextValue) {
+      formdata.append('note', noteTextValue);
+      isPayloadEmpty = false;
+    }
+
+    if (lose) {
+      formdata.append('dropReason', lose);
+      isPayloadEmpty = false;
+    }
+
+    if (!isPayloadEmpty) {
+      const { data } = await apiClient.post('/ticket/patientStatus', formdata, {
+        /* @ts-ignore */
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+     setPaymentIDValue('')
+     setNoteTextValue('')
+     setFile(null)
+     setLose('')
+      console.log("patient status res", data)
+    }
+
     setOpen(false);
   };
 
@@ -230,7 +280,7 @@ const StageCard = (props: Props) => {
             backgroundColor: 'green',
             marginRight: '10px',
             marginLeft: '550px',
-         marginTop:"-60px",
+            marginTop: '-60px',
             width: '60px',
             height: '40px'
           }}
@@ -266,7 +316,7 @@ const StageCard = (props: Props) => {
             </Typography>
             <TextField
               label="Payment Reference ID"
-              value={textValue}
+              value={paymentIDValue}
               onChange={handleTextChange}
               fullWidth
               multiline
@@ -286,8 +336,8 @@ const StageCard = (props: Props) => {
             />{' '}
             <TextField
               label="Write Notes"
-              value={textValue}
-              onChange={handleTextChange}
+              value={noteTextValue}
+              onChange={handleNoteTextChange}
               fullWidth
               multiline
               margin="normal"
@@ -302,10 +352,9 @@ const StageCard = (props: Props) => {
           variant="contained"
           style={{
             backgroundColor: 'red',
-marginTop:"-60px",
+            marginTop: '-60px',
             width: '60px',
-            height: '40px',
-             
+            height: '40px'
           }}
           onClick={handleOpenLose}
         >

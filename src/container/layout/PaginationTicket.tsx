@@ -35,9 +35,9 @@ function PaginationTicket({ tickets }) {
           }
         }}
       >
-        {currentItems.map((item: any) => (
+        {/* {currentItems.map((item: any) => (
           <TicketCard key={item._id} patientData={item} />
-        ))}
+        ))} */}
 
         <Pagination
           sx={{

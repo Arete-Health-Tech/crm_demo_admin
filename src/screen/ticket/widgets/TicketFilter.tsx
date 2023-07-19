@@ -43,7 +43,7 @@ export const ticketFilterCount = (selectedFilters: iTicketFilter) => {
   return total;
 };
 
-const TicketFilter = () => {
+const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<number>>}) => {
   const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     '& .MuiBadge-badge': {
       right: -3,
@@ -83,15 +83,14 @@ const TicketFilter = () => {
   const [endDate, setEndDate] = React.useState<string>();
   const [currentReperesentative, setCurrentRepresentative] = useState('');
   const [filterCount, setFilterCount] = useState(0);
-  console.log('selected', selectedFilters);
 
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    console.log('val', value);
+    // console.log('val', value);
     if (selectedFilters.stageList.includes(value)) {
       const modifiedStageList = selectedFilters.stageList;
       modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
-      console.log(modifiedStageList, 'moda');
+      // console.log(modifiedStageList, 'moda');
       dispatchFilter({
         type: filterActions.STAGES,
         payload: [...modifiedStageList]
@@ -184,6 +183,7 @@ const TicketFilter = () => {
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     setFilterCount(ticketFilterCount(selectedFilters));
     setFilterTickets(selectedFilters);
+    props.setPage(1)
     console.log('filter dtata', selectedFilters);
   };
 

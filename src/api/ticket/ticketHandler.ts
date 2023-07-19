@@ -84,7 +84,7 @@ export const createTicketHandler = async (prescription: iCreateTicket) => {
   );
   prescription.service &&
     prescriptionData.append('service', prescription.service._id);
-
+console.log("file log", prescription)
   /* @ts-ignore */
   const blob = await (await fetch(prescription.image)).blob();
   prescriptionData.append('image', blob);
@@ -105,14 +105,16 @@ export const createNotesHandler = async (note: iNote) => {
   return Promise.resolve(noteAdded);
 };
 
-export const getAllReminderHandler = async (ticketId: string) => {
+export const getAllReminderHandler = async () => {
   const { setReminders } = useTicketStore.getState();
-  const reminders = await getAllReminders(ticketId);
+  const reminders = await getAllReminders();
   setReminders(reminders);
+  return Promise.resolve(reminders);
 };
 
 export const createNewReminderHandler = async (reminderData: iReminder) => {
   const { reminders, setReminders } = useTicketStore.getState();
   const reminderAdded = await createNewReminder(reminderData);
   setReminders([...reminders, reminderAdded]);
+  return reminderAdded
 };

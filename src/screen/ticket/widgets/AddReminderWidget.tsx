@@ -13,7 +13,7 @@ import {
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { createNewReminderHandler } from '../../../api/ticket/ticketHandler';
+import { createNewReminderHandler, getAllReminderHandler } from '../../../api/ticket/ticketHandler';
 
 type Props = {
   isModalOpen: boolean;
@@ -42,7 +42,7 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [disableButton, setDisableButton] = useState(true);
-
+// console.log("date: ",date, "time",time,"\nreminderData",reminderData);
   const checkIsEmpty = () => {
     if (
       reminderData.title.length > 0 &&
@@ -59,12 +59,13 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
   useEffect(() => {
     setReminderData({
       ...reminderData,
-      date: dayjs(date + time).unix() * 1000
+      date: dayjs(date +" "+time).unix() * 1000
     });
   }, [date, time]);
 
   const addReminder = async () => {
-    await createNewReminderHandler(reminderData);
+    const result = await createNewReminderHandler({...reminderData, ticket: ticketID});
+    console.log("reminder created", result)
     setReminderData({
       date: 0,
       title: '',
@@ -74,6 +75,7 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
     setDate('');
     setTime('');
     setIsModalOpen(false);
+    await getAllReminderHandler();
   };
 
   return (

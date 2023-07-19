@@ -12,10 +12,11 @@ const CustomPagination = (props: iPageProp) => {
     <div>
       <Pagination
         color="primary"
-        size="small"
+        size="medium"
         page={page}
         onChange={handlePagination}
         count={pageCount}
+        sx={{marginBottom: "20px",marginTop: '15px'}}
       />
     </div>
   );

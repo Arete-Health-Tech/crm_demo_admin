@@ -16,12 +16,38 @@ import NodeReplyMessage from './NodeReplyMessage';
 import PatientReply from './PatientReply';
 import useUserStore from '../../../../store/userStore';
 import { sendTextMessage } from '../../../../api/ticket/ticket';
+import useTicketStore from '../../../../store/ticketStore';
 
 type Props = {};
 
 const MessagingWidget = (props: Props) => {
   const { ticketID } = useParams();
   const { user } = useUserStore();
+  const {tickets} = useTicketStore();
+
+  
+function getConsumerIdByDataId(dataArray, dataIdToMatch) {
+  for (const obj of dataArray) {
+    if (obj._id === dataIdToMatch) {
+      return obj.consumer[0]._id;
+    }
+  }
+  return null; // Return null if no matching dataId found in the data array
+}
+
+const consumerId = getConsumerIdByDataId(tickets, ticketID);
+
+if (consumerId) {
+  console.log('Consumer ID found:', consumerId);
+} else {
+  console.log('Consumer ID not found for the given dataId.');
+}
+
+
+
+
+
+
 
   const TextInput = {
     border: 0,
@@ -57,14 +83,16 @@ const MessagingWidget = (props: Props) => {
   const [sendMessage, setSendMessage] = useState('');
 
   const handleSendMessage = async () => {
-    await sendTextMessage(sendMessage, ticketID as string);
-    setSendMessage('');
+    await sendTextMessage(sendMessage, consumerId);
+    setSendMessage(sendMessage);
   };
+  console.log(messages);
+  console.log(sendMessage);
 
   return (
     <Stack
       direction="column"
-      height="95%"
+      height="90%"
       position="relative"
       bgcolor="white"
       p={1}
@@ -111,7 +139,7 @@ const MessagingWidget = (props: Props) => {
         borderColor="#317AE2"
         bottom={0}
         bgcolor="white"
-        height="10%"
+        height="45%"
       >
         <Stack p={1} direction="row" spacing={2} alignItems="center">
           <input

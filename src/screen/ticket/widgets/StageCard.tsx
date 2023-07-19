@@ -22,6 +22,7 @@ import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../constantUtils/constant';
 import useTicketStore from '../../../store/ticketStore';
 
+
 type Props = {
   currentTicket: iTicket | any;
   setTicketUpdateFlag: any;
@@ -67,6 +68,7 @@ const StageCard = (props: Props) => {
   // useEffect(()=>{
   //   getCurrentStage();
   // },[])
+  console.log(changeStageName);
 
   useEffect(() => {
     if (currentTicket && stages.length > 0 && subStages.length > 0) {
@@ -96,6 +98,7 @@ const StageCard = (props: Props) => {
 
   const handleStages = async (e: any) => {
     console.log('selected', e.target.value);
+    
     setChangeStageName(e.target.value);
     const payload = {
       stageCode: currentStage?.code + 1,

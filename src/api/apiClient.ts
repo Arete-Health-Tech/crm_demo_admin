@@ -9,8 +9,8 @@ enum StatusCode {
   InternalServerError = 500
 }
 
-export const SERVER_URL = 'https://backend.aretehealth.tech/prod/api/v1/';
-// export const SERVER_URL = 'http://localhost:3001/prod/api/v1/';
+// export const SERVER_URL = 'https://backend.aretehealth.tech/prod/api/v1/';
+export const SERVER_URL = 'http://localhost:3001/prod/api/v1/';
 // 
 const headers: Readonly<Record<string, string | boolean>> = {
   Accept: 'application/json',

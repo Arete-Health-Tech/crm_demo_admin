@@ -42,6 +42,8 @@ import useServiceStore from '../../store/serviceStore';
 import './styles.css';
 import { getTicket } from '../../api/ticket/ticket';
 
+let AllIntervals: any[] = [];
+
 const Ticket = () => {
   const {
     tickets,
@@ -70,6 +72,7 @@ const Ticket = () => {
   const [showReminderModal, setShowReminderModal] = useState(false);
   // const [pageNumber, setPageNumber] = useState<number>(1);
   const [page, setPage] = useState<number>(1);
+  const [allInterval, setAllIntervals] = useState<any>([]);
 
   const handlePagination = async (
     event: React.ChangeEvent<unknown>,
@@ -219,6 +222,7 @@ const Ticket = () => {
       await getDoctorsHandler();
       await getDepartmentsHandler();
       await getAllReminderHandler();
+
     })();
   }, []);
 
@@ -232,39 +236,6 @@ const Ticket = () => {
 
   const handleCloseModal = async () => {
     console.log('alaram list', alarmReminderedList);
-
-    // clearInterval(alarmInterval);
-    const data = await getTicket(
-      UNDEFINED,
-      1,
-      'false',
-      filterTickets,
-      alarmReminderedList[0]?.ticket
-    );
-    const tiketIndex = ticketCache[1].findIndex(
-      (currentData) => currentData?._id === alarmReminderedList[0]._id
-    );
-    let count = 0;
-    reminderList.forEach((id) => {
-      if (alarmReminderedList[0]._id === id) {
-        count++;
-      }
-    });
-
-    if (count < 2) {
-      if (tiketIndex > -1) {
-        let cacheList = ticketCache[1];
-        let removedTicket = cacheList.splice(tiketIndex, 1);
-        setTicketCache({ ...ticketCache, 1: [...removedTicket, ...cacheList] });
-        setTickets([...removedTicket, ...cacheList]);
-      } else {
-        setTicketCache({
-          ...ticketCache,
-          1: [data?.tickets[0], ...ticketCache[1]]
-        });
-        setTickets([data?.tickets[0], ...ticketCache[1]]);
-      }
-    }
     const result = await getAllReminderHandler();
     setTimeout(() => {
       setPage(1);
@@ -273,23 +244,34 @@ const Ticket = () => {
       setShowReminderModal(false);
       setAlamarReminderList([]);
       setReminderList(result);
-    }, 500);
+    }, 100);
+  };
+
+  const clearAllInterval = (AllIntervals: any[]) => {
+    AllIntervals?.forEach((interval)=> {
+      clearInterval(interval)
+      // console.log("HEY cleaning", interval)
+    })
+    AllIntervals = []
   };
 
   useEffect(() => {
     // console.log('gotham FULL', reminders, 'remindelist', reminderList);
+    clearAllInterval(AllIntervals);
 
     reminders?.forEach((reminderDetail, index) => {
       let alarmInterval: any;
+      
       alarmInterval = setInterval(() => {
+
         const currentTime = new Date();
         if (
           reminderDetail &&
           reminderDetail.date <= currentTime.getTime() &&
-          reminderDetail.date + 10000 > currentTime.getTime() &&
-          isAlamredReminderExist(reminderDetail)
+          reminderDetail.date + 11000 > currentTime.getTime()
+          // isAlamredReminderExist(reminderDetail)
         ) {
-          console.log('interval tick SUCCESS');
+          console.log('Alarm SUCCESS');
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
               setShowReminderModal(true);
@@ -300,7 +282,11 @@ const Ticket = () => {
                 filterTickets,
                 reminderDetail?.ticket
               );
-              // const tiketIndex = ticketCache[1].findIndex((currentData)=>(currentData?._id === reminderDetail._id))
+              const tiketIndex = ticketCache[1].findIndex((currentData)=>{
+
+                console.log('id check:',currentData?._id === reminderDetail.ticket)
+                return (currentData?._id === reminderDetail?.ticket)
+              })
               // if(tiketIndex > -1){
               //   let cacheList =  ticketCache[1];
               //   let removedTicket = cacheList.splice(tiketIndex,1)
@@ -311,7 +297,25 @@ const Ticket = () => {
               //   1: [data?.tickets[0], ...ticketCache[1]]
               // });
               // }
-              console.log('ticket DATA', data);
+              
+              if (tiketIndex > -1) {
+                console.log( "INDEX OF COLUMN 1:-",tiketIndex);
+                let cacheList = ticketCache[1];
+                let removedTicket = cacheList.splice(tiketIndex, 1);
+                console.log("removed ",removedTicket,'cacheList', cacheList)
+                setTicketCache({ ...ticketCache, 1: [...removedTicket, ...cacheList] });
+                setTickets([...removedTicket, ...cacheList]);
+              } else {
+
+                console.log("data?.tickets[0]",data?.tickets[0])
+
+                setTickets([data?.tickets[0], ...ticketCache[1]]);
+                setTicketCache({
+                  ...ticketCache,
+                  1: [data?.tickets[0], ...ticketCache[1]]
+                });
+              }
+             
               setTicketReminderPatient(data?.tickets[0]);
               setAlamarReminderList([...alarmReminderedList, reminderDetail]);
               setReminderList([...reminderList, reminderDetail?._id]);
@@ -321,10 +325,11 @@ const Ticket = () => {
           clearInterval(alarmInterval);
         }
       }, 10000);
+      
+      AllIntervals.push(alarmInterval);
 
       return () => {
-        clearInterval(alarmInterval);
-      };
+        clearAllInterval(AllIntervals);      };
     });
   }, [reminders]);
 

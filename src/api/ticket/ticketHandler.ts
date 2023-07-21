@@ -22,8 +22,10 @@ export const getTicketHandler = async (
     setTicketCache,
     ticketCache,
     setEmptyDataText,
-    setDownloadTickets
+    setDownloadTickets,
+    setLoaderOn,
   } = useTicketStore.getState();
+  setLoaderOn(true);
   const data = await getTicket(name, pageNumber, downloadAll, selectedFilters);
   const sortedTickets = data.tickets;
   const count = data.count;
@@ -34,7 +36,7 @@ export const getTicketHandler = async (
     setEmptyDataText('');
   }
   if (name === UNDEFINED && downloadAll === 'false') {
-    setTicketCache({ ...ticketCache, [pageNumber]: sortedTickets });
+    setTicketCache({ ...ticketCache, [pageNumber]: sortedTickets, count });
   }
   if (downloadAll === 'true') {
     setDownloadTickets(sortedTickets);
@@ -42,6 +44,7 @@ export const getTicketHandler = async (
   }
   setTicketCount(count);
   setTickets(sortedTickets);
+  setLoaderOn(false);
 };
 
 export type iCreateTicket = {

@@ -22,7 +22,9 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
     stageList: [],
     representative: null
   },
-  setFilterTickets: (filterTickets) => set({ filterTickets })
+  setFilterTickets: (filterTickets) => set({ filterTickets }),
+  loaderOn: false,
+  setLoaderOn: (loaderOn) => set({loaderOn}),
 }));
 
 export default useTicketStore;

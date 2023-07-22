@@ -50,11 +50,12 @@ export const updateTicketSubStage = async (payload: {
   return Promise.resolve(data);
 };
 
-export const sendTextMessage = async (message: string, consumerId: string) => {
+export const sendTextMessage = async (message: string, consumerId: string ,ticketID:string) => {
   console.log(message, consumerId);
   const { data } = await apiClient.post('/flow/message', {
     message,
-    consumerId
+    consumerId,
+    ticketID
   });
   return data;
 };

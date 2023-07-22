@@ -83,7 +83,7 @@ if (consumerId) {
   const [sendMessage, setSendMessage] = useState('');
 
   const handleSendMessage = async () => {
-    await sendTextMessage(sendMessage, consumerId);
+    await sendTextMessage(sendMessage, consumerId ,ticketID as string);
     setSendMessage(sendMessage);
   };
   console.log(messages);

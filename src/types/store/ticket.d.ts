@@ -95,6 +95,8 @@ export interface iTicketStore {
   setReminders: (reminders: iReminder[]) => void;
   filterTickets: iTicketFilter;
   setFilterTickets: (filterTickets: iTicketFilter) => void;
+  loaderOn: boolean;
+  setLoaderOn: (loaderOn: boolean) => void;
 }
 
 export interface iNote {

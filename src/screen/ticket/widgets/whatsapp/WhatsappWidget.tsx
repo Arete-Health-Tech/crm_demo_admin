@@ -84,7 +84,7 @@ if (consumerId) {
 
   const handleSendMessage = async () => {
     await sendTextMessage(sendMessage, consumerId ,ticketID as string);
-    setSendMessage(sendMessage);
+    setSendMessage("");
   };
   console.log(messages);
   console.log(sendMessage);
@@ -148,9 +148,13 @@ if (consumerId) {
             placeholder="Enter Message"
             style={TextInput}
           />
-          <Box display="flex" onClick={handleSendMessage}>
-            <Typography color="gray">Reply</Typography>
-            <Send htmlColor="gray" />
+          <Box
+            display="flex"
+            onClick={handleSendMessage}
+            style={{ cursor: sendMessage ? 'pointer' : 'not-allowed' }}
+          >
+            <Typography color={sendMessage ? 'blue' : 'gray'}>Reply</Typography>
+            <Send htmlColor={sendMessage ? 'blue' : 'gray'} />
           </Box>
         </Stack>
       </Box>

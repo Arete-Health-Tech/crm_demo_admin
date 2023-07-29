@@ -25,6 +25,8 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   setFilterTickets: (filterTickets) => set({ filterTickets }),
   loaderOn: false,
   setLoaderOn: (loaderOn) => set({loaderOn}),
+  pageNumber: 1,
+  setPageNumber: (pageNumber) => set({pageNumber}),
 }));
 
 export default useTicketStore;

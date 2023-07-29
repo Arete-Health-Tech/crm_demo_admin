@@ -19,9 +19,11 @@ import { iStage, iSubStage } from '../../../types/store/service';
 import { iTicket } from '../../../types/store/ticket';
 import { updateTicketData } from '../../../api/ticket/ticket';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
-import { UNDEFINED } from '../../../constantUtils/constant';
+import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import useTicketStore from '../../../store/ticketStore';
 import { apiClient } from '../../../api/apiClient';
+import {useNavigate } from 'react-router-dom';
+
 
 
 type Props = {
@@ -58,7 +60,12 @@ const StageCard = (props: Props) => {
   const [changeStageName, setChangeStageName] = useState<string>('');
   const [progressCount, setProgressCount] = useState<number>(0);
   const [nextStage, setNextStage] = useState<string>('');
-  const { filterTickets, searchByName } = useTicketStore();
+  const { filterTickets, searchByName, pageNumber } = useTicketStore();
+  const navigate = useNavigate();
+
+  const redirectTicket = () => {
+    navigate(NAVIGATE_TO_TICKET);
+  };
   // const getCurrentStage = () => {
   //   const index = stages.findIndex(
   //     (stage) => stage._id === currentTicket?.stage
@@ -70,7 +77,7 @@ const StageCard = (props: Props) => {
   // useEffect(()=>{
   //   getCurrentStage();
   // },[])
-  console.log(changeStageName);
+  // console.log(changeStageName);
 
   useEffect(() => {
     if (currentTicket && stages.length > 0 && subStages.length > 0) {
@@ -100,7 +107,7 @@ const StageCard = (props: Props) => {
 
   const handleStages = async (e: any) => {
     console.log('selected', e.target.value);
-    
+
     setChangeStageName(e.target.value);
     const payload = {
       stageCode: currentStage?.code + 1,
@@ -110,19 +117,21 @@ const StageCard = (props: Props) => {
       },
       ticket: currentTicket?._id
     };
-    updateTicketData(payload);
+    await updateTicketData(payload);
     // window.location.reload();
-    setTimeout(() => {
-      (async function () {
-        const result = await getTicketHandler(
-          searchByName,
-          1,
-          'false',
-          filterTickets
-        );
-        setTicketUpdateFlag(result);
-      })();
-    }, 800);
+    const result = await getTicketHandler(
+      searchByName,
+      pageNumber,
+      'false',
+      filterTickets,
+    );
+    if(((currentTicket?.subStageCode.code || 0) + 1) > 3) {
+      redirectTicket();
+      console.log("redirect to ticket");
+    }
+    console.log("redirect to ticket ????",currentTicket?.subStageCode.code + 1);
+    setTicketUpdateFlag(result);
+
   };
 
   const handleOpen = () => {

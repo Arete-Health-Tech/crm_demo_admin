@@ -16,7 +16,7 @@ import { UNDEFINED } from '../../../constantUtils/constant';
 type Props = { setTicketUpdateFlag: any };
 
 const NotesWidget = (props: Props) => {
-  const { filterTickets, searchByName } = useTicketStore();
+  const { filterTickets, searchByName, pageNumber } = useTicketStore();
   const TextInput = {
     border: 0,
     width: '100%',
@@ -33,12 +33,8 @@ const NotesWidget = (props: Props) => {
       ticket: ticketID!
     };
     await createNotesHandler(data);
-    setTimeout(() => {
-      (async function () {
-        await getTicketHandler(searchByName, 1, 'false', filterTickets);
-        props.setTicketUpdateFlag(data);
-      })();
-    }, 800);
+    await getTicketHandler(searchByName, pageNumber, 'false', filterTickets);
+    props.setTicketUpdateFlag(data);
 
     setNote('');
   };

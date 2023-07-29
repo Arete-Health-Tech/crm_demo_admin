@@ -33,7 +33,7 @@ import TicketFilter, {
 import DownloadAllTickets from '../../screen/ticket/widgets/DownloadAllTickets';
 import dayjs from 'dayjs';
 import CustomPagination from './CustomPagination';
-import { UNDEFINED } from '../../constantUtils/constant';
+import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../constantUtils/constant';
 import {
   getStagesHandler,
   getSubStagesHandler
@@ -55,10 +55,11 @@ const Ticket = () => {
     setTicketCount,
     setTickets,
     ticketCache,
-    setTicketCache,
     emptyDataText,
     reminders,
     loaderOn,
+    pageNumber,
+    setPageNumber,
   } = useTicketStore();
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
@@ -74,7 +75,11 @@ const Ticket = () => {
   const [showReminderModal, setShowReminderModal] = useState(false);
   // const [pageNumber, setPageNumber] = useState<number>(1);
   const [page, setPage] = useState<number>(1);
-  const [allInterval, setAllIntervals] = useState<any>([]);
+  const navigate = useNavigate();
+  const currentRoute = useMatch(NAVIGATE_TO_TICKET);
+  const redirectTicket = () => {
+    navigate(NAVIGATE_TO_TICKET);
+  };
 
   const handlePagination = async (
     event: React.ChangeEvent<unknown>,
@@ -83,22 +88,26 @@ const Ticket = () => {
     console.log('val', pageNo);
     if (pageNo !== page) {
       setTickets([]);
-      if (
-        ticketCache[pageNo] &&
-        ticketCache[pageNo]?.length > 0 &&
-        searchName === UNDEFINED &&
-        ticketFilterCount(filterTickets) < 1
-      ) {
-        setTickets(ticketCache[pageNo]);
-      } else {
-        await getTicketHandler(searchName, pageNo, 'false', filterTickets);
-      }
+      // if (
+      //   ticketCache[pageNo] &&
+      //   ticketCache[pageNo]?.length > 0 &&
+      //   searchName === UNDEFINED &&
+      //   ticketFilterCount(filterTickets) < 1
+      // ) {
+      //   setTickets(ticketCache[pageNo]);
+      // } else {
+      //   await getTicketHandler(searchName, pageNo, 'false', filterTickets);
+      // }
+      await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       setPage(pageNo);
+      setPageNumber(pageNo);
+      redirectTicket();
     }
   };
 
   useEffect(() => {
     setPageCount(Math.ceil(ticketCount / 10));
+    setPage(pageNumber);
     // console.log("ticket count",tickets )
   }, [tickets, searchByName]);
 
@@ -109,6 +118,7 @@ const Ticket = () => {
     setTickets(ticketCache[1]);
     // await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
     setPage(1);
+    setPageNumber(1)
   };
 
   // const handleSeachName = (
@@ -139,8 +149,11 @@ const Ticket = () => {
       await getTicketHandler(value, 1, 'false', filterTickets);
       setSearchByName(value);
       setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
+      setPageNumber(1)
       setPage(1);
+      redirectTicket()
     }
+
   };
 
   // const checkFilterLength = () => {
@@ -209,13 +222,6 @@ const Ticket = () => {
   //   } else return true;
   // };
 
-  const navigate = useNavigate();
-
-  const currentRoute = useMatch('/ticket');
-
-  const redirectTicket = () => {
-    navigate('/ticket');
-  };
   window.onload = redirectTicket;
 
   useEffect(() => {
@@ -229,19 +235,20 @@ const Ticket = () => {
     })();
   }, []);
 
-  const isAlamredReminderExist = (reminder: iReminder) => {
-    const result = reminderList?.findIndex((data) => data === reminder?._id);
-    if (result < 0) {
-      return true;
-    }
-    return false;
-  };
+  // const isAlamredReminderExist = (reminder: iReminder) => {
+  //   const result = reminderList?.findIndex((data) => data === reminder?._id);
+  //   if (result < 0) {
+  //     return true;
+  //   }
+  //   return false;
+  // };
 
   const handleCloseModal = async () => {
     console.log('alaram list', alarmReminderedList);
     const result = await getAllReminderHandler();
     setTimeout(() => {
       setPage(1);
+      setPageNumber(1)
       let list = alarmReminderedList;
       list.splice(0, 1);
       setShowReminderModal(false);
@@ -276,21 +283,23 @@ const Ticket = () => {
           console.log('Alarm SUCCESS');
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
-              setShowReminderModal(true);
               const data = await getTicket(
                 UNDEFINED,
                 1,
                 'false',
                 filterTickets,
-                reminderDetail?.ticket
+                reminderDetail?.ticket,
+                true
               );
-              const tiketIndex = ticketCache[1].findIndex((currentData) => {
-                console.log(
-                  'id check:',
-                  currentData?._id === reminderDetail.ticket
-                );
-                return currentData?._id === reminderDetail?.ticket;
-              });
+              setTickets(data.tickets)
+              setTicketCount(data.count)
+              // const tiketIndex = ticketCache[1].findIndex((currentData) => {
+              //   console.log(
+              //     'id check:',
+              //     currentData?._id === reminderDetail.ticket
+              //   );
+              //   return currentData?._id === reminderDetail?.ticket;
+              // });
               // if(tiketIndex > -1){
               //   let cacheList =  ticketCache[1];
               //   let removedTicket = cacheList.splice(tiketIndex,1)
@@ -302,29 +311,31 @@ const Ticket = () => {
               // });
               // }
 
-              if (tiketIndex > -1) {
-                console.log('INDEX OF COLUMN 1:-', tiketIndex);
-                let cacheList = ticketCache[1];
-                let removedTicket = cacheList.splice(tiketIndex, 1);
-                console.log('removed ', removedTicket, 'cacheList', cacheList);
-                setTicketCache({
-                  ...ticketCache,
-                  1: [...removedTicket, ...cacheList]
-                });
-                setTickets([...removedTicket, ...cacheList]);
-              } else {
-                console.log('data?.tickets[0]', data?.tickets[0]);
+              // if (tiketIndex > -1) {
+              //   console.log('INDEX OF COLUMN 1:-', tiketIndex);
+              //   let cacheList = ticketCache[1];
+              //   let removedTicket = cacheList.splice(tiketIndex, 1);
+              //   console.log('removed ', removedTicket, 'cacheList', cacheList);
+              //   setTicketCache({
+              //     ...ticketCache,
+              //     1: [...removedTicket, ...cacheList]
+              //   });
+              //   setTickets([...removedTicket, ...cacheList]);
+              // } else {
+              //   console.log('data?.tickets[0]', data?.tickets[0]);
 
-                setTickets([data?.tickets[0], ...ticketCache[1]]);
-                setTicketCache({
-                  ...ticketCache,
-                  1: [data?.tickets[0], ...ticketCache[1]]
-                });
-              }
+              //   setTickets([data?.tickets[0], ...ticketCache[1]]);
+              //   setTicketCache({
+              //     ...ticketCache,
+              //     1: [data?.tickets[0], ...ticketCache[1]]
+              //   });
+              // }
 
               setTicketReminderPatient(data?.tickets[0]);
               setAlamarReminderList([...alarmReminderedList, reminderDetail]);
               setReminderList([...reminderList, reminderDetail?._id]);
+              redirectTicket();
+              setShowReminderModal(true);
             }
           })();
 

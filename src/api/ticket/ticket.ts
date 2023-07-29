@@ -7,10 +7,11 @@ export const getTicket = async (
   downloadAll: string,
   selectedFilters: any,
   ticketId?: string | null,
+  fetchUpdated: boolean = false,
 ) => {
   const params = new URLSearchParams(selectedFilters).toString();
   const { data } = await apiClient.get(
-    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&${params}`
+    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&fetchUpdated=${fetchUpdated}&${params}`
   );
   return data;
 };
@@ -36,6 +37,7 @@ export const updateTicketData = async (payload: {
 }) => {
   const { data } = await apiClient.put('/ticket/ticketUpdate', payload);
   console.log(data);
+  return Promise.resolve(data)
 };
 
 export const updateTicketSubStage = async (payload: {

@@ -102,7 +102,7 @@ const Estimate = (props: Props) => {
   const [services, setServices] = useState<iService[]>();
   const [searchServiceValue, setSearchServiceValue] = useState('');
   const { wards, doctors } = useServiceStore();
-  const { filterTickets, searchByName } = useTicketStore();
+  const { filterTickets, searchByName, pageNumber } = useTicketStore();
   
 const [textFieldValue, setTextFieldValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -232,15 +232,12 @@ const [textFieldValue, setTextFieldValue] = useState('');
       ...estimateFileds,
       ticket: ticketID
     });
-
-    setTimeout(() => {
-      (async function () {
-        await getTicketHandler(searchByName, 1, 'false', filterTickets);
-        props.setTicketUpdateFlag(result);
-        setIsEstimateOpen(false);
-      })();
-    }, 800);
+    setIsEstimateOpen(false);
+    await getTicketHandler(searchByName, pageNumber, 'false', filterTickets);
+    props.setTicketUpdateFlag(result);
+    setIsEstimateOpen(false);
   };
+
 const handleSubmit = (event) => {
     event.preventDefault();
 

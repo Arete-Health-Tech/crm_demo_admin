@@ -63,7 +63,8 @@ type Props = {};
 
 const SingleTicketDetails = (props: Props) => {
   const { ticketID } = useParams();
-  const { tickets, filterTickets, reminders, pageNumber } = useTicketStore();
+  const { tickets, filterTickets, reminders, pageNumber, searchByName } =
+    useTicketStore();
   const { doctors, departments, stages } = useServiceStore();
   const [currentTicket, setCurrentTicket] = useState<iTicket>();
   const [value, setValue] = useState('1');
@@ -94,13 +95,18 @@ const SingleTicketDetails = (props: Props) => {
       };
 
       const result = await updateTicketSubStage(payload);
-      await getTicketHandler(
-        UNDEFINED,
-        pageNumber,
-        'false',
-        filterTickets,
-      );
-      setTicketUpdateFlag(result);
+
+      setTimeout(() => {
+        (async () => {
+          await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            filterTickets
+          );
+          setTicketUpdateFlag(result);
+        })();
+      }, 1000);
     }
   };
 

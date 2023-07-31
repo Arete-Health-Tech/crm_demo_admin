@@ -233,9 +233,17 @@ const [textFieldValue, setTextFieldValue] = useState('');
       ticket: ticketID
     });
     setIsEstimateOpen(false);
-    await getTicketHandler(searchByName, pageNumber, 'false', filterTickets);
-    props.setTicketUpdateFlag(result);
-    setIsEstimateOpen(false);
+    setTimeout(() => {
+      (async () => {
+        await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          filterTickets
+        );
+        props.setTicketUpdateFlag(result);
+      })();
+    }, 1000);
   };
 
 const handleSubmit = (event) => {

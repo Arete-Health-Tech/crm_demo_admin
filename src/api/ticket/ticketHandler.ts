@@ -14,7 +14,9 @@ export const getTicketHandler = async (
   name: string,
   pageNumber: number = 1,
   downloadAll: 'true' | 'false' = 'false',
-  selectedFilters: iTicketFilter
+  selectedFilters: iTicketFilter,
+  ticketId: string = UNDEFINED,
+  fetchUpdated : boolean = false,
 ) => {
   const {
     setTickets,
@@ -26,7 +28,7 @@ export const getTicketHandler = async (
     setLoaderOn,
   } = useTicketStore.getState();
   setLoaderOn(true);
-  const data = await getTicket(name, pageNumber, downloadAll, selectedFilters);
+  const data = await getTicket(name, pageNumber, downloadAll, selectedFilters,ticketId,fetchUpdated);
   const sortedTickets = data.tickets;
   const count = data.count;
 
@@ -40,6 +42,8 @@ export const getTicketHandler = async (
   }
   if (downloadAll === 'true') {
     setDownloadTickets(sortedTickets);
+    setLoaderOn(false);
+    console.log("total download data",sortedTickets.length);
     return sortedTickets;
   }
   setTicketCount(count);

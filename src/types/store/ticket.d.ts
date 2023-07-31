@@ -97,6 +97,8 @@ export interface iTicketStore {
   setFilterTickets: (filterTickets: iTicketFilter) => void;
   loaderOn: boolean;
   setLoaderOn: (loaderOn: boolean) => void;
+  pageNumber: number;
+  setPageNumber: (pageNumber: number)=> void;
 }
 
 export interface iNote {

@@ -63,7 +63,7 @@ type Props = {};
 
 const SingleTicketDetails = (props: Props) => {
   const { ticketID } = useParams();
-  const { tickets, filterTickets, reminders } = useTicketStore();
+  const { tickets, filterTickets, reminders, pageNumber } = useTicketStore();
   const { doctors, departments, stages } = useServiceStore();
   const [currentTicket, setCurrentTicket] = useState<iTicket>();
   const [value, setValue] = useState('1');
@@ -94,12 +94,13 @@ const SingleTicketDetails = (props: Props) => {
       };
 
       const result = await updateTicketSubStage(payload);
-      setTimeout(() => {
-        (async function () {
-          await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
-          setTicketUpdateFlag(result);
-        })();
-      }, 1000);
+      await getTicketHandler(
+        UNDEFINED,
+        pageNumber,
+        'false',
+        filterTickets,
+      );
+      setTicketUpdateFlag(result);
     }
   };
 
@@ -110,30 +111,35 @@ const SingleTicketDetails = (props: Props) => {
   const getTicketInfo = (ticketID: string | undefined) => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
     setCurrentTicket(fetchTicket);
-    return fetchTicket
+    return fetchTicket;
   };
 
   useEffect(() => {
     (async function () {
-      const ticketData =  getTicketInfo(ticketID);
+      const ticketData = getTicketInfo(ticketID);
       if (currentTicket) {
-        setSingleReminder([])
+        setSingleReminder([]);
         const script = await getSingleScript(
           currentTicket?.prescription[0]?.service?._id,
           currentTicket?.stage
-        )
-        reminders?.map((data)=>{
+        );
+        reminders?.map((data) => {
           // console.log("maping", data?.ticket === ticketData?._id);
-          if(data?.ticket === ticketData?._id){
-            setSingleReminder([...singleReminder, data])
+          if (data?.ticket === ticketData?._id) {
+            setSingleReminder([...singleReminder, data]);
           }
-        }
-          )
+        });
         setScript(script);
       }
     })();
-  }, [ticketID, tickets, currentTicket, ticketUpdateFlag,reminders.length,reminders]);
-
+  }, [
+    ticketID,
+    tickets,
+    currentTicket,
+    ticketUpdateFlag,
+    reminders.length,
+    reminders
+  ]);
 
   // console.log("reminders in single layout",reminders)
   // console.log("after singleReminder",singleReminder);
@@ -480,32 +486,30 @@ const SingleTicketDetails = (props: Props) => {
               </Box>
               <Box>
                 {singleReminder[0] ? (
-                        <Box
-                          display="flex"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          p={2}
-                          bgcolor={'white'}
-                        >
-                          <Box>
-                            <Typography>{singleReminder[0].title}</Typography>
-                            <Chip
-                              size="small"
-                              variant="outlined"
-                              color="primary"
-                              label={dayjs(singleReminder[0].date).format(
-                                'DD/MMM/YYYY hh:mm A '
-                              )}
-                            />
-                          </Box>
-                          <Box>
-                            <Tooltip title={singleReminder[0].description}>
-                              <InfoOutlined />
-                            </Tooltip>
-                          </Box>
-                        </Box>
-
-                  
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    p={2}
+                    bgcolor={'white'}
+                  >
+                    <Box>
+                      <Typography>{singleReminder[0].title}</Typography>
+                      <Chip
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        label={dayjs(singleReminder[0].date).format(
+                          'DD/MMM/YYYY hh:mm A '
+                        )}
+                      />
+                    </Box>
+                    <Box>
+                      <Tooltip title={singleReminder[0].description}>
+                        <InfoOutlined />
+                      </Tooltip>
+                    </Box>
+                  </Box>
                 ) : (
                   <Typography p={1}>No Reminders Available</Typography>
                 )}

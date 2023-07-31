@@ -22,9 +22,7 @@ import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import useTicketStore from '../../../store/ticketStore';
 import { apiClient } from '../../../api/apiClient';
-import {useNavigate } from 'react-router-dom';
-
-
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
   currentTicket: iTicket | any;
@@ -119,19 +117,22 @@ const StageCard = (props: Props) => {
     };
     await updateTicketData(payload);
     // window.location.reload();
-    const result = await getTicketHandler(
-      searchByName,
-      pageNumber,
-      'false',
-      filterTickets,
-    );
-    if(((currentTicket?.subStageCode.code || 0) + 1) > 3) {
+    setTimeout(() => {
+      (async () => {
+        const result = await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          filterTickets
+        );
+        setTicketUpdateFlag(result);
+      })();
+    }, 1000);
+    if ((currentTicket?.subStageCode.code || 0) + 1 > 3) {
       redirectTicket();
-      console.log("redirect to ticket");
+      console.log('redirect to ticket');
     }
-    console.log("redirect to ticket ????",currentTicket?.subStageCode.code + 1);
-    setTicketUpdateFlag(result);
-
+    console.log('redirect to ticket ?', currentTicket?.subStageCode.code + 1);
   };
 
   const handleOpen = () => {
@@ -160,10 +161,7 @@ const StageCard = (props: Props) => {
     let isPayloadEmpty = true;
 
     const formdata = new FormData();
-    formdata.append(
-      'ticket',
-      currentTicket._id
-    );
+    formdata.append('ticket', currentTicket._id);
     formdata.append(
       'consumer',
       `${currentTicket?.consumer[0]._id}/${currentTicket?.consumer[0]?.firstName}`
@@ -196,11 +194,11 @@ const StageCard = (props: Props) => {
         }
       });
 
-     setPaymentIDValue('')
-     setNoteTextValue('')
-     setFile(null)
-     setLose('')
-      console.log("patient status res", data)
+      setPaymentIDValue('');
+      setNoteTextValue('');
+      setFile(null);
+      setLose('');
+      console.log('patient status res', data);
     }
 
     setOpen(false);

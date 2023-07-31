@@ -33,8 +33,17 @@ const NotesWidget = (props: Props) => {
       ticket: ticketID!
     };
     await createNotesHandler(data);
-    await getTicketHandler(searchByName, pageNumber, 'false', filterTickets);
-    props.setTicketUpdateFlag(data);
+    setTimeout(() => {
+      (async () => {
+        const result = await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          filterTickets
+        );
+        props.setTicketUpdateFlag(result);
+      })();
+    }, 1000);
 
     setNote('');
   };

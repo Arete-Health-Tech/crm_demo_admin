@@ -59,6 +59,11 @@ const NotesWidget = (props: Props) => {
   }, [ticketID]);
 
   const { notes } = useTicketStore();
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && note.trim() !== '') {
+      handleAddNewNote();
+    }
+  };
 
   return (
     <Box height="95%" position="relative" bgcolor="white" p={1}>
@@ -128,6 +133,7 @@ const NotesWidget = (props: Props) => {
             id="note"
             autoFocus
             onChange={(e) => setNote(e.target.value)}
+            onKeyPress={handleKeyPress}
             placeholder="Write Your Note "
             InputProps={{
               disableUnderline: true
@@ -139,9 +145,10 @@ const NotesWidget = (props: Props) => {
             display="flex"
             justifyContent="space-evenly"
             onClick={handleAddNewNote}
+            style={{ color: note ? 'blue' : 'gray' }}
           >
-            <Typography color="gray">Add Note</Typography>
-            <Send htmlColor="gray" />
+            <Typography color={note ? 'blue' : 'gray'}>Add Note</Typography>
+            <Send htmlColor={note ? 'blue' : 'gray'} />
           </Box>
         </Stack>
       </Box>

@@ -488,9 +488,7 @@ const Ticket = () => {
               {ticketReminderPatient && (
                 <Typography>{`Reminder for ${(
                   ticketReminderPatient?.consumer[0]?.firstName || 'N/A'
-                ).toUpperCase()} ${(
-                  ticketReminderPatient?.consumer[0]?.lastName || 'N/A'
-                ).toUpperCase()}`}</Typography>
+                ).toUpperCase()} `}</Typography>
               )}{' '}
               <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
                 {alarmReminderedList[0]?.title.toUpperCase() || 'N/A'}

@@ -17,6 +17,8 @@ import PatientReply from './PatientReply';
 import useUserStore from '../../../../store/userStore';
 import { sendTextMessage } from '../../../../api/ticket/ticket';
 import useTicketStore from '../../../../store/ticketStore';
+import AgentReply from './AgentReply';
+import dayjs from 'dayjs';
 
 type Props = {};
 
@@ -24,6 +26,7 @@ const MessagingWidget = (props: Props) => {
   const { ticketID } = useParams();
   const { user } = useUserStore();
   const {tickets} = useTicketStore();
+  
 
   
 function getConsumerIdByDataId(dataArray, dataIdToMatch) {
@@ -82,10 +85,19 @@ if (consumerId) {
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const [sendMessage, setSendMessage] = useState('');
 
+
+   const handleKeyPress = (e) => {
+    if (e.key === 'Enter' && sendMessage.trim() !== '') {
+      console.log("press enter")
+      handleSendMessage();
+    }
+  };
+
   const handleSendMessage = async () => {
     await sendTextMessage(sendMessage, consumerId ,ticketID as string);
     setSendMessage("");
   };
+
   console.log(messages);
   console.log(sendMessage);
 
@@ -100,12 +112,10 @@ if (consumerId) {
       <Box
         sx={{
           backgroundImage: `url(${bgWhatsapp})`,
-          overflowY: 'scroll',
-          '&::-webkit-scrollbar ': {
-            display: 'none'
-          }
+          overflowY: 'auto'
         }}
         height="90%"
+       
       >
         {messages
           ? messages.length > 0
@@ -121,7 +131,27 @@ if (consumerId) {
                     ) : message.replyButton1 ? (
                       <NodeReplyMessage message={message} />
                     ) : (
-                      message.text
+                      <Box
+                        boxShadow=" 0 1px .5px rgba(11,20,26,.13)"
+                        my={1}
+                        maxWidth="70%"
+                        p={1}
+                        bgcolor="#d8fdd3"
+                        borderRadius="7.5px 7.5px 7.5px 0px"
+                      >
+                        <Typography> {message.text}</Typography>
+                        <Box display="flex" justifyContent="flex-start">
+                          <Typography
+                            variant="caption"
+                            fontSize="0.7rem"
+                            color="GrayText"
+                          >
+                            {dayjs(message.createdAt).format(
+                              'DD MMM YYYY hh:mm A'
+                            )}
+                          </Typography>
+                        </Box>
+                      </Box>
                     )}
                   </Stack>
                 ) : (
@@ -145,6 +175,7 @@ if (consumerId) {
           <input
             value={sendMessage}
             onChange={(e) => setSendMessage(e.target.value)}
+            onKeyPress={handleKeyPress}
             placeholder="Enter Message"
             style={TextInput}
           />

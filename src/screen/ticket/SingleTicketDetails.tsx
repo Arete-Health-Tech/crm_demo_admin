@@ -20,7 +20,8 @@ import {
   Tab,
   Tabs,
   Tooltip,
-  Typography
+  Typography,
+  TextField
 } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -28,7 +29,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import { Suspense, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useTicketStore from '../../store/ticketStore';
-import { iReminder, iTicket } from '../../types/store/ticket';
+import { iTicket } from '../../types/store/ticket';
 import StageCard from './widgets/StageCard';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -56,6 +57,19 @@ import MessagingWidget from './widgets/whatsapp/WhatsappWidget';
 import ShowPrescription from './widgets/ShowPrescriptionModal';
 import { updateTicketSubStage } from '../../api/ticket/ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
+import Modal from '@mui/material/Modal';
+import Checkbox from '@mui/material/Checkbox';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+import ListItemText from '@mui/material/ListItemText';
+import { useTheme } from '@mui/material/styles';
+import MobileStepper from '@mui/material/MobileStepper';
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
+import FormControlLabel from '@mui/material/FormControlLabel';
 
 dayjs.extend(relativeTime);
 
@@ -63,19 +77,19 @@ type Props = {};
 
 const SingleTicketDetails = (props: Props) => {
   const { ticketID } = useParams();
-  const { tickets, filterTickets, reminders, pageNumber, searchByName } =
-    useTicketStore();
+  const { tickets, filterTickets } = useTicketStore();
   const { doctors, departments, stages } = useServiceStore();
   const [currentTicket, setCurrentTicket] = useState<iTicket>();
   const [value, setValue] = useState('1');
   const [script, setScript] = useState<iScript>();
   const [isScript, setIsScript] = useState(false);
   const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
-  const [singleReminder, setSingleReminder] = useState<iReminder[] | any[]>([]);
+  const [open, setOpen] = useState(false);
 
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
   const handlePhoneCall = async (e: React.SyntheticEvent) => {
+     setOpen(true);
     const currentSubStageCode = currentTicket?.subStageCode?.code;
     const stageDetail: any = stages?.find(
       ({ _id }) => currentTicket?.stage === _id
@@ -95,15 +109,9 @@ const SingleTicketDetails = (props: Props) => {
       };
 
       const result = await updateTicketSubStage(payload);
-
       setTimeout(() => {
-        (async () => {
-          await getTicketHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            filterTickets
-          );
+        (async function () {
+          await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
           setTicketUpdateFlag(result);
         })();
       }, 1000);
@@ -114,41 +122,137 @@ const SingleTicketDetails = (props: Props) => {
     setValue(newValue);
   };
 
+  const theme = useTheme();
+  const [activeStep, setActiveStep] = useState(0);
+
+  const handleNext = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+  };
+
+  const handleBack = () => {
+    setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
+  };
+
+  
+  const [selectedResponses, setSelectedResponses] = useState({});
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 40,
+    p: 4,
+    width: '50%',
+    height: '50%',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
+  };
+
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+
+  const questions = [
+    {
+      question: '	Has the patient received a Bill Estimate?',
+      responses: ['Yes', 'No']
+    },
+    {
+      question: '	Has the patient received a WhatsApp Message?',
+      responses: ['Yes', 'No']
+    },
+    {
+      question: '	Did the patient explore the ‘Menu’ from our Whatsapp Message?',
+      responses: ['Yes', 'No']
+    },
+    {
+      question:
+        '	Is the patient able to perform Activities of Daily Living (ADL)?',
+      responses: [
+        'Walk without Support',
+        'Eat without Support',
+        'Need help for ADL'
+      ]
+    },
+    {
+      question: '	Does the Patient have any Surgical Fear?',
+      responses: ['Yes', 'No']
+    },
+    {
+      question:
+        '	On the Basis  of ADL and SFQ, Indicate the  ‘Level Of Distress’',
+      responses: ['Mild', 'Moderate', 'Severe']
+    },
+    {
+      question: 'Payment Mode',
+      responses: ['Cash', 'CGHS/ECHS', 'Corporate', 'NSG', 'TPA']
+    },
+    {
+      question: '	Is Paras Hospital‘s, patients',
+      responses: ['1st Opinion', '2nd Opinion']
+    },
+    {
+      question: 'Does the patient have any Caregiver at',
+      responses: ['Yes', 'No']
+    },
+    {
+      question: 'Did you Inform the Next Follow-up date to Patient',
+      responses: ['Yes', 'No']
+    }
+
+    // Add more questions as needed
+  ];
+
+  const handleResponseClick = (response) => {
+    setSelectedResponses((prevSelectedResponses) => ({
+      ...prevSelectedResponses,
+      [currentQuestionIndex]: response
+    }));
+  };
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250
+      }
+    }
+  };
+
   const getTicketInfo = (ticketID: string | undefined) => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
     setCurrentTicket(fetchTicket);
-    return fetchTicket;
   };
 
   useEffect(() => {
     (async function () {
-      const ticketData = getTicketInfo(ticketID);
+      getTicketInfo(ticketID);
+      await getAllReminderHandler();
       if (currentTicket) {
-        setSingleReminder([]);
         const script = await getSingleScript(
           currentTicket?.prescription[0]?.service?._id,
           currentTicket?.stage
         );
-        reminders?.map((data) => {
-          // console.log("maping", data?.ticket === ticketData?._id);
-          if (data?.ticket === ticketData?._id) {
-            setSingleReminder([...singleReminder, data]);
-          }
-        });
         setScript(script);
       }
     })();
-  }, [
-    ticketID,
-    tickets,
-    currentTicket,
-    ticketUpdateFlag,
-    reminders.length,
-    reminders
-  ]);
+  }, [ticketID, tickets, currentTicket, ticketUpdateFlag]);
 
-  // console.log("reminders in single layout",reminders)
-  // console.log("after singleReminder",singleReminder);
+  const { reminders } = useTicketStore();
+
   const doctorSetter = (id: string) => {
     return doctors.find((doctor: iDoctor) => doctor._id === id)?.name;
   };
@@ -157,6 +261,9 @@ const SingleTicketDetails = (props: Props) => {
     return departments.find((department: iDepartment) => department._id === id)
       ?.name;
   };
+  console.log(currentTicket,"yhis is current ticket")
+  console.log(currentTicket?.prescription[0].image,"this is iamge")
+  console.log(currentTicket?.estimate[0],"this is estimate")
 
   return (
     <Stack height={'100vh'} direction="row">
@@ -221,12 +328,253 @@ const SingleTicketDetails = (props: Props) => {
             alignItems="center"
           >
             <a href={`tel:${currentTicket?.consumer[0].phone}`}>
-              <IconButton
-                sx={{ bgcolor: 'green', color: 'white' }}
-                onClick={handlePhoneCall}
-              >
-                <Call />
-              </IconButton>
+              <div>
+                <IconButton
+                  sx={{ bgcolor: 'green', color: 'white' }}
+                  onClick={handlePhoneCall}
+                >
+                  <Call />
+                </IconButton>
+                <Modal
+                  open={open}
+                  onClose={handleClose}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                    // overflow: 'auto', // Add the overflow attribute here
+                  }}
+                >
+                  <div>
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        bgcolor: 'background.paper',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,
+                        width: '50%',
+                        height: '60%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        overflow: 'auto'
+                      }}
+                    >
+                      <Stack spacing={3}>
+                        <Typography variant="h6" align="center" gutterBottom>
+                          Checklist Form
+                        </Typography>
+
+                        <Box
+                          sx={{
+                            width: '100%',
+                            height: '20%',
+                            borderRadius: '50px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                          }}
+                        >
+                          {/* Current Question */}
+                          <Typography
+                            variant="h5"
+                            style={{ textAlign: 'center' }}
+                          >
+                            {questions[currentQuestionIndex].question}
+                          </Typography>
+                        </Box>
+                        <div>
+                          {/* Responses */}
+
+                          {currentQuestionIndex === 3
+                            ? questions[currentQuestionIndex].responses.map(
+                                (response, index) => (
+                                  <Box sx={{ justifyContent: 'center' }}>
+                                    <FormControlLabel
+                                      key={index}
+                                      control={
+                                        <Checkbox
+                                          checked={
+                                            selectedResponses[
+                                              currentQuestionIndex
+                                            ] &&
+                                            selectedResponses[
+                                              currentQuestionIndex
+                                            ].includes(response)
+                                          }
+                                          onChange={() =>
+                                            handleResponseClick(response)
+                                          }
+                                          sx={{
+                                            color: 'primary.main',
+                                            '&.Mui-checked': {
+                                              color: 'primary.main'
+                                            }
+                                          }}
+                                        />
+                                      }
+                                      label={response}
+                                    />
+                                  </Box>
+                                )
+                              )
+                            : currentQuestionIndex === 5 ||
+                              currentQuestionIndex === 6 ||
+                              currentQuestionIndex === 7
+                            ? questions[currentQuestionIndex].responses.map(
+                                (response, index) => (
+                                  <Box sx={{ justifyContent: 'center' }}>
+                                    <FormControlLabel
+                                      key={index}
+                                      control={
+                                        <Checkbox
+                                          checked={
+                                            selectedResponses[
+                                              currentQuestionIndex
+                                            ] === response
+                                          }
+                                          onChange={() =>
+                                            handleResponseClick(response)
+                                          }
+                                          sx={{
+                                            color: 'primary.main',
+                                            '&.Mui-checked': {
+                                              color: 'primary.main'
+                                            }
+                                          }}
+                                        />
+                                      }
+                                      label={response}
+                                    />
+                                  </Box>
+                                )
+                              )
+                            : questions[currentQuestionIndex].responses.map(
+                                (response, index) => (
+                                  <Box sx={{ justifyContent: 'center' }}>
+                                    <Button
+                                      key={index}
+                                      variant="contained"
+                                      fullWidth
+                                      onClick={() =>
+                                        handleResponseClick(response)
+                                      }
+                                      sx={{ mt: 1, mb: 1, bgcolor: 'EBEDF5' }}
+                                    >
+                                      {response}
+                                    </Button>
+                                  </Box>
+                                )
+                              )}
+
+                          {currentQuestionIndex === 2 &&
+                            selectedResponses[currentQuestionIndex] ===
+                              'No' && (
+                              <div>
+                                <h2>Reason:</h2>
+                                <textarea
+                                  rows={4}
+                                  cols={60}
+                                  value={
+                                    selectedResponses[
+                                      currentQuestionIndex + '_reason'
+                                    ] || ''
+                                  }
+                                  onChange={(e) =>
+                                    setSelectedResponses(
+                                      (prevSelectedResponses) => ({
+                                        ...prevSelectedResponses,
+                                        [currentQuestionIndex + '_reason']:
+                                          e.target.value
+                                      })
+                                    )
+                                  }
+                                />
+                                <Button variant="contained">Submit</Button>
+                              </div>
+                            )}
+                        </div>
+
+                        {currentQuestionIndex == 8 &&
+                          selectedResponses[currentQuestionIndex] === 'Yes' && (
+                            <div>
+                              <form>
+                                <TextField
+                                  label="Name"
+                                  fullWidth
+                                  // margin="normal"
+                                  variant="outlined"
+                                />
+                                <TextField
+                                  label="Phone Number"
+                                  fullWidth
+                                  // margin="normal"
+                                  variant="outlined"
+                                />
+                                <Button
+                                  variant="contained"
+                                  color="primary"
+                                  //onClick={handleFormSubmit}
+                                  sx={{ mt: 2 }}
+                                >
+                                  Submit
+                                </Button>
+                              </form>
+                            </div>
+                          )}
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            bottom: '2px',
+                            width: '90%'
+                          }}
+                        >
+                          <MobileStepper
+                            variant="progress"
+                            steps={10}
+                            position="static"
+                            activeStep={activeStep}
+                            sx={{ maxWidth: '100%', flexGrow: 0 }}
+                            nextButton={
+                              <Button
+                                size="small"
+                                onClick={handleNext}
+                                disabled={activeStep === 9}
+                              >
+                                Next
+                                {theme.direction === 'rtl' ? (
+                                  <KeyboardArrowLeft />
+                                ) : (
+                                  <KeyboardArrowRight />
+                                )}
+                              </Button>
+                            }
+                            backButton={
+                              <Button
+                                size="small"
+                                onClick={handleBack}
+                                disabled={activeStep === 0}
+                              >
+                                {theme.direction === 'rtl' ? (
+                                  <KeyboardArrowRight />
+                                ) : (
+                                  <KeyboardArrowLeft />
+                                )}
+                                Back
+                              </Button>
+                            }
+                          />
+                        </Box>
+                      </Stack>
+                    </Box>
+                  </div>
+                </Modal>
+              </div>
             </a>
             <Chip
               sx={{ textTransform: 'capitalize' }}
@@ -450,9 +798,7 @@ const SingleTicketDetails = (props: Props) => {
                         }}
                       />
                     ) : (
-                      <Typography color="GrayText">
-                        Estimate not created Yet
-                      </Typography>
+                      <Typography color="GrayText"></Typography>
                     )}
                   </Stack>
                 </Box>
@@ -491,31 +837,37 @@ const SingleTicketDetails = (props: Props) => {
                 </Stack>
               </Box>
               <Box>
-                {singleReminder[0] ? (
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    p={2}
-                    bgcolor={'white'}
-                  >
-                    <Box>
-                      <Typography>{singleReminder[0].title}</Typography>
-                      <Chip
-                        size="small"
-                        variant="outlined"
-                        color="primary"
-                        label={dayjs(singleReminder[0].date).format(
-                          'DD/MMM/YYYY hh:mm A '
-                        )}
-                      />
-                    </Box>
-                    <Box>
-                      <Tooltip title={singleReminder[0].description}>
-                        <InfoOutlined />
-                      </Tooltip>
-                    </Box>
-                  </Box>
+                {reminders.length > 0 ? (
+                  reminders.map((reminder, index) => {
+                    return (
+                      dayjs(reminder.date).diff(new Date(), 'days') > 0 && (
+                        <Box
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          p={2}
+                          bgcolor={index % 2 === 0 ? '#f5f5f7' : 'white'}
+                        >
+                          <Box>
+                            <Typography>{reminder.title}</Typography>
+                            <Chip
+                              size="small"
+                              variant="outlined"
+                              color="primary"
+                              label={dayjs(reminder.date).format(
+                                'DD/MMM/YYYY hh:mm A '
+                              )}
+                            />
+                          </Box>
+                          <Box>
+                            <Tooltip title={reminder.description}>
+                              <InfoOutlined />
+                            </Tooltip>
+                          </Box>
+                        </Box>
+                      )
+                    );
+                  })
                 ) : (
                   <Typography p={1}>No Reminders Available</Typography>
                 )}

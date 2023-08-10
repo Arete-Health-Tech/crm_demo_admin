@@ -6,6 +6,11 @@ import { useEffect } from 'react';
 import jwtDecode from 'jwt-decode';
 import { Roles } from '../constants/types';
 import Support from './routes/Support';
+import RepresentativeOne from './routes/RepresentativeOne';
+import RepresentativeTwo from './routes/RepresentativeTwo';
+import RepresentativeThree from './routes/RepresentativeThree';
+import RepresentativeFour from './routes/RepresentativeFour';
+import RepresentativeFive from './routes/RepresentativeFive';
 
 const AppContainer = () => {
   const { user, setUser } = useUserStore();
@@ -34,6 +39,16 @@ const AppContainer = () => {
     return <Authenticated />;
   } else if (user !== null && user.role === Roles.SUPPORT) {
     return <Support />;
+  } else if (user !== null && user.role === Roles.REPRESENTATIVEONE) {
+    return <RepresentativeOne />;
+  } else if (user !== null && user.role === Roles.REPRESENTATIVETWO) {
+    return <RepresentativeTwo />;
+  } else if (user !== null && user.role === Roles.REPRESENTATIVETHREE) {
+    return <RepresentativeThree />;
+  } else if (user !== null && user.role === Roles.REPRESENTATIVEFOUR) {
+    return <RepresentativeFour />;
+  } else if (user !== null && user.role === Roles.REPRESENTATIVEFIVE) {
+    return <RepresentativeFive />;
   } else {
     return <UnAuthenticated />;
   }

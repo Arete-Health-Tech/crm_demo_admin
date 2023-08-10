@@ -83,7 +83,7 @@ const SingleTicketDetails = (props: Props) => {
     const noOfChilds = stageDetail?.child?.length || 3;
     if (
       currentSubStageCode &&
-      currentSubStageCode > noOfChilds - 3 &&
+      (!currentTicket?.prescription[0].admission || currentSubStageCode > noOfChilds - 3) &&
       currentSubStageCode < noOfChilds
     ) {
       const payload = {

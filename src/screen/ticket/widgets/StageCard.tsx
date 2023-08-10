@@ -57,6 +57,7 @@ const StageCard = (props: Props) => {
   const [currentStage, setCurrentStage] = useState<any>({});
   const [changeStageName, setChangeStageName] = useState<string>('');
   const [progressCount, setProgressCount] = useState<number>(0);
+  const [activeState, setActiveState] = useState<number>(0);
   const [nextStage, setNextStage] = useState<string>('');
   const { filterTickets, searchByName, pageNumber } = useTicketStore();
   const navigate = useNavigate();
@@ -83,9 +84,31 @@ const StageCard = (props: Props) => {
         ({ _id }) => currentTicket.stage === _id
       );
       setValidStageList(stages?.slice(stageDetail?.code - 1));
-      setValidSubStageList(
-        stageDetail?.child?.map((id) => subStages[id - 1]) || []
-      );
+      const childCode: any[] = [];
+      stageDetail?.child?.forEach((id) => {
+        if (!currentTicket?.prescription[0].admission) {
+          if (stageDetail?.code === 1 && id === 2) {
+            setActiveState(currentTicket?.subStageCode?.code || 0);
+          } else if (stageDetail?.code !== 1 && id === 1) {
+          } else {
+            if (currentStage?.child?.length > 3) {
+              if (currentTicket?.subStageCode?.code < 2) setActiveState(1);
+              else if (currentTicket?.subStageCode?.code > 2)
+                setActiveState(currentTicket?.subStageCode?.code - 1);
+            } else setActiveState(currentTicket?.subStageCode?.code - 2 || 0);
+            childCode.push(subStages[id - 1]);
+          }
+        } else {
+          setActiveState(
+            currentStage?.child?.length > 3
+              ? currentTicket?.subStageCode?.code
+              : currentTicket?.subStageCode?.code - 1 || 0
+          );
+          childCode.push(subStages[id - 1]);
+        }
+      });
+      setValidSubStageList(childCode);
+
       const stageName = stageDetail?.name || '';
       setChangeStageName(stageName);
       setCurrentStage(stageDetail);
@@ -424,11 +447,7 @@ const StageCard = (props: Props) => {
         </Modal>
       </Box>
       <Stepper
-        activeStep={
-          currentStage?.child?.length > 3
-            ? currentTicket?.subStageCode?.code
-            : currentTicket?.subStageCode?.code - 1 || 0
-        }
+        activeStep={activeState}
         alternativeLabel
         sx={{ height: '50px', marginTop: '10px' }}
       >

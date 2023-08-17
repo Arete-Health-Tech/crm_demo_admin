@@ -19,38 +19,32 @@ import { sendTextMessage } from '../../../../api/ticket/ticket';
 import useTicketStore from '../../../../store/ticketStore';
 import AgentReply from './AgentReply';
 import dayjs from 'dayjs';
+import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
+import { UNDEFINED } from '../../../../constantUtils/constant';
 
 type Props = {};
 
 const MessagingWidget = (props: Props) => {
   const { ticketID } = useParams();
   const { user } = useUserStore();
-  const {tickets} = useTicketStore();
-  
+  const { tickets, filterTickets } = useTicketStore();
 
-  
-function getConsumerIdByDataId(dataArray, dataIdToMatch) {
-  for (const obj of dataArray) {
-    if (obj._id === dataIdToMatch) {
-      return obj.consumer[0]._id;
+  function getConsumerIdByDataId(dataArray, dataIdToMatch) {
+    for (const obj of dataArray) {
+      if (obj._id === dataIdToMatch) {
+        return obj.consumer[0]._id;
+      }
     }
+    return null; // Return null if no matching dataId found in the data array
   }
-  return null; // Return null if no matching dataId found in the data array
-}
 
-const consumerId = getConsumerIdByDataId(tickets, ticketID);
+  const consumerId = getConsumerIdByDataId(tickets, ticketID);
 
-if (consumerId) {
-  console.log('Consumer ID found:', consumerId);
-} else {
-  console.log('Consumer ID not found for the given dataId.');
-}
-
-
-
-
-
-
+  if (consumerId) {
+    console.log('Consumer ID found:', consumerId);
+  } else {
+    console.log('Consumer ID not found for the given dataId.');
+  }
 
   const TextInput = {
     border: 0,
@@ -62,40 +56,52 @@ if (consumerId) {
   };
 
   useEffect(() => {
-    if (ticketID) {
-      const collectionRef = collection(
-        database,
-        'ticket',
-        ticketID,
-        'messages'
-      );
-      const q = query(collectionRef, orderBy('createdAt'));
-      const unsub = onSnapshot(q, (snapshot) => {
-        const message: DocumentData[] = [];
-        snapshot.forEach((doc) => {
-          message.push(doc.data());
+      if (ticketID) {
+        const collectionRef = collection(
+          database,
+          'ticket',
+          ticketID,
+          'messages'
+        );
+        const q = query(collectionRef, orderBy('createdAt'));
+        const unsub = onSnapshot(q, (snapshot) => {
+          const message: DocumentData[] = [];
+          snapshot.forEach((doc) => {
+            message.push(doc.data());
+          });
+          console.log('message received at client',message[message.length - 1]);
+          (async function(){
+          if (
+            message.length > messages.length &&
+            message[message.length - 1]?.type === "received"
+          ) {
+            console.log(
+              'messages[message.length - 1]',
+              message[message.length - 1]
+            );
+            await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+          }
+        })();
+          setMessages(message);
         });
-        setMessages(message);
-      });
 
-      return () => unsub();
-    }
+        return () => unsub();
+      }
   }, [ticketID]);
 
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const [sendMessage, setSendMessage] = useState('');
 
-
-   const handleKeyPress = (e) => {
+  const handleKeyPress = (e) => {
     if (e.key === 'Enter' && sendMessage.trim() !== '') {
-      console.log("press enter")
+      console.log('press enter');
       handleSendMessage();
     }
   };
 
   const handleSendMessage = async () => {
-    await sendTextMessage(sendMessage, consumerId ,ticketID as string);
-    setSendMessage("");
+    await sendTextMessage(sendMessage, consumerId, ticketID as string);
+    setSendMessage('');
   };
 
   console.log(messages);
@@ -115,7 +121,6 @@ if (consumerId) {
           overflowY: 'auto'
         }}
         height="90%"
-       
       >
         {messages
           ? messages.length > 0

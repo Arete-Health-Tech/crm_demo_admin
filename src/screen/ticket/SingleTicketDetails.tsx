@@ -261,9 +261,9 @@ const SingleTicketDetails = (props: Props) => {
     return departments.find((department: iDepartment) => department._id === id)
       ?.name;
   };
-  console.log(currentTicket,"yhis is current ticket")
-  console.log(currentTicket?.prescription[0].image,"this is iamge")
-  console.log(currentTicket?.estimate[0],"this is estimate")
+  // console.log(currentTicket,"yhis is current ticket")
+  // console.log(currentTicket?.prescription[0].image,"this is iamge")
+  // console.log(currentTicket?.estimate[0],"this is estimate")
 
   return (
     <Stack height={'100vh'} direction="row">

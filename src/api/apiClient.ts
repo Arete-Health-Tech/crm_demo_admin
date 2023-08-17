@@ -1,6 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import useEventStore from '../store/eventStore';
 import useUserStore from '../store/userStore';
+import io from 'socket.io-client';
 
 enum StatusCode {
   Unauthorized = 401,
@@ -10,14 +11,20 @@ enum StatusCode {
 }
 
 export const SERVER_URL = 'https://backend.aretehealth.tech/prod/api/v1/';
-// export const SERVER_URL = 'http://localhost:3000/prod/api/v1/';
-// 
+// export const SERVER_URL = 'http://localhost:3001/prod/api/v1/';
+export const BACKEND_URL =
+  process.env.NODE_ENV !== 'production'
+    ? 'http://localhost:3001'
+    : 'https://backend.aretehealth.tech';
+//
 const headers: Readonly<Record<string, string | boolean>> = {
   Accept: 'application/json',
   'Content-Type': 'application/json; charset=utf-8'
   // 'Access-Control-Allow-Credentials': true,
   // 'X-Requested-With': 'XMLHttpRequest'
 };
+
+export const socket = io(BACKEND_URL); //connecting to socket server
 
 // We can use the following function to inject the JWT token through an interceptor
 // We get the `accessToken` from the localStorage that we set when we authenticate

@@ -42,6 +42,8 @@ import useServiceStore from '../../store/serviceStore';
 import './styles.css';
 import { getTicket } from '../../api/ticket/ticket';
 import CustomSpinLoader from '../../components/CustomSpinLoader';
+import { socket } from '../../api/apiClient';
+import { socketEventConstants } from '../../constantUtils/socketEventsConstants';
 
 let AllIntervals: any[] = [];
 
@@ -266,6 +268,20 @@ const Ticket = () => {
   };
 
   useEffect(() => {
+    const refetchTickets = async () => {
+      console.log('Received request of refetch tickets from server');
+      await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+    };
+
+    socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+
+    return () => {
+      socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    };
+  }, []);
+
+
+  useEffect(() => {
     // console.log('gotham FULL', reminders, 'remindelist', reminderList);
     clearAllInterval(AllIntervals);
 
@@ -291,8 +307,8 @@ const Ticket = () => {
                 reminderDetail?.ticket,
                 true
               );
-              setTickets(data.tickets)
-              setTicketCount(data.count)
+              // setTickets(data.tickets)
+              // setTicketCount(data.count)
               // const tiketIndex = ticketCache[1].findIndex((currentData) => {
               //   console.log(
               //     'id check:',

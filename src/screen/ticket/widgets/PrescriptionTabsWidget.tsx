@@ -38,7 +38,7 @@ const PrescriptionTabsWidget = ({ currentTicket }: Props) => {
             {currentTicket.prescription[0].admission && (
               <Chip
                 label={currentTicket.prescription[0].admission}
-                variant="outlined"
+                variant="filled"
                 color="primary"
                 sx={{ width: '40%', textTransform: 'uppercase' }}
               />
@@ -70,7 +70,18 @@ const PrescriptionTabsWidget = ({ currentTicket }: Props) => {
           </Stack>
         </TabPanel>
         <TabPanel sx={{ p: 0, height: '100%' }} value="3">
-          <Typography p={1}>Under Construction</Typography>
+          <Stack p={1} direction="column" spacing={2}>
+            {currentTicket.prescription[0].isPharmacy ? (
+              <Chip
+                label={currentTicket.prescription[0].isPharmacy}
+                variant="filled"
+                color="primary"
+                sx={{ width: '40%', textTransform: 'uppercase' }}
+              />
+            ) : (
+             ""
+            )}
+          </Stack>
         </TabPanel>
       </TabContext>
     </Box>

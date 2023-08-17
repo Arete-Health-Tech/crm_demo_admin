@@ -48,6 +48,7 @@ type iPrescription = {
   medicines: string[];
   followUp: Date | number;
   image: string | null;
+  isPharmacy:string | null;
   caregiver_name: string | null;
   caregiver_phone: string | null;
   service?: { _id: string; label: string };
@@ -63,6 +64,7 @@ const initialPrescription = {
   medicines: [],
   followUp: new Date(),
   image: null,
+  isPharmacy:'',
   caregiver_name: null,
   caregiver_phone: null
 };
@@ -82,7 +84,9 @@ const CreatePrescription = () => {
   const defaultValidation = { message: '', value: false };
   const [isCaregiver, setIsCaregiver] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
-  const [selected, setSelected] = useState(null);
+ 
+   const [selectedPharmacy, setSelectedPharmacy] = useState('');
+ 
 
   const findService = async (query: string) => {
     try {
@@ -121,6 +125,7 @@ const CreatePrescription = () => {
     const doctor = prescription.doctor === '';
     const admission = prescription.admission === '';
     const image = prescription.image === null;
+   
     // let service = false;
     // if (prescription.admission !== 'none') {
     //   if (!prescription.service || prescription.service?._id === '') {
@@ -148,6 +153,7 @@ const CreatePrescription = () => {
       prev.image = image
         ? { message: 'Invalid Value', value: true }
         : defaultValidation;
+       
       // prev.service = service
       //   ? { message: 'Please specify service', value: true }
       //   : defaultValidation;
@@ -163,6 +169,12 @@ const CreatePrescription = () => {
       // service === false
     );
   };
+  
+
+
+
+
+
   const handelUploadPrescription = async () => {
     setDisableButton(true);
     const validationCheck = validation();
@@ -173,11 +185,13 @@ const CreatePrescription = () => {
       ticket.consumer = id;
       ticket.departments = [prescription.department];
       ticket.diagnostics = diagnostics;
+  
       ticket.followup = ticket.followup ? ticket.followup : null;
       await createTicketHandler(ticket);
       setPrescription(structuredClone(initialPrescription));
       setDiagnostics([]);
       setDisableButton(false);
+
       navigate('/');
     } else {
       setDisableButton(false);
@@ -191,9 +205,14 @@ const CreatePrescription = () => {
     })();
   }, []);
 
-  const handleClick = (value) => {
-    setSelected(value);
-  };
+
+
+
+  console.log(prescription)
+ 
+
+
+
 
   return (
     <>
@@ -425,20 +444,26 @@ const CreatePrescription = () => {
               <Button
                 size="small"
                 sx={{ m: 0.4 }}
-                variant={selected === 'yes' ? 'contained' : 'outlined'}
-                onClick={() => handleClick('yes')}
+                variant={selectedPharmacy === 'yes' ? 'contained' : 'outlined'}
+                onClick={() => {
+                  setSelectedPharmacy('yes');
+                  changePrescriptionValue('isPharmacy', 'Pharmacy Advised');
+                }}
               >
                 Yes
               </Button>
               <Button
                 size="small"
                 sx={{ m: 0.4 }}
-                variant={selected === 'no' ? 'contained' : 'outlined'}
-                onClick={() => handleClick('no')}
+                variant={selectedPharmacy === 'no' ? 'contained' : 'outlined'}
+                onClick={() => {
+                  setSelectedPharmacy('no');
+                  changePrescriptionValue('isPharmacy', 'Not Advised');
+                }}
               >
                 No
               </Button>
-            </Stack>
+            </Stack>{' '}
           </Box>
 
           <Box my={1.8}>
@@ -512,7 +537,6 @@ const CreatePrescription = () => {
                         >
                           Capture
                         </Button>
-                        
                       )}
                       {prescription.image !== null && (
                         <>

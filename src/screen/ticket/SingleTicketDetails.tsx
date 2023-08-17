@@ -29,7 +29,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import { Suspense, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useTicketStore from '../../store/ticketStore';
-import { iTicket } from '../../types/store/ticket';
+import { iReminder, iTicket } from '../../types/store/ticket';
 import StageCard from './widgets/StageCard';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -70,6 +70,64 @@ import MobileStepper from '@mui/material/MobileStepper';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import PDFDocument from '@react-pdf/pdfkit'
+
+
+
+ const questions = [
+   {
+     question: '	Has the patient received a Bill Estimate?',
+     responses: ['Yes', 'No']
+   },
+   {
+     question: '	Has the patient received a WhatsApp Message?',
+     responses: ['Yes', 'No']
+   },
+   {
+     question: '	Did the patient explore the ‘Menu’ from our Whatsapp Message?',
+     responses: ['Yes', 'No']
+   },
+   {
+     question:
+       '	Is the patient able to perform Activities of Daily Living (ADL)?',
+     responses: [
+       'Walk without Support',
+       'Eat without Support',
+       'Need help for ADL'
+     ]
+   },
+   {
+     question: '	Does the Patient have any Surgical Fear?',
+     responses: ['Yes', 'No']
+   },
+   {
+     question:
+       '	On the Basis  of ADL and SFQ, Indicate the  ‘Level Of Distress’',
+     responses: ['Mild', 'Moderate', 'Severe']
+   },
+   {
+     question: 'Payment Mode',
+     responses: ['Cash', 'CGHS/ECHS', 'Corporate', 'NSG', 'TPA']
+   },
+   {
+     question: '	Is Paras Hospital‘s, patients',
+     responses: ['1st Opinion', '2nd Opinion']
+   },
+   {
+     question: 'Does the patient have any Caregiver at',
+     responses: ['Yes', 'No']
+   },
+   {
+     question: 'Did you Inform the Next Follow-up date to Patient',
+     responses: ['Yes', 'No']
+   }
+
+   // Add more questions as needed
+ ];
+
+
+
+
 
 dayjs.extend(relativeTime);
 
@@ -77,14 +135,22 @@ type Props = {};
 
 const SingleTicketDetails = (props: Props) => {
   const { ticketID } = useParams();
-  const { tickets, filterTickets } = useTicketStore();
+   const { tickets, filterTickets, reminders, pageNumber, searchByName } =
+     useTicketStore();
   const { doctors, departments, stages } = useServiceStore();
   const [currentTicket, setCurrentTicket] = useState<iTicket>();
   const [value, setValue] = useState('1');
   const [script, setScript] = useState<iScript>();
   const [isScript, setIsScript] = useState(false);
   const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
+    const [singleReminder, setSingleReminder] = useState<iReminder[] | any[]>(
+      []
+    );
   const [open, setOpen] = useState(false);
+    const theme = useTheme();
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+    const [activeStep, setActiveStep] = useState(0);
+    const [selectedResponses, setSelectedResponses] = useState({});
 
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
@@ -110,8 +176,13 @@ const SingleTicketDetails = (props: Props) => {
 
       const result = await updateTicketSubStage(payload);
       setTimeout(() => {
-        (async function () {
-          await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+        (async  ()=> {
+          await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            filterTickets
+          );
           setTicketUpdateFlag(result);
         })();
       }, 1000);
@@ -122,8 +193,7 @@ const SingleTicketDetails = (props: Props) => {
     setValue(newValue);
   };
 
-  const theme = useTheme();
-  const [activeStep, setActiveStep] = useState(0);
+
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -136,83 +206,15 @@ const SingleTicketDetails = (props: Props) => {
   };
 
   
-  const [selectedResponses, setSelectedResponses] = useState({});
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
+ 
   const handleClose = () => {
     setOpen(false);
   };
-  const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
-    boxShadow: 40,
-    p: 4,
-    width: '50%',
-    height: '50%',
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center'
-  };
 
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  const questions = [
-    {
-      question: '	Has the patient received a Bill Estimate?',
-      responses: ['Yes', 'No']
-    },
-    {
-      question: '	Has the patient received a WhatsApp Message?',
-      responses: ['Yes', 'No']
-    },
-    {
-      question: '	Did the patient explore the ‘Menu’ from our Whatsapp Message?',
-      responses: ['Yes', 'No']
-    },
-    {
-      question:
-        '	Is the patient able to perform Activities of Daily Living (ADL)?',
-      responses: [
-        'Walk without Support',
-        'Eat without Support',
-        'Need help for ADL'
-      ]
-    },
-    {
-      question: '	Does the Patient have any Surgical Fear?',
-      responses: ['Yes', 'No']
-    },
-    {
-      question:
-        '	On the Basis  of ADL and SFQ, Indicate the  ‘Level Of Distress’',
-      responses: ['Mild', 'Moderate', 'Severe']
-    },
-    {
-      question: 'Payment Mode',
-      responses: ['Cash', 'CGHS/ECHS', 'Corporate', 'NSG', 'TPA']
-    },
-    {
-      question: '	Is Paras Hospital‘s, patients',
-      responses: ['1st Opinion', '2nd Opinion']
-    },
-    {
-      question: 'Does the patient have any Caregiver at',
-      responses: ['Yes', 'No']
-    },
-    {
-      question: 'Did you Inform the Next Follow-up date to Patient',
-      responses: ['Yes', 'No']
-    }
 
-    // Add more questions as needed
-  ];
+ 
 
   const handleResponseClick = (response) => {
     setSelectedResponses((prevSelectedResponses) => ({
@@ -235,23 +237,37 @@ const SingleTicketDetails = (props: Props) => {
   const getTicketInfo = (ticketID: string | undefined) => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
     setCurrentTicket(fetchTicket);
+     return fetchTicket;
   };
 
   useEffect(() => {
     (async function () {
-      getTicketInfo(ticketID);
-      await getAllReminderHandler();
+      const ticketData = getTicketInfo(ticketID);
       if (currentTicket) {
+        setSingleReminder([]);
         const script = await getSingleScript(
           currentTicket?.prescription[0]?.service?._id,
           currentTicket?.stage
         );
+        reminders?.map((data) => {
+          // console.log("maping", data?.ticket === ticketData?._id);
+          if (data?.ticket === ticketData?._id) {
+            setSingleReminder([...singleReminder, data]);
+          }
+        });
         setScript(script);
       }
     })();
-  }, [ticketID, tickets, currentTicket, ticketUpdateFlag]);
+  }, [
+    ticketID,
+    tickets,
+    currentTicket,
+    ticketUpdateFlag,
+    reminders.length,
+    reminders
+  ]);
 
-  const { reminders } = useTicketStore();
+ 
 
   const doctorSetter = (id: string) => {
     return doctors.find((doctor: iDoctor) => doctor._id === id)?.name;
@@ -261,9 +277,12 @@ const SingleTicketDetails = (props: Props) => {
     return departments.find((department: iDepartment) => department._id === id)
       ?.name;
   };
-  console.log(currentTicket,"yhis is current ticket")
-  console.log(currentTicket?.prescription[0].image,"this is iamge")
-  console.log(currentTicket?.estimate[0],"this is estimate")
+  
+
+
+
+
+
 
   return (
     <Stack height={'100vh'} direction="row">
@@ -756,6 +775,7 @@ const SingleTicketDetails = (props: Props) => {
                     disabled={currentTicket?.estimate[0] ? false : true}
                     startIcon={<ReceiptLongOutlined />}
                     color="primary"
+                   
                   >
                     View Estimate
                   </Button>
@@ -902,3 +922,4 @@ const SingleTicketDetails = (props: Props) => {
 };
 
 export default SingleTicketDetails;
+

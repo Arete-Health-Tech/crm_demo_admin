@@ -71,7 +71,9 @@ import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import PDFDocument from '@react-pdf/pdfkit'
+import { Document, Page } from 'react-pdf';
 
+import AWS from 'aws-sdk';
 
 
  const questions = [
@@ -151,6 +153,7 @@ const SingleTicketDetails = (props: Props) => {
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [activeStep, setActiveStep] = useState(0);
     const [selectedResponses, setSelectedResponses] = useState({});
+      const [pdfUrl, setPdfUrl] = useState('');
 
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
@@ -279,6 +282,47 @@ const SingleTicketDetails = (props: Props) => {
   };
   
 
+    function getConsumerIdByDataId(dataArray, dataIdToMatch) {
+      for (const obj of dataArray) {
+        if (obj._id === dataIdToMatch) {
+          return obj.consumer[0]._id;
+        }
+      }
+      return null; // Return null if no matching dataId found in the data array
+    }
+
+    const consumerId = getConsumerIdByDataId(tickets, ticketID);
+
+    if (consumerId) {
+      console.log('Consumer ID found:', consumerId);
+    } else {
+      console.log('Consumer ID not found for the given dataId.');
+    }
+  
+
+   const fetchPdfUrl = async () => {
+   
+     AWS.config.update({
+       accessKeyId: 'AKIAWCP3MUKZ6OJ6YHTH',
+       secretAccessKey: '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',
+       region: 'ap-south-1'
+     });
+
+     const s3 = new AWS.S3();
+     const params = {
+       Bucket: 'arete-prescriptions',
+       Key: `patients/${consumerId}/${ticketID}/estimates`,
+       Expires: 3600 // URL expiration time in seconds
+     };
+
+     try {
+       const url = await s3.getSignedUrl('getObject', params);
+       setPdfUrl(url);
+        window.open(pdfUrl, '_blank');
+     } catch (error) {
+       console.error('Error fetching PDF URL', error);
+     }
+   };
 
 
 
@@ -775,10 +819,15 @@ const SingleTicketDetails = (props: Props) => {
                     disabled={currentTicket?.estimate[0] ? false : true}
                     startIcon={<ReceiptLongOutlined />}
                     color="primary"
-                   
+                    onClick={fetchPdfUrl}
                   >
                     View Estimate
                   </Button>
+                  {pdfUrl && (
+                    <Document file={pdfUrl}>
+                      <Page pageNumber={1} />
+                    </Document>
+                  )}
                 </Stack>
               </Box>
               {currentTicket?.estimate[0] ? (
@@ -857,37 +906,31 @@ const SingleTicketDetails = (props: Props) => {
                 </Stack>
               </Box>
               <Box>
-                {reminders.length > 0 ? (
-                  reminders.map((reminder, index) => {
-                    return (
-                      dayjs(reminder.date).diff(new Date(), 'days') > 0 && (
-                        <Box
-                          display="flex"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          p={2}
-                          bgcolor={index % 2 === 0 ? '#f5f5f7' : 'white'}
-                        >
-                          <Box>
-                            <Typography>{reminder.title}</Typography>
-                            <Chip
-                              size="small"
-                              variant="outlined"
-                              color="primary"
-                              label={dayjs(reminder.date).format(
-                                'DD/MMM/YYYY hh:mm A '
-                              )}
-                            />
-                          </Box>
-                          <Box>
-                            <Tooltip title={reminder.description}>
-                              <InfoOutlined />
-                            </Tooltip>
-                          </Box>
-                        </Box>
-                      )
-                    );
-                  })
+                {singleReminder[0] ? (
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    p={2}
+                    bgcolor={'white'}
+                  >
+                    <Box>
+                      <Typography>{singleReminder[0].title}</Typography>
+                      <Chip
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        label={dayjs(singleReminder[0].date).format(
+                          'DD/MMM/YYYY hh:mm A '
+                        )}
+                      />
+                    </Box>
+                    <Box>
+                      <Tooltip title={singleReminder[0].description}>
+                        <InfoOutlined />
+                      </Tooltip>
+                    </Box>
+                  </Box>
                 ) : (
                   <Typography p={1}>No Reminders Available</Typography>
                 )}

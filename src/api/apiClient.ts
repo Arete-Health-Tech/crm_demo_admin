@@ -23,7 +23,11 @@ const headers: Readonly<Record<string, string | boolean>> = {
   // 'X-Requested-With': 'XMLHttpRequest'
 };
 
-export const socket = io(BACKEND_URL,{withCredentials: true}); //connecting to socket server
+export const socket = io(BACKEND_URL,{withCredentials: false, rejectUnauthorized: false}); //connecting to socket server
+socket.on("connect_error", (err) => {
+  console.log(`connect_error due to ${err.message}`);
+});
+
 
 // We can use the following function to inject the JWT token through an interceptor
 // We get the `accessToken` from the localStorage that we set when we authenticate

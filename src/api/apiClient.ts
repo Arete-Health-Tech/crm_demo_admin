@@ -10,10 +10,11 @@ enum StatusCode {
   InternalServerError = 500
 }
 
-export const SERVER_URL = 'https://backend.aretehealth.tech/prod/api/v1/';
-// export const SERVER_URL = 'http://localhost:3001/prod/api/v1/';
-// export const BACKEND_URL = 'http://localhost:3001';
-export const BACKEND_URL = 'https://backend.aretehealth.tech';
+// export const SERVER_URL = 'https://backend.aretehealth.tech/prod/api/v1/';
+export const SERVER_URL = 'http://localhost:3001/prod/api/v1/';
+export const BACKEND_URL = 'http://localhost:3001';
+
+// export const BACKEND_URL = 'https://backend.aretehealth.tech';
 //
 const headers: Readonly<Record<string, string | boolean>> = {
   Accept: 'application/json',
@@ -22,7 +23,7 @@ const headers: Readonly<Record<string, string | boolean>> = {
   // 'X-Requested-With': 'XMLHttpRequest'
 };
 
-export const socket = io(BACKEND_URL); //connecting to socket server
+export const socket = io(BACKEND_URL,{withCredentials: true}); //connecting to socket server
 
 // We can use the following function to inject the JWT token through an interceptor
 // We get the `accessToken` from the localStorage that we set when we authenticate

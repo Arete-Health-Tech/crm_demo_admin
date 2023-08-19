@@ -69,19 +69,7 @@ const MessagingWidget = (props: Props) => {
           snapshot.forEach((doc) => {
             message.push(doc.data());
           });
-          console.log('message received at client',message[message.length - 1]);
-          (async function(){
-          if (
-            message.length > messages.length &&
-            message[message.length - 1]?.type === "received"
-          ) {
-            console.log(
-              'messages[message.length - 1]',
-              message[message.length - 1]
-            );
-            await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
-          }
-        })();
+          
           setMessages(message);
         });
 
@@ -104,8 +92,8 @@ const MessagingWidget = (props: Props) => {
     setSendMessage('');
   };
 
-  console.log(messages);
-  console.log(sendMessage);
+  // console.log(messages);
+  // console.log(sendMessage);
 
   return (
     <Stack

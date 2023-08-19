@@ -67,6 +67,7 @@ export interface iTicket {
   creator: string;
   assigned: string;
   stage: string;
+  location:string;
   createdAt: string;
   creator: iCreator[];
   subStageCode: {
@@ -99,6 +100,8 @@ export interface iTicketStore {
   setLoaderOn: (loaderOn: boolean) => void;
   pageNumber: number;
   setPageNumber: (pageNumber: number)=> void;
+  estimates:iEstimate[];
+setEstimates:(estimates:iEstimate[])=>void;
 }
 
 export interface iNote {

@@ -70,66 +70,60 @@ import MobileStepper from '@mui/material/MobileStepper';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import PDFDocument from '@react-pdf/pdfkit'
+import PDFDocument from '@react-pdf/pdfkit';
 import { Document, Page } from 'react-pdf';
 
 import AWS from 'aws-sdk';
 
+const questions = [
+  {
+    question: '	Has the patient received a Bill Estimate?',
+    responses: ['Yes', 'No']
+  },
+  {
+    question: '	Has the patient received a WhatsApp Message?',
+    responses: ['Yes', 'No']
+  },
+  {
+    question: '	Did the patient explore the ‘Menu’ from our Whatsapp Message?',
+    responses: ['Yes', 'No']
+  },
+  {
+    question:
+      '	Is the patient able to perform Activities of Daily Living (ADL)?',
+    responses: [
+      'Walk without Support',
+      'Eat without Support',
+      'Need help for ADL'
+    ]
+  },
+  {
+    question: '	Does the Patient have any Surgical Fear?',
+    responses: ['Yes', 'No']
+  },
+  {
+    question: '	On the Basis  of ADL and SFQ, Indicate the  ‘Level Of Distress’',
+    responses: ['Mild', 'Moderate', 'Severe']
+  },
+  {
+    question: 'Payment Mode',
+    responses: ['Cash', 'CGHS/ECHS', 'Corporate', 'NSG', 'TPA']
+  },
+  {
+    question: '	Is Paras Hospital‘s, patients',
+    responses: ['1st Opinion', '2nd Opinion']
+  },
+  {
+    question: 'Does the patient have any Caregiver at',
+    responses: ['Yes', 'No']
+  },
+  {
+    question: 'Did you Inform the Next Follow-up date to Patient',
+    responses: ['Yes', 'No']
+  }
 
- const questions = [
-   {
-     question: '	Has the patient received a Bill Estimate?',
-     responses: ['Yes', 'No']
-   },
-   {
-     question: '	Has the patient received a WhatsApp Message?',
-     responses: ['Yes', 'No']
-   },
-   {
-     question: '	Did the patient explore the ‘Menu’ from our Whatsapp Message?',
-     responses: ['Yes', 'No']
-   },
-   {
-     question:
-       '	Is the patient able to perform Activities of Daily Living (ADL)?',
-     responses: [
-       'Walk without Support',
-       'Eat without Support',
-       'Need help for ADL'
-     ]
-   },
-   {
-     question: '	Does the Patient have any Surgical Fear?',
-     responses: ['Yes', 'No']
-   },
-   {
-     question:
-       '	On the Basis  of ADL and SFQ, Indicate the  ‘Level Of Distress’',
-     responses: ['Mild', 'Moderate', 'Severe']
-   },
-   {
-     question: 'Payment Mode',
-     responses: ['Cash', 'CGHS/ECHS', 'Corporate', 'NSG', 'TPA']
-   },
-   {
-     question: '	Is Paras Hospital‘s, patients',
-     responses: ['1st Opinion', '2nd Opinion']
-   },
-   {
-     question: 'Does the patient have any Caregiver at',
-     responses: ['Yes', 'No']
-   },
-   {
-     question: 'Did you Inform the Next Follow-up date to Patient',
-     responses: ['Yes', 'No']
-   }
-
-   // Add more questions as needed
- ];
-
-
-
-
+  // Add more questions as needed
+];
 
 dayjs.extend(relativeTime);
 
@@ -137,66 +131,115 @@ type Props = {};
 
 const SingleTicketDetails = (props: Props) => {
   const { ticketID } = useParams();
-   const { tickets, filterTickets, reminders, pageNumber, searchByName } =
-     useTicketStore();
+  const {
+    tickets,
+    filterTickets,
+    reminders,
+    pageNumber,
+    searchByName,
+    estimates
+  } = useTicketStore();
   const { doctors, departments, stages } = useServiceStore();
   const [currentTicket, setCurrentTicket] = useState<iTicket>();
   const [value, setValue] = useState('1');
   const [script, setScript] = useState<iScript>();
   const [isScript, setIsScript] = useState(false);
   const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
-    const [singleReminder, setSingleReminder] = useState<iReminder[] | any[]>(
-      []
-    );
+  const [singleReminder, setSingleReminder] = useState<iReminder[] | any[]>([]);
   const [open, setOpen] = useState(false);
-    const theme = useTheme();
-    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-    const [activeStep, setActiveStep] = useState(0);
-    const [selectedResponses, setSelectedResponses] = useState({});
-      const [pdfUrl, setPdfUrl] = useState('');
+  const theme = useTheme();
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [activeStep, setActiveStep] = useState(0);
+  const [selectedResponses, setSelectedResponses] = useState({});
+  const [pdfUrl, setPdfUrl] = useState('');
 
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
   const handlePhoneCall = async (e: React.SyntheticEvent) => {
-     setOpen(true);
-    const currentSubStageCode = currentTicket?.subStageCode?.code;
-    const stageDetail: any = stages?.find(
-      ({ _id }) => currentTicket?.stage === _id
-    );
-    const noOfChilds = stageDetail?.child?.length || 3;
-    if (
-      currentSubStageCode &&
-      (!currentTicket?.prescription[0].admission || currentSubStageCode > noOfChilds - 3) &&
-      currentSubStageCode < noOfChilds
-    ) {
-      const payload = {
-        subStageCode: {
-          active: true,
-          code: 3
-        },
-        ticket: currentTicket?._id
-      };
+    const desiredStage = '6494196d698ecd9a9db95e3a';
+    const currentStage = currentTicket?.stage;
+    if (currentStage === desiredStage) {
+      const currentSubStageCode = currentTicket?.subStageCode?.code;
+      console.log(currentSubStageCode, 'this is substage code ');
+      const stageDetail: any = stages?.find(
+        ({ _id }) => currentTicket?.stage === _id
+      );
+      const noOfChilds = stageDetail?.child?.length || 3;
+      if (
+        currentSubStageCode &&
+        (!currentTicket?.prescription[0].admission ||
+          currentSubStageCode > noOfChilds - 3) &&
+        currentSubStageCode < noOfChilds
+      ) {
+        setOpen(true); // Open the modal
 
-      const result = await updateTicketSubStage(payload);
-      setTimeout(() => {
-        (async  ()=> {
-          await getTicketHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            filterTickets
-          );
-          setTicketUpdateFlag(result);
-        })();
-      }, 1000);
+        const payload = {
+          subStageCode: {
+            active: true,
+            code: 3
+          },
+          ticket: currentTicket?._id
+        };
+
+        const result = await updateTicketSubStage(payload);
+        setTimeout(() => {
+          (async () => {
+            await getTicketHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              filterTickets
+            );
+            setTicketUpdateFlag(result);
+          })();
+        }, 1000);
+      }
+    }else {
+       const currentSubStageCode = currentTicket?.subStageCode?.code;
+       console.log(currentSubStageCode, 'this is substage code ');
+       const stageDetail: any = stages?.find(
+         ({ _id }) => currentTicket?.stage === _id
+       );
+       const noOfChilds = stageDetail?.child?.length || 3;
+       if (
+         currentSubStageCode &&
+         (!currentTicket?.prescription[0].admission ||
+           currentSubStageCode > noOfChilds - 3) &&
+         currentSubStageCode < noOfChilds
+       ) {
+       
+
+         const payload = {
+           subStageCode: {
+             active: true,
+             code: 3
+           },
+           ticket: currentTicket?._id
+         };
+
+         const result = await updateTicketSubStage(payload);
+         setTimeout(() => {
+           (async () => {
+             await getTicketHandler(
+               searchByName,
+               pageNumber,
+               'false',
+               filterTickets
+             );
+             setTicketUpdateFlag(result);
+           })();
+         }, 1000);
+       }
     }
-  };
+  }
+    
+     
+
+      
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
-
-
 
   const handleNext = () => {
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -208,16 +251,9 @@ const SingleTicketDetails = (props: Props) => {
     setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
   };
 
-  
-
- 
   const handleClose = () => {
     setOpen(false);
   };
-
-
-
- 
 
   const handleResponseClick = (response) => {
     setSelectedResponses((prevSelectedResponses) => ({
@@ -240,7 +276,7 @@ const SingleTicketDetails = (props: Props) => {
   const getTicketInfo = (ticketID: string | undefined) => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
     setCurrentTicket(fetchTicket);
-     return fetchTicket;
+    return fetchTicket;
   };
 
   useEffect(() => {
@@ -258,19 +294,20 @@ const SingleTicketDetails = (props: Props) => {
             setSingleReminder([...singleReminder, data]);
           }
         });
+       
         setScript(script);
       }
     })();
+    
   }, [
     ticketID,
     tickets,
     currentTicket,
     ticketUpdateFlag,
     reminders.length,
-    reminders
+    reminders,
+    currentTicket?.stage
   ]);
-
- 
 
   const doctorSetter = (id: string) => {
     return doctors.find((doctor: iDoctor) => doctor._id === id)?.name;
@@ -280,53 +317,45 @@ const SingleTicketDetails = (props: Props) => {
     return departments.find((department: iDepartment) => department._id === id)
       ?.name;
   };
-  
 
-    function getConsumerIdByDataId(dataArray, dataIdToMatch) {
-      for (const obj of dataArray) {
-        if (obj._id === dataIdToMatch) {
-          return obj.consumer[0]._id;
-        }
+  function getConsumerIdByDataId(dataArray, dataIdToMatch) {
+    for (const obj of dataArray) {
+      if (obj._id === dataIdToMatch) {
+        return obj.consumer[0]?._id;
       }
-      return null; // Return null if no matching dataId found in the data array
     }
+    return null; // Return null if no matching dataId found in the data array
+  }
 
-    const consumerId = getConsumerIdByDataId(tickets, ticketID);
-
-    if (consumerId) {
-      console.log('Consumer ID found:', consumerId);
-    } else {
-      console.log('Consumer ID not found for the given dataId.');
+  function getEstimateIdByDataId(dataArray, dataIdToMatch) {
+    for (const obj of dataArray) {
+      if (obj._id === dataIdToMatch) {
+        return obj.estimate[0]?._id;
+      }
     }
-  
+    return null; // Return null if no matching dataId found in the data array
+  }
 
-   const fetchPdfUrl = async () => {
-   
-     AWS.config.update({
-       accessKeyId: 'AKIAWCP3MUKZ6OJ6YHTH',
-       secretAccessKey: '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',
-       region: 'ap-south-1'
-     });
+  const consumerId = getConsumerIdByDataId(tickets, ticketID);
+  const estimateId = getEstimateIdByDataId(tickets, ticketID);
 
-     const s3 = new AWS.S3();
-     const params = {
-       Bucket: 'arete-prescriptions',
-       Key: `patients/${consumerId}/${ticketID}/estimates`,
-       Expires: 3600 // URL expiration time in seconds
-     };
+  console.log(estimateId);
 
-     try {
-       const url = await s3.getSignedUrl('getObject', params);
-       setPdfUrl(url);
-        window.open(pdfUrl, '_blank');
-     } catch (error) {
-       console.error('Error fetching PDF URL', error);
-     }
-   };
+  if (consumerId) {
+    console.log('Consumer ID found:', consumerId);
+  } else {
+    console.log('Consumer ID not found for the given dataId.');
+  }
 
+  const fetchPdfUrl = async () => {
+   if (currentTicket?.location) {
+     window.open(currentTicket.location, '_blank');
+   }else{
+     alert('Please create an estimate.');
+   }
+  };
 
-
-
+  console.log(currentTicket, 'current ticket hai');
 
   return (
     <Stack height={'100vh'} direction="row">
@@ -398,245 +427,248 @@ const SingleTicketDetails = (props: Props) => {
                 >
                   <Call />
                 </IconButton>
-                <Modal
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                    // overflow: 'auto', // Add the overflow attribute here
-                  }}
-                >
-                  <div>
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 4,
-                        width: '50%',
-                        height: '60%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        overflow: 'auto'
-                      }}
-                    >
-                      <Stack spacing={3}>
-                        <Typography variant="h6" align="center" gutterBottom>
-                          Checklist Form
-                        </Typography>
-
-                        <Box
-                          sx={{
-                            width: '100%',
-                            height: '20%',
-                            borderRadius: '50px',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}
-                        >
-                          {/* Current Question */}
-                          <Typography
-                            variant="h5"
-                            style={{ textAlign: 'center' }}
-                          >
-                            {questions[currentQuestionIndex].question}
+              
+                  <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                      // overflow: 'auto', // Add the overflow attribute here
+                    }}
+                  >
+                    <div>
+                      <Box
+                        sx={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          bgcolor: 'background.paper',
+                          border: '2px solid #000',
+                          boxShadow: 24,
+                          p: 4,
+                          width: '50%',
+                          height: '60%',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          overflow: 'auto'
+                        }}
+                      >
+                        <Stack spacing={3}>
+                          <Typography variant="h6" align="center" gutterBottom>
+                            Checklist Form
                           </Typography>
-                        </Box>
-                        <div>
-                          {/* Responses */}
 
-                          {currentQuestionIndex === 3
-                            ? questions[currentQuestionIndex].responses.map(
-                                (response, index) => (
-                                  <Box sx={{ justifyContent: 'center' }}>
-                                    <FormControlLabel
-                                      key={index}
-                                      control={
-                                        <Checkbox
-                                          checked={
-                                            selectedResponses[
-                                              currentQuestionIndex
-                                            ] &&
-                                            selectedResponses[
-                                              currentQuestionIndex
-                                            ].includes(response)
-                                          }
-                                          onChange={() =>
-                                            handleResponseClick(response)
-                                          }
-                                          sx={{
-                                            color: 'primary.main',
-                                            '&.Mui-checked': {
-                                              color: 'primary.main'
+                          <Box
+                            sx={{
+                              width: '100%',
+                              height: '20%',
+                              borderRadius: '50px',
+                              display: 'flex',
+                              justifyContent: 'center',
+                              alignItems: 'center'
+                            }}
+                          >
+                            {/* Current Question */}
+                            <Typography
+                              variant="h5"
+                              style={{ textAlign: 'center' }}
+                            >
+                              {questions[currentQuestionIndex].question}
+                            </Typography>
+                          </Box>
+                          <div>
+                            {/* Responses */}
+
+                            {currentQuestionIndex === 3
+                              ? questions[currentQuestionIndex].responses.map(
+                                  (response, index) => (
+                                    <Box sx={{ justifyContent: 'center' }}>
+                                      <FormControlLabel
+                                        key={index}
+                                        control={
+                                          <Checkbox
+                                            checked={
+                                              selectedResponses[
+                                                currentQuestionIndex
+                                              ] &&
+                                              selectedResponses[
+                                                currentQuestionIndex
+                                              ].includes(response)
                                             }
-                                          }}
-                                        />
-                                      }
-                                      label={response}
-                                    />
-                                  </Box>
-                                )
-                              )
-                            : currentQuestionIndex === 5 ||
-                              currentQuestionIndex === 6 ||
-                              currentQuestionIndex === 7
-                            ? questions[currentQuestionIndex].responses.map(
-                                (response, index) => (
-                                  <Box sx={{ justifyContent: 'center' }}>
-                                    <FormControlLabel
-                                      key={index}
-                                      control={
-                                        <Checkbox
-                                          checked={
-                                            selectedResponses[
-                                              currentQuestionIndex
-                                            ] === response
-                                          }
-                                          onChange={() =>
-                                            handleResponseClick(response)
-                                          }
-                                          sx={{
-                                            color: 'primary.main',
-                                            '&.Mui-checked': {
-                                              color: 'primary.main'
+                                            onChange={() =>
+                                              handleResponseClick(response)
                                             }
-                                          }}
-                                        />
-                                      }
-                                      label={response}
-                                    />
-                                  </Box>
+                                            sx={{
+                                              color: 'primary.main',
+                                              '&.Mui-checked': {
+                                                color: 'primary.main'
+                                              }
+                                            }}
+                                          />
+                                        }
+                                        label={response}
+                                      />
+                                    </Box>
+                                  )
                                 )
-                              )
-                            : questions[currentQuestionIndex].responses.map(
-                                (response, index) => (
-                                  <Box sx={{ justifyContent: 'center' }}>
-                                    <Button
-                                      key={index}
-                                      variant="contained"
-                                      fullWidth
-                                      onClick={() =>
-                                        handleResponseClick(response)
-                                      }
-                                      sx={{ mt: 1, mb: 1, bgcolor: 'EBEDF5' }}
-                                    >
-                                      {response}
-                                    </Button>
-                                  </Box>
+                              : currentQuestionIndex === 5 ||
+                                currentQuestionIndex === 6 ||
+                                currentQuestionIndex === 7
+                              ? questions[currentQuestionIndex].responses.map(
+                                  (response, index) => (
+                                    <Box sx={{ justifyContent: 'center' }}>
+                                      <FormControlLabel
+                                        key={index}
+                                        control={
+                                          <Checkbox
+                                            checked={
+                                              selectedResponses[
+                                                currentQuestionIndex
+                                              ] === response
+                                            }
+                                            onChange={() =>
+                                              handleResponseClick(response)
+                                            }
+                                            sx={{
+                                              color: 'primary.main',
+                                              '&.Mui-checked': {
+                                                color: 'primary.main'
+                                              }
+                                            }}
+                                          />
+                                        }
+                                        label={response}
+                                      />
+                                    </Box>
+                                  )
                                 )
+                              : questions[currentQuestionIndex].responses.map(
+                                  (response, index) => (
+                                    <Box sx={{ justifyContent: 'center' }}>
+                                      <Button
+                                        key={index}
+                                        variant="contained"
+                                        fullWidth
+                                        onClick={() =>
+                                          handleResponseClick(response)
+                                        }
+                                        sx={{ mt: 1, mb: 1, bgcolor: 'EBEDF5' }}
+                                      >
+                                        {response}
+                                      </Button>
+                                    </Box>
+                                  )
+                                )}
+
+                            {currentQuestionIndex === 2 &&
+                              selectedResponses[currentQuestionIndex] ===
+                                'No' && (
+                                <div>
+                                  <h2>Reason:</h2>
+                                  <textarea
+                                    rows={4}
+                                    cols={60}
+                                    value={
+                                      selectedResponses[
+                                        currentQuestionIndex + '_reason'
+                                      ] || ''
+                                    }
+                                    onChange={(e) =>
+                                      setSelectedResponses(
+                                        (prevSelectedResponses) => ({
+                                          ...prevSelectedResponses,
+                                          [currentQuestionIndex + '_reason']:
+                                            e.target.value
+                                        })
+                                      )
+                                    }
+                                  />
+                                  <Button variant="contained">Submit</Button>
+                                </div>
                               )}
+                          </div>
 
-                          {currentQuestionIndex === 2 &&
+                          {currentQuestionIndex == 8 &&
                             selectedResponses[currentQuestionIndex] ===
-                              'No' && (
+                              'Yes' && (
                               <div>
-                                <h2>Reason:</h2>
-                                <textarea
-                                  rows={4}
-                                  cols={60}
-                                  value={
-                                    selectedResponses[
-                                      currentQuestionIndex + '_reason'
-                                    ] || ''
-                                  }
-                                  onChange={(e) =>
-                                    setSelectedResponses(
-                                      (prevSelectedResponses) => ({
-                                        ...prevSelectedResponses,
-                                        [currentQuestionIndex + '_reason']:
-                                          e.target.value
-                                      })
-                                    )
-                                  }
-                                />
-                                <Button variant="contained">Submit</Button>
+                                <form>
+                                  <TextField
+                                    label="Name"
+                                    fullWidth
+                                    // margin="normal"
+                                    variant="outlined"
+                                  />
+                                  <TextField
+                                    label="Phone Number"
+                                    fullWidth
+                                    // margin="normal"
+                                    variant="outlined"
+                                  />
+                                  <Button
+                                    variant="contained"
+                                    color="primary"
+                                    //onClick={handleFormSubmit}
+                                    sx={{ mt: 2 }}
+                                  >
+                                    Submit
+                                  </Button>
+                                </form>
                               </div>
                             )}
-                        </div>
-
-                        {currentQuestionIndex == 8 &&
-                          selectedResponses[currentQuestionIndex] === 'Yes' && (
-                            <div>
-                              <form>
-                                <TextField
-                                  label="Name"
-                                  fullWidth
-                                  // margin="normal"
-                                  variant="outlined"
-                                />
-                                <TextField
-                                  label="Phone Number"
-                                  fullWidth
-                                  // margin="normal"
-                                  variant="outlined"
-                                />
+                          <Box
+                            sx={{
+                              position: 'absolute',
+                              bottom: '2px',
+                              width: '90%'
+                            }}
+                          >
+                            <MobileStepper
+                              variant="progress"
+                              steps={10}
+                              position="static"
+                              activeStep={activeStep}
+                              sx={{ maxWidth: '100%', flexGrow: 0 }}
+                              nextButton={
                                 <Button
-                                  variant="contained"
-                                  color="primary"
-                                  //onClick={handleFormSubmit}
-                                  sx={{ mt: 2 }}
+                                  size="small"
+                                  onClick={handleNext}
+                                  disabled={activeStep === 9}
                                 >
-                                  Submit
+                                  Next
+                                  {theme.direction === 'rtl' ? (
+                                    <KeyboardArrowLeft />
+                                  ) : (
+                                    <KeyboardArrowRight />
+                                  )}
                                 </Button>
-                              </form>
-                            </div>
-                          )}
-                        <Box
-                          sx={{
-                            position: 'absolute',
-                            bottom: '2px',
-                            width: '90%'
-                          }}
-                        >
-                          <MobileStepper
-                            variant="progress"
-                            steps={10}
-                            position="static"
-                            activeStep={activeStep}
-                            sx={{ maxWidth: '100%', flexGrow: 0 }}
-                            nextButton={
-                              <Button
-                                size="small"
-                                onClick={handleNext}
-                                disabled={activeStep === 9}
-                              >
-                                Next
-                                {theme.direction === 'rtl' ? (
-                                  <KeyboardArrowLeft />
-                                ) : (
-                                  <KeyboardArrowRight />
-                                )}
-                              </Button>
-                            }
-                            backButton={
-                              <Button
-                                size="small"
-                                onClick={handleBack}
-                                disabled={activeStep === 0}
-                              >
-                                {theme.direction === 'rtl' ? (
-                                  <KeyboardArrowRight />
-                                ) : (
-                                  <KeyboardArrowLeft />
-                                )}
-                                Back
-                              </Button>
-                            }
-                          />
-                        </Box>
-                      </Stack>
-                    </Box>
-                  </div>
-                </Modal>
+                              }
+                              backButton={
+                                <Button
+                                  size="small"
+                                  onClick={handleBack}
+                                  disabled={activeStep === 0}
+                                >
+                                  {theme.direction === 'rtl' ? (
+                                    <KeyboardArrowRight />
+                                  ) : (
+                                    <KeyboardArrowLeft />
+                                  )}
+                                  Back
+                                </Button>
+                              }
+                            />
+                          </Box>
+                        </Stack>
+                      </Box>
+                    </div>
+                  </Modal>
+             
               </div>
             </a>
             <Chip
@@ -965,4 +997,3 @@ const SingleTicketDetails = (props: Props) => {
 };
 
 export default SingleTicketDetails;
-

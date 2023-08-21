@@ -12,9 +12,9 @@ enum StatusCode {
 
 export const SERVER_URL = 'https://backend.aretehealth.tech/prod/api/v1/';
 // export const SERVER_URL = 'http://localhost:3001/prod/api/v1/';
-// export const BACKEND_URL = 'http://localhost:3001';
+// export const BACKEND_URL = 'http://localhost:5050';
 
-export const BACKEND_URL = 'https://backend.aretehealth.tech';
+export const BACKEND_URL = 'http://3.111.196.16:5050';
 //
 const headers: Readonly<Record<string, string | boolean>> = {
   Accept: 'application/json',

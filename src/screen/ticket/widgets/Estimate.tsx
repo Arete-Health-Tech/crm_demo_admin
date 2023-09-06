@@ -118,6 +118,8 @@ const [textFieldValue, setTextFieldValue] = useState('');
     services: ''
   });
 
+  console.log(services)
+
   const wardICUSetter = (id: string) => {
     return wards.find((ward: IWard) => ward._id === id)?.name;
   };

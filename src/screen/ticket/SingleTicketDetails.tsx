@@ -160,7 +160,7 @@ const SingleTicketDetails = (props: Props) => {
     const currentStage = currentTicket?.stage;
     if (currentStage === desiredStage) {
       const currentSubStageCode = currentTicket?.subStageCode?.code;
-      console.log(currentSubStageCode, 'this is substage code ');
+    
       const stageDetail: any = stages?.find(
         ({ _id }) => currentTicket?.stage === _id
       );
@@ -196,7 +196,7 @@ const SingleTicketDetails = (props: Props) => {
       }
     }else {
        const currentSubStageCode = currentTicket?.subStageCode?.code;
-       console.log(currentSubStageCode, 'this is substage code ');
+      
        const stageDetail: any = stages?.find(
          ({ _id }) => currentTicket?.stage === _id
        );
@@ -339,13 +339,9 @@ const SingleTicketDetails = (props: Props) => {
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
   const estimateId = getEstimateIdByDataId(tickets, ticketID);
 
-  console.log(estimateId);
+ 
 
-  if (consumerId) {
-    console.log('Consumer ID found:', consumerId);
-  } else {
-    console.log('Consumer ID not found for the given dataId.');
-  }
+
 
   const fetchPdfUrl = async () => {
    if (currentTicket?.location) {
@@ -355,7 +351,7 @@ const SingleTicketDetails = (props: Props) => {
    }
   };
 
-  console.log(currentTicket, 'current ticket hai');
+
 
   return (
     <Stack height={'100vh'} direction="row">

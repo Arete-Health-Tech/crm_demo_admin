@@ -21,6 +21,7 @@ import AgentReply from './AgentReply';
 import dayjs from 'dayjs';
 import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../../constantUtils/constant';
+import UploadIcon from '@mui/icons-material/Upload';
 
 type Props = {};
 
@@ -179,6 +180,14 @@ const MessagingWidget = (props: Props) => {
           >
             <Typography color={sendMessage ? 'blue' : 'gray'}>Reply</Typography>
             <Send htmlColor={sendMessage ? 'blue' : 'gray'} />
+            <UploadIcon />
+            <input
+              type="file"
+              accept="image/*"
+              // ref={photoInputRef}
+              style={{ display: 'none' }}
+              // onChange={handlePhotoInputChange}
+            />
           </Box>
         </Stack>
       </Box>

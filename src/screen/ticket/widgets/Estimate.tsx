@@ -28,8 +28,9 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { createEstimateHandler } from '../../../api/estimate/estimateHandler';
 import { searchService } from '../../../api/service/service';
 import { getAllServicesHandler } from '../../../api/service/serviceHandler';
@@ -44,7 +45,8 @@ import {
 } from '../../../types/store/service';
 import { iEstimate } from '../../../types/store/ticket';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
-import { UNDEFINED } from '../../../constantUtils/constant';
+import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
+import { validateTicket } from '../../../api/ticket/ticket';
 
 type Props = { setTicketUpdateFlag: any };
 
@@ -103,12 +105,13 @@ const Estimate = (props: Props) => {
   const [searchServiceValue, setSearchServiceValue] = useState('');
   const { wards, doctors } = useServiceStore();
   const { filterTickets, searchByName, pageNumber } = useTicketStore();
-  
-const [textFieldValue, setTextFieldValue] = useState('');
+
+  const [textFieldValue, setTextFieldValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-   const [open, setOpen] = useState(false);
-  
-// D STARTS HERE__________________________
+  const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+
+  // D STARTS HERE__________________________
 
   const [submittedData, setSubmittedData] = useState(['']);
 
@@ -248,17 +251,16 @@ const [textFieldValue, setTextFieldValue] = useState('');
     }, 1000);
   };
 
-const handleSubmit = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     if (textFieldValue.trim() === '') {
       setErrorMessage('This field is required');
     } else {
-
       // D STARTS HERE__________________________
       setSubmittedData([...submittedData, textFieldValue]);
-      setTextFieldValue(''); 
-     setErrorMessage('Your Reason has been Submitted');
+      setTextFieldValue('');
+      setErrorMessage('Your Reason has been Submitted');
       // D ENDS HERE____________________________
     }
   };
@@ -267,7 +269,6 @@ const handleSubmit = (event) => {
     setTextFieldValue(event.target.value);
     setErrorMessage('');
   };
-
 
   const style = {
     position: 'absolute',
@@ -278,30 +279,48 @@ const handleSubmit = (event) => {
     border: '2px solid #000',
     boxShadow: 40,
     p: 4,
-    width: '50%', 
+    width: '50%',
     height: '40%',
-    display: 'flex', 
-    flexDirection: 'column', 
-    justifyContent: 'center' 
-   
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center'
   };
 
- 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const handleOnClose = async () => {
+    if (ticketID) {
+      await validateTicket(ticketID);
+      navigate(NAVIGATE_TO_TICKET);
+    }
+  };
+
   return (
     <div>
       <div>
         <Button
-          style={{ marginRight: '20px', marginLeft: '50px' }}
+          style={{ marginLeft: '10px' }}
           onClick={() => setIsEstimateOpen(true)}
           variant="contained"
           endIcon={<Add />}
         >
           Create Estimate
         </Button>
-        <Button onClick={handleOpen} variant="contained" endIcon={<SkipNext />}>
+        <Button
+          style={{ marginLeft: '10px' }}
+          onClick={handleOpen}
+          variant="contained"
+          endIcon={<SkipNext />}
+        >
           Skip Estimate
+        </Button>
+        <Button
+          style={{ marginLeft: '10px' }}
+          variant="contained"
+          onClick={handleOnClose}
+          endIcon={<CloseIcon />}
+        >
+          Close
         </Button>
       </div>
       <Modal

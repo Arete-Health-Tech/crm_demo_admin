@@ -16,7 +16,12 @@ const PatientReply = ({ message }: Props) => {
       bgcolor="#f5f5f5"
       borderRadius="7.5px 7.5px 7.5px 0px"
     >
-      <Typography>{message.text}</Typography>
+      {message.text ? (
+        <Typography>{message.text}</Typography>
+      ) : (
+        <img src={message.imageUrl} alt="Image" />
+      )}
+      
       <Box display="flex" justifyContent="flex-start">
         <Typography variant="caption" fontSize="0.7rem" color="GrayText">
           {dayjs(message.createdAt).format('DD MMM YYYY hh:mm A')}

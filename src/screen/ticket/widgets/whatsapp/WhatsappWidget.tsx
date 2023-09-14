@@ -90,10 +90,10 @@ const MessagingWidget = (props: Props) => {
 
   const handleSendMessage = async () => {
     await sendTextMessage(sendMessage, consumerId, ticketID as string);
-    setSendMessage('');
+    setSendMessage(''); 
   };
 
-  // console.log(messages);
+  console.log(messages);
   // console.log(sendMessage);
 
   return (
@@ -124,7 +124,13 @@ const MessagingWidget = (props: Props) => {
                       <NodeListMessage message={message} />
                     ) : message.replyButton1 ? (
                       <NodeReplyMessage message={message} />
-                    ) : (
+                    ) :message.imageUrl ?(
+                       
+      <img src={message.imageUrl} alt="Image" />
+    
+  
+                    ):
+                     (
                       <Box
                         boxShadow=" 0 1px .5px rgba(11,20,26,.13)"
                         my={1}
@@ -181,13 +187,7 @@ const MessagingWidget = (props: Props) => {
             <Typography color={sendMessage ? 'blue' : 'gray'}>Reply</Typography>
             <Send htmlColor={sendMessage ? 'blue' : 'gray'} />
            
-            <input
-              type="file"
-              accept="image/*"
-              // ref={photoInputRef}
-              style={{ display: 'none' }}
-              // onChange={handlePhotoInputChange}
-            />
+          
           </Box>
         </Stack>
       </Box>

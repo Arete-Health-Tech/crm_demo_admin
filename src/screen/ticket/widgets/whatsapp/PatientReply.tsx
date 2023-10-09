@@ -57,7 +57,7 @@ console.log(link ,"this is image url")
       {message.text ? (
         <Typography>{message.text}</Typography>
       ) : (
-        <img src={link} alt="Image" />
+        <img src={message.url} alt="Image" />
       )}
 
       <Box display="flex" justifyContent="flex-start">

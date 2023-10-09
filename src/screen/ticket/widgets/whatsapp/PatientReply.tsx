@@ -10,11 +10,11 @@ type Props = {
 const PatientReply = ({ message }: Props) => {
   const [link, setLink] = useState('');
 
-console.log(message.url.url,"thuis is message url")
+console.log(message.url,"thuis is message url")
 
   useEffect(() => {
     // Replace with your API endpoint URL
-    const apiUrl = message.url.url;
+    const apiUrl = message.url;
     const bearerToken =
       'EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P';
 
@@ -57,7 +57,7 @@ console.log(link ,"this is image url")
       {message.text ? (
         <Typography>{message.text}</Typography>
       ) : (
-        <img src={message.url} alt="Image" />
+        <img src={link} alt="Image" />
       )}
 
       <Box display="flex" justifyContent="flex-start">

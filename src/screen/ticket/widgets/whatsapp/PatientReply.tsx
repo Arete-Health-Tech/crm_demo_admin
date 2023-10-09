@@ -10,7 +10,7 @@ type Props = {
 const PatientReply = ({ message }: Props) => {
   const [link, setLink] = useState('');
 
-
+console.log(message.url,"thuis is message url")
 
   useEffect(() => {
     // Replace with your API endpoint URL

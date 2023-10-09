@@ -1,12 +1,21 @@
 import { Box, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React from 'react';
+import axios from 'axios';
 
 type Props = {
   message: any;
 };
 
 const PatientReply = ({ message }: Props) => {
+
+
+console.log(message.url)
+
+
+
+
+
   return (
     <Box
       boxShadow=" 0 1px .5px rgba(11,20,26,.13)"
@@ -19,7 +28,7 @@ const PatientReply = ({ message }: Props) => {
       {message.text ? (
         <Typography>{message.text}</Typography>
       ) : (
-        <img src={message.imageUrl} alt="Image" />
+        <img src={message.url} alt="Image" />
       )}
       
       <Box display="flex" justifyContent="flex-start">

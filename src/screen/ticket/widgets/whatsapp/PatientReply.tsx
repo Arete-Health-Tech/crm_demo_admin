@@ -42,7 +42,7 @@ const PatientReply = ({ message }: Props) => {
 
 
 
-
+console.log(link ,"this is image url")
 
 
   return (

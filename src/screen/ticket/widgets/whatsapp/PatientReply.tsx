@@ -8,8 +8,7 @@ type Props = {
 };
 
 const PatientReply = ({ message }: Props) => {
-  const [link, setLink] = useState('');
-
+ const [imageData, setImageData] = useState('');
 console.log(message.url,"thuis is message url")
 
   useEffect(() => {
@@ -21,6 +20,7 @@ console.log(message.url,"thuis is message url")
     // Set up the Axios request with headers
     axios
       .get(apiUrl, {
+        responseType: 'arraybuffer',
         headers: {
           Authorization: `Bearer ${bearerToken}`
         }
@@ -28,9 +28,14 @@ console.log(message.url,"thuis is message url")
       .then((response) => {
         // Check if the request was successful (status code 200)
         if (response.status === 200) {
-          // Assuming the response is in JSON format, extract the link
-          const linkData = response.data.link_key; // Replace "link_key" with the actual key for the link in the response
-          setLink(linkData);
+          // Create a blob from the received binary data
+          const blob = new Blob([response.data], {
+            type: response.headers['content-type']
+          });
+
+          // Convert the blob to a data URL
+          const imageUrl = URL.createObjectURL(blob);
+          setImageData(imageUrl);
         } else {
           console.error(`Request failed with status code: ${response.status}`);
         }
@@ -42,7 +47,7 @@ console.log(message.url,"thuis is message url")
 
 
 
-console.log(link ,"this is image url")
+console.log(imageData, 'this is image url');
 
 
   return (
@@ -57,7 +62,7 @@ console.log(link ,"this is image url")
       {message.text ? (
         <Typography>{message.text}</Typography>
       ) : (
-        <img src={link} alt="Image" />
+        <img src={imageData} alt="Image" /> 
       )}
 
       <Box display="flex" justifyContent="flex-start">

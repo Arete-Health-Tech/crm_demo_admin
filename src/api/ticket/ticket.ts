@@ -3,15 +3,18 @@ import { apiClient } from '../apiClient';
 
 export const getTicket = async (
   name: string,
+
   pageNumber: number = 1,
   downloadAll: string,
   selectedFilters: any,
   ticketId?: string | null,
   fetchUpdated: boolean = false,
+  phone?:any,
+ 
 ) => {
   const params = new URLSearchParams(selectedFilters).toString();
   const { data } = await apiClient.get(
-    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&fetchUpdated=${fetchUpdated}&${params}`
+    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}`
   );
   return data;
 };

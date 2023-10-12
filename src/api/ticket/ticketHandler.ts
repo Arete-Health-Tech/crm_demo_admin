@@ -9,6 +9,7 @@ import {
   createNewReminder
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
+import useUserStore from '../../store/userStore';
 
 export const getTicketHandler = async (
   name: string,
@@ -26,9 +27,24 @@ export const getTicketHandler = async (
     setEmptyDataText,
     setDownloadTickets,
     setLoaderOn,
+  
+  
   } = useTicketStore.getState();
+  const {user} = useUserStore.getState();
+  const phone=user?.phone
+
+
+ 
   setLoaderOn(true);
-  const data = await getTicket(name, pageNumber, downloadAll, selectedFilters,ticketId,fetchUpdated);
+  const data = await getTicket(
+    name,
+    pageNumber,
+    downloadAll,
+    selectedFilters,
+    ticketId,
+    fetchUpdated,
+    phone
+  );
   const sortedTickets = data.tickets;
   const count = data.count;
 

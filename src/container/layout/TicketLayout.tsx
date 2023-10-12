@@ -44,6 +44,7 @@ import { getTicket } from '../../api/ticket/ticket';
 import CustomSpinLoader from '../../components/CustomSpinLoader';
 import { socket } from '../../api/apiClient';
 import { socketEventConstants } from '../../constantUtils/socketEventsConstants';
+import useUserStore from '../../store/userStore';
 
 let AllIntervals: any[] = [];
 
@@ -58,13 +59,19 @@ const Ticket = () => {
     setTickets,
     ticketCache,
     emptyDataText,
+    
     reminders,
     loaderOn,
     pageNumber,
     setPageNumber,
   } = useTicketStore();
+  
+
+
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
+  const[phone,setPhone]=useState(null)
+
   const [reminderList, setReminderList] = useState<any[]>([]);
   const [alarmReminderedList, setAlamarReminderList] = useState<iReminder[]>(
     []
@@ -103,6 +110,7 @@ const Ticket = () => {
       await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       setPage(pageNo);
       setPageNumber(pageNo);
+     
       redirectTicket();
     }
   };
@@ -305,7 +313,8 @@ const Ticket = () => {
                 'false',
                 filterTickets,
                 reminderDetail?.ticket,
-                true
+                true,
+                phone
               );
               // setTickets(data.tickets)
               // setTicketCount(data.count)

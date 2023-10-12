@@ -102,6 +102,7 @@ export interface iTicketStore {
   setPageNumber: (pageNumber: number)=> void;
   estimates:iEstimate[];
 setEstimates:(estimates:iEstimate[])=>void;
+
 }
 
 export interface iNote {
@@ -123,6 +124,7 @@ export interface iReminder {
 
 export interface iTicketFilter {
   stageList: any[];
+
   representative: string | null;
   admissionType?: string[];
   diagnosticType?: string[];
@@ -137,3 +139,4 @@ export interface iCreator {
   email: string;
   phone: number;
 }
+

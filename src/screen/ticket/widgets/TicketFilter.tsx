@@ -33,6 +33,7 @@ import {
 import { filterActions } from '../ticketStateReducers/actions/filterAction';
 import { UNDEFINED } from '../../../constantUtils/constant';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
+import useUserStore from '../../../store/userStore';
 
 const drawerWidth = 450;
 
@@ -52,12 +53,16 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
       padding: '0 4px'
     }
   }));
+
   const initialFilters: ticketFilterTypes = {
     stageList: [],
-    representative: null
+    representative: null,
+    
   };
 
-  const { setFilterTickets, searchByName } = useTicketStore();
+  const { setFilterTickets } = useTicketStore(); 
+  
+
   // const [ticketFilters, setTicketFilters] = useState<iTicketFilter>({
   //   stageList: [],
   //   admissionType: [],
@@ -81,7 +86,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   );
   const [startDate, setStartDate] = React.useState<string>();
   const [endDate, setEndDate] = React.useState<string>();
-  const [currentReperesentative, setCurrentRepresentative] = useState('');
+  const [currentReperesentative, setCurrentRepresentative] = useState( '');
   const [filterCount, setFilterCount] = useState(0);
 
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -102,6 +107,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
       payload: [...selectedFilters.stageList, value]
     });
   };
+
 
   const handleRepresentative = (e: any) => {
     const value = e.target.value;
@@ -165,6 +171,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
       );
       setRepresentativeLabel(transformRepresentative);
       setStagesLabels(transformStages);
+     
     })();
   }, []);
 

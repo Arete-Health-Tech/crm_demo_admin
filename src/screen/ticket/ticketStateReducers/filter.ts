@@ -4,11 +4,13 @@ import { iTicketFilter } from '../../../types/store/ticket';
 export interface ticketFilterTypes {
   stageList: Array<any>;
   representative: string | null;
+ 
 }
 
 export const selectedFiltersState: iTicketFilter = {
   stageList: [],
-  representative: null
+  representative: null,
+ 
 };
 
 interface actionType {
@@ -33,6 +35,7 @@ export function selectedFiltersReducer(
       representative: action.payload
     };
   }
+    
 
   throw new Error('unknown action type');
 }

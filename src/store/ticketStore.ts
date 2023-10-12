@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { iTicketStore } from '../types/store/ticket';
+import useUserStore from './userStore';
 
 const useTicketStore = create<iTicketStore>((set, get) => ({
   tickets: [],
@@ -20,15 +21,15 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   setReminders: (reminders) => set({ reminders }),
   filterTickets: {
     stageList: [],
-    representative: null
+    representative: null, 
   },
   setFilterTickets: (filterTickets) => set({ filterTickets }),
   loaderOn: false,
-  setLoaderOn: (loaderOn) => set({loaderOn}),
+  setLoaderOn: (loaderOn) => set({ loaderOn }),
   pageNumber: 1,
-  setPageNumber: (pageNumber) => set({pageNumber}),
-  estimates:[],
-  setEstimates:(estimates)=>set({estimates}),
+  setPageNumber: (pageNumber) => set({ pageNumber }),
+  estimates: [],
+  setEstimates: (estimates) => set({ estimates })
 }));
 
 export default useTicketStore;

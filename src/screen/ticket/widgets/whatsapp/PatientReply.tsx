@@ -11,97 +11,80 @@ type Props = {
 const PatientReply = ({ message }: Props) => {
   const [imageBlob, setImageBlob] = useState(null);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(
-  //         `https://graph.facebook.com/v18.0/${message.url?.id}/`,
-  //         {
-  //           headers: {
-  //             Authorization:
-  //               'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
-  //           }
-  //         }
-  //       );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://graph.facebook.com/v18.0/${message.url?.id}/`,
+          {
+            headers: {
+              Authorization:
+                'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
+            }
+          }
+        );
 
-  //       // Assuming response.data.url is the URL of the image
-  //       const imageurl = JSON.stringify(response.data?.url);
+        // Assuming response.data.url is the URL of the image
+        const imageurl = JSON.stringify(response.data?.url);
+        const myHeaders = new Headers();
+        myHeaders.append(
+          'Authorization',
+          'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
+        );
 
-  //       // Handle the response data here
-  //       try {
-  //         const imageResponse = await axios.get(imageurl, {
-           
-  //           headers: {
-  //             Authorization:
-  //               'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
-  //           }
-  //         });
-  //         console.log(imageResponse, ' this is image response');
-  //         console.log(imageResponse.data, ' this is image response with data');
-  //         console.log(
-  //           JSON.stringify(imageResponse.data),
-  //           ' this is image response with data in string'
-  //         );
+        const requestOptions = {
+          method: 'GET',
+          headers: myHeaders,
+          redirect: 'follow' as RequestRedirect
+        };
 
-  //         setImageBlob(imageResponse.data);
-  //       } catch (imageError) {
-  //         console.error('Error fetching the image:', imageError);
-  //       }
-  //     } catch (error) {
-  //       // Handle any errors that occurred during the request
-  //       console.error(error);
-  //     }
-  //   };
+        fetch(
+          imageurl,
+          requestOptions
+        )
+          .then((response) => response.text())
+          .then((result) => {
+            // Handle the result here
+            console.log(result);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
 
-  //   fetchData();
-  // }, []);
+        // Handle the response data here
+      
+      } catch (error) {
+        // Handle any errors that occurred during the request
+        console.error(error);
+      }
+    };
 
-  // console.log(imageBlob);
+    fetchData();
+  }, []);
 
-  // // Function to trigger the download
-  // const downloadImage = () => {
-  //   if (imageBlob) {
-  //     // Create a blob URL for the image
-  //     const url = URL.createObjectURL(imageBlob);
+  console.log(imageBlob);
 
-  //     // Create an anchor element with the download attribute
-  //     const link = document.createElement('a');
-  //     link.href = URL.createObjectURL(imageBlob);
-  //     link.download = 'media_file.jpg'; // Specify the desired file name
+  // Function to trigger the download
+  const downloadImage = () => {
+    if (imageBlob) {
+      // Create a blob URL for the image
+      const url = URL.createObjectURL(imageBlob);
 
-  //     // Trigger a click event to download the file
-  //     link.click();
+      // Create an anchor element with the download attribute
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(imageBlob);
+      link.download = 'media_file.jpg'; // Specify the desired file name
 
-  //     // Revoke the object URL to free up resources
-  //     URL.revokeObjectURL(url);
-  //   }
-  // };
+      // Trigger a click event to download the file
+      link.click();
 
-
-  const myHeaders = new Headers();
-  myHeaders.append(
-    'Authorization',
-    'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
-  );
-
-  const requestOptions = {
-    method: 'GET',
-    headers: myHeaders,
-    redirect: 'follow' as RequestRedirect
+      // Revoke the object URL to free up resources
+      URL.revokeObjectURL(url);
+    }
   };
 
- fetch(
-   'https://lookaside.fbsbx.com/whatsapp_business/attachments/?mid=289438447309519&ext=1697624267&hash=ATvKEF-jy9EAP3EV1a8QKZ0BNpEC7raV2wfXQMcsomlXag',
-   requestOptions
- )
-   .then((response) => response.text())
-   .then((result) => {
-     // Handle the result here
-     console.log(result);
-   })
-   .catch((error) => {
-     console.error('Error:', error);
-   });
+
+  
 
 
   return (
@@ -120,8 +103,8 @@ const PatientReply = ({ message }: Props) => {
       )}
       {imageBlob ? (
         <div>
-          {/* <img src={URL.createObjectURL(imageBlob)} alt="Image" />
-          <button onClick={downloadImage}>Download Image</button> */}
+          <img src={URL.createObjectURL(imageBlob)} alt="Image" />
+          <button onClick={downloadImage}>Download Image</button>
         </div>
       ) : (
         <p>Image not found</p>

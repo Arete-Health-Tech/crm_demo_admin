@@ -10,7 +10,7 @@ type Props = {
 const PatientReply = ({ message }: Props) => {
  
  const [imageUrl, setImageUrl] = useState('');
- console.log(message.url)
+ 
 
 
 
@@ -31,7 +31,11 @@ const PatientReply = ({ message }: Props) => {
  console.log(imageUrl)
         // Handle the response data here
           const imageResponse = await axios.get(imageUrl, {
-            responseType: 'blob' // Specify 'blob' for binary data like images
+            responseType: 'blob',
+            headers: {
+              Authorization:
+                'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
+            } // Specify 'blob' for binary data like images
           });
 
  setImageUrl(URL.createObjectURL(imageResponse.data));
@@ -47,7 +51,7 @@ const PatientReply = ({ message }: Props) => {
 
   
 
-
+console.log(imageUrl)
 
 
 

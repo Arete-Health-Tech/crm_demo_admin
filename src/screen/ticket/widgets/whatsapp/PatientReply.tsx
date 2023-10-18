@@ -11,6 +11,33 @@ const PatientReply = ({ message }: Props) => {
  const [imageData, setImageData] = useState('');
  console.log(message.url)
 
+
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `https://graph.facebook.com/v18.0/${message.url?.id}/`,
+          {
+            headers: {
+              Authorization:
+                'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
+            }
+          }
+        );
+
+        // Handle the response data here
+        console.log(response.data);
+      } catch (error) {
+        // Handle any errors that occurred during the request
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   
 
 

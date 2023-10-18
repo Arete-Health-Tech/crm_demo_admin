@@ -2,59 +2,80 @@ import { Box, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 type Props = {
   message: any;
 };
 
 const PatientReply = ({ message }: Props) => {
-const [imageBlob, setImageBlob] = useState(null);
+  const [imageBlob, setImageBlob] = useState(null);
 
-useEffect(() => {
-  const fetchData = async () => {
-    try {
-      const response = await axios.get(
-        `https://graph.facebook.com/v18.0/${message.url?.id}/`,
-        {
-          headers: {
-            Authorization:
-              'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
-          }
-        }
-      );
-
-      // Assuming response.data.url is the URL of the image
-      const imageurl = response.data?.url;
-
-      // Handle the response data here
+  useEffect(() => {
+    const fetchData = async () => {
       try {
-        const imageResponse = await axios.get(imageurl, {
-          responseType: 'blob',
-          headers: {
-            Authorization:
-              'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
+        const response = await axios.get(
+          `https://graph.facebook.com/v18.0/${message.url?.id}/`,
+          {
+            headers: {
+              Authorization:
+                'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
+            }
           }
-        });
-console.log(imageResponse ," this is image response");
-console.log(imageResponse.data, ' this is image response with data');
-console.log(JSON.stringify(imageResponse.data), ' this is image response with data in string' );
+        );
 
+        // Assuming response.data.url is the URL of the image
+        const imageurl = response.data?.url;
 
-        setImageBlob(imageResponse.data);
-      } catch (imageError) {
-        console.error('Error fetching the image:', imageError);
+        // Handle the response data here
+        try {
+          const imageResponse = await axios.get(imageurl, {
+            responseType: 'blob',
+            headers: {
+              Authorization:
+                'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
+            }
+          });
+          console.log(imageResponse, ' this is image response');
+          console.log(imageResponse.data, ' this is image response with data');
+          console.log(
+            JSON.stringify(imageResponse.data),
+            ' this is image response with data in string'
+          );
+
+          setImageBlob(imageResponse.data);
+        } catch (imageError) {
+          console.error('Error fetching the image:', imageError);
+        }
+      } catch (error) {
+        // Handle any errors that occurred during the request
+        console.error(error);
       }
-    } catch (error) {
-      // Handle any errors that occurred during the request
-      console.error(error);
+    };
+
+    fetchData();
+  }, []);
+
+  console.log(imageBlob);
+
+  // Function to trigger the download
+  const downloadImage = () => {
+    if (imageBlob) {
+      // Create a blob URL for the image
+      const url = URL.createObjectURL(imageBlob);
+
+      // Create an anchor element with the download attribute
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'media_file.jpg'; // Specify the desired file name
+
+      // Trigger a click event to download the file
+      link.click();
+
+      // Revoke the object URL to free up resources
+      URL.revokeObjectURL(url);
     }
   };
-
-  fetchData();
-}, []);
-
-
-console.log(imageBlob);
 
   return (
     <Box
@@ -71,7 +92,10 @@ console.log(imageBlob);
         <p>text not found</p>
       )}
       {imageBlob ? (
-        <img src={URL.createObjectURL(imageBlob)} alt="Image" />
+        <div>
+          <img src={URL.createObjectURL(imageBlob)} alt="Image" />
+          <button onClick={downloadImage}>Download Image</button>
+        </div>
       ) : (
         <p>Image not found</p>
       )}

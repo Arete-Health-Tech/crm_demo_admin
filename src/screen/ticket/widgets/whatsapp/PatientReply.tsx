@@ -27,11 +27,11 @@ const PatientReply = ({ message }: Props) => {
             }
           }
         );
- const imageUrl = response.data?.url;
+ const imageurl = response.data?.url;
 
         // Handle the response data here
         try{
-          const imageResponse = await axios.get(imageUrl, {
+          const imageResponse = await axios.get(imageurl, {
             responseType: 'blob',
             headers: {
               Authorization:

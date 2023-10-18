@@ -8,57 +8,49 @@ type Props = {
 };
 
 const PatientReply = ({ message }: Props) => {
- 
- const [imageUrl, setImageUrl] = useState('');
- 
+const [imageBlob, setImageBlob] = useState(null);
 
-
-
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `https://graph.facebook.com/v18.0/${message.url?.id}/`,
-          {
-            headers: {
-              Authorization:
-                'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
-            }
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `https://graph.facebook.com/v18.0/${message.url?.id}/`,
+        {
+          headers: {
+            Authorization:
+              'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
           }
-        );
- const imageurl = response.data?.url;
-
-        // Handle the response data here
-        try{
-          const imageResponse = await axios.get(imageurl, {
-            responseType: 'blob',
-            headers: {
-              Authorization:
-                'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
-            } // Specify 'blob' for binary data like images
-          });
-
- setImageUrl(URL.createObjectURL(imageResponse.data));
-        }catch(imageError){
-          console.error('Error fetching the image:', imageError);
         }
+      );
 
-      } catch (error) {
-        // Handle any errors that occurred during the request
-        console.error(error);
+      // Assuming response.data.url is the URL of the image
+      const imageurl = response.data?.url;
+
+      // Handle the response data here
+      try {
+        const imageResponse = await axios.get(imageurl, {
+          responseType: 'blob',
+          headers: {
+            Authorization:
+              'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
+          }
+        });
+
+        setImageBlob(imageResponse.data);
+      } catch (imageError) {
+        console.error('Error fetching the image:', imageError);
       }
-    };
+    } catch (error) {
+      // Handle any errors that occurred during the request
+      console.error(error);
+    }
+  };
 
-    fetchData();
-  }, []);
-
-  
-
-console.log(imageUrl)
+  fetchData();
+}, []);
 
 
-
+console.log(imageBlob);
 
   return (
     <Box
@@ -74,7 +66,11 @@ console.log(imageUrl)
       ) : (
         <p>text not found</p>
       )}
-      {imageUrl ? <img src={imageUrl} alt="Image" /> : <p>Image not found</p>}
+      {imageBlob ? (
+        <img src={URL.createObjectURL(imageBlob)} alt="Image" />
+      ) : (
+        <p>Image not found</p>
+      )}
 
       <Box display="flex" justifyContent="flex-start">
         <Typography variant="caption" fontSize="0.7rem" color="GrayText">

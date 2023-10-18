@@ -25,7 +25,7 @@ const PatientReply = ({ message }: Props) => {
         );
 
         // Assuming response.data.url is the URL of the image
-        const imageurl = response.data?.url;
+        const imageurl = JSON.stringify(response.data?.url);
 
         // Handle the response data here
         try {
@@ -66,7 +66,7 @@ const PatientReply = ({ message }: Props) => {
 
       // Create an anchor element with the download attribute
       const link = document.createElement('a');
-      link.href = url;
+      link.href = URL.createObjectURL(imageBlob);
       link.download = 'media_file.jpg'; // Specify the desired file name
 
       // Trigger a click event to download the file

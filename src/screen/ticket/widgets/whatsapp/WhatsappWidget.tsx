@@ -93,7 +93,8 @@ const MessagingWidget = (props: Props) => {
     setSendMessage(''); 
   };
 
-  console.log(messages);
+  console.log(messages,"this is messages    1111");
+
   // console.log(sendMessage);
 
   return (

@@ -9,45 +9,13 @@ type Props = {
 
 const PatientReply = ({ message }: Props) => {
  const [imageData, setImageData] = useState('');
-console.log(message.url?.url,"thuis is message url")
+ console.log(message.url)
 
-  useEffect(() => {
-    // Replace with your API endpoint URL
-    const apiUrl = message.url?.url;
-    const bearerToken =
-      'EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P';
-
-    // Set up the Axios request with headers
-    axios
-      .get(apiUrl, {
-        responseType: 'arraybuffer',
-        headers: {
-          Authorization: `Bearer ${bearerToken}`
-        }
-      })
-      .then((response) => {
-        // Check if the request was successful (status code 200)
-        if (response.status === 200) {
-          // Create a blob from the received binary data
-          const blob = new Blob([response.data], {
-            type: response.headers['content-type']
-          });
-
-          // Convert the blob to a data URL
-          const imageUrl = URL.createObjectURL(blob);
-          setImageData(imageUrl);
-        } else {
-          console.error(`Request failed with status code: ${response.status}`);
-        }
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
-  }, []);
+  
 
 
 
-console.log(imageData, 'this is image url');
+
 
 
   return (
@@ -62,7 +30,7 @@ console.log(imageData, 'this is image url');
       {message.text ? (
         <Typography>{message.text}</Typography>
       ) : (
-        <img src={imageData} alt="Image" /> 
+        <img src={message.image} alt="Image" /> 
       )}
 
       <Box display="flex" justifyContent="flex-start">

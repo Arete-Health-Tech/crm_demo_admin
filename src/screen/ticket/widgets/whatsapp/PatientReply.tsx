@@ -28,8 +28,9 @@ const PatientReply = ({ message }: Props) => {
           }
         );
  const imageUrl = response.data?.url;
- console.log(imageUrl)
+
         // Handle the response data here
+        try{
           const imageResponse = await axios.get(imageUrl, {
             responseType: 'blob',
             headers: {
@@ -39,6 +40,9 @@ const PatientReply = ({ message }: Props) => {
           });
 
  setImageUrl(URL.createObjectURL(imageResponse.data));
+        }catch(imageError){
+          console.error('Error fetching the image:', imageError);
+        }
 
       } catch (error) {
         // Handle any errors that occurred during the request
@@ -68,8 +72,9 @@ console.log(imageUrl)
       {message.text ? (
         <Typography>{message.text}</Typography>
       ) : (
-       <img src={imageUrl} alt="Image" />
+        <p>text not found</p>
       )}
+      {imageUrl ? <img src={imageUrl} alt="Image" /> : <p>Image not found</p>}
 
       <Box display="flex" justifyContent="flex-start">
         <Typography variant="caption" fontSize="0.7rem" color="GrayText">

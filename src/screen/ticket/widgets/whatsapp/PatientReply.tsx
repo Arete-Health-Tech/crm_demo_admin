@@ -8,7 +8,8 @@ type Props = {
 };
 
 const PatientReply = ({ message }: Props) => {
- const [imageData, setImageData] = useState('');
+ 
+ const [imageUrl, setImageUrl] = useState('');
  console.log(message.url)
 
 
@@ -26,9 +27,15 @@ const PatientReply = ({ message }: Props) => {
             }
           }
         );
-
+ const imageUrl = response.data?.url;
+ console.log(imageUrl)
         // Handle the response data here
-        console.log(response.data?.url);
+          const imageResponse = await axios.get(imageUrl, {
+            responseType: 'blob' // Specify 'blob' for binary data like images
+          });
+
+ setImageUrl(URL.createObjectURL(imageResponse.data));
+
       } catch (error) {
         // Handle any errors that occurred during the request
         console.error(error);
@@ -57,7 +64,7 @@ const PatientReply = ({ message }: Props) => {
       {message.text ? (
         <Typography>{message.text}</Typography>
       ) : (
-        <img src={message.image} alt="Image" /> 
+       <img src={imageUrl} alt="Image" />
       )}
 
       <Box display="flex" justifyContent="flex-start">

@@ -24,7 +24,7 @@ useEffect(() => {
       );
 
       // Assuming response.data.url is the URL of the image
-      const imageurl = response.data?.url;
+      const imageurl = JSON.stringify(response.data?.url);
 
       // Handle the response data here
       try {

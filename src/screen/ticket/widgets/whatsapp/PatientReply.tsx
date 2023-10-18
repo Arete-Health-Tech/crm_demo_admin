@@ -77,7 +77,7 @@ const PatientReply = ({ message }: Props) => {
   //   }
   // };
 
-useEffect(() => {
+
   const myHeaders = new Headers();
   myHeaders.append(
     'Authorization',
@@ -102,7 +102,7 @@ useEffect(() => {
    .catch((error) => {
      console.error('Error:', error);
    });
-}, []);
+
 
   return (
     <Box

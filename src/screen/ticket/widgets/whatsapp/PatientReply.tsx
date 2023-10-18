@@ -35,6 +35,10 @@ useEffect(() => {
               'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
           }
         });
+console.log(imageResponse ," this is image response");
+console.log(imageResponse.data, ' this is image response with data');
+console.log(JSON.stringify(imageResponse.data), ' this is image response with data in string' );
+
 
         setImageBlob(imageResponse.data);
       } catch (imageError) {

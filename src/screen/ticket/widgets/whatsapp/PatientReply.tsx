@@ -28,7 +28,7 @@ const PatientReply = ({ message }: Props) => {
         );
 
         // Handle the response data here
-        console.log(response.data);
+        console.log(response.data.url);
       } catch (error) {
         // Handle any errors that occurred during the request
         console.error(error);

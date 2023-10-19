@@ -16,43 +16,6 @@ const PatientReply = ({ message }: Props) => {
 
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `https://graph.facebook.com/v18.0/${message.url?.id}/`,
-          {
-            headers: {
-              Authorization:
-                'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
-            }
-          }
-        );
- const image = JSON.stringify(response.data?.url);
- console.log(image)
-        // Handle the response data here
-          const imageResponse = await axios.get(image, {
-            responseType: 'blob',
-            headers: {
-              Authorization:
-                'Bearer EAALU5Uh1hCoBAHOvIZAOLuJVrUltYe3uMCIQwKvayQCZC5zR45RO9iK5ZAeRNUKhZB3dShZBM4DugqeUtw9ZCIYOr39g3fqGsjYYycjNPb4CpMFZCQY4rqUSXaPHHam8utfUUzC4NBBSYLkoZCuSEW1oPl6TaZCK7hgmJ1h1E5DxXw8BEXKW1Vs2P'
-            } // Specify 'blob' for binary data like images
-          });
-
- setImageUrl(URL.createObjectURL(imageResponse.data));
-
-      } catch (error) {
-        // Handle any errors that occurred during the request
-        console.error(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  
-
-console.log(imageUrl)
 
 
 
@@ -69,7 +32,7 @@ console.log(imageUrl)
       {message.text ? (
         <Typography>{message.text}</Typography>
       ) : (
-       <img src={imageUrl} alt="Image" />
+       <img src={message.url} alt="Image" />
       )}
 
       <Box display="flex" justifyContent="flex-start">

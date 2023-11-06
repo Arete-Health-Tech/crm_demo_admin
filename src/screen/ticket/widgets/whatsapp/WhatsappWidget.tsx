@@ -1,6 +1,6 @@
 import { Send } from '@mui/icons-material';
-import { Box, Stack, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Box, Stack, Typography, TextField, Button } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
 import { database } from '../../../../utils/firebase';
 import {
   collection,
@@ -21,14 +21,32 @@ import AgentReply from './AgentReply';
 import dayjs from 'dayjs';
 import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../../constantUtils/constant';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
+import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
+import SaveIcon from '@mui/icons-material/Save';
+import PrintIcon from '@mui/icons-material/Print';
+import ShareIcon from '@mui/icons-material/Share';
+import SpeedDial from '@mui/material/SpeedDial';
+import SpeedDialAction from '@mui/material/SpeedDialAction';
+import SpeedDialIcon from '@mui/material/SpeedDialIcon';
+import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import { apiClient } from '../../../../api/apiClient';
 
 type Props = {};
+
+
+
+
+
 
 const MessagingWidget = (props: Props) => {
   const { ticketID } = useParams();
   const { user } = useUserStore();
   const { tickets, filterTickets } = useTicketStore();
+ const fileInputRef = useRef<HTMLInputElement | null>(null);
+   const [file, setFile] = useState(null);
+    const [id, setId] = useState('');
 
   function getConsumerIdByDataId(dataArray, dataIdToMatch) {
     for (const obj of dataArray) {
@@ -80,6 +98,7 @@ const MessagingWidget = (props: Props) => {
 
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const [sendMessage, setSendMessage] = useState('');
+ 
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && sendMessage.trim() !== '') {
@@ -93,9 +112,51 @@ const MessagingWidget = (props: Props) => {
     setSendMessage(''); 
   };
 
-  console.log(messages,"this is messages    1111");
+  
 
-  // console.log(sendMessage);
+  
+
+
+
+  const handleImageUpload = () => {
+    fileInputRef.current?.click();
+  };
+
+const handleFileSelect = async (event) => {
+  const selectedFile = event.target.files[0];
+   console.log(selectedFile,"thisi s selected file")
+    const formData = new FormData();
+
+    // Append each Blob to the FormData object
+console.log(consumerId, 'this is consimer id ');
+    formData.append('images', selectedFile);
+    formData.append('consumerId', consumerId);
+    formData.append('ticketID',ticketID as string)
+
+   
+    try {
+      // Send the FormData object to the API using your apiClient
+      const response = await apiClient.post(
+        '/flow/whatsappImageStatus',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data' 
+          }
+        }
+      );
+
+      // Handle the API response
+      console.log('API Response:', response);
+    } catch (error) {
+      // Handle any API errors
+      console.error('API Error:', error);
+    }
+ 
+};
+console.log(messages,"this is message for send whtasapp image")
+console.log(file,"thuis is file outsider")
+
 
   return (
     <Stack
@@ -110,7 +171,7 @@ const MessagingWidget = (props: Props) => {
           backgroundImage: `url(${bgWhatsapp})`,
           overflowY: 'auto'
         }}
-        height="90%"
+        height="85%"
       >
         {messages
           ? messages.length > 0
@@ -125,13 +186,41 @@ const MessagingWidget = (props: Props) => {
                       <NodeListMessage message={message} />
                     ) : message.replyButton1 ? (
                       <NodeReplyMessage message={message} />
-                    ) :message.imageUrl ?(
-                       
-      <img src={message.imageUrl} alt="Image" />
-    
-  
-                    ):
-                     (
+                    ) : message.imageURL ? (
+                      <div
+                        style={{
+                          height: '10%',
+                          width: '50%'
+                        }}
+                      >
+                        {message.messageType === 'image' ? (
+                          <img
+                            src={message.imageURL}
+                            alt="Image"
+                            style={{
+                              boxShadow: '0 1px .5px rgba(11,20,26,.13)',
+                              margin: '10px 0',
+                              padding: '5px',
+                              backgroundColor: '#d8fdd3',
+                              borderRadius: '7.5px 7.5px 7.5px 0px'
+                            }}
+                          />
+                        ) : message.messageType === 'pdf' ? (
+                          <a
+                            href={message.imageURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <embed
+                              src={message.imageURL}
+                              type="application/pdf"
+                              width="100%"
+                              height="100%"
+                            />
+                          </a>
+                        ) : null}
+                      </div>
+                    ) : (
                       <Box
                         boxShadow=" 0 1px .5px rgba(11,20,26,.13)"
                         my={1}
@@ -187,9 +276,19 @@ const MessagingWidget = (props: Props) => {
           >
             <Typography color={sendMessage ? 'blue' : 'gray'}>Reply</Typography>
             <Send htmlColor={sendMessage ? 'blue' : 'gray'} />
-           
-          
           </Box>
+          <div>
+            <Button onClick={handleImageUpload} style={{ cursor: 'pointer' }}>
+              <AddAPhotoIcon />
+            </Button>
+            <input
+              type="file"
+              accept="image/*,.pdf"
+              style={{ display: 'none' }}
+              onChange={handleFileSelect}
+              ref={fileInputRef}
+            />
+          </div>
         </Stack>
       </Box>
     </Stack>

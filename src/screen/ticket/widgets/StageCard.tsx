@@ -216,7 +216,7 @@ const StageCard = (props: Props) => {
           'Content-Type': 'multipart/form-data'
         }
       });
-
+console.log(formdata)
       setPaymentIDValue('');
       setNoteTextValue('');
       setFile(null);

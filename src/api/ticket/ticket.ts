@@ -60,12 +60,18 @@ export const validateTicket = async (ticketId: string) => {
   return result;
 }
 
-export const sendTextMessage = async (message: string, consumerId: string ,ticketID:string) => {
+export const sendTextMessage = async (
+  message: string,
+  consumerId: string,
+  ticketID: string,
+
+) => {
   console.log(message, consumerId);
   const { data } = await apiClient.post('/flow/message', {
     message,
     consumerId,
-    ticketID
+    ticketID,
+   
   });
   return data;
 };

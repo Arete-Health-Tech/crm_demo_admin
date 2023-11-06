@@ -49,7 +49,7 @@ const PatientReply = ({ message }: Props) => {
           <img src={message.url} alt="Image" />
         </a>
       ) : (
-        <img src={message.url} alt="Image" />
+       ""
       )}
       <Box display="flex" justifyContent="flex-start">
         <Typography variant="caption" fontSize="0.7rem" color="GrayText">

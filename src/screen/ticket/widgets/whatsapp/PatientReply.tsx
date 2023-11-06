@@ -10,16 +10,18 @@ type Props = {
 };
 
 const PatientReply = ({ message }: Props) => {
- 
+ const isImage =
+   typeof message.url === 'string' &&
+   message.url.match(/\.(jpeg|jpg|gif|png|webp)$/i);
  
  const handleImageClick = (event) => {
-  
+   if (isImage) {
      // Open the URL in a new tab
      window.open(message.url, '_blank');
      // Prevent the default behavior of the anchor element (prevents opening in the same tab)
      event.preventDefault();
      
-   
+   }
  };
   
 
@@ -35,28 +37,20 @@ const PatientReply = ({ message }: Props) => {
     >
       {message.text ? (
         <Typography>{message.text}</Typography>
-      ) : message.messageType === 'image' ? (
+      ) : isImage ? (
         <a
-          href={message.imageURL}
+          href={message.url}
           download="image.jpg"
+        
           rel="noopener noreferrer"
           onClick={handleImageClick}
+        
         >
-          <img src={message.imageURL} alt="Image" />
-        </a>
-      ) : message.messageType === 'pdf' ? (
-        <a
-          href={message.imageURL}
-          download="document.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          PDF Document
+          <img src={message.url} alt="Image" />
         </a>
       ) : (
-        ''
+        <img src={message.url} alt="Image" />
       )}
-
       <Box display="flex" justifyContent="flex-start">
         <Typography variant="caption" fontSize="0.7rem" color="GrayText">
           {dayjs(message.createdAt).format('DD MMM YYYY hh:mm A')}

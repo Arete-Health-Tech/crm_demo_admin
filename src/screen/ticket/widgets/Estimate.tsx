@@ -47,6 +47,8 @@ import { iEstimate } from '../../../types/store/ticket';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import { validateTicket } from '../../../api/ticket/ticket';
+import axios from 'axios';
+import { apiClient } from '../../../api/apiClient';
 
 type Props = { setTicketUpdateFlag: any };
 
@@ -251,17 +253,37 @@ const Estimate = (props: Props) => {
     }, 1000);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit =async (event) => {
     event.preventDefault();
 
     if (textFieldValue.trim() === '') {
       setErrorMessage('This field is required');
     } else {
+      
       // D STARTS HERE__________________________
-      setSubmittedData([...submittedData, textFieldValue]);
-      setTextFieldValue('');
-      setErrorMessage('Your Reason has been Submitted');
-      // D ENDS HERE____________________________
+     
+console.log(ticketID,"this is ticketysmfbjsfhjsffs")
+      try {
+        const { data } = await apiClient.post(
+          '/ticket/skipEstimate',
+          { ticketID },
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+
+        // Handle the response from the server
+        console.log('Server response:', data);
+
+   handleClose()
+       setTextFieldValue("");
+      } catch (error) {
+
+        console.error('Error sending data to server:', error);
+       
+      }
     }
   };
 

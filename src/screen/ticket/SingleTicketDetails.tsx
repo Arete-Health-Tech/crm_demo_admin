@@ -72,6 +72,7 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import PDFDocument from '@react-pdf/pdfkit';
 import { Document, Page } from 'react-pdf';
+import CloseIcon from '@mui/icons-material/Close';
 
 import AWS from 'aws-sdk';
 
@@ -454,6 +455,18 @@ const SingleTicketDetails = (props: Props) => {
                           overflow: 'auto'
                         }}
                       >
+                         <IconButton
+                        onClick={handleClose}
+                        sx={{
+                          position: 'absolute',
+                          top: '8px',
+                          right: '8px',
+                          bgcolor: '#0047ab',
+                          color: 'white'
+                        }}
+                      >
+                        <CloseIcon />
+                      </IconButton>
                         <Stack spacing={3}>
                           <Typography variant="h6" align="center" gutterBottom>
                             Checklist Form

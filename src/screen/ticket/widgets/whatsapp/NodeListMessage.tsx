@@ -56,6 +56,7 @@ const NodeListMessage = ({ message }: Props) => {
 
       {isListOpen && (
         <Box
+        
           zIndex={9}
           width="100%"
           right={0}

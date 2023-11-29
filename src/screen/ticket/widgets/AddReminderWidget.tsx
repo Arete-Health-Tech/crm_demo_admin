@@ -14,6 +14,11 @@ import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { createNewReminderHandler, getAllReminderHandler } from '../../../api/ticket/ticketHandler';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
+
+
+
 
 type Props = {
   isModalOpen: boolean;
@@ -99,6 +104,16 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Create A New Reminder
           </Typography>
+          <IconButton  
+            onClick={() => setIsModalOpen(false)}
+            sx={{
+              position: 'absolute',
+              top: '8px',
+              right: '8px'
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
         </Stack>
         <Box p={4}>
           <Stack spacing={2}>

@@ -43,14 +43,14 @@ const AddNewTaskWidget = (props: Props) => {
             <ListItemIcon>
               <NotificationAddOutlined />
             </ListItemIcon>
-            <ListItemText primary="Add Reminder" />
+            <ListItemText primary="Add New Task" />
           </ListItemButton>
-          <ListItemButton>
+          {/* <ListItemButton>
             <ListItemIcon>
               <PlaylistAddCheckOutlined />
             </ListItemIcon>
             <ListItemText primary="Add New Task" />
-          </ListItemButton>
+          </ListItemButton> */}
         </List>
       )}
 

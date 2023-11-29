@@ -6,6 +6,7 @@ import {
   LinearProgress,
   MenuItem,
   Modal,
+  IconButton,
   Select,
   Step,
   StepLabel,
@@ -23,6 +24,7 @@ import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import useTicketStore from '../../../store/ticketStore';
 import { apiClient } from '../../../api/apiClient';
 import { useNavigate } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 
 type Props = {
   currentTicket: iTicket | any;
@@ -344,6 +346,18 @@ console.log(formdata)
               backgroundColor: '#e8eaf6'
             }}
           >
+            <IconButton
+              onClick={handleClose}
+              sx={{
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+                bgcolor: '#0047ab',
+                color: 'white'
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
             <Typography id="modal-modal-title" variant="h5" component="h1">
               Verify Payment
             </Typography>
@@ -414,6 +428,18 @@ console.log(formdata)
               backgroundColor: '#e8eaf6'
             }}
           >
+            <IconButton
+              onClick={handleCloseLose}
+              sx={{
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+                bgcolor: '#0047ab',
+                color: 'white'
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
             <Typography id="modal-modal-title" variant="h5" component="h1">
               Reason for closing lead
             </Typography>

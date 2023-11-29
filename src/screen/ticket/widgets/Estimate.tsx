@@ -20,6 +20,7 @@ import {
   FormLabel,
   InputLabel,
   MenuItem,
+  IconButton,
   Radio,
   Modal,
   RadioGroup,
@@ -50,6 +51,8 @@ import { validateTicket } from '../../../api/ticket/ticket';
 import axios from 'axios';
 import { apiClient } from '../../../api/apiClient';
 
+
+
 type Props = { setTicketUpdateFlag: any };
 
 const drawerWidth = 1200;
@@ -58,6 +61,7 @@ const Estimate = (props: Props) => {
   const { tickets } = useTicketStore();
   const { ticketID } = useParams();
   const ticket = tickets.find((element) => element._id === ticketID);
+  
 
   useEffect(() => {
     (async function () {
@@ -112,7 +116,7 @@ const Estimate = (props: Props) => {
   const [errorMessage, setErrorMessage] = useState('');
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-
+const [loading, setLoading] = useState(true);
   // D STARTS HERE__________________________
 
   const [submittedData, setSubmittedData] = useState(['']);
@@ -264,6 +268,7 @@ const Estimate = (props: Props) => {
      
 console.log(ticketID,"this is ticketysmfbjsfhjsffs")
       try {
+        
         const { data } = await apiClient.post(
           '/ticket/skipEstimate',
           { ticketID },
@@ -276,9 +281,11 @@ console.log(ticketID,"this is ticketysmfbjsfhjsffs")
 
         // Handle the response from the server
         console.log('Server response:', data);
+      
 
    handleClose()
        setTextFieldValue("");
+       setLoading(false)
       } catch (error) {
 
         console.error('Error sending data to server:', error);
@@ -286,6 +293,7 @@ console.log(ticketID,"this is ticketysmfbjsfhjsffs")
       }
     }
   };
+
 
   const handleTextFieldChange = (event) => {
     setTextFieldValue(event.target.value);
@@ -351,6 +359,18 @@ console.log(ticketID,"this is ticketysmfbjsfhjsffs")
         aria-labelledby="modal-modal-title"
       >
         <Box sx={style}>
+          <IconButton
+            onClick={handleClose}
+            sx={{
+              position: 'absolute',
+              top: '8px',
+              right: '8px',
+              bgcolor: '#0047ab',
+              color: 'white'
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
           <Box sx={{ top: '50%' }}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
               Reason to Skip

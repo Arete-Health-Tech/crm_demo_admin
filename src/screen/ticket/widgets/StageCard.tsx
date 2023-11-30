@@ -63,6 +63,13 @@ const StageCard = (props: Props) => {
   const [nextStage, setNextStage] = useState<string>('');
   const { filterTickets, searchByName, pageNumber } = useTicketStore();
   const navigate = useNavigate();
+  const [hospitalName, setHospitalName] = useState('');
+
+
+
+  const handleHospitalNameChange = (event) => {
+    setHospitalName(event.target.value);
+  };
 
   const redirectTicket = () => {
     navigate(NAVIGATE_TO_TICKET);
@@ -239,6 +246,12 @@ console.log(formdata)
 
   const handleChangeLose = (event) => {
     setLose(event.target.value);
+  };
+  const handleSubmitLose = () => {
+    // Handle your submit logic here
+
+    // Close the modal
+    handleCloseLose();
   };
 
   return (
@@ -456,17 +469,30 @@ console.log(formdata)
                 label="Reason for closing lead"
                 onChange={handleChangeLose}
                 style={{ backgroundColor: 'whitesmoke' }}
+                MenuProps={{
+                  disableAutoFocusItem: true // Disable automatic focus
+                }}
               >
-                <MenuItem value={10}>Financial Problem</MenuItem>
-                <MenuItem value={20}>Problem number 2</MenuItem>
-                <MenuItem value={30}>Problem number 3</MenuItem>
-                <MenuItem value={40}>Problem number 4</MenuItem>
+                <MenuItem value={10}>
+                  Too expensive / Have a better pricing
+                </MenuItem>
+                <MenuItem value={20}>Financial Constraint</MenuItem>
+                <MenuItem value={30}>Chose to stay back in home city</MenuItem>
+                <MenuItem value={40}>Adopted alternative medicines</MenuItem>
+                <MenuItem value={50}>
+                  Chose another hospital - Which Hospital?
+                  <TextField
+                    id="hospitalName"
+                    value={hospitalName}
+                    onChange={handleHospitalNameChange}
+                  />
+                </MenuItem>
               </Select>
             </FormControl>
             <br />
             <br />
 
-            <Button variant="contained" onClick={handleSubmit}>
+            <Button variant="contained" onClick={handleSubmitLose}>
               Submit
             </Button>
           </Box>

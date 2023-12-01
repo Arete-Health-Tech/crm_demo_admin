@@ -481,11 +481,13 @@ console.log(formdata)
                 <MenuItem value={30}>Chose to stay back in home city</MenuItem>
                 <MenuItem value={40}>Adopted alternative medicines</MenuItem>
                 <MenuItem value={50}>
-                  Chose another hospital - Which Hospital?
+                  Chose another hospital - Which Hospital ?
                   <TextField
                     id="hospitalName"
                     value={hospitalName}
                     onChange={handleHospitalNameChange}
+                    variant="standard"
+                    sx={{ marginLeft: 2 }}
                   />
                 </MenuItem>
               </Select>

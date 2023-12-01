@@ -97,21 +97,6 @@ const questions = [
     responses: ['Yes', 'No']
   },
   {
-    question:
-      'Is there a preferred date sir/madam? (Mark the date in system).Sure sir, Can you please confirm your mode of payment?',
-
-    responses: ['Cash', 'Insurance', 'Panel']
-  },
-  {
-    question: '	Have you been given a Bill Estimate',
-    responses: ['Yes', 'No']
-  },
-  {
-    question:
-      'I am initiating an RFA for you. Please mark an advance deposit of 10 thousand rupees to book your bed'
-    // responses: ['Cash', 'CGHS/ECHS', 'Corporate', 'NSG', 'TPA']
-  },
-  {
     question: '	Tick the Surgical Concerns ',
     responses: [
       'Fear of Surgery',
@@ -126,6 +111,36 @@ const questions = [
       'Fear of Finances'
     ]
   },
+  {
+    question:
+      'Is there a preferred date sir/madam? (Mark the date in system).Sure sir, Can you please confirm your mode of payment?',
+
+    responses: ['Cash', 'Insurance', 'Panel']
+  },
+  {
+    question: '	Have you been given a Bill Estimate',
+    responses: ['Yes', 'No']
+  },
+  {
+    question:
+      'I am initiating an RFA for you. Please mark an advance deposit of 10 thousand rupees to book your bed'
+    // responses: ['Cash', 'CGHS/ECHS', 'Corporate', 'NSG', 'TPA']
+  },
+  // {
+  //   question: '	Tick the Surgical Concerns ',
+  //   responses: [
+  //     'Fear of Surgery',
+  //     'Fear of Hospitalisation',
+  //     'Fear of Pain',
+  //     'Fear of Anaesthesia',
+  //     'Fear of Long Recovery period',
+  //     'Fear of Change in Body Image',
+  //     'Mental Health Concerns',
+  //     'Success Fear ',
+  //     'Fear of Complications',
+  //     'Fear of Finances'
+  //   ]
+  // },
   {
     question: 'Does the patient have any Caregiver at',
     responses: ['Yes', 'No']

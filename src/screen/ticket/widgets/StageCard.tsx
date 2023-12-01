@@ -252,6 +252,7 @@ console.log(formdata)
 
     // Close the modal
     handleCloseLose();
+    setHospitalName('');
   };
 
   return (

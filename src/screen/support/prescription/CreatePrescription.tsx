@@ -84,6 +84,7 @@ const CreatePrescription = () => {
   const defaultValidation = { message: '', value: false };
   const [isCaregiver, setIsCaregiver] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
+  const [buttonVariant, setButtonVariant] = useState<string | null>(null);
  
    const [selectedPharmacy, setSelectedPharmacy] = useState('');
  
@@ -211,7 +212,10 @@ const CreatePrescription = () => {
   console.log(prescription)
  
 
-
+const handleInternal = (item: string) => {
+  console.log('this is response');
+  setButtonVariant(item);
+};
 
 
   return (
@@ -284,7 +288,14 @@ const CreatePrescription = () => {
               Admission Type
             </Typography>
             <Stack flexWrap={'wrap'} flexDirection="row">
-              {['none', 'Surgery', 'Radiation', 'MM', 'DC'].map((item) => (
+              {[
+                'none',
+                'Surgery',
+                'Radiation',
+                'MM',
+                'DC',
+                'Internal Reference'
+              ].map((item) => (
                 <Button
                   size="small"
                   sx={{ m: 0.4 }}
@@ -302,28 +313,46 @@ const CreatePrescription = () => {
             <FormHelperText error={validations.admission.value}>
               {validations.admission.message}
             </FormHelperText>
-            {prescription.admission !== 'none' && (
-              <Box my={1.5}>
-                <Autocomplete
-                  size="small"
-                  fullWidth
-                  onChange={(_, newValue) =>
-                    changePrescriptionValue('service', newValue)
-                  }
-                  options={foundServices}
-                  getOptionLabel={(option) => option.name}
-                  renderInput={(params) => (
-                    <TextField
-                      onChange={(e) => findService(e.target.value)}
-                      {...params}
-                      label="Service"
-                    />
-                  )}
-                />
-                <FormHelperText error={validations.service.value}>
-                  {validations.service.message}
-                </FormHelperText>
-              </Box>
+
+            {prescription.admission === 'Internal Reference' ? (
+              <Stack flexWrap={'wrap'} flexDirection="row">
+                {/* Render three buttons for Internal Reference */}
+                {['Med', 'Surg', 'Chemo'].map((item) => (
+                  <Button
+                    size="small"
+                    sx={{ m: 0.4 }}
+                    key={item}
+                    onClick={() => handleInternal(item)}
+                    variant={buttonVariant === item ? 'contained' : 'outlined'}
+                  >
+                    {item}
+                  </Button>
+                ))}
+              </Stack>
+            ) : (
+              prescription.admission !== 'none' && (
+                <Box my={1.5}>
+                  <Autocomplete
+                    size="small"
+                    fullWidth
+                    onChange={(_, newValue) =>
+                      changePrescriptionValue('service', newValue)
+                    }
+                    options={foundServices}
+                    getOptionLabel={(option) => option.name}
+                    renderInput={(params) => (
+                      <TextField
+                        onChange={(e) => findService(e.target.value)}
+                        {...params}
+                        label="Service"
+                      />
+                    )}
+                  />
+                  <FormHelperText error={validations.service.value}>
+                    {validations.service.message}
+                  </FormHelperText>
+                </Box>
+              )
             )}
           </Box>
           {/* <Box my={1.5}>

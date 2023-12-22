@@ -47,7 +47,7 @@ import {
 import { iEstimate } from '../../../types/store/ticket';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
-import { validateTicket } from '../../../api/ticket/ticket';
+import { updateTicketSubStage, validateTicket } from '../../../api/ticket/ticket';
 import axios from 'axios';
 import { apiClient } from '../../../api/apiClient';
 
@@ -111,6 +111,7 @@ const Estimate = (props: Props) => {
   const [searchServiceValue, setSearchServiceValue] = useState('');
   const { wards, doctors } = useServiceStore();
   const { filterTickets, searchByName, pageNumber } = useTicketStore();
+    const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
 
   const [textFieldValue, setTextFieldValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -283,9 +284,32 @@ console.log(ticketID,"this is ticketysmfbjsfhjsffs")
         console.log('Server response:', data);
       
 
-   handleClose()
-       setTextFieldValue("");
-       setLoading(false)
+   
+      
+
+  const payload = {
+    subStageCode: {
+      active: true,
+      code: 2
+    },
+    ticket: ticketID
+  };
+
+  const result = await updateTicketSubStage(payload);
+  setTimeout(() => {
+    (async () => {
+      await getTicketHandler(searchByName, pageNumber, 'false', filterTickets);
+      setTicketUpdateFlag(result);
+    })();
+  }, 1000);
+
+handleClose();
+setTextFieldValue('');
+
+ setLoading(false);
+
+
+
       } catch (error) {
 
         console.error('Error sending data to server:', error);

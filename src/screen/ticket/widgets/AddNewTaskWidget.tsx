@@ -17,6 +17,7 @@ import {
 import React, { useState } from 'react';
 import AddReminderWidget from './AddReminderWidget';
 
+
 type Props = {};
 
 const AddNewTaskWidget = (props: Props) => {
@@ -44,13 +45,14 @@ const AddNewTaskWidget = (props: Props) => {
               <NotificationAddOutlined />
             </ListItemIcon>
             <ListItemText primary="Add Reminder" />
+           
           </ListItemButton>
-          <ListItemButton>
+          {/* <ListItemButton>
             <ListItemIcon>
               <PlaylistAddCheckOutlined />
             </ListItemIcon>
             <ListItemText primary="Add New Task" />
-          </ListItemButton>
+          </ListItemButton> */}
         </List>
       )}
 
@@ -75,6 +77,7 @@ const AddNewTaskWidget = (props: Props) => {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
       />
+      
     </Box>
   );
 };

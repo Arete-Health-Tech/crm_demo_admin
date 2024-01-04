@@ -8,6 +8,8 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import useUserStore from '../../store/userStore';
 import { useNavigate } from 'react-router-dom';
 import { Avatar } from '@mui/material';
+import { apiClient } from '../../api/apiClient';
+
 
 type Props = {};
 
@@ -64,8 +66,9 @@ const Logout = (props: Props) => {
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    console.log(user?._id,"this is user from logout")
+    const { data } = await apiClient.post('/representative/logOut',{userId:user?._id});
     handleClose();
     cookie.remove('user');
     setUser(null);

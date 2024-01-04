@@ -72,6 +72,7 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import PDFDocument from '@react-pdf/pdfkit';
 import { Document, Page } from 'react-pdf';
+import CloseIcon from '@mui/icons-material/Close';
 
 import AWS from 'aws-sdk';
 
@@ -423,248 +424,258 @@ const SingleTicketDetails = (props: Props) => {
                 >
                   <Call />
                 </IconButton>
-              
-                  <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center'
-                      // overflow: 'auto', // Add the overflow attribute here
-                    }}
-                  >
-                    <div>
-                      <Box
+
+                <Modal
+                  open={open}
+                  onClose={handleClose}
+                  aria-labelledby="modal-modal-title"
+                  aria-describedby="modal-modal-description"
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                    // overflow: 'auto', // Add the overflow attribute here
+                  }}
+                >
+                  <div>
+                    <Box
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        bgcolor: 'background.paper',
+                        border: '2px solid #000',
+                        boxShadow: 24,
+                        p: 4,
+                        width: '50%',
+                        height: '60%',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        overflow: 'auto'
+                      }}
+                    >
+                      <IconButton
+                        onClick={handleClose}
                         sx={{
                           position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                          bgcolor: 'background.paper',
-                          border: '2px solid #000',
-                          boxShadow: 24,
-                          p: 4,
-                          width: '50%',
-                          height: '60%',
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                          overflow: 'auto'
+                          top: '8px',
+                          right: '8px',
+                          bgcolor: '#0047ab',
+                          color: 'white'
                         }}
                       >
-                        <Stack spacing={3}>
-                          <Typography variant="h6" align="center" gutterBottom>
-                            Checklist Form
-                          </Typography>
+                        <CloseIcon />
+                      </IconButton>
+                      <Stack spacing={3}>
+                        <Typography variant="h6" align="center" gutterBottom>
+                          Checklist Form
+                        </Typography>
 
-                          <Box
-                            sx={{
-                              width: '100%',
-                              height: '20%',
-                              borderRadius: '50px',
-                              display: 'flex',
-                              justifyContent: 'center',
-                              alignItems: 'center'
-                            }}
+                        <Box
+                          sx={{
+                            width: '100%',
+                            height: '20%',
+                            borderRadius: '50px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                          }}
+                        >
+                          {/* Current Question */}
+                          <Typography
+                            variant="h5"
+                            style={{ textAlign: 'center' }}
                           >
-                            {/* Current Question */}
-                            <Typography
-                              variant="h5"
-                              style={{ textAlign: 'center' }}
-                            >
-                              {questions[currentQuestionIndex].question}
-                            </Typography>
-                          </Box>
-                          <div>
-                            {/* Responses */}
+                            {questions[currentQuestionIndex].question}
+                          </Typography>
+                        </Box>
+                        <div>
+                          {/* Responses */}
 
-                            {currentQuestionIndex === 3
-                              ? questions[currentQuestionIndex].responses.map(
-                                  (response, index) => (
-                                    <Box sx={{ justifyContent: 'center' }}>
-                                      <FormControlLabel
-                                        key={index}
-                                        control={
-                                          <Checkbox
-                                            checked={
-                                              selectedResponses[
-                                                currentQuestionIndex
-                                              ] &&
-                                              selectedResponses[
-                                                currentQuestionIndex
-                                              ].includes(response)
+                          {currentQuestionIndex === 3
+                            ? questions[currentQuestionIndex].responses.map(
+                                (response, index) => (
+                                  <Box sx={{ justifyContent: 'center' }}>
+                                    <FormControlLabel
+                                      key={index}
+                                      control={
+                                        <Checkbox
+                                          checked={
+                                            selectedResponses[
+                                              currentQuestionIndex
+                                            ] &&
+                                            selectedResponses[
+                                              currentQuestionIndex
+                                            ].includes(response)
+                                          }
+                                          onChange={() =>
+                                            handleResponseClick(response)
+                                          }
+                                          sx={{
+                                            color: 'primary.main',
+                                            '&.Mui-checked': {
+                                              color: 'primary.main'
                                             }
-                                            onChange={() =>
-                                              handleResponseClick(response)
-                                            }
-                                            sx={{
-                                              color: 'primary.main',
-                                              '&.Mui-checked': {
-                                                color: 'primary.main'
-                                              }
-                                            }}
-                                          />
-                                        }
-                                        label={response}
-                                      />
-                                    </Box>
-                                  )
+                                          }}
+                                        />
+                                      }
+                                      label={response}
+                                    />
+                                  </Box>
                                 )
-                              : currentQuestionIndex === 5 ||
-                                currentQuestionIndex === 6 ||
-                                currentQuestionIndex === 7
-                              ? questions[currentQuestionIndex].responses.map(
-                                  (response, index) => (
-                                    <Box sx={{ justifyContent: 'center' }}>
-                                      <FormControlLabel
-                                        key={index}
-                                        control={
-                                          <Checkbox
-                                            checked={
-                                              selectedResponses[
-                                                currentQuestionIndex
-                                              ] === response
+                              )
+                            : currentQuestionIndex === 5 ||
+                              currentQuestionIndex === 6 ||
+                              currentQuestionIndex === 7
+                            ? questions[currentQuestionIndex].responses.map(
+                                (response, index) => (
+                                  <Box sx={{ justifyContent: 'center' }}>
+                                    <FormControlLabel
+                                      key={index}
+                                      control={
+                                        <Checkbox
+                                          checked={
+                                            selectedResponses[
+                                              currentQuestionIndex
+                                            ] === response
+                                          }
+                                          onChange={() =>
+                                            handleResponseClick(response)
+                                          }
+                                          sx={{
+                                            color: 'primary.main',
+                                            '&.Mui-checked': {
+                                              color: 'primary.main'
                                             }
-                                            onChange={() =>
-                                              handleResponseClick(response)
-                                            }
-                                            sx={{
-                                              color: 'primary.main',
-                                              '&.Mui-checked': {
-                                                color: 'primary.main'
-                                              }
-                                            }}
-                                          />
-                                        }
-                                        label={response}
-                                      />
-                                    </Box>
-                                  )
+                                          }}
+                                        />
+                                      }
+                                      label={response}
+                                    />
+                                  </Box>
                                 )
-                              : questions[currentQuestionIndex].responses.map(
-                                  (response, index) => (
-                                    <Box sx={{ justifyContent: 'center' }}>
-                                      <Button
-                                        key={index}
-                                        variant="contained"
-                                        fullWidth
-                                        onClick={() =>
-                                          handleResponseClick(response)
-                                        }
-                                        sx={{ mt: 1, mb: 1, bgcolor: 'EBEDF5' }}
-                                      >
-                                        {response}
-                                      </Button>
-                                    </Box>
-                                  )
-                                )}
-
-                            {currentQuestionIndex === 2 &&
-                              selectedResponses[currentQuestionIndex] ===
-                                'No' && (
-                                <div>
-                                  <h2>Reason:</h2>
-                                  <textarea
-                                    rows={4}
-                                    cols={60}
-                                    value={
-                                      selectedResponses[
-                                        currentQuestionIndex + '_reason'
-                                      ] || ''
-                                    }
-                                    onChange={(e) =>
-                                      setSelectedResponses(
-                                        (prevSelectedResponses) => ({
-                                          ...prevSelectedResponses,
-                                          [currentQuestionIndex + '_reason']:
-                                            e.target.value
-                                        })
-                                      )
-                                    }
-                                  />
-                                  <Button variant="contained">Submit</Button>
-                                </div>
+                              )
+                            : questions[currentQuestionIndex].responses.map(
+                                (response, index) => (
+                                  <Box sx={{ justifyContent: 'center' }}>
+                                    <Button
+                                      key={index}
+                                      variant="contained"
+                                      fullWidth
+                                      onClick={() =>
+                                        handleResponseClick(response)
+                                      }
+                                      sx={{ mt: 1, mb: 1, bgcolor: 'EBEDF5' }}
+                                    >
+                                      {response}
+                                    </Button>
+                                  </Box>
+                                )
                               )}
-                          </div>
 
-                          {currentQuestionIndex == 8 &&
+                          {currentQuestionIndex === 2 &&
                             selectedResponses[currentQuestionIndex] ===
-                              'Yes' && (
+                              'No' && (
                               <div>
-                                <form>
-                                  <TextField
-                                    label="Name"
-                                    fullWidth
-                                    // margin="normal"
-                                    variant="outlined"
-                                  />
-                                  <TextField
-                                    label="Phone Number"
-                                    fullWidth
-                                    // margin="normal"
-                                    variant="outlined"
-                                  />
-                                  <Button
-                                    variant="contained"
-                                    color="primary"
-                                    //onClick={handleFormSubmit}
-                                    sx={{ mt: 2 }}
-                                  >
-                                    Submit
-                                  </Button>
-                                </form>
+                                <h2>Reason:</h2>
+                                <textarea
+                                  rows={4}
+                                  cols={60}
+                                  value={
+                                    selectedResponses[
+                                      currentQuestionIndex + '_reason'
+                                    ] || ''
+                                  }
+                                  onChange={(e) =>
+                                    setSelectedResponses(
+                                      (prevSelectedResponses) => ({
+                                        ...prevSelectedResponses,
+                                        [currentQuestionIndex + '_reason']:
+                                          e.target.value
+                                      })
+                                    )
+                                  }
+                                />
+                                <Button variant="contained">Submit</Button>
                               </div>
                             )}
-                          <Box
-                            sx={{
-                              position: 'absolute',
-                              bottom: '2px',
-                              width: '90%'
-                            }}
-                          >
-                            <MobileStepper
-                              variant="progress"
-                              steps={10}
-                              position="static"
-                              activeStep={activeStep}
-                              sx={{ maxWidth: '100%', flexGrow: 0 }}
-                              nextButton={
+                        </div>
+
+                        {currentQuestionIndex == 8 &&
+                          selectedResponses[currentQuestionIndex] === 'Yes' && (
+                            <div>
+                              <form>
+                                <TextField
+                                  label="Name"
+                                  fullWidth
+                                  // margin="normal"
+                                  variant="outlined"
+                                />
+                                <TextField
+                                  label="Phone Number"
+                                  fullWidth
+                                  // margin="normal"
+                                  variant="outlined"
+                                />
                                 <Button
-                                  size="small"
-                                  onClick={handleNext}
-                                  disabled={activeStep === 9}
+                                  variant="contained"
+                                  color="primary"
+                                  //onClick={handleFormSubmit}
+                                  sx={{ mt: 2 }}
                                 >
-                                  Next
-                                  {theme.direction === 'rtl' ? (
-                                    <KeyboardArrowLeft />
-                                  ) : (
-                                    <KeyboardArrowRight />
-                                  )}
+                                  Submit
                                 </Button>
-                              }
-                              backButton={
-                                <Button
-                                  size="small"
-                                  onClick={handleBack}
-                                  disabled={activeStep === 0}
-                                >
-                                  {theme.direction === 'rtl' ? (
-                                    <KeyboardArrowRight />
-                                  ) : (
-                                    <KeyboardArrowLeft />
-                                  )}
-                                  Back
-                                </Button>
-                              }
-                            />
-                          </Box>
-                        </Stack>
-                      </Box>
-                    </div>
-                  </Modal>
-             
+                              </form>
+                            </div>
+                          )}
+                        <Box
+                          sx={{
+                            position: 'absolute',
+                            bottom: '2px',
+                            width: '90%'
+                          }}
+                        >
+                          <MobileStepper
+                            variant="progress"
+                            steps={10}
+                            position="static"
+                            activeStep={activeStep}
+                            sx={{ maxWidth: '100%', flexGrow: 0 }}
+                            nextButton={
+                              <Button
+                                size="small"
+                                onClick={handleNext}
+                                disabled={activeStep === 9}
+                              >
+                                Next
+                                {theme.direction === 'rtl' ? (
+                                  <KeyboardArrowLeft />
+                                ) : (
+                                  <KeyboardArrowRight />
+                                )}
+                              </Button>
+                            }
+                            backButton={
+                              <Button
+                                size="small"
+                                onClick={handleBack}
+                                disabled={activeStep === 0}
+                              >
+                                {theme.direction === 'rtl' ? (
+                                  <KeyboardArrowRight />
+                                ) : (
+                                  <KeyboardArrowLeft />
+                                )}
+                                Back
+                              </Button>
+                            }
+                          />
+                        </Box>
+                      </Stack>
+                    </Box>
+                  </div>
+                </Modal>
               </div>
             </a>
             <Chip

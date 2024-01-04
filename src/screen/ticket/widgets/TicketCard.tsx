@@ -48,7 +48,7 @@ const TicketCard = (props: Props) => {
     setCurrentStage(stageDetail);
   }, [stages]);
 
-
+console.log(props.patientData," thui sis patient data ")
 
   return (
     <Box

@@ -79,7 +79,7 @@ import AWS from 'aws-sdk';
 const questions = [
   {
     question:
-      '	Hi (Patient Name), I am (Agent Name) from Medanta. Are you comfortable in Hindi or English?',
+      '	Hi (Patient Name), I am (Agent Name) from Manipal Hospital. Are you comfortable in Hindi or English?',
     responses: ['English', 'Hindi']
   },
 

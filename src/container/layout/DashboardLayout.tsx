@@ -95,6 +95,7 @@ export default function ResponsiveDrawer(props: Props) {
       icon: <ConfirmationNumberOutlined />,
       link: '/ticket'
     },
+
     {
       title: 'WhatsappFlow',
       icon: <SchemaOutlined />,
@@ -116,7 +117,12 @@ export default function ResponsiveDrawer(props: Props) {
           link: '/flow/connector'
         }
       ]
-    }
+    },
+    //  {
+    //   title: 'Manage Teams',
+    //   icon: <ConfirmationNumberOutlined />,
+    //   link: '/ticket'
+    // }
   ];
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);

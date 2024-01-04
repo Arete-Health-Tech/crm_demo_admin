@@ -50,7 +50,7 @@ const NodeRepliesTable = ({ rowData, updateData, setInvalidCount }: Props) => {
           value={data.nodeId}
           placeholder="AAP121"
           size="small"
-          validator={(value) => maxLength(value, 1, 20)}
+          validator={(value) => maxLength(value, 1, 50)}
           errorMessage={'Node Id should be between 1-50'}
         />
       </Box>
@@ -112,8 +112,8 @@ const NodeRepliesTable = ({ rowData, updateData, setInvalidCount }: Props) => {
           value={data.footer}
           placeholder="AAP121"
           size="small"
-          validator={(value) => maxLength(value, 0, 60)}
-          errorMessage={'Footer should be between 0-60'}
+          validator={(value) => maxLength(value, 0, 100)}
+          errorMessage={'Footer should be between 0-100'}
         />
       </Box>
       <Box minWidth="15vw">

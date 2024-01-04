@@ -125,7 +125,7 @@ const NodeListTable = ({ rowData, updateData, setInvalidCount }: Props) => {
           placeholder="AAP121"
           size="small"
           validator={(value) => maxLength(value, 1, 20)}
-          errorMessage={'Footer should be between 1-20'}
+          errorMessage={'Menu title should be between 1-20'}
         />
       </Box>
       <Box minWidth="15vw">

@@ -17,6 +17,9 @@ import { createNewReminderHandler, getAllReminderHandler } from '../../../api/ti
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 
+
+
+
 type Props = {
   isModalOpen: boolean;
   setIsModalOpen: any;
@@ -102,7 +105,7 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Create A New Reminder
           </Typography>
-          <IconButton
+          <IconButton  
             onClick={() => setIsModalOpen(false)}
             sx={{
               position: 'absolute',

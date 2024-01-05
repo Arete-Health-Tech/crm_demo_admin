@@ -6,6 +6,7 @@ export interface iConsumer {
   lastName: string;
   email: string;
   phone: string;
+  age:string;
   dob: string;
   gender: 'M' | 'F' | 'O';
   uid: string;

@@ -21,7 +21,11 @@ import {
   Tabs,
   Tooltip,
   Typography,
-  TextField
+  TextField,
+  DialogActions,
+  Dialog,
+  DialogTitle,
+  DialogContent
 } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -78,42 +82,69 @@ import AWS from 'aws-sdk';
 
 const questions = [
   {
-    question: '	Has the patient received a Bill Estimate?',
+    question:
+      '	Hi (Patient Name), I am (Agent Name) from Manipal Hospital. Are you comfortable in Hindi or English?',
+    responses: ['English', 'Hindi']
+  },
+
+  {
+    question:
+      '	How are you sir? I am calling regarding your admission planned under (Dr. Name) for (Surgery Name) or (Medical Management). What is your preferred date of admission? ',
+    responses: [
+      'I haven’t made up my mind/ still thinking/ will let you know',
+      'Yes, Next week'
+    ]
+  },
+  {
+    question:
+      'Very well sir, I understand that this is an important decision. From Medanta, I am here to help you in any way possible. Do you have any questions related to your surgery / admission (in case of medical management)?',
     responses: ['Yes', 'No']
   },
   {
-    question: '	Has the patient received a WhatsApp Message?',
-    responses: ['Yes', 'No']
+    question: '	Tick the Surgical Concerns ',
+    responses: [
+      'Fear of Surgery',
+      'Fear of Hospitalisation',
+      'Fear of Pain',
+      'Fear of Anaesthesia',
+      'Fear of Long Recovery period',
+      'Fear of Change in Body Image',
+      'Mental Health Concerns',
+      'Success Fear ',
+      'Fear of Complications',
+      'Fear of Finances'
+    ]
   },
   {
-    question: '	Did the patient explore the ‘Menu’ from our Whatsapp Message?',
+    question:
+      'Is there a preferred date sir/madam? (Mark the date in system).Sure sir, Can you please confirm your mode of payment?',
+
+    responses: ['Cash', 'Insurance', 'Panel']
+  },
+  {
+    question: '	Have you been given a Bill Estimate',
     responses: ['Yes', 'No']
   },
   {
     question:
-      '	Is the patient able to perform Activities of Daily Living (ADL)?',
-    responses: [
-      'Walk without Support',
-      'Eat without Support',
-      'Need help for ADL'
-    ]
+      'I am initiating an RFA for you. Please mark an advance deposit of 10 thousand rupees to book your bed'
+    // responses: ['Cash', 'CGHS/ECHS', 'Corporate', 'NSG', 'TPA']
   },
-  {
-    question: '	Does the Patient have any Surgical Fear?',
-    responses: ['Yes', 'No']
-  },
-  {
-    question: '	On the Basis  of ADL and SFQ, Indicate the  ‘Level Of Distress’',
-    responses: ['Mild', 'Moderate', 'Severe']
-  },
-  {
-    question: 'Payment Mode',
-    responses: ['Cash', 'CGHS/ECHS', 'Corporate', 'NSG', 'TPA']
-  },
-  {
-    question: '	Is Paras Hospital‘s, patients',
-    responses: ['1st Opinion', '2nd Opinion']
-  },
+  // {
+  //   question: '	Tick the Surgical Concerns ',
+  //   responses: [
+  //     'Fear of Surgery',
+  //     'Fear of Hospitalisation',
+  //     'Fear of Pain',
+  //     'Fear of Anaesthesia',
+  //     'Fear of Long Recovery period',
+  //     'Fear of Change in Body Image',
+  //     'Mental Health Concerns',
+  //     'Success Fear ',
+  //     'Fear of Complications',
+  //     'Fear of Finances'
+  //   ]
+  // },
   {
     question: 'Does the patient have any Caregiver at',
     responses: ['Yes', 'No']
@@ -125,6 +156,23 @@ const questions = [
 
   // Add more questions as needed
 ];
+interface iConsumer {
+  uid:string;
+  firstName: string;
+  lastName: string;
+  phone:number;
+  age: number;
+  gender:string;
+
+  // Add other fields as needed
+}
+
+interface Ticket {
+  consumer: iConsumer[];
+  // Add other fields as needed
+}
+
+
 
 dayjs.extend(relativeTime);
 
@@ -153,7 +201,18 @@ const SingleTicketDetails = (props: Props) => {
   const [activeStep, setActiveStep] = useState(0);
   const [selectedResponses, setSelectedResponses] = useState({});
   const [pdfUrl, setPdfUrl] = useState('');
-
+  const [isEditing, setIsEditing] = useState(false);
+   const [editedConsumer, setEditedConsumer] = useState<iConsumer>({
+    uid:'',
+     firstName: '',
+     lastName: '',
+     phone:0,
+     age:0,
+     gender:'',
+     // Add other fields as needed
+   });
+    const [openModal, setOpenModal] = useState(false);
+console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
   const handlePhoneCall = async (e: React.SyntheticEvent) => {
@@ -243,8 +302,10 @@ const SingleTicketDetails = (props: Props) => {
   };
 
   const handleNext = () => {
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+    if (currentQuestionIndex < questions.length - 1) {
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+      setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
+    }
   };
 
   const handleBack = () => {
@@ -353,6 +414,41 @@ const SingleTicketDetails = (props: Props) => {
   };
 
 
+  //edit 
+const handleEdit = () => {
+  setEditedConsumer({
+    uid: currentTicket?.consumer[0]?.uid || '',
+    firstName: currentTicket?.consumer[0]?.firstName || '',
+    lastName: currentTicket?.consumer[0]?.lastName || '',
+    phone: Number(currentTicket?.consumer[0]?.phone) || 0,
+    age: Number(currentTicket?.consumer[0]?.age) || 0,
+    gender: currentTicket?.consumer[0]?.gender || ''
+    // Set other fields as needed
+  });
+  
+   setOpenModal(true);
+};
+
+ const handleSave = () => {
+   // Perform save/update logic here with editedConsumer
+   console.log('Saved Consumer:', editedConsumer);
+   const savedConsumerData = editedConsumer;
+ 
+   setOpenModal(false);
+ };
+
+ const handleCancel = () => {
+  
+   setOpenModal(false);
+ };
+  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setEditedConsumer((prevConsumer) => ({
+      ...prevConsumer,
+      [name]: value
+    }));
+  };
+
 
   return (
     <Stack height={'100vh'} direction="row">
@@ -376,8 +472,68 @@ const SingleTicketDetails = (props: Props) => {
               >
                 {currentTicket?.consumer[0].firstName}{' '}
                 {currentTicket?.consumer[0].lastName}
+                <Button onClick={handleEdit}>Edit</Button>
+                <Dialog open={openModal} onClose={handleCancel} fullWidth>
+                  <DialogTitle>Edit Consumer Details</DialogTitle>
+                  <DialogContent style={{ marginTop: '16px' }}>
+                    <TextField
+                      label="UHID"
+                      name="uhid"
+                      value={editedConsumer.uid}
+                      onChange={handleEditChange}
+                      fullWidth
+                      style={{ marginTop: '8px' }}
+                    />
+                    <TextField
+                      label="First Name"
+                      name="firstName"
+                      value={editedConsumer.firstName}
+                      onChange={handleEditChange}
+                      fullWidth
+                      style={{ marginTop: '8px' }}
+                    />
+                    <TextField
+                      label="Last Name"
+                      name="lastName"
+                      value={editedConsumer.lastName}
+                      onChange={handleEditChange}
+                      fullWidth
+                      style={{ marginTop: '8px' }}
+                    />
+                    <TextField
+                      label="Phone Number"
+                      name="phone"
+                      value={editedConsumer.phone}
+                      onChange={handleEditChange}
+                      fullWidth
+                      style={{ marginTop: '8px' }}
+                    />
+                    <TextField
+                      label="Age"
+                      name="age"
+                      value={editedConsumer.age}
+                      onChange={handleEditChange}
+                      fullWidth
+                      style={{ marginTop: '8px' }}
+                    />
+                    <TextField
+                      label="Last Name"
+                      name="lastName"
+                      value={editedConsumer.gender}
+                      onChange={handleEditChange}
+                      fullWidth
+                      style={{ marginTop: '8px' }}
+                    />
+                    {/* Add other fields as needed */}
+                  </DialogContent>
+                  <DialogActions>
+                    <Button onClick={handleSave}>Save</Button>
+                    <Button onClick={handleCancel}>Cancel</Button>
+                  </DialogActions>
+                </Dialog>
               </Typography>
             </Suspense>
+
             <Box
               display="grid"
               gridTemplateColumns="repeat(5, 1fr)"
@@ -400,11 +556,15 @@ const SingleTicketDetails = (props: Props) => {
                   </Box>
                 ) : null}
               </Box>
+              <Typography variant="body1">
+                {currentTicket?.consumer[0].phone}
+              </Typography>
               <Typography fontSize="small">
                 {currentTicket?.consumer[0].dob
                   ? ageSetter(currentTicket.consumer[0].dob)
                   : ''}
               </Typography>
+
               <Typography variant="body1">
                 #{currentTicket?.consumer[0].uid}
               </Typography>
@@ -494,7 +654,7 @@ const SingleTicketDetails = (props: Props) => {
                           {/* Responses */}
 
                           {currentQuestionIndex === 3
-                            ? questions[currentQuestionIndex].responses.map(
+                            ? questions[currentQuestionIndex].responses?.map(
                                 (response, index) => (
                                   <Box sx={{ justifyContent: 'center' }}>
                                     <FormControlLabel
@@ -528,7 +688,7 @@ const SingleTicketDetails = (props: Props) => {
                             : currentQuestionIndex === 5 ||
                               currentQuestionIndex === 6 ||
                               currentQuestionIndex === 7
-                            ? questions[currentQuestionIndex].responses.map(
+                            ? questions[currentQuestionIndex].responses?.map(
                                 (response, index) => (
                                   <Box sx={{ justifyContent: 'center' }}>
                                     <FormControlLabel
@@ -556,7 +716,7 @@ const SingleTicketDetails = (props: Props) => {
                                   </Box>
                                 )
                               )
-                            : questions[currentQuestionIndex].responses.map(
+                            : questions[currentQuestionIndex].responses?.map(
                                 (response, index) => (
                                   <Box sx={{ justifyContent: 'center' }}>
                                     <Button
@@ -639,9 +799,9 @@ const SingleTicketDetails = (props: Props) => {
                           <MobileStepper
                             variant="progress"
                             steps={10}
-                            position="static"
+                            position="bottom"
                             activeStep={activeStep}
-                            sx={{ maxWidth: '100%', flexGrow: 0 }}
+                            sx={{ maxWidth: '100%', flexGrow: 0, bottom: 0 }}
                             nextButton={
                               <Button
                                 size="small"

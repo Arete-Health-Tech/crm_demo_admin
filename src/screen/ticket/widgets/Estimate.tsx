@@ -20,6 +20,7 @@ import {
   FormLabel,
   InputLabel,
   MenuItem,
+  IconButton,
   Radio,
   Modal,
   RadioGroup,
@@ -47,8 +48,10 @@ import { iEstimate } from '../../../types/store/ticket';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import { updateTicketSubStage, validateTicket } from '../../../api/ticket/ticket';
-import { apiClient } from '../../../api/apiClient';
 import axios from 'axios';
+import { apiClient } from '../../../api/apiClient';
+
+
 
 type Props = { setTicketUpdateFlag: any };
 
@@ -58,6 +61,7 @@ const Estimate = (props: Props) => {
   const { tickets } = useTicketStore();
   const { ticketID } = useParams();
   const ticket = tickets.find((element) => element._id === ticketID);
+  
 
   useEffect(() => {
     (async function () {
@@ -107,13 +111,13 @@ const Estimate = (props: Props) => {
   const [searchServiceValue, setSearchServiceValue] = useState('');
   const { wards, doctors } = useServiceStore();
   const { filterTickets, searchByName, pageNumber } = useTicketStore();
+    const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
 
   const [textFieldValue, setTextFieldValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 const [loading, setLoading] = useState(true);
- const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
   // D STARTS HERE__________________________
 
   const [submittedData, setSubmittedData] = useState(['']);
@@ -260,10 +264,12 @@ const [loading, setLoading] = useState(true);
     if (textFieldValue.trim() === '') {
       setErrorMessage('This field is required');
     } else {
+      
       // D STARTS HERE__________________________
-
-      console.log(ticketID, 'this is ticketysmfbjsfhjsffs');
+     
+console.log(ticketID,"this is ticketysmfbjsfhjsffs")
       try {
+        
         const { data } = await apiClient.post(
           '/ticket/skipEstimate',
           { ticketID },
@@ -276,41 +282,41 @@ const [loading, setLoading] = useState(true);
 
         // Handle the response from the server
         console.log('Server response:', data);
+      
 
-        const payload = {
-          subStageCode: {
-            active: true,
-            code: 2
-          },
-          ticket: ticketID
-        };
+   
+      
 
-        const result = await updateTicketSubStage(payload);
-        setTimeout(() => {
-          (async () => {
-            await getTicketHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              filterTickets
-            );
-            setTicketUpdateFlag(result);
-          })();
-        }, 1000);
+  const payload = {
+    subStageCode: {
+      active: true,
+      code: 2
+    },
+    ticket: ticketID
+  };
 
-        handleClose();
-        setTextFieldValue('');
+  const result = await updateTicketSubStage(payload);
+  setTimeout(() => {
+    (async () => {
+      await getTicketHandler(searchByName, pageNumber, 'false', filterTickets);
+      setTicketUpdateFlag(result);
+    })();
+  }, 1000);
 
-        setLoading(false);
+handleClose();
+setTextFieldValue('');
+
+ setLoading(false);
+
+
+
       } catch (error) {
+
         console.error('Error sending data to server:', error);
+       
       }
     }
   };
-
-
-
-
 
 
   const handleTextFieldChange = (event) => {
@@ -377,6 +383,18 @@ const [loading, setLoading] = useState(true);
         aria-labelledby="modal-modal-title"
       >
         <Box sx={style}>
+          <IconButton
+            onClick={handleClose}
+            sx={{
+              position: 'absolute',
+              top: '8px',
+              right: '8px',
+              bgcolor: '#0047ab',
+              color: 'white'
+            }}
+          >
+            <CloseIcon />
+          </IconButton>
           <Box sx={{ top: '50%' }}>
             <Typography id="modal-modal-title" variant="h6" component="h2">
               Reason to Skip

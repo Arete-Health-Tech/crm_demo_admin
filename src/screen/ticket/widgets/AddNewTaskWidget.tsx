@@ -44,8 +44,7 @@ const AddNewTaskWidget = (props: Props) => {
             <ListItemIcon>
               <NotificationAddOutlined />
             </ListItemIcon>
-            <ListItemText primary="Add Reminder" />
-           
+            <ListItemText primary="Add New Task" />
           </ListItemButton>
           {/* <ListItemButton>
             <ListItemIcon>

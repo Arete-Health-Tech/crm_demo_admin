@@ -10,7 +10,6 @@ import { useNavigate } from 'react-router-dom';
 import { Avatar } from '@mui/material';
 import { apiClient } from '../../api/apiClient';
 
-
 type Props = {};
 
 const StyledMenu = styled((props: MenuProps) => (

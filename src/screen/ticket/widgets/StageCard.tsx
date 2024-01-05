@@ -6,6 +6,7 @@ import {
   LinearProgress,
   MenuItem,
   Modal,
+  IconButton,
   Select,
   Step,
   StepLabel,
@@ -23,6 +24,7 @@ import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import useTicketStore from '../../../store/ticketStore';
 import { apiClient } from '../../../api/apiClient';
 import { useNavigate } from 'react-router-dom';
+import CloseIcon from '@mui/icons-material/Close';
 
 type Props = {
   currentTicket: iTicket | any;
@@ -61,6 +63,13 @@ const StageCard = (props: Props) => {
   const [nextStage, setNextStage] = useState<string>('');
   const { filterTickets, searchByName, pageNumber } = useTicketStore();
   const navigate = useNavigate();
+  const [hospitalName, setHospitalName] = useState('');
+
+
+
+  const handleHospitalNameChange = (event) => {
+    setHospitalName(event.target.value);
+  };
 
   const redirectTicket = () => {
     navigate(NAVIGATE_TO_TICKET);
@@ -238,6 +247,13 @@ console.log(formdata)
   const handleChangeLose = (event) => {
     setLose(event.target.value);
   };
+  const handleSubmitLose = () => {
+    // Handle your submit logic here
+
+    // Close the modal
+    handleCloseLose();
+    setHospitalName('');
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -344,6 +360,18 @@ console.log(formdata)
               backgroundColor: '#e8eaf6'
             }}
           >
+            <IconButton
+              onClick={handleClose}
+              sx={{
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+                bgcolor: '#0047ab',
+                color: 'white'
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
             <Typography id="modal-modal-title" variant="h5" component="h1">
               Verify Payment
             </Typography>
@@ -414,6 +442,18 @@ console.log(formdata)
               backgroundColor: '#e8eaf6'
             }}
           >
+            <IconButton
+              onClick={handleCloseLose}
+              sx={{
+                position: 'absolute',
+                top: '8px',
+                right: '8px',
+                bgcolor: '#0047ab',
+                color: 'white'
+              }}
+            >
+              <CloseIcon />
+            </IconButton>
             <Typography id="modal-modal-title" variant="h5" component="h1">
               Reason for closing lead
             </Typography>
@@ -430,17 +470,32 @@ console.log(formdata)
                 label="Reason for closing lead"
                 onChange={handleChangeLose}
                 style={{ backgroundColor: 'whitesmoke' }}
+                MenuProps={{
+                  disableAutoFocusItem: true // Disable automatic focus
+                }}
               >
-                <MenuItem value={10}>Financial Problem</MenuItem>
-                <MenuItem value={20}>Problem number 2</MenuItem>
-                <MenuItem value={30}>Problem number 3</MenuItem>
-                <MenuItem value={40}>Problem number 4</MenuItem>
+                <MenuItem value={10}>
+                  Too expensive / Have a better pricing
+                </MenuItem>
+                <MenuItem value={20}>Financial Constraint</MenuItem>
+                <MenuItem value={30}>Chose to stay back in home city</MenuItem>
+                <MenuItem value={40}>Adopted alternative medicines</MenuItem>
+                <MenuItem value={50}>
+                  Chose another hospital - Which Hospital ?
+                  <TextField
+                    id="hospitalName"
+                    value={hospitalName}
+                    onChange={handleHospitalNameChange}
+                    variant="standard"
+                    sx={{ marginLeft: 2 }}
+                  />
+                </MenuItem>
               </Select>
             </FormControl>
             <br />
             <br />
 
-            <Button variant="contained" onClick={handleSubmit}>
+            <Button variant="contained" onClick={handleSubmitLose}>
               Submit
             </Button>
           </Box>

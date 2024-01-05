@@ -203,6 +203,15 @@ const NodeList = (props: Props) => {
             <Typography>List Description 6</Typography>
           </Box>
           <Box minWidth="15vw">
+            <Typography>List Id 6</Typography>
+          </Box>
+          <Box minWidth="15vw">
+            <Typography>List Title 7</Typography>
+          </Box>
+          <Box minWidth="15vw">
+            <Typography>List Description 7</Typography>
+          </Box>
+          <Box minWidth="15vw">
             <Typography>List Id 7</Typography>
           </Box>
           <Box minWidth="15vw">
@@ -223,7 +232,7 @@ const NodeList = (props: Props) => {
           <Box minWidth="15vw">
             <Typography>List Id 9</Typography>
           </Box>
-          <Box minWidth="15vw">
+           <Box minWidth="15vw">
             <Typography>List Title 10</Typography>
           </Box>
           <Box minWidth="15vw">

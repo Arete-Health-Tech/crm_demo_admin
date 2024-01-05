@@ -303,6 +303,19 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
           </Box>
           <Box p={2}>
             <Typography variant="subtitle1" fontWeight={500}>
+              Result
+            </Typography>
+            <ToggleButtonGroup
+              color="primary"
+              // value={admissionType}
+              // onChange={handleAdmissionType}
+            >
+              <ToggleButton value="Won">WON</ToggleButton>
+              <ToggleButton value="Lose">LOSE</ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+          <Box p={1}>
+            <Typography variant="subtitle1" fontWeight={500}>
               Admission Type
             </Typography>
             <ToggleButtonGroup
@@ -315,7 +328,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
               <ToggleButton value="Radiation">Radiation</ToggleButton>
             </ToggleButtonGroup>
           </Box>
-          <Box p={2}>
+          <Box p={1}>
             <Typography variant="subtitle1" fontWeight={500}>
               Diagnotics Type
             </Typography>
@@ -331,7 +344,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
             </ToggleButtonGroup>
           </Box>
 
-          <Box p={2}>
+          <Box p={1}>
             <Typography variant="subtitle1" fontWeight={500}>
               Select Date Range
             </Typography>

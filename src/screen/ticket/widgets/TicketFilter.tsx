@@ -18,7 +18,7 @@ import {
   Typography
 } from '@mui/material';
 import { Box } from '@mui/system';
-// import dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import React, { useReducer, useState } from 'react';
 
 import useTicketStore from '../../../store/ticketStore';
@@ -57,6 +57,8 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   const initialFilters: ticketFilterTypes = {
     stageList: [],
     representative: null,
+    results:null 
+  
     
   };
 
@@ -72,6 +74,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   // });
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const [admissionType, setAdmissionType] = React.useState<string[]>(() => []);
+  const [result, setResult] = React.useState('');
   const [diagnosticsType, setDiagnosticsType] = React.useState<string[]>(
     () => []
   );
@@ -129,6 +132,36 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   ) => {
     setDiagnosticsType(newDiagnostics);
   };
+   const handleResult = (e: any) => {
+     const value = e.target.value;
+console.log(value);
+     console.log(value);
+
+     if (value === "Won") {
+       setResult(value);
+       dispatchFilter({
+         type: filterActions.RESULTS,
+         payload: '65991601a62baad220000001'
+       });
+
+       
+      
+     }else if (value === 'Lose') {
+       setResult(value);
+       dispatchFilter({
+         type: filterActions.RESULTS,
+         payload: '65991601a62baad220000002'
+       });
+     } else if(value === null) {
+       setResult(value);
+       dispatchFilter({
+         type: filterActions.RESULTS,
+         payload: null
+       });
+     }
+     setResult('');
+    
+   };
 
   const handleFilterOpen = () => {
     setIsFilterOpen(true);
@@ -154,6 +187,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
     (async () => {
       const fetchedStageData = await getStagesHandler();
       const fetchedRepresentative = await getRepresntativesHandler();
+      
       const transformStages = fetchedStageData.map(({ _id, name }) => {
         return {
           id: _id,
@@ -171,7 +205,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
       );
       setRepresentativeLabel(transformRepresentative);
       setStagesLabels(transformStages);
-     
+   
     })();
   }, []);
 
@@ -197,6 +231,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   const handleClearFilter = async () => {
     dispatchFilter({ type: filterActions.STAGES, payload: [] });
     dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
+     dispatchFilter({ type: filterActions.RESULTS, payload: null });
     setCurrentRepresentative('');
     setFilterCount(ticketFilterCount(selectedFilters));
     // setTicketFilters({
@@ -307,8 +342,8 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
             </Typography>
             <ToggleButtonGroup
               color="primary"
-              // value={admissionType}
-              // onChange={handleAdmissionType}
+              value={result}
+              onChange={handleResult}
             >
               <ToggleButton value="Won">WON</ToggleButton>
               <ToggleButton value="Lose">LOSE</ToggleButton>

@@ -1,4 +1,4 @@
-import { iNote, iReminder } from '../../types/store/ticket';
+import { iCallRescheduler, iNote, iReminder, iTimer } from '../../types/store/ticket';
 import { apiClient } from '../apiClient';
 
 export const getTicket = async (
@@ -10,6 +10,8 @@ export const getTicket = async (
   ticketId?: string | null,
   fetchUpdated: boolean = false,
   phone?:any,
+  won?:any,
+  lose?:any,
  
 ) => {
   const params = new URLSearchParams(selectedFilters).toString();
@@ -88,10 +90,40 @@ export const createNewNote = async (note: iNote) => {
 
 export const getAllReminders = async () => {
   const { data } = await apiClient.get(`task/allReminder/`);
+  console.log(data," this is remainder data")
   return data;
 };
 
 export const createNewReminder = async (reminderData: iReminder) => {
   const { data } = await apiClient.post(`/task/reminder`, reminderData);
+  return data;
+};
+
+
+export const getAllCallReschedulerHandler = async () => {
+  const { data } = await apiClient.get(`task/allRescheduler/`);
+  return data;
+};
+
+export const createNewCallRescheduler = async (callReschedulerData: iCallRescheduler) => {
+  const { data } = await apiClient.post(
+    `/task/reschedular`,
+    callReschedulerData
+  );
+  return data;
+};
+
+
+export const getAllRescheduler = async () => {
+  const { data } = await apiClient.get('task/ticketReschedluer');
+  console.log(data," thisgfsgsd");
+  return data;
+};
+
+export const createTimer = async (timerData: iTimer,ticketId:string) => {
+  const { data } = await apiClient.post(
+    `/dashboard/ticketStatus/${ticketId}`, timerData
+  );
+console.log(data, 'createTimer - Successfully created timer:');
   return data;
 };

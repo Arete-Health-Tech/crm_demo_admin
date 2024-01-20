@@ -16,6 +16,7 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import AddReminderWidget from './AddReminderWidget';
+import AddCallRescheduler from './AddCallRescheduler';
 
 
 type Props = {};
@@ -23,6 +24,7 @@ type Props = {};
 const AddNewTaskWidget = (props: Props) => {
   const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpenCall,setIsModalOpenCall]= useState(false);
 
   return (
     <Box position="relative">
@@ -46,12 +48,12 @@ const AddNewTaskWidget = (props: Props) => {
             </ListItemIcon>
             <ListItemText primary="Add New Task" />
           </ListItemButton>
-          {/* <ListItemButton>
+          <ListItemButton onClick={() => setIsModalOpenCall(true)}>
             <ListItemIcon>
               <PlaylistAddCheckOutlined />
             </ListItemIcon>
-            <ListItemText primary="Add New Task" />
-          </ListItemButton> */}
+            <ListItemText primary="Call Rescheduler" />
+          </ListItemButton>
         </List>
       )}
 
@@ -76,7 +78,10 @@ const AddNewTaskWidget = (props: Props) => {
         isModalOpen={isModalOpen}
         setIsModalOpen={setIsModalOpen}
       />
-      
+      <AddCallRescheduler
+        isModalOpenCall={isModalOpenCall}
+        setIsModalOpenCall={setIsModalOpenCall}
+      />
     </Box>
   );
 };

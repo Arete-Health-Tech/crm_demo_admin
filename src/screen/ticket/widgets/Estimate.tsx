@@ -33,14 +33,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { createEstimateHandler } from '../../../api/estimate/estimateHandler';
-import { searchService } from '../../../api/service/service';
-import { getAllServicesHandler } from '../../../api/service/serviceHandler';
+import { searchService, searchServiceAll, searchServicePck } from '../../../api/service/service';
+import { getAllServiceFromDbHandler, getAllServicesHandler, getServicePackedHandler } from '../../../api/service/serviceHandler';
 import { getWardsHandler } from '../../../api/ward/wardHandler';
 import useServiceStore from '../../../store/serviceStore';
 import useTicketStore from '../../../store/ticketStore';
 import {
   iDoctor,
   iService,
+  iServiceAll,
+  iServicePackage,
   IWard,
   serviceAdded
 } from '../../../types/store/service';
@@ -70,24 +72,25 @@ const Estimate = (props: Props) => {
   }, []);
 
   const [estimateFileds, setEstimateFields] = useState<iEstimate>({
+     _id:"",
     type: 1,
     isEmergency: false,
     wardDays: 0,
     icuDays: 0,
-    icuType: '',
+    ward: '',
     paymentType: 0,
     insuranceCompany: '',
     insurancePolicyNumber: '',
     insurancePolicyAmount: 0,
     service: [],
-    investigation: [],
-    procedure: [],
-    investigationAmount: 0,
-    procedureAmount: 0,
-    medicineAmount: 0,
+    // investigation: [],
+    // procedure: [],
+    mrd: 0,
+    pharmacy: 0,
+    pathology: 0,
     equipmentAmount: 0,
-    bloodAmount: 0,
-    additionalAmount: 0,
+    diet: 0,
+    admission: 0,
     prescription: ticket?.prescription[0]._id!,
     ticket: ticketID!
   });
@@ -108,8 +111,12 @@ const Estimate = (props: Props) => {
   const [clickedIndex, setClickedIndex] = useState<number | undefined>();
   const [isPreview, setIsPreview] = useState<boolean>(false);
   const [services, setServices] = useState<iService[]>();
+  const [servicesAll, setServicesAll] = useState<iServiceAll[]>();
+
+  const [servicesPack, setServicesPack] = useState<iServicePackage[]>();
+
   const [searchServiceValue, setSearchServiceValue] = useState('');
-  const { wards, doctors } = useServiceStore();
+  const { wards, doctors,allServices } = useServiceStore();
   const { filterTickets, searchByName, pageNumber } = useTicketStore();
     const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
 
@@ -129,7 +136,6 @@ const [loading, setLoading] = useState(true);
   });
 
 
-
   const wardICUSetter = (id: string) => {
     return wards.find((ward: IWard) => ward._id === id)?.name;
   };
@@ -147,37 +153,37 @@ const [loading, setLoading] = useState(true);
     setEstimateFields({ ...estimateFileds, type: e });
   };
 
-  const addInvestigation = () => {
-    if (investigation) {
-      setAlert({ ...alert, investigation: '' });
-      setEstimateFields({
-        ...estimateFileds,
-        investigation: [...estimateFileds.investigation, investigation]
-      });
-      setInvestigation('');
-    } else {
-      setAlert({
-        ...alert,
-        investigation: 'Please Select a Valid Investigation'
-      });
-    }
-  };
+  // const addInvestigation = () => {
+  //   if (investigation) {
+  //     setAlert({ ...alert, investigation: '' });
+  //     setEstimateFields({
+  //       ...estimateFileds,
+  //       investigation: [...estimateFileds.investigation, investigation]
+  //     });
+  //     setInvestigation('');
+  //   } else {
+  //     setAlert({
+  //       ...alert,
+  //       investigation: 'Please Select a Valid Investigation'
+  //     });
+  //   }
+  // };
 
-  const addProcedure = () => {
-    if (procedure) {
-      setAlert({ ...alert, procedure: '' });
-      setEstimateFields({
-        ...estimateFileds,
-        procedure: [...estimateFileds.procedure, procedure]
-      });
-      setProcedure('');
-    } else {
-      setAlert({
-        ...alert,
-        procedure: 'Please Select a Valid Procedure'
-      });
-    }
-  };
+  // const addProcedure = () => {
+  //   if (procedure) {
+  //     setAlert({ ...alert, procedure: '' });
+  //     setEstimateFields({
+  //       ...estimateFileds,
+  //       procedure: [...estimateFileds.procedure, procedure]
+  //     });
+  //     setProcedure('');
+  //   } else {
+  //     setAlert({
+  //       ...alert,
+  //       procedure: 'Please Select a Valid Procedure'
+  //     });
+  //   }
+  // };
 
   const addServiceToArray = () => {
     if (serviceObject.id) {
@@ -207,21 +213,21 @@ const [loading, setLoading] = useState(true);
     setEstimateFields({ ...estimateFileds, service: estimateFileds.service });
   };
 
-  const deleteProcedure = (index: number) => {
-    estimateFileds.procedure.splice(index, 1);
-    setEstimateFields({
-      ...estimateFileds,
-      procedure: estimateFileds.procedure
-    });
-  };
+  // const deleteProcedure = (index: number) => {
+  //   estimateFileds.procedure.splice(index, 1);
+  //   setEstimateFields({
+  //     ...estimateFileds,
+  //     procedure: estimateFileds.procedure
+  //   });
+  // };
 
-  const deleteInvestigation = (index: number) => {
-    estimateFileds.investigation.splice(index, 1);
-    setEstimateFields({
-      ...estimateFileds,
-      investigation: estimateFileds.investigation
-    });
-  };
+  // const deleteInvestigation = (index: number) => {
+  //   estimateFileds.investigation.splice(index, 1);
+  //   setEstimateFields({
+  //     ...estimateFileds,
+  //     investigation: estimateFileds.investigation
+  //   });
+  // };
 
   useEffect(() => {
     (async function () {
@@ -231,19 +237,65 @@ const [loading, setLoading] = useState(true);
       );
       setServices(services);
     })();
+     
   }, [searchServiceValue]);
+
+
+    useEffect(() => {
+      (async function () {
+        const servicesAll = await searchServiceAll();
+       setServicesAll(servicesAll);
+      })();
+      (async function () {
+        const servicesPack = await searchServicePck();
+        setServicesPack(servicesPack);
+      })();
+    }, []);
+console.log(servicesAll," this is all services from db")
+console.log(servicesPack," this is all packed services from db");
+ 
+
+
+
+
+ 
+
+
 
   const serviceGetter = (id: string | undefined) => {
     return (
-      services && services.find((service: iService) => service._id === id)?.name
+      services &&
+      services.find((service: iService) => service._id === id)?.name
     );
   };
 
+  const serviceGetterAll = (id: string | undefined) => {
+    return (
+      servicesAll &&
+      servicesAll.find((service: iServiceAll) => service._id === id)
+        ?.name
+    );
+  };
+
+  const serviceGetterAllPackage = (id: string | undefined) => {
+    console.log(id,'tjo ssdsdsd')
+    return (
+      servicesPack &&
+      servicesPack.find(
+        (service: iServicePackage) => service._id === id
+      )?.name
+    );
+  };
+
+
   const handleCreateEstimate = async () => {
+     console.log(estimateFileds, ' this is results before ');
     const result = await createEstimateHandler({
-      ...estimateFileds,
+      ...estimateFileds,    
       ticket: ticketID
     });
+   
+    console.log(estimateFileds," this is results");
     setIsEstimateOpen(false);
     setTimeout(() => {
       (async () => {     
@@ -515,22 +567,22 @@ setTextFieldValue('');
                 <Stack direction="row" spacing={2}>
                   <FormControl fullWidth size="small">
                     <InputLabel id="demo-simple-select-label">
-                      ICU Type
+                   Ward
                     </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
-                      label="ICU Type"
-                      value={estimateFileds.icuType}
+                      label="Ward"
+                      value={estimateFileds.ward}
                       onChange={(e) => {
                         setEstimateFields({
                           ...estimateFileds,
-                          icuType: e.target.value
+                          ward: e.target.value
                         });
                       }}
                     >
                       {wards
-                        .filter((ward: IWard) => ward.type === 1)
+                        .filter((ward: IWard) => ward.type === 0)
                         .map((item: IWard, index: number) => {
                           return (
                             <MenuItem value={item._id}>{item.name}</MenuItem>
@@ -567,7 +619,6 @@ setTextFieldValue('');
                 </Stack>
               </Box>
             )}
-
             <Box my={1} bgcolor="white" borderRadius={3} p={1}>
               <Typography fontWeight={500} my={1}>
                 Emergency Details
@@ -682,103 +733,200 @@ setTextFieldValue('');
                 </Stack>
               )}
             </Box>
-            <Box my={1} bgcolor="white" borderRadius={3} p={1}>
-              <Typography fontWeight={500} my={1}>
-                Services Details
-              </Typography>
-              <Stack direction="row" spacing={2}>
-                <Autocomplete
-                  aria-required={true}
-                  options={services ? services : []}
-                  id="combo-box-demo"
-                  isOptionEqualToValue={(option, value) =>
-                    option.name === value.name
-                  }
-                  noOptionsText="No Service Available With This Name"
-                  getOptionLabel={(option: iService) => option.name}
-                  onChange={(event, value) =>
-                    setServiceObject({ ...serviceObject, id: value?._id! })
-                  }
-                  renderOption={(props, option) => (
-                    <li {...props} style={{ textTransform: 'capitalize' }}>
-                      {option.name}
-                    </li>
-                  )}
-                  sx={{ width: 400, textTransform: 'capitalize' }}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      sx={{ textTransform: 'capitalize' }}
-                      label="Select Surgery"
+            {estimateFileds.type === 1 ? (
+              <Box my={1} bgcolor="white" borderRadius={3} p={1}>
+                <Typography fontWeight={500} my={1}>
+                  Services Details
+                </Typography>
+                <Stack direction="row" spacing={2}>
+                  <Autocomplete
+                    aria-required={true}
+                    options={servicesAll ? servicesAll : []}
+                    id="combo-box-demo"
+                    isOptionEqualToValue={(option, value) =>
+                      option.name === value.name
+                    }
+                    noOptionsText="No Service Available With This Name"
+                    getOptionLabel={(option: iServiceAll) => option.name}
+                    onChange={(event, value) =>
+                      setServiceObject({ ...serviceObject, id: value?._id! })
+                    }
+                    renderOption={(props, option) => (
+                      <li {...props} style={{ textTransform: 'capitalize' }}>
+                        {option.name}
+                      </li>
+                    )}
+                    sx={{ width: 400, textTransform: 'capitalize' }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        sx={{ textTransform: 'capitalize' }}
+                        label="Select Surgery"
+                        onChange={(e) => {
+                          setSearchServiceValue((prev) => e.target.value);
+                        }}
+                      />
+                    )}
+                  />
+
+                  <FormControl required>
+                    <FormLabel id="payment-type">Is On Same Site</FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="is-same-site"
+                      name="isSameSite"
                       onChange={(e) => {
-                        setSearchServiceValue((prev) => e.target.value);
+                        setServiceObject({
+                          ...serviceObject,
+                          isSameSite: e.target.value === '0' ? true : false
+                        });
                       }}
-                    />
-                  )}
-                />
-                <FormControl required>
-                  <FormLabel id="payment-type">Is On Same Site</FormLabel>
-                  <RadioGroup
-                    row
-                    aria-labelledby="is-same-site"
-                    name="isSameSite"
-                    onChange={(e) => {
-                      setServiceObject({
-                        ...serviceObject,
-                        isSameSite: e.target.value === '0' ? true : false
-                      });
-                    }}
+                    >
+                      <FormControlLabel
+                        value="0"
+                        control={<Radio />}
+                        label="Yes"
+                      />
+                      <FormControlLabel
+                        value="1"
+                        control={<Radio />}
+                        label="No"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                  <Button endIcon={<AddCircle />} onClick={addServiceToArray}>
+                    Add Service
+                  </Button>
+                </Stack>
+                {estimateFileds.service.length > 0 && (
+                  <Stack
+                    my={1}
+                    display="grid "
+                    gridTemplateColumns="repeat(3,1fr)"
+                    gap={1}
                   >
-                    <FormControlLabel
-                      value="0"
-                      control={<Radio />}
-                      label="Yes"
-                    />
-                    <FormControlLabel
-                      value="1"
-                      control={<Radio />}
-                      label="No"
-                    />
-                  </RadioGroup>
-                </FormControl>
-                <Button endIcon={<AddCircle />} onClick={addServiceToArray}>
-                  Add Service
-                </Button>
-              </Stack>
-              {estimateFileds.service.length > 0 && (
-                <Stack
-                  my={1}
-                  display="grid "
-                  gridTemplateColumns="repeat(3,1fr)"
-                  gap={1}
-                >
-                  {estimateFileds.service.map((item, index: number) => (
-                    <Chip
-                      color="primary"
-                      label={`${serviceGetter(item.id)}/ ${
-                        item.isSameSite ? 'Same Site' : 'Different Site'
-                      }`}
-                      variant="outlined"
-                      sx={{ textTransform: 'capitalize' }}
-                      onDelete={() => deleteService(index)}
-                    />
-                  ))}
+                    {estimateFileds.service.map((item, index: number) => (
+                      <Chip
+                        color="primary"
+                        label={`${serviceGetterAll(item.id)}/ ${
+                          item.isSameSite ? 'Same Site' : 'Different Site'
+                        }`}
+                        variant="outlined"
+                        sx={{ textTransform: 'capitalize' }}
+                        onDelete={() => deleteService(index)}
+                      />
+                    ))}
+                  </Stack>
+                )}
+                {alert?.services.length > 0 && (
+                  <Stack my={1} width="50%">
+                    <Alert variant="outlined" severity="warning">
+                      {alert?.services}
+                    </Alert>
+                  </Stack>
+                )}
+              </Box>
+            ) : (
+              <Box my={1} bgcolor="white" borderRadius={3} p={1}>
+                <Typography fontWeight={500} my={1}>
+                  Services Details
+                </Typography>
+                <Stack direction="row" spacing={2}>
+                  <Autocomplete
+                    aria-required={true}
+                    options={servicesPack ? servicesPack : []}
+                    id="combo-box-demo"
+                    isOptionEqualToValue={(option, value) =>
+                      option.name === value.name
+                    }
+                    noOptionsText="No Service Available With This Name"
+                    getOptionLabel={(option: iServicePackage) => option.name}
+                    onChange={(event, value) =>
+                      setServiceObject({ ...serviceObject, id: value?._id! })
+                    }
+                    renderOption={(props, option) => (
+                      <li {...props} style={{ textTransform: 'capitalize' }}>
+                        {option.name}
+                      </li>
+                    )}
+                    sx={{ width: 400, textTransform: 'capitalize' }}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        sx={{ textTransform: 'capitalize' }}
+                        label="Select Surgery"
+                        onChange={(e) => {
+                          setSearchServiceValue((prev) => e.target.value);
+                        }}
+                      />
+                    )}
+                  />
+
+                  <FormControl required>
+                    <FormLabel id="payment-type">Is On Same Site</FormLabel>
+                    <RadioGroup
+                      row
+                      aria-labelledby="is-same-site"
+                      name="isSameSite"
+                      onChange={(e) => {
+                        setServiceObject({
+                          ...serviceObject,
+                          isSameSite: e.target.value === '0' ? true : false
+                        });
+                      }}
+                    >
+                      <FormControlLabel
+                        value="0"
+                        control={<Radio />}
+                        label="Yes"
+                      />
+                      <FormControlLabel
+                        value="1"
+                        control={<Radio />}
+                        label="No"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                  <Button endIcon={<AddCircle />} onClick={addServiceToArray}>
+                    Add Service
+                  </Button>
                 </Stack>
-              )}
-              {alert?.services.length > 0 && (
-                <Stack my={1} width="50%">
-                  <Alert variant="outlined" severity="warning">
-                    {alert?.services}
-                  </Alert>
-                </Stack>
-              )}
-            </Box>
-            <Box my={1} bgcolor="white" borderRadius={3} p={1}>
+                {estimateFileds.service.length > 0 && (
+                  <Stack
+                    my={1}
+                    display="grid "
+                    gridTemplateColumns="repeat(3,1fr)"
+                    gap={1}
+                  >
+                    {estimateFileds.service.map((item, index: number) => (
+                      <Chip
+                        color="primary"
+                        label={`${serviceGetterAllPackage(item.id)}/ ${
+                          item.isSameSite ? 'Same Site' : 'Different Site'
+                        }`}
+                        variant="outlined"
+                        sx={{ textTransform: 'capitalize' }}
+                        onDelete={() => deleteService(index)}
+                      />
+                    ))}
+                  </Stack>
+                )}
+                {alert?.services.length > 0 && (
+                  <Stack my={1} width="50%">
+                    <Alert variant="outlined" severity="warning">
+                      {alert?.services}
+                    </Alert>
+                  </Stack>
+                )}
+              </Box>
+            )}
+            ;
+            {/* <Box my={1} bgcolor="white" borderRadius={3} p={1}>
               <Typography fontWeight={500} my={1}>
-                Investigation(optional)
-              </Typography>
-              <Stack direction="row" spacing={2}>
-                <Autocomplete
+                Mrd Charges
+              </Typography> */}
+            {/* <Stack direction="row" spacing={2}> */}
+            {/* <Autocomplete
                   aria-required={true}
                   options={services ? services : []}
                   onChange={(event, value) => setInvestigation(value?._id!)}
@@ -795,11 +943,11 @@ setTextFieldValue('');
                   renderOption={(props, option) => (
                     <li {...props}>{option.name}</li>
                   )}
-                />
-                <Button endIcon={<AddCircle />} onClick={addInvestigation}>
+                /> */}
+            {/* <Button endIcon={<AddCircle />} onClick={addInvestigation}>
                   Add Investigation
-                </Button>
-              </Stack>
+                </Button> */}
+            {/* </Stack>
               {alert?.investigation.length > 0 && (
                 <Stack my={1} width="50%">
                   <Alert variant="outlined" severity="warning">
@@ -824,23 +972,22 @@ setTextFieldValue('');
                     />
                   ))}
                 </Stack>
-              )}
-
-              <Stack my={1} direction="row" spacing={2}>
+              )} */}
+            {/* <Stack my={1} direction="row" spacing={2}>
                 <TextField
-                  label="Investigation Charges"
+                  label="Mrd Charges"
                   size="small"
                   placeholder="eg:5000"
                   onChange={(e) => {
                     setEstimateFields({
                       ...estimateFileds,
-                      investigationAmount: +e.target.value
+                      mrd: +e.target.value
                     });
                   }}
                 />
-              </Stack>
-            </Box>
-            <Box my={1} bgcolor="white" borderRadius={3} p={1}>
+              </Stack> */}
+            {/* </Box> */}
+            {/* <Box my={1} bgcolor="white" borderRadius={3} p={1}>
               <Typography fontWeight={500} my={1}>
                 Procedure(optional)
               </Typography>
@@ -903,7 +1050,7 @@ setTextFieldValue('');
                   }}
                 />
               </Stack>
-            </Box>
+            </Box> */}
             <Box my={1} bgcolor="white" borderRadius={3} p={1}>
               <Typography fontWeight={500} my={1}>
                 Other Charges(optional)
@@ -911,12 +1058,36 @@ setTextFieldValue('');
               <Stack direction="row" spacing={2}>
                 <TextField
                   fullWidth
-                  label="Medicine Amount"
+                  label="Mrd Amount"
                   size="small"
                   onChange={(e) => {
                     setEstimateFields({
                       ...estimateFileds,
-                      medicineAmount: +e.target.value
+                      mrd: +e.target.value
+                    });
+                  }}
+                  placeholder="eg: 500000"
+                />
+                <TextField
+                  fullWidth
+                  label="Pharmacy Amount"
+                  size="small"
+                  onChange={(e) => {
+                    setEstimateFields({
+                      ...estimateFileds,
+                      pharmacy: +e.target.value
+                    });
+                  }}
+                  placeholder="eg: 500000"
+                />
+                <TextField
+                  fullWidth
+                  label="Pathology Amount"
+                  size="small"
+                  onChange={(e) => {
+                    setEstimateFields({
+                      ...estimateFileds,
+                      pathology: +e.target.value
                     });
                   }}
                   placeholder="eg: 500000"
@@ -943,7 +1114,7 @@ setTextFieldValue('');
                   onChange={(e) => {
                     setEstimateFields({
                       ...estimateFileds,
-                      bloodAmount: +e.target.value
+                      diet: +e.target.value
                     });
                   }}
                 />
@@ -955,7 +1126,7 @@ setTextFieldValue('');
                   onChange={(e) => {
                     setEstimateFields({
                       ...estimateFileds,
-                      additionalAmount: +e.target.value
+                      admission: +e.target.value
                     });
                   }}
                 />
@@ -1049,7 +1220,7 @@ setTextFieldValue('');
                         Ward Details
                       </Typography>
                       <Typography variant="caption">
-                        ICU Type: {wardICUSetter(estimateFileds.icuType)}
+                        ICU Type: {wardICUSetter(estimateFileds.ward)}
                       </Typography>
                       <Typography variant="caption">
                         ICU Days: {estimateFileds.icuDays}
@@ -1103,31 +1274,32 @@ setTextFieldValue('');
                   </Typography>
                 </Box>
               </Stack>
-              <Stack my={1} p={1} borderRadius={2} bgcolor="#f1f1f1">
-                <Typography variant="body2" fontWeight={500}>
-                  Services Details
-                </Typography>
-                <Box my={1}>
-                  {estimateFileds.service.length > 0 ? (
-                    estimateFileds.service.map((item, index: number) => (
-                      <Chip
-                        size="small"
-                        color="primary"
-                        label={`${serviceGetter(item.id)}/ ${
-                          item.isSameSite ? 'Same Site' : 'Different Site'
-                        }`}
-                        variant="outlined"
-                        sx={{ textTransform: 'capitalize', mx: 1 }}
-                      />
-                    ))
-                  ) : (
-                    <Alert severity="warning" sx={{ width: '50%' }}>
-                      {' '}
-                      Required Field Please Select a Service
-                    </Alert>
-                  )}
-                </Box>
-                <Typography variant="body2" fontWeight={500}>
+              {estimateFileds.type === 1 ? (
+                <Stack my={1} p={1} borderRadius={2} bgcolor="#f1f1f1">
+                  <Typography variant="body2" fontWeight={500}>
+                    Services Details
+                  </Typography>
+                  <Box my={1}>
+                    {estimateFileds.service.length > 0 ? (
+                      estimateFileds.service.map((item, index: number) => (
+                        <Chip
+                          size="small"
+                          color="primary"
+                          label={`${serviceGetterAll(item.id)}/ ${
+                            item.isSameSite ? 'Same Site' : 'Different Site'
+                          }`}
+                          variant="outlined"
+                          sx={{ textTransform: 'capitalize', mx: 1 }}
+                        />
+                      ))
+                    ) : (
+                      <Alert severity="warning" sx={{ width: '50%' }}>
+                        {' '}
+                        Required Field Please Select a Service
+                      </Alert>
+                    )}
+                  </Box>
+                  {/* <Typography variant="body2" fontWeight={500}>
                   Investigation Details
                 </Typography>
                 <Box my={1}>
@@ -1177,24 +1349,108 @@ setTextFieldValue('');
                       Procedure Amount : {estimateFileds.procedureAmount}
                     </Typography>
                   </Stack>
+                </Box> */}
+                </Stack>
+              ) : (
+                <Stack my={1} p={1} borderRadius={2} bgcolor="#f1f1f1">
+                  <Typography variant="body2" fontWeight={500}>
+                    Services Details
+                  </Typography>
+                  <Box my={1}>
+                    {estimateFileds.service.length > 0 ? (
+                      estimateFileds.service.map((item, index: number) => (
+                        <Chip
+                          size="small"
+                          color="primary"
+                          label={`${serviceGetterAllPackage(item.id)}/ ${
+                            item.isSameSite ? 'Same Site' : 'Different Site'
+                          }`}
+                          variant="outlined"
+                          sx={{ textTransform: 'capitalize', mx: 1 }}
+                        />
+                      ))
+                    ) : (
+                      <Alert severity="warning" sx={{ width: '50%' }}>
+                        {' '}
+                        Required Field Please Select a Service
+                      </Alert>
+                    )}
+                  </Box>
+                  {/* <Typography variant="body2" fontWeight={500}>
+                  Investigation Details
+                </Typography>
+                <Box my={1}>
+                  {estimateFileds.investigation.length > 0 ? (
+                    estimateFileds.investigation.map((item, index: number) => (
+                      <Chip
+                        size="small"
+                        color="primary"
+                        label={`${serviceGetter(item)}`}
+                        variant="outlined"
+                        sx={{ textTransform: 'capitalize', mx: 1 }}
+                      />
+                    ))
+                  ) : (
+                    <Typography variant="caption">
+                      No Investigation Selected
+                    </Typography>
+                  )}
+                  <Stack my-={1}>
+                    <Typography fontWeight={500} variant="caption">
+                      Investigation Amount :{' '}
+                      {estimateFileds.investigationAmount}
+                    </Typography>
+                  </Stack>
                 </Box>
-              </Stack>
+                <Typography variant="body2" fontWeight={500}>
+                  Procedure Details
+                </Typography>
+                <Box my={1}>
+                  {estimateFileds.procedure.length > 0 ? (
+                    estimateFileds.procedure.map((item, index: number) => (
+                      <Chip
+                        size="small"
+                        color="primary"
+                        label={`${serviceGetter(item)}`}
+                        variant="outlined"
+                        sx={{ textTransform: 'capitalize', mx: 1 }}
+                      />
+                    ))
+                  ) : (
+                    <Typography variant="caption">
+                      No Procedure Selected
+                    </Typography>
+                  )}
+                  <Stack my-={1}>
+                    <Typography fontWeight={500} variant="caption">
+                      Procedure Amount : {estimateFileds.procedureAmount}
+                    </Typography>
+                  </Stack>
+                </Box> */}
+                </Stack>
+              )}
               <Stack my={1} p={1} borderRadius={2} bgcolor="#f1f1f1">
                 <Typography variant="body2" fontWeight={500}>
                   Other Charges
                 </Typography>
                 <Stack direction="row" spacing={3}>
                   <Typography variant="caption" fontWeight={500}>
-                    Medicine Amount : {estimateFileds.medicineAmount}
+                    Mrd Amount : {estimateFileds.mrd}
+                  </Typography>
+                  <Typography variant="caption" fontWeight={500}>
+                    Pharmacy Amount : {estimateFileds.pharmacy}
+                  </Typography>
+                  <Typography variant="caption" fontWeight={500}>
+                    Pathology Amount : {estimateFileds.pathology}
                   </Typography>
                   <Typography variant="caption" fontWeight={500}>
                     Equipment Amount : {estimateFileds.equipmentAmount}
                   </Typography>
                   <Typography variant="caption" fontWeight={500}>
-                    Blood Amount : {estimateFileds.bloodAmount}
+                    Diet Amount : {estimateFileds.diet}
                   </Typography>
                   <Typography variant="caption" fontWeight={500}>
-                    Miscellenous Amount : {estimateFileds.additionalAmount}
+                    Admission Amount : {estimateFileds.admission}
                   </Typography>
                 </Stack>
               </Stack>

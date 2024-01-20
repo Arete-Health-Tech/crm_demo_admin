@@ -21,7 +21,7 @@ import {
 } from '../../api/ticket/ticketHandler';
 import useTicketStore from '../../store/ticketStore';
 import TicketCard from '../../screen/ticket/widgets/TicketCard';
-import { iReminder, iTicket } from '../../types/store/ticket';
+import { iCallRescheduler, iReminder, iTicket } from '../../types/store/ticket';
 import { getDoctorsHandler } from '../../api/doctor/doctorHandler';
 import { getDepartmentsHandler } from '../../api/department/departmentHandler';
 import { Outlet, useMatch, useNavigate } from 'react-router-dom';
@@ -40,7 +40,7 @@ import {
 } from '../../api/stages/stagesHandler';
 import useServiceStore from '../../store/serviceStore';
 import './styles.css';
-import { getTicket } from '../../api/ticket/ticket';
+import { getAllCallReschedulerHandler, getTicket } from '../../api/ticket/ticket';
 import CustomSpinLoader from '../../components/CustomSpinLoader';
 import { socket } from '../../api/apiClient';
 import { socketEventConstants } from '../../constantUtils/socketEventsConstants';
@@ -61,6 +61,7 @@ const Ticket = () => {
     emptyDataText,
     
     reminders,
+    callRescheduler,
     loaderOn,
     pageNumber,
     setPageNumber,
@@ -73,15 +74,26 @@ const Ticket = () => {
   const[phone,setPhone]=useState(null)
 
   const [reminderList, setReminderList] = useState<any[]>([]);
+  const [callReschedulerList, setcallReschedulerList] = useState<any[]>([]);
+
   const [alarmReminderedList, setAlamarReminderList] = useState<iReminder[]>(
     []
   );
+   const [alarmCallReschedulerList, setAlarmCallReschedulerList] = useState<
+     iCallRescheduler[]
+   >([]);
   const [ticketReminderPatient, setTicketReminderPatient] = useState<any>(null);
+  const [ticketCallReschedulerPatient, setTicketCallReschedulerPatient] =
+    useState<any>(null);
+
   const [searchError, setSearchError] = useState<string>(
     'Type to search & Enter'
   );
   const [pageCount, setPageCount] = useState<number>(1);
   const [showReminderModal, setShowReminderModal] = useState(false);
+  const [showCallReschedulerModal, setShowCallReschedulerModal] =
+    useState(false);
+
   // const [pageNumber, setPageNumber] = useState<number>(1);
   const [page, setPage] = useState<number>(1);
   const navigate = useNavigate();
@@ -242,6 +254,7 @@ const Ticket = () => {
       await getDoctorsHandler();
       await getDepartmentsHandler();
       await getAllReminderHandler();
+      await getAllCallReschedulerHandler();
     })();
   }, []);
 
@@ -266,6 +279,24 @@ const Ticket = () => {
       setReminderList(result);
     }, 100);
   };
+
+const handleCloseCallReschedulerModal=async ()=>{
+console.log('call rescheduler alarm list',alarmCallReschedulerList)
+ const result = await getAllCallReschedulerHandler();
+
+ setTimeout(() => {
+   setPage(1);
+   setPageNumber(1);
+   let list = alarmCallReschedulerList;
+   list.splice(0, 1);
+   setShowCallReschedulerModal(false);
+   setAlarmCallReschedulerList([]);
+   setcallReschedulerList(result);
+ }, 100);
+
+
+}
+
 
   const clearAllInterval = (AllIntervals: any[]) => {
     AllIntervals?.forEach((interval) => {
@@ -307,6 +338,7 @@ const Ticket = () => {
           console.log('Alarm SUCCESS');
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
+              console.log(phone," this is remainderr phone number")
               const data = await getTicket(
                 UNDEFINED,
                 1,
@@ -359,7 +391,7 @@ const Ticket = () => {
               setTicketReminderPatient(data?.tickets[0]);
               setAlamarReminderList([...alarmReminderedList, reminderDetail]);
               setReminderList([...reminderList, reminderDetail?._id]);
-              redirectTicket();
+              // redirectTicket();
               setShowReminderModal(true);
             }
           })();
@@ -374,7 +406,67 @@ const Ticket = () => {
         clearAllInterval(AllIntervals);
       };
     });
+
+
   }, [reminders]);
+  
+  useEffect(() => {
+    // console.log('gotham FULL', reminders, 'remindelist', reminderList);
+    clearAllInterval(AllIntervals);
+    callRescheduler?.forEach((callRescheduleDetail, index) => {
+      let alarmInterval: any;
+
+      alarmInterval = setInterval(() => {
+        const currentTime = new Date();
+        if (
+          callReschedulerList &&
+          callRescheduleDetail.date <= currentTime.getTime() &&
+          callRescheduleDetail.date + 11000 > currentTime.getTime()
+          // isAlamredReminderExist(reminderDetail)
+        ) {
+          console.log('Alarm SUCCESS');
+          (async () => {
+            if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
+              console.log(phone, ' this is remainderr phone number');
+              const data = await getTicket(
+                UNDEFINED,
+                1,
+                'false',
+                filterTickets,
+                callRescheduleDetail?.ticket,
+                true,
+                phone
+              );
+
+              setTicketCallReschedulerPatient(data?.tickets[0]);
+              setAlarmCallReschedulerList([
+                ...alarmCallReschedulerList,
+                callRescheduleDetail
+              ]);
+              setcallReschedulerList([
+                ...callReschedulerList,
+                callRescheduleDetail?._id
+              ]);
+              // redirectTicket();
+              setShowCallReschedulerModal(true);
+            }
+          })();
+
+          clearInterval(alarmInterval);
+        }
+      }, 10000);
+
+      AllIntervals.push(alarmInterval);
+
+      return () => {
+        clearAllInterval(AllIntervals);
+      };
+    });
+  }, [ callRescheduler]);
+
+
+
+
 
   return (
     <Box height={'100vh'} display="flex" position="fixed" width="100%">
@@ -533,8 +625,76 @@ const Ticket = () => {
           </Box>
         </Modal>
       </Box>
+      <Box>
+        <Modal
+          open={showCallReschedulerModal}
+          // onClose={() => handleCloseModal()}
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              bgcolor: 'white',
+              width: '600px',
+              height: '400px',
+              top: '50%',
+              left: '50%',
+              border: '0px solid transparent',
+              borderRadius: '8px',
+              transform: 'translate(-50%, -50%)',
+              padding: '10px'
+            }}
+          >
+            <div
+              onClick={handleCloseCallReschedulerModal}
+              style={{
+                display: 'flex',
+                justifyContent: 'end',
+                cursor: 'pointer'
+              }}
+            >
+              <CloseIcon fontSize="large" />
+            </div>
+            <div className="buzz-animation">
+              <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
+            </div>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column'
+              }}
+            >
+              {ticketCallReschedulerPatient && (
+                <Typography>{`Call Rescheduler for ${(
+                  ticketCallReschedulerPatient?.consumer[0]?.firstName || 'N/A'
+                ).toUpperCase()} `}</Typography>
+              )}{' '}
+              <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
+                {alarmCallReschedulerList[0]?.selectedLabels
+                  ? alarmCallReschedulerList[0].selectedLabels
+                      .map((label) => label.label)
+                      .join(', ')
+                      .toUpperCase()
+                  : 'N/A'}
+              </Typography>
+              <Typography margin={'12px'}>
+                {alarmCallReschedulerList[0]?.description || 'N/A'}
+              </Typography>
+              <Chip
+                size="medium"
+                variant="outlined"
+                color="primary"
+                label={dayjs(alarmCallReschedulerList[0]?.date).format(
+                  'DD/MMM/YYYY hh:mm A '
+                )}
+              />
+            </Box>
+          </Box>
+        </Modal>
+      </Box>
 
-<CustomSpinLoader open={loaderOn} />
+      {/* <CustomSpinLoader open={loaderOn} /> */}
     </Box>
   );
 };

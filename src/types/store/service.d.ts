@@ -36,6 +36,11 @@ export interface iAllServices {
   total: number;
 }
 
+export interface iAllServicesPacked {
+  services: iServicePackage[];
+  total: number;
+}
+
 export interface iService {
   _id?: string;
   name: string;
@@ -57,6 +62,42 @@ export interface iService {
   single_two: number;
   deluxe_two: number;
   vip_two: number;
+}
+
+export interface iServiceAll {
+  _id?: string;
+  name: string;
+  serviceId: string;
+  department: ObjectId;
+  departmentType: ObjectId;
+  tag: ObjectId;
+  charges: {
+    genward: number;
+    semi: number;
+    pvt: number;
+    suite: number;
+    opd: number;
+    icu: number;
+    delux: number;
+  }[];
+}
+
+export interface iServicePackage {
+  _id?: string;
+  name: string;
+  serviceId: string;
+  department: ObjectId;
+  departmentType: ObjectId;
+  tag: ObjectId;
+  charges: {
+    genward: number;
+    semi: number;
+    pvt: number;
+    suite: number;
+    opd: number;
+    icu: number;
+    delux: number;
+  }[];
 }
 
 export interface iStage {

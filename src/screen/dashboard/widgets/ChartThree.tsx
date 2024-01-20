@@ -1,19 +1,26 @@
 import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 
-export default function ChartThree() {
+export default function ChartThree({ dnd, pending, todaysTask, callCompleted, reschedule }) {
   return (
     <BarChart
       xAxis={[
         {
           id: 'barCategories',
-          data: ['New Lead', 'Contacted', 'Orientation','Nurturung','Working','Converted'],
+          data: [
+            'DND',
+            'Pending',
+            'Today Task',
+            'Call Completed',
+           
+            'reschedule'
+          ],
           scaleType: 'band'
         }
       ]}
       series={[
         {
-          data: [2, 5, 3,4,1,9]
+          data: [dnd, pending, todaysTask, callCompleted, reschedule]
         }
       ]}
       width={500}

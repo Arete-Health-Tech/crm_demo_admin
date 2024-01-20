@@ -19,9 +19,12 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   setNotes: (notes) => set({ notes }),
   reminders: [],
   setReminders: (reminders) => set({ reminders }),
+  callRescheduler: [],
+  setCallRescheduler: (callRescheduler) => set({ callRescheduler }),
   filterTickets: {
     stageList: [],
-    representative: null, 
+    representative: null,
+    results: null
   },
   setFilterTickets: (filterTickets) => set({ filterTickets }),
   loaderOn: false,
@@ -29,7 +32,9 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   pageNumber: 1,
   setPageNumber: (pageNumber) => set({ pageNumber }),
   estimates: [],
-  setEstimates: (estimates) => set({ estimates })
+  setEstimates: (estimates) => set({ estimates }),
+  status: [],
+  setStatus: (status) => set({ status })
 }));
 
 export default useTicketStore;

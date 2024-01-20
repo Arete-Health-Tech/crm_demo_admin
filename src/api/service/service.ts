@@ -23,10 +23,33 @@ export const createServiceTag = async (tag: createTag) => {
   return data;
 };
 
+// export const searchService = async (serviceName: string, tagId?: string) => {
+//   const { data } = await apiClient.get(
+//     `/service/search?search=${serviceName}${tagId ? `&tag=${tagId}` : ''}`
+//   );
+// console.log(data," from service ")
+//   return data;
+// };
+
 export const searchService = async (serviceName: string, tagId?: string) => {
   const { data } = await apiClient.get(
     `/service/search?search=${serviceName}${tagId ? `&tag=${tagId}` : ''}`
   );
+  // console.log(data, ' from service ');
+  return data;
+};
+
+export const searchServicePck = async () => {
+  const { data } = await apiClient.get(
+    '/service/searchPck'
+  );
 
   return data;
 };
+
+export const searchServiceAll= async () => {
+  const { data } = await apiClient.get('/service/searchService');
+ 
+  return data;
+};
+

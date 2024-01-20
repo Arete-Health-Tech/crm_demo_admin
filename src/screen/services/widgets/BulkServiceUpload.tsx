@@ -56,13 +56,13 @@ const BulkServiceUpload = (props: Props) => {
           single_one: +item.single_one,
           deluxe_one: +item.deluxe_one,
           vip_one: +item.vip_one,
-          opd_two: +item.opd_two,
-          ip_two: +item.ipd_two,
-          four_two: +item.four_two,
-          twin_two: +item.twin_two,
-          single_two: +item.single_two,
-          deluxe_two: +item.deluxe_two,
-          vip_two: +item.vip_two
+          // opd_two: +item.opd_two,
+          // ip_two: +item.ipd_two,
+          // four_two: +item.four_two,
+          // twin_two: +item.twin_two,
+          // single_two: +item.single_two,
+          // deluxe_two: +item.deluxe_two,
+          // vip_two: +item.vip_two
         };
       });
       await createServiceHandler(uploadData);

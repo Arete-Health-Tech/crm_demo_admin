@@ -1,5 +1,6 @@
 export const filterActions = {
   STAGES: 'STAGES',
   REPRESENTATIVE: 'REPRESENTATIVE',
-  PHONE:'PHONE'
+  PHONE: 'PHONE',
+ RESULTS:'RESULTS'
 };

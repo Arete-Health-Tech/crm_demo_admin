@@ -25,15 +25,17 @@ import {
   DialogActions,
   Dialog,
   DialogTitle,
-  DialogContent
+  DialogContent,
+  Grid,
+  DialogContentText
 } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useTicketStore from '../../store/ticketStore';
-import { iReminder, iTicket } from '../../types/store/ticket';
+import { iCallRescheduler, iReminder, iTicket } from '../../types/store/ticket';
 import StageCard from './widgets/StageCard';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -77,8 +79,14 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import PDFDocument from '@react-pdf/pdfkit';
 import { Document, Page } from 'react-pdf';
 import CloseIcon from '@mui/icons-material/Close';
+import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTone';
+ 
 
 import AWS from 'aws-sdk';
+import CustomModal from './widgets/CustomModal';
+import { apiClient } from '../../api/apiClient';
+import ReschedulerAll from './widgets/ReschedulerAll';
+import RemainderAll from './widgets/RemainderAll';
 
 const questions = [
   {
@@ -186,6 +194,7 @@ const SingleTicketDetails = (props: Props) => {
     reminders,
     pageNumber,
     searchByName,
+    callRescheduler,
     estimates
   } = useTicketStore();
   const { doctors, departments, stages } = useServiceStore();
@@ -195,6 +204,8 @@ const SingleTicketDetails = (props: Props) => {
   const [isScript, setIsScript] = useState(false);
   const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
   const [singleReminder, setSingleReminder] = useState<iReminder[] | any[]>([]);
+  const [callReschedule, setCallReschedule] = useState<iCallRescheduler[] | any[]>([]);
+
   const [open, setOpen] = useState(false);
   const theme = useTheme();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -211,8 +222,18 @@ const SingleTicketDetails = (props: Props) => {
      gender:'',
      // Add other fields as needed
    });
-    const [openModal, setOpenModal] = useState(false);
+
+    const [openModal, setOpenModal] = useState(false);  
+    const [modalOpenRemainder, setModalOpenRemainder] = useState(false);
+    const [modalOpenRescheduler, setModalOpenRescheduler]=useState(false)
+    const [matchedObjects, setMatchedObjects] = useState([]);
+    const [callReschedulerData, setCallReschedulerData] = useState([]);
+
+
+
+ 
 console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
+// console.log(callRescheduler, ' this is call rescheduler ');
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
   const handlePhoneCall = async (e: React.SyntheticEvent) => {
@@ -293,7 +314,7 @@ console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
     }
   }
     
-     
+  
 
       
 
@@ -337,6 +358,7 @@ console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
 
   const getTicketInfo = (ticketID: string | undefined) => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
+    console.log(fetchTicket," this is refetched dsfgsdgsdghsdhsdfh");
     setCurrentTicket(fetchTicket);
     return fetchTicket;
   };
@@ -346,6 +368,7 @@ console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
       const ticketData = getTicketInfo(ticketID);
       if (currentTicket) {
         setSingleReminder([]);
+        setCallReschedule([]);
         const script = await getSingleScript(
           currentTicket?.prescription[0]?.service?._id,
           currentTicket?.stage
@@ -356,11 +379,16 @@ console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
             setSingleReminder([...singleReminder, data]);
           }
         });
-       
+        callRescheduler?.map((data) => {
+          // console.log("maping", data?.ticket === ticketData?._id);
+          if (data?.ticket === ticketData?._id) {
+            setCallReschedule([...callReschedule, data]);
+          }
+        });
+
         setScript(script);
       }
     })();
-    
   }, [
     ticketID,
     tickets,
@@ -368,7 +396,9 @@ console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
     ticketUpdateFlag,
     reminders.length,
     reminders,
-    currentTicket?.stage
+    currentTicket?.stage,
+    callRescheduler.length,
+    callRescheduler
   ]);
 
   const doctorSetter = (id: string) => {
@@ -448,6 +478,60 @@ const handleEdit = () => {
       [name]: value
     }));
   };
+
+
+ 
+  const handleIconClickRemainder = async () => {
+    try {
+      const { data } = await apiClient.get('/task/ticketRemainder', {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const filteredData = data.filter((val) => val.ticket === ticketID);
+      setMatchedObjects(filteredData);
+      setModalOpenRemainder(true);
+      if (filteredData.length === 0) {
+        console.log('No data found for the specified ticketId');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+ 
+// Now you can access matchedObjects outside the function
+// For example
+const handleIconClickCallRescheduler=async ()=>{
+ try {
+      const { data } = await apiClient.get('/task/ticketReschedluer', {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      const filteredData = data.filter((val) => val.ticket === ticketID);
+      setCallReschedulerData(filteredData);
+      setModalOpenRescheduler(true);
+      if (filteredData.length === 0) {
+        console.log('No data found for the specified ticketId');
+      }
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+console.log(matchedObjects," this is remainder")
+console.log(callReschedulerData," thi sis rescheduler data")
+
+ const handleCloseModal = () => {
+   // Close the modal
+   setModalOpenRemainder(false);
+   setModalOpenRescheduler(false);
+ };
+
+
+
 
 
   return (
@@ -556,8 +640,9 @@ const handleEdit = () => {
                   </Box>
                 ) : null}
               </Box>
+
               <Typography variant="body1">
-                {currentTicket?.consumer[0].phone}
+                Uhid {currentTicket?.consumer[0]?.uid}
               </Typography>
               <Typography fontSize="small">
                 {currentTicket?.consumer[0].dob
@@ -566,7 +651,7 @@ const handleEdit = () => {
               </Typography>
 
               <Typography variant="body1">
-                #{currentTicket?.consumer[0].uid}
+                Phone {currentTicket?.consumer[0]?.phone}
               </Typography>
             </Box>
           </Box>
@@ -838,6 +923,13 @@ const handleEdit = () => {
                 </Modal>
               </div>
             </a>
+
+            <CustomModal
+            // open={isModalOpen}
+            // onClose={() => setIsModalOpen(false)}
+            // timer={timer}
+            />
+
             <Chip
               sx={{ textTransform: 'capitalize' }}
               label={dayjs(currentTicket?.createdAt).fromNow()}
@@ -944,11 +1036,11 @@ const handleEdit = () => {
                 }
               }}
             >
-              <Chip label="Tasks" variant="outlined" color="info" />
-              <Chip label="Appointments" variant="outlined" color="info" />
+              {/* <Chip label="Tasks" variant="outlined" color="info" /> */}
+              {/* <Chip label="Appointments" variant="outlined" color="info" /> */}
               <Chip label="Documents" variant="outlined" color="info" />
               <Chip label="Estimates" variant="outlined" color="info" />
-              <Chip label="Prescriptsions" variant="outlined" color="info" />
+              {/* <Chip label="Prescriptsions" variant="outlined" color="info" /> */}
             </Stack>
 
             <Stack borderRadius={2} m={1} bgcolor="white">
@@ -1081,60 +1173,231 @@ const handleEdit = () => {
                 <Typography>Loading...</Typography>
               )}
             </Stack>
-            <Box
-              sx={{
-                overflowX: 'scroll',
-                '&::-webkit-scrollbar ': {
-                  display: 'none'
-                }
-              }}
-              m={1}
-              borderRadius={2}
-              bgcolor="white"
-            >
-              <Box p={1} borderBottom={1} borderColor="#f5f5f5">
-                <Stack direction="row" spacing={3} my={1}>
-                  <img src={Bulb} alt="prescriptionIcon" />
-                  <Typography
-                    textTransform="uppercase"
-                    variant="subtitle1"
-                    fontWeight={500}
-                  >
-                    Reminders For You
-                  </Typography>
-                </Stack>
-              </Box>
-              <Box>
-                {singleReminder[0] ? (
-                  <Box
-                    display="flex"
-                    justifyContent="space-between"
-                    alignItems="center"
-                    p={2}
-                    bgcolor={'white'}
-                  >
-                    <Box>
-                      <Typography>{singleReminder[0].title}</Typography>
-                      <Chip
-                        size="small"
-                        variant="outlined"
-                        color="primary"
-                        label={dayjs(singleReminder[0].date).format(
-                          'DD/MMM/YYYY hh:mm A '
-                        )}
-                      />
-                    </Box>
-                    <Box>
-                      <Tooltip title={singleReminder[0].description}>
-                        <InfoOutlined />
+            <Grid container spacing={2}>
+              {/* First Box */}
+              <Grid item xs={6}>
+                <Box
+                  sx={{
+                    overflowX: 'scroll',
+                    '&::-webkit-scrollbar ': {
+                      display: 'none'
+                    }
+                  }}
+                  m={1}
+                  borderRadius={2}
+                  bgcolor="white"
+                >
+                  <Box p={1} borderBottom={1} borderColor="#f5f5f5">
+                    <Grid container alignItems="center" spacing={1} my={1}>
+                      <Grid item>
+                        <Typography
+                          textTransform="uppercase"
+                          variant="subtitle1"
+                          fontWeight={500}
+                        >
+                          Reminders
+                        </Typography>
+                      </Grid>
+                      <Tooltip title="View All" style={{ marginLeft: '10px' }}>
+                        <Grid item>
+                          <ArrowForwardIosTwoToneIcon
+                            onClick={handleIconClickRemainder}
+                            style={{
+                              fontSize: '18px',
+                              marginBottom: '5px',
+                              marginLeft: '80px'
+                            }}
+                          />
+                        </Grid>
                       </Tooltip>
-                    </Box>
+                      <Dialog
+                        open={modalOpenRemainder}
+                        onClose={handleCloseModal}
+                        aria-labelledby="modal-title"
+                        aria-describedby="modal-description"
+                        fullWidth
+                        maxWidth="md"
+                      >
+                        <DialogTitle id="modal-title">Remainders</DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="modal-description">
+                            {matchedObjects ? (
+                              matchedObjects.length > 0 ? (
+                                <RemainderAll data={matchedObjects} />
+                              ) : (
+                                <Typography variant="body1">
+                                  No reminders available
+                                </Typography>
+                              )
+                            ) : (
+                              <Typography variant="body1">
+                                Loading...
+                              </Typography>
+                            )}
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={handleCloseModal}
+                            variant="contained"
+                            color="primary"
+                          >
+                            Close
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </Grid>
                   </Box>
-                ) : (
-                  <Typography p={1}>No Reminders Available</Typography>
-                )}
-              </Box>
-            </Box>
+                  <Box>
+                    {singleReminder.length > 0 ? (
+                      singleReminder.map((reminder, index) => (
+                        <Box
+                          key={index}
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          p={1}
+                          bgcolor={'white'}
+                          mb={1} // Optional: Add margin bottom for spacing between reminders
+                        >
+                          <Box>
+                            <Typography>{reminder.title}</Typography>
+                            <Chip
+                              size="small"
+                              variant="outlined"
+                              color="primary"
+                              label={dayjs(reminder.date).format(
+                                'DD/MMM/YYYY hh:mm A'
+                              )}
+                            />
+                          </Box>
+                          <Box>
+                            <Tooltip title={reminder.description}>
+                              <InfoOutlined />
+                            </Tooltip>
+                          </Box>
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography p={1}>No Reminders Available</Typography>
+                    )}
+                  </Box>
+                </Box>
+              </Grid>
+
+              {/* Second Box */}
+              <Grid item xs={6}>
+                <Box
+                  sx={{
+                    overflowX: 'scroll',
+                    '&::-webkit-scrollbar ': {
+                      display: 'none'
+                    }
+                  }}
+                  m={1}
+                  borderRadius={2}
+                  bgcolor="white"
+                >
+                  <Box p={1} borderBottom={1} borderColor="#f5f5f5">
+                    <Grid container alignItems="center" spacing={1} my={1}>
+                      <Grid item>
+                        <Typography
+                          textTransform="uppercase"
+                          variant="subtitle1"
+                          fontWeight={500}
+                        >
+                          Callrescheduler
+                        </Typography>
+                      </Grid>
+                      <Tooltip title="View All">
+                        <Grid item>
+                          <ArrowForwardIosTwoToneIcon
+                            onClick={handleIconClickCallRescheduler}
+                            style={{
+                              fontSize: '18px',
+                              marginBottom: '5px',
+                              marginLeft: '10px'
+                            }}
+                          />
+                        </Grid>
+                      </Tooltip>
+                      <Dialog
+                        open={modalOpenRescheduler}
+                        onClose={handleCloseModal}
+                        aria-labelledby="modal-title"
+                        aria-describedby="modal-description"
+                        fullWidth
+                        maxWidth="md"
+                      >
+                        <DialogTitle id="modal-title">
+                          All Details Call Rescheduler{' '}
+                        </DialogTitle>
+                        <DialogContent>
+                          <DialogContentText id="modal-description">
+                            {callReschedulerData ? (
+                              callReschedulerData.length > 0 ? (
+                                <ReschedulerAll data={callReschedulerData} />
+                              ) : (
+                                <Typography variant="body1">
+                                  No Call Reschedule available
+                                </Typography>
+                              )
+                            ) : (
+                              <Typography variant="body1">
+                                Loading...
+                              </Typography>
+                            )}
+                          </DialogContentText>
+                        </DialogContent>
+                        <DialogActions>
+                          <Button
+                            onClick={handleCloseModal}
+                            variant="contained"
+                            color="primary"
+                          >
+                            Close
+                          </Button>
+                        </DialogActions>
+                      </Dialog>
+                    </Grid>
+                  </Box>
+                  <Box>
+                    {callReschedule.length > 0 ? (
+                      callReschedule.map((sed, index) => (
+                        <Box
+                          key={index}
+                          display="flex"
+                          justifyContent="space-between"
+                          alignItems="center"
+                          p={1}
+                          bgcolor={'white'}
+                          mb={1} // Optional: Add margin bottom for spacing between reminders
+                        >
+                          <Box>
+                            <Typography>{sed.title}</Typography>
+                            <Chip
+                              size="small"
+                              variant="outlined"
+                              color="primary"
+                              label={dayjs(sed.date).format(
+                                'DD/MMM/YYYY hh:mm A'
+                              )}
+                            />
+                          </Box>
+                          <Box>
+                            <Tooltip title={sed.description}>
+                              <InfoOutlined />
+                            </Tooltip>
+                          </Box>
+                        </Box>
+                      ))
+                    ) : (
+                      <Typography p={1}>No Call Schedule</Typography>
+                    )}
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
           </Box>
         )}
 
@@ -1153,9 +1416,9 @@ const handleEdit = () => {
           display="flex"
           justifyContent="space-between"
         >
-          <Button onClick={() => setIsScript((prev) => !prev)}>
+          {/* <Button onClick={() => setIsScript((prev) => !prev)}>
             {!isScript ? 'View Agent Script' : 'Close Script '}
-          </Button>
+          </Button> */}
           <AddNewTaskWidget />
         </Box>
       </Box>

@@ -10,6 +10,7 @@ import { Grid, LinearProgress } from '@mui/material';
 import useTicketStore from '../../../store/ticketStore';
 import { useEffect, useState } from 'react';
 import { iStage } from '../../../types/store/service';
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 
 type Props = {
   patientData: iTicket;
@@ -48,7 +49,7 @@ const TicketCard = (props: Props) => {
     setCurrentStage(stageDetail);
   }, [stages]);
 
-console.log(props.patientData," thui sis patient data ")
+// console.log(props.patientData," thui sis patient data ")
 
   return (
     <Box
@@ -102,6 +103,11 @@ console.log(props.patientData," thui sis patient data ")
         </Box>
         <Box>
           <Typography variant="body2">
+            {/* <NotificationsActiveIcon style={{ color: 'var(--primaryColor)' }} /> */}
+          </Typography>
+        </Box>
+        <Box>
+          <Typography variant="body2">
             {props.patientData.consumer[0].uid}
           </Typography>
         </Box>
@@ -133,29 +139,28 @@ console.log(props.patientData," thui sis patient data ")
         {props.patientData.prescription[0].diagnostics.length > 0 && (
           <Chip label="Diagnostics" color="primary" size="small" />
         )}
-       
-          <Chip
-            // D ENDS HERE__________________________
-            size="small"
-            disabled={props.patientData.estimate.length === 0 ? true : false}
-            label={
-              props.patientData.estimate[0]?.paymentType === 0
-                ? 'Cash'
-                : props.patientData.estimate[0]?.paymentType === 1
-                ? 'Insurance'
-                : props.patientData.estimate[0]?.paymentType === 2
-                ? 'CGHS| ECHS'
-                : ''
-            }
-            // sx={{
-            //   display: 'block',
-            //   backgroundColor: 'blue',
-            //   color: 'white',
-            //   borderRadius: '4px',
-            //   padding: '4px 8px'
-            // }}
-          />
-        
+
+        <Chip
+          // D ENDS HERE__________________________
+          size="small"
+          disabled={props.patientData.estimate.length === 0 ? true : false}
+          label={
+            props.patientData.estimate[0]?.paymentType === 0
+              ? 'Cash'
+              : props.patientData.estimate[0]?.paymentType === 1
+              ? 'Insurance'
+              : props.patientData.estimate[0]?.paymentType === 2
+              ? 'CGHS| ECHS'
+              : ''
+          }
+          // sx={{
+          //   display: 'block',
+          //   backgroundColor: 'blue',
+          //   color: 'white',
+          //   borderRadius: '4px',
+          //   padding: '4px 8px'
+          // }}
+        />
 
         <Chip
           sx={{

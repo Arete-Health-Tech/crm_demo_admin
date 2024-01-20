@@ -1,12 +1,15 @@
 import useTicketStore from '../../store/ticketStore';
-import { iNote, iReminder, iTicketFilter } from '../../types/store/ticket';
+import { iCallRescheduler, iNote, iReminder, iTicketFilter, iTimer } from '../../types/store/ticket';
 import {
   createNewNote,
   getAllNotes,
   createTicket,
   getTicket,
   getAllReminders,
-  createNewReminder
+  createNewReminder,
+  createNewCallRescheduler,
+  getAllRescheduler,
+  createTimer
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -18,6 +21,8 @@ export const getTicketHandler = async (
   selectedFilters: iTicketFilter,
   ticketId: string = UNDEFINED,
   fetchUpdated : boolean = false,
+  
+
 ) => {
   const {
     setTickets,
@@ -33,6 +38,8 @@ export const getTicketHandler = async (
   const {user} = useUserStore.getState();
   const phone=user?.phone
 
+ 
+
 
  
   setLoaderOn(true);
@@ -43,7 +50,8 @@ export const getTicketHandler = async (
     selectedFilters,
     ticketId,
     fetchUpdated,
-    phone
+    phone,
+   
   );
   const sortedTickets = data.tickets;
   const count = data.count;
@@ -149,3 +157,41 @@ export const createNewReminderHandler = async (reminderData: iReminder) => {
   setReminders([...reminders, reminderAdded]);
   return reminderAdded
 };
+
+
+export const getAllCallReschedulerHandler = async () => {
+  const { setCallRescheduler } = useTicketStore.getState();
+  const callRescheduler = await getAllRescheduler();
+  setCallRescheduler(callRescheduler);
+  return Promise.resolve(callRescheduler);
+};
+
+export const createNewCallReschedulerHandler = async (callReschedulerData: iCallRescheduler) => {
+  const { callRescheduler, setCallRescheduler } = useTicketStore.getState();
+  const callReschedulerAdded = await createNewCallRescheduler(callReschedulerData);
+  setCallRescheduler([...callRescheduler, callReschedulerAdded]);
+  return callReschedulerAdded;
+};
+
+export const getAllReschedulerHandler = async () => {
+  const { setCallRescheduler } = useTicketStore.getState();
+  const reschedular = await getAllRescheduler();
+  setCallRescheduler(reschedular);
+};
+
+
+export const createTimerHandler = async (timerData: iTimer,ticketId:string) => {
+  const { status, setStatus } = useTicketStore.getState();
+  console.log(timerData, 'timerData');
+  const timerAdded = await createTimer(timerData,ticketId);
+  console.log(timerAdded," this is timerAdded");
+   const updatedStatus = Array.isArray(status)
+     ? [...status, timerAdded]
+     : [timerAdded];
+
+   setStatus(updatedStatus);
+  
+  
+   return Promise.resolve(timerAdded);
+};
+

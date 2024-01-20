@@ -4,7 +4,9 @@ import {
   getServiceTags,
   getAllServices,
   uploadServiceMaster,
-  createServiceTag
+  createServiceTag,
+  searchServicePck,
+  searchServiceAll
 } from './service';
 
 export const createServiceHandler = async (parsedData: iService[]) => {
@@ -33,4 +35,15 @@ export const createServiceTagsHandler = async (tag: createTag) => {
   const { serviceTags, setServiceTags } = useServiceStore.getState();
   const serviceTagAdded = (await createServiceTag(tag)) as iServiceTag;
   setServiceTags([...serviceTags, serviceTagAdded]);
+};
+
+export const getServicePackedHandler=async ()=>{
+  const allServicePacked=await searchServicePck();
+
+
+}
+ 
+export const getAllServiceFromDbHandler = async () => {
+  const allService = await searchServiceAll();
+ 
 };

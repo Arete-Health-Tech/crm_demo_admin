@@ -23,9 +23,14 @@ import CloseIcon from '@mui/icons-material/Close';
 type Props = {
   isModalOpen: boolean;
   setIsModalOpen: any;
+ 
 };
 
-const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
+const AddReminderWidget = ({
+  isModalOpen,
+  setIsModalOpen,
+
+}: Props) => {
   const style = {
     position: 'absolute' as 'absolute',
     top: '50%',
@@ -47,8 +52,8 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [disableButton, setDisableButton] = useState(true);
-  
-// console.log("date: ",date, "time",time,"\nreminderData",reminderData);
+
+  // console.log("date: ",date, "time",time,"\nreminderData",reminderData);
   const checkIsEmpty = () => {
     if (
       reminderData.title.length > 0 &&
@@ -65,13 +70,16 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
   useEffect(() => {
     setReminderData({
       ...reminderData,
-      date: dayjs(date +" "+time).unix() * 1000
+      date: dayjs(date + ' ' + time).unix() * 1000
     });
   }, [date, time]);
 
   const addReminder = async () => {
-    const result = await createNewReminderHandler({...reminderData, ticket: ticketID});
-    console.log("reminder created", result)
+    const result = await createNewReminderHandler({
+      ...reminderData,
+      ticket: ticketID
+    });
+    console.log('reminder created', result);
     setReminderData({
       date: 0,
       title: '',
@@ -105,7 +113,7 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Create A New Reminder
           </Typography>
-          <IconButton  
+          <IconButton
             onClick={() => setIsModalOpen(false)}
             sx={{
               position: 'absolute',

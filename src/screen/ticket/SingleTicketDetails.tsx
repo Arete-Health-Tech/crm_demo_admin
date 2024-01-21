@@ -236,83 +236,83 @@ console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
 // console.log(callRescheduler, ' this is call rescheduler ');
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
-  const handlePhoneCall = async (e: React.SyntheticEvent) => {
-    const desiredStage = '6494196d698ecd9a9db95e3a';
-    const currentStage = currentTicket?.stage;
-    if (currentStage === desiredStage) {
-      const currentSubStageCode = currentTicket?.subStageCode?.code;
+  // const handlePhoneCall = async (e: React.SyntheticEvent) => {
+  //   const desiredStage = '6494196d698ecd9a9db95e3a';
+  //   const currentStage = currentTicket?.stage;
+  //   if (currentStage === desiredStage) {
+  //     const currentSubStageCode = currentTicket?.subStageCode?.code;
     
-      const stageDetail: any = stages?.find(
-        ({ _id }) => currentTicket?.stage === _id
-      );
-      const noOfChilds = stageDetail?.child?.length || 3;
-      if (
-        currentSubStageCode &&
-        (!currentTicket?.prescription[0].admission ||
-          currentSubStageCode > noOfChilds - 3) &&
-        currentSubStageCode < noOfChilds
-      ) {
-        setOpen(true); // Open the modal
+  //     const stageDetail: any = stages?.find(
+  //       ({ _id }) => currentTicket?.stage === _id
+  //     );
+  //     const noOfChilds = stageDetail?.child?.length || 3;
+  //     if (
+  //       currentSubStageCode &&
+  //       (!currentTicket?.prescription[0].admission ||
+  //         currentSubStageCode > noOfChilds - 3) &&
+  //       currentSubStageCode < noOfChilds
+  //     ) {
+  //       setOpen(true); // Open the modal
 
-        const payload = {
-          subStageCode: {
-            active: true,
-            code: 3
-          },
-          ticket: currentTicket?._id
-        };
+  //       const payload = {
+  //         subStageCode: {
+  //           active: true,
+  //           code: 3
+  //         },
+  //         ticket: currentTicket?._id
+  //       };
 
-        const result = await updateTicketSubStage(payload);
-        setTimeout(() => {
-          (async () => {
-            await getTicketHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              filterTickets
-            );
-            setTicketUpdateFlag(result);
-          })();
-        }, 1000);
-      }
-    }else {
-       const currentSubStageCode = currentTicket?.subStageCode?.code;
+  //       const result = await updateTicketSubStage(payload);
+  //       setTimeout(() => {
+  //         (async () => {
+  //           await getTicketHandler(
+  //             searchByName,
+  //             pageNumber,
+  //             'false',
+  //             filterTickets
+  //           );
+  //           setTicketUpdateFlag(result);
+  //         })();
+  //       }, 1000);
+  //     }
+  //   }else {
+  //      const currentSubStageCode = currentTicket?.subStageCode?.code;
       
-       const stageDetail: any = stages?.find(
-         ({ _id }) => currentTicket?.stage === _id
-       );
-       const noOfChilds = stageDetail?.child?.length || 3;
-       if (
-         currentSubStageCode &&
-         (!currentTicket?.prescription[0].admission ||
-           currentSubStageCode > noOfChilds - 3) &&
-         currentSubStageCode < noOfChilds
-       ) {
+  //      const stageDetail: any = stages?.find(
+  //        ({ _id }) => currentTicket?.stage === _id
+  //      );
+  //      const noOfChilds = stageDetail?.child?.length || 3;
+  //      if (
+  //        currentSubStageCode &&
+  //        (!currentTicket?.prescription[0].admission ||
+  //          currentSubStageCode > noOfChilds - 3) &&
+  //        currentSubStageCode < noOfChilds
+  //      ) {
        
 
-         const payload = {
-           subStageCode: {
-             active: true,
-             code: 3
-           },
-           ticket: currentTicket?._id
-         };
+  //        const payload = {
+  //          subStageCode: {
+  //            active: true,
+  //            code: 3
+  //          },
+  //          ticket: currentTicket?._id
+  //        };
 
-         const result = await updateTicketSubStage(payload);
-         setTimeout(() => {
-           (async () => {
-             await getTicketHandler(
-               searchByName,
-               pageNumber,
-               'false',
-               filterTickets
-             );
-             setTicketUpdateFlag(result);
-           })();
-         }, 1000);
-       }
-    }
-  }
+  //        const result = await updateTicketSubStage(payload);
+  //        setTimeout(() => {
+  //          (async () => {
+  //            await getTicketHandler(
+  //              searchByName,
+  //              pageNumber,
+  //              'false',
+  //              filterTickets
+  //            );
+  //            setTicketUpdateFlag(result);
+  //          })();
+  //        }, 1000);
+  //      }
+  //   }
+  // }
     
   
 
@@ -444,40 +444,12 @@ console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
   };
 
 
-  //edit 
-const handleEdit = () => {
-  setEditedConsumer({
-    uid: currentTicket?.consumer[0]?.uid || '',
-    firstName: currentTicket?.consumer[0]?.firstName || '',
-    lastName: currentTicket?.consumer[0]?.lastName || '',
-    phone: Number(currentTicket?.consumer[0]?.phone) || 0,
-    age: Number(currentTicket?.consumer[0]?.age) || 0,
-    gender: currentTicket?.consumer[0]?.gender || ''
-    // Set other fields as needed
-  });
-  
-   setOpenModal(true);
-};
 
- const handleSave = () => {
-   // Perform save/update logic here with editedConsumer
-   console.log('Saved Consumer:', editedConsumer);
-   const savedConsumerData = editedConsumer;
+
  
-   setOpenModal(false);
- };
 
- const handleCancel = () => {
-  
-   setOpenModal(false);
- };
-  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setEditedConsumer((prevConsumer) => ({
-      ...prevConsumer,
-      [name]: value
-    }));
-  };
+
+ 
 
 
  
@@ -556,65 +528,6 @@ console.log(callReschedulerData," thi sis rescheduler data")
               >
                 {currentTicket?.consumer[0].firstName}{' '}
                 {currentTicket?.consumer[0].lastName}
-                <Button onClick={handleEdit}>Edit</Button>
-                <Dialog open={openModal} onClose={handleCancel} fullWidth>
-                  <DialogTitle>Edit Consumer Details</DialogTitle>
-                  <DialogContent style={{ marginTop: '16px' }}>
-                    <TextField
-                      label="UHID"
-                      name="uhid"
-                      value={editedConsumer.uid}
-                      onChange={handleEditChange}
-                      fullWidth
-                      style={{ marginTop: '8px' }}
-                    />
-                    <TextField
-                      label="First Name"
-                      name="firstName"
-                      value={editedConsumer.firstName}
-                      onChange={handleEditChange}
-                      fullWidth
-                      style={{ marginTop: '8px' }}
-                    />
-                    <TextField
-                      label="Last Name"
-                      name="lastName"
-                      value={editedConsumer.lastName}
-                      onChange={handleEditChange}
-                      fullWidth
-                      style={{ marginTop: '8px' }}
-                    />
-                    <TextField
-                      label="Phone Number"
-                      name="phone"
-                      value={editedConsumer.phone}
-                      onChange={handleEditChange}
-                      fullWidth
-                      style={{ marginTop: '8px' }}
-                    />
-                    <TextField
-                      label="Age"
-                      name="age"
-                      value={editedConsumer.age}
-                      onChange={handleEditChange}
-                      fullWidth
-                      style={{ marginTop: '8px' }}
-                    />
-                    <TextField
-                      label="Last Name"
-                      name="lastName"
-                      value={editedConsumer.gender}
-                      onChange={handleEditChange}
-                      fullWidth
-                      style={{ marginTop: '8px' }}
-                    />
-                    {/* Add other fields as needed */}
-                  </DialogContent>
-                  <DialogActions>
-                    <Button onClick={handleSave}>Save</Button>
-                    <Button onClick={handleCancel}>Cancel</Button>
-                  </DialogActions>
-                </Dialog>
               </Typography>
             </Suspense>
 
@@ -623,37 +536,55 @@ console.log(callReschedulerData," thi sis rescheduler data")
               gridTemplateColumns="repeat(5, 1fr)"
               columnGap={2}
             >
-              <Box display="grid" gridTemplateColumns="repeat(2,1fr)">
+              {/* <Box display="grid" gridTemplateColumns="repeat(2,1fr)">
                 {currentTicket?.consumer[0].gender === 'M' ? (
                   <Box display="flex" alignItems="center">
-                    <Male fontSize="inherit" /> <Typography>Male</Typography>{' '}
+                    <Male fontSize="inherit" />{' '}
+                    <Typography
+                      sx={{ fontSize: '.9rem', whiteSpace: 'nowrap' }}
+                    >
+                      Male
+                    </Typography>{' '}
                   </Box>
                 ) : currentTicket?.consumer[0].gender === 'F' ? (
                   <Box display="flex" alignItems="center">
                     <Female fontSize="inherit" />{' '}
-                    <Typography>Female</Typography>{' '}
+                    <Typography
+                      sx={{ fontSize: '.9rem', whiteSpace: 'nowrap' }}
+                    >
+                      Female
+                    </Typography>{' '}
                   </Box>
                 ) : currentTicket?.consumer[0].gender === 'O' ? (
                   <Box>
                     <Transgender />
-                    <Typography>Others</Typography>
+                    <Typography
+                      sx={{ fontSize: '.9rem', whiteSpace: 'nowrap' }}
+                    >
+                      Others
+                    </Typography>
                   </Box>
                 ) : null}
-              </Box>
-
-              <Typography variant="body1">
-                Uhid {currentTicket?.consumer[0]?.uid}
+              </Box> */}
+              <Typography
+                variant="body1"
+                sx={{ fontSize: '.9rem', whiteSpace: 'nowrap' }}
+              >
+                Uhid - {currentTicket?.consumer[0]?.uid}
               </Typography>
-              <Typography fontSize="small">
+              {/* <Typography fontSize="small">
                 {currentTicket?.consumer[0].dob
                   ? ageSetter(currentTicket.consumer[0].dob)
                   : ''}
-              </Typography>
-
-              <Typography variant="body1">
-                Phone {currentTicket?.consumer[0]?.phone}
-              </Typography>
+              </Typography> */}
             </Box>
+
+            <Typography
+              variant="body1"
+              sx={{ fontSize: '.9rem', whiteSpace: 'nowrap' }}
+            >
+              Phone - {currentTicket?.consumer[0]?.phone}
+            </Typography>
           </Box>
           <Box
             width="40%"
@@ -661,269 +592,6 @@ console.log(callReschedulerData," thi sis rescheduler data")
             justifyContent="space-evenly"
             alignItems="center"
           >
-            <a href={`tel:${currentTicket?.consumer[0].phone}`}>
-              <div>
-                <IconButton
-                  sx={{ bgcolor: 'green', color: 'white' }}
-                  onClick={handlePhoneCall}
-                >
-                  <Call />
-                </IconButton>
-
-                <Modal
-                  open={open}
-                  onClose={handleClose}
-                  aria-labelledby="modal-modal-title"
-                  aria-describedby="modal-modal-description"
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                    // overflow: 'auto', // Add the overflow attribute here
-                  }}
-                >
-                  <div>
-                    <Box
-                      sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        p: 4,
-                        width: '50%',
-                        height: '60%',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                        overflow: 'auto'
-                      }}
-                    >
-                      <IconButton
-                        onClick={handleClose}
-                        sx={{
-                          position: 'absolute',
-                          top: '8px',
-                          right: '8px',
-                          bgcolor: '#0047ab',
-                          color: 'white'
-                        }}
-                      >
-                        <CloseIcon />
-                      </IconButton>
-                      <Stack spacing={3}>
-                        <Typography variant="h6" align="center" gutterBottom>
-                          Checklist Form
-                        </Typography>
-
-                        <Box
-                          sx={{
-                            width: '100%',
-                            height: '20%',
-                            borderRadius: '50px',
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center'
-                          }}
-                        >
-                          {/* Current Question */}
-                          <Typography
-                            variant="h5"
-                            style={{ textAlign: 'center' }}
-                          >
-                            {questions[currentQuestionIndex].question}
-                          </Typography>
-                        </Box>
-                        <div>
-                          {/* Responses */}
-
-                          {currentQuestionIndex === 3
-                            ? questions[currentQuestionIndex].responses?.map(
-                                (response, index) => (
-                                  <Box sx={{ justifyContent: 'center' }}>
-                                    <FormControlLabel
-                                      key={index}
-                                      control={
-                                        <Checkbox
-                                          checked={
-                                            selectedResponses[
-                                              currentQuestionIndex
-                                            ] &&
-                                            selectedResponses[
-                                              currentQuestionIndex
-                                            ].includes(response)
-                                          }
-                                          onChange={() =>
-                                            handleResponseClick(response)
-                                          }
-                                          sx={{
-                                            color: 'primary.main',
-                                            '&.Mui-checked': {
-                                              color: 'primary.main'
-                                            }
-                                          }}
-                                        />
-                                      }
-                                      label={response}
-                                    />
-                                  </Box>
-                                )
-                              )
-                            : currentQuestionIndex === 5 ||
-                              currentQuestionIndex === 6 ||
-                              currentQuestionIndex === 7
-                            ? questions[currentQuestionIndex].responses?.map(
-                                (response, index) => (
-                                  <Box sx={{ justifyContent: 'center' }}>
-                                    <FormControlLabel
-                                      key={index}
-                                      control={
-                                        <Checkbox
-                                          checked={
-                                            selectedResponses[
-                                              currentQuestionIndex
-                                            ] === response
-                                          }
-                                          onChange={() =>
-                                            handleResponseClick(response)
-                                          }
-                                          sx={{
-                                            color: 'primary.main',
-                                            '&.Mui-checked': {
-                                              color: 'primary.main'
-                                            }
-                                          }}
-                                        />
-                                      }
-                                      label={response}
-                                    />
-                                  </Box>
-                                )
-                              )
-                            : questions[currentQuestionIndex].responses?.map(
-                                (response, index) => (
-                                  <Box sx={{ justifyContent: 'center' }}>
-                                    <Button
-                                      key={index}
-                                      variant="contained"
-                                      fullWidth
-                                      onClick={() =>
-                                        handleResponseClick(response)
-                                      }
-                                      sx={{ mt: 1, mb: 1, bgcolor: 'EBEDF5' }}
-                                    >
-                                      {response}
-                                    </Button>
-                                  </Box>
-                                )
-                              )}
-
-                          {currentQuestionIndex === 2 &&
-                            selectedResponses[currentQuestionIndex] ===
-                              'No' && (
-                              <div>
-                                <h2>Reason:</h2>
-                                <textarea
-                                  rows={4}
-                                  cols={60}
-                                  value={
-                                    selectedResponses[
-                                      currentQuestionIndex + '_reason'
-                                    ] || ''
-                                  }
-                                  onChange={(e) =>
-                                    setSelectedResponses(
-                                      (prevSelectedResponses) => ({
-                                        ...prevSelectedResponses,
-                                        [currentQuestionIndex + '_reason']:
-                                          e.target.value
-                                      })
-                                    )
-                                  }
-                                />
-                                <Button variant="contained">Submit</Button>
-                              </div>
-                            )}
-                        </div>
-
-                        {currentQuestionIndex == 8 &&
-                          selectedResponses[currentQuestionIndex] === 'Yes' && (
-                            <div>
-                              <form>
-                                <TextField
-                                  label="Name"
-                                  fullWidth
-                                  // margin="normal"
-                                  variant="outlined"
-                                />
-                                <TextField
-                                  label="Phone Number"
-                                  fullWidth
-                                  // margin="normal"
-                                  variant="outlined"
-                                />
-                                <Button
-                                  variant="contained"
-                                  color="primary"
-                                  //onClick={handleFormSubmit}
-                                  sx={{ mt: 2 }}
-                                >
-                                  Submit
-                                </Button>
-                              </form>
-                            </div>
-                          )}
-                        <Box
-                          sx={{
-                            position: 'absolute',
-                            bottom: '2px',
-                            width: '90%'
-                          }}
-                        >
-                          <MobileStepper
-                            variant="progress"
-                            steps={10}
-                            position="bottom"
-                            activeStep={activeStep}
-                            sx={{ maxWidth: '100%', flexGrow: 0, bottom: 0 }}
-                            nextButton={
-                              <Button
-                                size="small"
-                                onClick={handleNext}
-                                disabled={activeStep === 9}
-                              >
-                                Next
-                                {theme.direction === 'rtl' ? (
-                                  <KeyboardArrowLeft />
-                                ) : (
-                                  <KeyboardArrowRight />
-                                )}
-                              </Button>
-                            }
-                            backButton={
-                              <Button
-                                size="small"
-                                onClick={handleBack}
-                                disabled={activeStep === 0}
-                              >
-                                {theme.direction === 'rtl' ? (
-                                  <KeyboardArrowRight />
-                                ) : (
-                                  <KeyboardArrowLeft />
-                                )}
-                                Back
-                              </Button>
-                            }
-                          />
-                        </Box>
-                      </Stack>
-                    </Box>
-                  </div>
-                </Modal>
-              </div>
-            </a>
-
             <CustomModal
             // open={isModalOpen}
             // onClose={() => setIsModalOpen(false)}
@@ -963,7 +631,7 @@ console.log(callReschedulerData," thi sis rescheduler data")
                 >
                   <Tab label="Whatsapp Message" value="1" />
                   <Tab label="Notes" value="2" />
-                  <Tab label="Query Resolution" value="3" />
+                  {/* <Tab label="Query Resolution" value="3" /> */}
                 </TabList>
               </Box>
               <TabPanel sx={{ p: 0, height: '100%' }} value="1">
@@ -1025,7 +693,7 @@ console.log(callReschedulerData," thi sis rescheduler data")
               }
             }}
           >
-            <Stack
+            {/* <Stack
               direction="row"
               spacing={2}
               p={1}
@@ -1036,12 +704,12 @@ console.log(callReschedulerData," thi sis rescheduler data")
                 }
               }}
             >
-              {/* <Chip label="Tasks" variant="outlined" color="info" /> */}
-              {/* <Chip label="Appointments" variant="outlined" color="info" /> */}
+              <Chip label="Tasks" variant="outlined" color="info" />
+              <Chip label="Appointments" variant="outlined" color="info" />
               <Chip label="Documents" variant="outlined" color="info" />
               <Chip label="Estimates" variant="outlined" color="info" />
-              {/* <Chip label="Prescriptsions" variant="outlined" color="info" /> */}
-            </Stack>
+              <Chip label="Prescriptsions" variant="outlined" color="info" />
+            </Stack> */}
 
             <Stack borderRadius={2} m={1} bgcolor="white">
               <Box p={1} borderBottom={1} borderColor="#f5f5f5">
@@ -1249,35 +917,33 @@ console.log(callReschedulerData," thi sis rescheduler data")
                     </Grid>
                   </Box>
                   <Box>
-                    {singleReminder.length > 0 ? (
-                      singleReminder.map((reminder, index) => (
-                        <Box
-                          key={index}
-                          display="flex"
-                          justifyContent="space-between"
-                          alignItems="center"
-                          p={1}
-                          bgcolor={'white'}
-                          mb={1} // Optional: Add margin bottom for spacing between reminders
-                        >
-                          <Box>
-                            <Typography>{reminder.title}</Typography>
-                            <Chip
-                              size="small"
-                              variant="outlined"
-                              color="primary"
-                              label={dayjs(reminder.date).format(
-                                'DD/MMM/YYYY hh:mm A'
-                              )}
-                            />
-                          </Box>
-                          <Box>
-                            <Tooltip title={reminder.description}>
-                              <InfoOutlined />
-                            </Tooltip>
-                          </Box>
+                    {singleReminder[0] ? (
+                      <Box
+                       
+                        display="flex"
+                        justifyContent="space-between"
+                        alignItems="center"
+                        p={1}
+                        bgcolor={'white'}
+                        mb={1} // Optional: Add margin bottom for spacing between reminders
+                      >
+                        <Box>
+                          <Typography>{singleReminder[0].title}</Typography>
+                          <Chip
+                            size="small"
+                            variant="outlined"
+                            color="primary"
+                            label={dayjs(singleReminder[0].date).format(
+                              'DD/MMM/YYYY hh:mm A'
+                            )}
+                          />
                         </Box>
-                      ))
+                        <Box>
+                          <Tooltip title={singleReminder[0].description}>
+                            <InfoOutlined />
+                          </Tooltip>
+                        </Box>
+                      </Box>
                     ) : (
                       <Typography p={1}>No Reminders Available</Typography>
                     )}

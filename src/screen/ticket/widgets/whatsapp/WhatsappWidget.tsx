@@ -32,6 +32,7 @@ import SpeedDialAction from '@mui/material/SpeedDialAction';
 import SpeedDialIcon from '@mui/material/SpeedDialIcon';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { apiClient } from '../../../../api/apiClient';
+import AttachFileIcon from '@mui/icons-material/AttachFile';
 
 type Props = {};
 
@@ -47,6 +48,7 @@ const MessagingWidget = (props: Props) => {
  const fileInputRef = useRef<HTMLInputElement | null>(null);
    const [file, setFile] = useState(null);
     const [id, setId] = useState('');
+   const containerRef = useRef<HTMLDivElement | null>(null);
 
   function getConsumerIdByDataId(dataArray, dataIdToMatch) {
     for (const obj of dataArray) {
@@ -156,7 +158,12 @@ console.log(consumerId, 'this is consimer id ');
 };
 console.log(messages,"this is message for send whtasapp image")
 console.log(file,"thuis is file outsider")
-
+useEffect(() => {
+  // Check if containerRef.current is not null before accessing properties
+  if (containerRef.current) {
+    containerRef.current.scrollTop = containerRef.current.scrollHeight;
+  }
+}, [messages]);
 
   return (
     <Stack
@@ -167,9 +174,11 @@ console.log(file,"thuis is file outsider")
       p={1}
     >
       <Box
+        ref={containerRef}
         sx={{
           backgroundImage: `url(${bgWhatsapp})`,
-          overflowY: 'auto'
+          overflowY: 'auto',
+          height: '100vh'
         }}
         height="85%"
       >
@@ -279,7 +288,10 @@ console.log(file,"thuis is file outsider")
           </Box>
           <div>
             <Button onClick={handleImageUpload} style={{ cursor: 'pointer' }}>
-              <AddAPhotoIcon />
+              <AttachFileIcon
+                color="primary"
+                sx={{ border: '1px solid green', marginRight: '10px' }}
+              />
             </Button>
             <input
               type="file"

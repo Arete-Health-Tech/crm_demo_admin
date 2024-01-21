@@ -81,7 +81,7 @@ const AddCallRescheduler = ({
     });
   }, [date, time]);
 
-  const addReminder = async () => {
+  const addCAllRescheduler = async () => {
     try {
       const result = await createNewCallReschedulerHandler({
         ...callReschedulerData,
@@ -317,7 +317,7 @@ const AddCallRescheduler = ({
           </Stack>
           <Button
             disabled={disableButton}
-            onClick={addReminder}
+            onClick={addCAllRescheduler}
             sx={{ mt: 1 }}
             variant="contained"
             color={'primary'}

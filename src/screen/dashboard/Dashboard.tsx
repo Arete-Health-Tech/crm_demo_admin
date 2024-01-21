@@ -216,7 +216,7 @@ getAllTimerStatusHandlerTodaysTask()
           </Grid>
         ))}
       </Grid>
-      <Grid container spacing={2}>
+      <Grid container spacing={2} sx={{marginTop:"100px"}}>
         {' '}
         {/* Grid for charts */}
         <Grid item xs={8} sm={1}>
@@ -237,127 +237,7 @@ getAllTimerStatusHandlerTodaysTask()
           />
         </Grid>
       </Grid>
-      <div style={{ display: 'flex', alignItems: 'center' }}>
-        <h2
-          style={{ fontSize: '30px', fontWeight: 'bold', marginRight: '20px' }}
-        >
-          {' '}
-          <Diversity2Icon />
-          Stage Wise Patient in Pipeline
-        </h2>
-        <h2
-          style={{ fontSize: '30px', fontWeight: 'bold', marginLeft: '180px' }}
-        >
-          {' '}
-          <Diversity2Icon />
-          Stage Wise Value in Pipeline
-        </h2>
-      </div>
-      <Grid container spacing={1}>
-        {cardsDataBottom.map((card) => (
-          <Grid item key={card.id} xs={12} sm={6} md={2} lg={3} xl={1.1}>
-            <Card>
-              <CardContent
-                style={{
-                  borderRadius: '10px',
-                  padding: '8px'
-                }}
-              >
-                <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>
-                  {card.title}
-                </h3>
-                <p style={{ fontSize: '20px' }}>{card.content}</p>
-              </CardContent>
-            </Card>
-          </Grid>
-        ))}
-        <Grid item xs={12} sm={6} md={2} lg={3} xl={1.1}>
-          <Card>
-            <CardContent
-              style={{
-                borderRadius: '10px',
-                padding: '8px'
-              }}
-            >
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>
-                Nurturing
-              </h3>
-              <p style={{ fontSize: '20px' }}>2.5L</p>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={2} lg={3} xl={1.1}>
-          <Card>
-            <CardContent
-              style={{
-                borderRadius: '10px',
-                padding: '8px'
-              }}
-            >
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>
-                Orientation
-              </h3>
-              <p style={{ fontSize: '20px' }}>2.5L</p>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={2} lg={3} xl={1.1}>
-          <Card>
-            <CardContent
-              style={{
-                borderRadius: '10px',
-                padding: '8px'
-              }}
-            >
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>Working</h3>
-              <p style={{ fontSize: '20px' }}>2.5L</p>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={2} lg={3} xl={1.1}>
-          <Card>
-            <CardContent
-              style={{
-                borderRadius: '10px',
-                padding: '8px'
-              }}
-            >
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>RFA</h3>
-              <p style={{ fontSize: '20px' }}>2.5L</p>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={2} lg={3} xl={1.1}>
-          <Card>
-            <CardContent
-              style={{
-                borderRadius: '10px',
-                padding: '8px'
-              }}
-            >
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>
-                Contacted
-              </h3>
-              <p style={{ fontSize: '20px' }}>2.5L</p>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6} md={2} lg={3} xl={1}>
-          <Card>
-            <CardContent
-              style={{
-                borderRadius: '10px',
-                padding: '8px'
-              }}
-            >
-              <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>
-                Lost Lead
-              </h3>
-              <p style={{ fontSize: '20px' }}>2.5L</p>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
+     
     </div>
   );
 };

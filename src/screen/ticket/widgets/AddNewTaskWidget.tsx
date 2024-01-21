@@ -26,61 +26,46 @@ const AddNewTaskWidget = (props: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenCall,setIsModalOpenCall]= useState(false);
 
+
+   const handleButtonClick = () => {
+     setIsModalOpen(true);
+   
+   };
+
+   const handleButtonClickRescheduler = () => {
+   
+     setIsModalOpenCall(true);
+   };
+   const handleModalClose = () => {
+     // Comment or remove the following line to prevent closing the modal
+     setIsModalOpen(false);
+      setIsModalOpenCall(false);
+    
+   };
+  
+
   return (
     <Box position="relative">
-      {isTaskOpen && (
-        <List
-          disablePadding
-          sx={{
-            width: '200px',
-            position: 'absolute',
-            zIndex: 2,
-            bottom: '8vh',
-            right: '2vh',
-            bgcolor: 'white',
-            transition: 'ease-in-out ',
-            transitionDelay: '800ms'
-          }}
-        >
-          <ListItemButton onClick={() => setIsModalOpen(true)}>
-            <ListItemIcon>
-              <NotificationAddOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Add New Task" />
-          </ListItemButton>
-          <ListItemButton onClick={() => setIsModalOpenCall(true)}>
-            <ListItemIcon>
-              <PlaylistAddCheckOutlined />
-            </ListItemIcon>
-            <ListItemText primary="Call Rescheduler" />
-          </ListItemButton>
-        </List>
-      )}
-
-      <Fab
-        onClick={() => setIsTaskOpen((prev) => !prev)}
-        size="small"
-        color="primary"
-        variant="extended"
+      <Button
+        onClick={handleButtonClick}
+        sx={{ border: '1px solid #ccc', marginRight: '8px' }}
       >
-        {isTaskOpen ? (
-          <>
-            <Close /> Close
-          </>
-        ) : (
-          <>
-            <Add sx={{ mr: 1 }} /> View Tasks
-          </>
-        )}
-      </Fab>
-
+        Reminder
+      </Button>
       <AddReminderWidget
         isModalOpen={isModalOpen}
-        setIsModalOpen={setIsModalOpen}
+        setIsModalOpen={handleModalClose}
       />
+
+      <Button
+        onClick={handleButtonClickRescheduler}
+        sx={{ border: '1px solid #ccc' }}
+      >
+        Call Rescheduler
+      </Button>
       <AddCallRescheduler
         isModalOpenCall={isModalOpenCall}
-        setIsModalOpenCall={setIsModalOpenCall}
+        setIsModalOpenCall={handleModalClose}
       />
     </Box>
   );

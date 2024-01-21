@@ -1,8 +1,9 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, MenuItem, Select, TextField } from "@mui/material";
+import { Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, MenuItem, Select, TextField } from "@mui/material";
 import React,{ useEffect, useRef, useState, useCallback } from 'react';
 import { createTimerHandler } from "../../../api/ticket/ticketHandler";
 import { useParams } from "react-router-dom";
 import { iTimer } from "../../../types/store/ticket";
+import { Call } from "@mui/icons-material";
 
 
 
@@ -16,7 +17,9 @@ const CustomModal = () => {
  
      const timerRef = useRef<NodeJS.Timer | null>(null);
       const [stoppedTimer, setStoppedTimer] = useState<number | null>(null);
+      
       const [dialogOpen, setDialogOpen] = useState(false);
+       const [chipOpen, setChipOpen] = useState(false);
       const [showForm, setShowForm] = useState(false);
       const [formData, setFormData] = useState<iTimer>({
        select:"",
@@ -33,17 +36,14 @@ const CustomModal = () => {
     timerRef.current = setInterval(() => {
       setTimer((prevTimer) => prevTimer + 1);
     }, 1000); 
+     setChipOpen(true);
     setDialogOpen(true);
   };
 
 
   
 
- const handleCloseDialog = () => {
-     setDialogOpen(false);
-  setStoppedTimer(null);
-   setShowForm(false);
- };
+
 
     const stopTimer = () => {
            if (timerRef.current !== null) {
@@ -72,6 +72,7 @@ console.log(" thirds")
       setDialogOpen(false);
       setShowForm(false);
       setTimer(0);
+       setChipOpen(false);
 
       console.log(
         'Form submitted with stopped timer:',
@@ -106,33 +107,27 @@ console.log(" thirds")
  const isButtonClicked = (buttonName) => formData.select === buttonName;
   return (
     <div>
-      <Button
-        type="button"
+      <IconButton
+        sx={{
+          bgcolor: chipOpen ? 'red' : 'green',
+          color: 'white'
+        }}
         onClick={startTimer}
-        variant="contained"
-        color="primary"
       >
-        Timer
-      </Button>
+        <Call sx={{ fontSize: '1.5rem' }} />
+      </IconButton>
 
-      <Dialog
-        open={dialogOpen}
-        onClose={handleCloseDialog}
-        aria-labelledby="timer-dialog-title"
-        aria-describedby="timer-dialog-description"
-      >
-        <DialogTitle id="timer-dialog-title">Timer</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="timer-dialog-description">
-            Timer: {timer} seconds
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={stopTimer} variant="contained" color="secondary">
-            Stop
-          </Button>
-        </DialogActions>
-      </Dialog>
+      {chipOpen && (
+        <Chip
+          label={`Timer: ${timer} seconds`}
+          onDelete={stopTimer}
+          color="primary"
+          variant="filled"
+          sx={{
+            fontSize: '.7rem' // Adjust the font size as needed
+          }}
+        />
+      )}
       <Dialog
         open={showForm}
         onClose={() => setShowForm(false)}

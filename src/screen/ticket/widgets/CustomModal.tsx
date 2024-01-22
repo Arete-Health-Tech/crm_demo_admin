@@ -1,9 +1,11 @@
 import { Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, MenuItem, Select, TextField } from "@mui/material";
 import React,{ useEffect, useRef, useState, useCallback } from 'react';
-import { createTimerHandler } from "../../../api/ticket/ticketHandler";
+import { createTimerHandler, getTicketHandler } from "../../../api/ticket/ticketHandler";
 import { useParams } from "react-router-dom";
 import { iTimer } from "../../../types/store/ticket";
 import { Call } from "@mui/icons-material";
+
+import useTicketStore from "../../../store/ticketStore";
 
 
 
@@ -12,7 +14,15 @@ import { Call } from "@mui/icons-material";
 const CustomModal = () => {
 
  const { ticketID } = useParams();
-
+ const {
+   tickets,
+   filterTickets,
+   reminders,
+   pageNumber,
+   searchByName,
+   callRescheduler,
+   estimates
+ } = useTicketStore();
   const [timer, setTimer] = useState(0);
  
      const timerRef = useRef<NodeJS.Timer | null>(null);
@@ -65,6 +75,18 @@ const handleFormSubmit = async () => {
 console.log("this is next one")
 const sachin:any = ticketID ;
     const result = await createTimerHandler(formData , sachin);
+  setTimeout(() => {
+           (async () => {
+             await getTicketHandler(
+               searchByName,
+               pageNumber,
+               'false',
+               filterTickets
+             );
+            
+           })();
+         }, 1000);
+  
 console.log(" thirds")
     // Check if result is truthy (not undefined or null)
     if (result !== undefined && result !== null) {
@@ -80,6 +102,7 @@ console.log(" thirds")
         'and data:',
         result
       );
+      // console.log(result1, " this is result one")
     }
   } catch (error) {
     console.log(error);

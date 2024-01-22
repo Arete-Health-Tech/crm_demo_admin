@@ -72,7 +72,7 @@ const Estimate = (props: Props) => {
   }, []);
 
   const [estimateFileds, setEstimateFields] = useState<iEstimate>({
-     _id:"",
+   
     type: 1,
     isEmergency: false,
     wardDays: 0,
@@ -336,7 +336,7 @@ console.log(ticketID,"this is ticketysmfbjsfhjsffs")
         console.log('Server response:', data);
       
 
-   
+   console.log(estimateFileds," this is estimaste from frontend")
       
 
   const payload = {

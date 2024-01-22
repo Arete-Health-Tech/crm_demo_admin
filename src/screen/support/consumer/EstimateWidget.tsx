@@ -80,7 +80,7 @@ const EstimateWidget = () => {
   }, []);
 
   const [estimateFileds, setEstimateFields] = useState<iEstimate>({
-    _id: '',
+   
     type: 1,
     isEmergency: false,
     wardDays: 0,

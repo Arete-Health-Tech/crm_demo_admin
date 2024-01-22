@@ -46,7 +46,7 @@ export interface iConsumer {
 // }
 
 export interface iEstimate {
-  _id:string;
+ 
   type: number;
   isEmergency: boolean;
   wardDays: number;

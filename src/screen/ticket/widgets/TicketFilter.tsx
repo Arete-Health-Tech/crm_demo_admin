@@ -346,7 +346,7 @@ console.log(value);
               onChange={handleResult}
             >
               <ToggleButton value="Won">WON</ToggleButton>
-              <ToggleButton value="Lose">LOSE</ToggleButton>
+              <ToggleButton value="Lose">LOST</ToggleButton>
             </ToggleButtonGroup>
           </Box>
           <Box p={1}>

@@ -308,6 +308,7 @@ console.log(servicesPack," this is all packed services from db");
         props.setTicketUpdateFlag(result);
       })();
     }, 1000);
+
   };
 
   const handleSubmit = async (event) => {
@@ -920,7 +921,7 @@ setTextFieldValue('');
                 )}
               </Box>
             )}
-            ;
+            
             {/* <Box my={1} bgcolor="white" borderRadius={3} p={1}>
               <Typography fontWeight={500} my={1}>
                 Mrd Charges

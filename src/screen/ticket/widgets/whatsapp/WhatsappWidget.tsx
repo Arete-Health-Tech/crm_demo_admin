@@ -178,7 +178,7 @@ useEffect(() => {
         sx={{
           backgroundImage: `url(${bgWhatsapp})`,
           overflowY: 'auto',
-          height: '100vh'
+         
         }}
         height="85%"
       >

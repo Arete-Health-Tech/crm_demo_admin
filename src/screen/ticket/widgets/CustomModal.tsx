@@ -51,7 +51,6 @@ const CustomModal = () => {
   };
 
 
-  
 
 
 
@@ -75,19 +74,19 @@ const handleFormSubmit = async () => {
 console.log("this is next one")
 const sachin:any = ticketID ;
     const result = await createTimerHandler(formData , sachin);
-  // setTimeout(() => {
-  //          (async () => {
-  //            await getTicketHandler(
-  //              searchByName,
-  //              pageNumber,
-  //              'false',
-  //              filterTickets
-  //            );
+  setTimeout(() => {
+           (async () => {
+             await getTicketHandler(
+               searchByName,
+               pageNumber,
+               'false',
+               filterTickets
+             );
             
-  //          })();
-  //        }, 1000);
+           })();
+         }, 1000);
   
-console.log(" thirds")
+console.log(result," this is call button")
     // Check if result is truthy (not undefined or null)
     if (result !== undefined && result !== null) {
       setFormData({ select: '' });

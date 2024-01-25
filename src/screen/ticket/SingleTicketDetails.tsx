@@ -503,7 +503,7 @@ console.log(callReschedulerData," thi sis rescheduler data")
  };
 
 
-
+console.log(currentTicket?.estimate," this is estimate from db");
 
 
   return (

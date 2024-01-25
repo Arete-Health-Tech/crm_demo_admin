@@ -308,7 +308,6 @@ console.log(servicesPack," this is all packed services from db");
         props.setTicketUpdateFlag(result);
       })();
     }, 1000);
-
   };
 
   const handleSubmit = async (event) => {

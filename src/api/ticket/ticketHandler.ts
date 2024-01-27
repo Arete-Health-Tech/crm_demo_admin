@@ -90,6 +90,7 @@ export type iCreateTicket = {
   diagnostics: string[];
   caregiver_phone: string | null;
   caregiver_name: string | null;
+  date : Date | number ;
 };
 
   export const createTicketHandler = async (
@@ -127,6 +128,9 @@ export type iCreateTicket = {
     /* @ts-ignore */
     const blob = await (await fetch(prescription.image)).blob();
     prescriptionData.append('image', blob);
+
+    // const todayDate = new Date();
+    prescriptionData.append("date" ,JSON.stringify(new Date()));
 
     return await createTicket(prescriptionData);
   };

@@ -165,32 +165,32 @@ const RegisterConsumer = () => {
   };
   console.log({ consumerId });
 
-  // const fetchConsumerDataByUhid = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       'http://localhost:3000/prod/api/v1/consumer/findConsumer?',
-  //       { params: { search: consumer.uid } }
-  //     );
-  //     if (response.data) {
-  //       updateConsumerState('firstName', response.data.firstName);
-  //       updateConsumerState('lastName', response.data.lastName);
-  //       updateConsumerState('phone', response.data.phone);
-  //       updateConsumerState('age', response.data.age);
-  //       updateConsumerState('gender', response.data.gender);
-  //       setConsumerId(response.data._id);
-  //       setExistingData(true);
-  //     } else {
-  //       // setConsumer(initialConsumerFields);
-  //       setExistingData(false);
-  //     }
-  //   } catch (error) {
-  //     alert(error);
-  //   }
-  // };
+  const fetchConsumerDataByUhid = async () => {
+    try {
+      const response = await axios.get(
+        'https://backend.aretehealth.tech/prod/api/v1/consumer/findConsumer?',
+        { params: { search: consumer.uid } }
+      );
+      if (response.data) {
+        updateConsumerState('firstName', response.data.firstName);
+        updateConsumerState('lastName', response.data.lastName);
+        updateConsumerState('phone', response.data.phone);
+        updateConsumerState('age', response.data.age);
+        updateConsumerState('gender', response.data.gender);
+        setConsumerId(response.data._id);
+        setExistingData(true);
+      } else {
+        // setConsumer(initialConsumerFields);
+        setExistingData(false);
+      }
+    } catch (error) {
+      alert(error);
+    }
+  };
 
-  // useEffect(() => {
-  //   fetchConsumerDataByUhid();
-  // }, [consumer.uid]);
+  useEffect(() => {
+    fetchConsumerDataByUhid();
+  }, [consumer.uid]);
 
   return (
     <Box>

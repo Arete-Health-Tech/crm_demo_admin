@@ -137,7 +137,7 @@ getAllTimerStatusHandlerTodaysTask()
      },
      {
        id: 5,
-       title: 'Won And LOSS',
+       title: 'Won',
        content: wonLoss,
        color: 'pink'
      },

@@ -31,6 +31,7 @@ const CustomModal = () => {
       const [dialogOpen, setDialogOpen] = useState(false);
        const [chipOpen, setChipOpen] = useState(false);
       const [showForm, setShowForm] = useState(false);
+       const [isVisible, setIsVisible] = useState(true);
       const [formData, setFormData] = useState<iTimer>({
        select:"",
         stoppedTimer: 0,
@@ -51,7 +52,6 @@ const CustomModal = () => {
   };
 
 
-  
 
 
 
@@ -61,6 +61,7 @@ const CustomModal = () => {
       }
           setStoppedTimer(timer);
            setShowForm(true);
+         
     };
 
  
@@ -75,19 +76,19 @@ const handleFormSubmit = async () => {
 console.log("this is next one")
 const sachin:any = ticketID ;
     const result = await createTimerHandler(formData , sachin);
-  // setTimeout(() => {
-  //          (async () => {
-  //            await getTicketHandler(
-  //              searchByName,
-  //              pageNumber,
-  //              'false',
-  //              filterTickets
-  //            );
+  setTimeout(() => {
+           (async () => {
+             await getTicketHandler(
+               searchByName,
+               pageNumber,
+               'false',
+               filterTickets
+             );
             
-  //          })();
-  //        }, 1000);
+           })();
+         }, 1000);
   
-console.log(" thirds")
+console.log(result," this is call button")
     // Check if result is truthy (not undefined or null)
     if (result !== undefined && result !== null) {
       setFormData({ select: '' });
@@ -130,16 +131,17 @@ console.log(" thirds")
  const isButtonClicked = (buttonName) => formData.select === buttonName;
   return (
     <div>
-      <IconButton
-        sx={{
-          bgcolor: chipOpen ? 'red' : 'green',
-          color: 'white'
-        }}
-        onClick={startTimer}
-      >
-        <Call sx={{ fontSize: '1.5rem' }} />
-      </IconButton>
-
+ 
+        <IconButton
+          sx={{
+            bgcolor: chipOpen ? 'red' : 'green',
+            color: 'white'
+          }}
+          onClick={startTimer}
+        >
+          <Call sx={{ fontSize: '1.5rem' }} />
+        </IconButton>
+      
       {chipOpen && (
         <Chip
           label={`Timer: ${timer} seconds`}

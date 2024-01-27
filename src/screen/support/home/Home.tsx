@@ -53,7 +53,7 @@ const Home = () => {
               </Typography>
             </Stack>
             <Logout />
-          </Box>
+          </Box>                                                                                                 
         </Stack>
         <Stack
           mb={1}

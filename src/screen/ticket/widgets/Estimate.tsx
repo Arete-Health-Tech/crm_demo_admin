@@ -32,7 +32,7 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { createEstimateHandler } from '../../../api/estimate/estimateHandler';
+import { createEstimateHandler, uploadAndSendEstimateHandler } from '../../../api/estimate/estimateHandler';
 import { searchService, searchServiceAll, searchServicePck } from '../../../api/service/service';
 import { getAllServiceFromDbHandler, getAllServicesHandler, getServicePackedHandler } from '../../../api/service/serviceHandler';
 import { getWardsHandler } from '../../../api/ward/wardHandler';
@@ -79,8 +79,8 @@ const Estimate = (props: Props) => {
     icuDays: 0,
     ward: '',
     paymentType: 0,
-    insuranceCompany: '',
-    insurancePolicyNumber: '',
+    insuranceCompany: null,
+    insurancePolicyNumber: 0,
     insurancePolicyAmount: 0,
     service: [],
     // investigation: [],
@@ -94,6 +94,9 @@ const Estimate = (props: Props) => {
     prescription: ticket?.prescription[0]._id!,
     ticket: ticketID!
   });
+
+
+  
 
   type AlertType = {
     services: string;
@@ -146,7 +149,7 @@ const [loading, setLoading] = useState(true);
 
   const handlePreview = () => {
     setIsPreview(!isPreview);
-  };
+  };  
 
   const handleServiceType = (e: number) => {
     setClickedIndex(e);
@@ -294,8 +297,10 @@ console.log(servicesPack," this is all packed services from db");
       ...estimateFileds,    
       ticket: ticketID
     });
+    
    
     console.log(estimateFileds," this is results");
+  
     setIsEstimateOpen(false);
     setTimeout(() => {
       (async () => {     
@@ -559,66 +564,68 @@ setTextFieldValue('');
                 })}
               </Stack>
             </Box>
-            {estimateFileds.type === 1 && (
-              <Box my={1} bgcolor="white" borderRadius={3} p={1}>
-                <Typography fontWeight={500} my={1}>
-                  Ward Details
-                </Typography>
-                <Stack direction="row" spacing={2}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel id="demo-simple-select-label">
-                   Ward
-                    </InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      label="Ward"
-                      value={estimateFileds.ward}
+
+            <Box my={1} bgcolor="white" borderRadius={3} p={1}>
+              <Typography fontWeight={500} my={1}>
+                Ward Details
+              </Typography>
+              <Stack direction="row" spacing={2}>
+                <FormControl fullWidth size="small">
+                  <InputLabel id="demo-simple-select-label">Ward</InputLabel>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    label="Ward"
+                    value={estimateFileds.ward}
+                    onChange={(e) => {
+                      setEstimateFields({
+                        ...estimateFileds,
+                        ward: e.target.value
+                      });
+                    }}
+                  >
+                    {wards
+                      .filter((ward: IWard) => ward.type === 0)
+                      .map((item: IWard, index: number) => {
+                        return (
+                          <MenuItem value={item._id}>{item.name}</MenuItem>
+                        );
+                      })}
+                  </Select>
+                </FormControl>
+                {estimateFileds.type === 1 && (
+                  <Box>
+                    <TextField
+                      label="Ward Days"
+                      required
+                      size="small"
                       onChange={(e) => {
                         setEstimateFields({
                           ...estimateFileds,
-                          ward: e.target.value
+                          wardDays: +e.target.value
                         });
                       }}
-                    >
-                      {wards
-                        .filter((ward: IWard) => ward.type === 0)
-                        .map((item: IWard, index: number) => {
-                          return (
-                            <MenuItem value={item._id}>{item.name}</MenuItem>
-                          );
-                        })}
-                    </Select>
-                  </FormControl>
-                  <TextField
-                    label="Ward Days"
-                    required
-                    size="small"
-                    onChange={(e) => {
-                      setEstimateFields({
-                        ...estimateFileds,
-                        wardDays: +e.target.value
-                      });
-                    }}
-                    placeholder="5"
-                    sx={{ borderRadius: 40 }}
-                  />
-                  <TextField
-                    onChange={(e) => {
-                      setEstimateFields({
-                        ...estimateFileds,
-                        icuDays: +e.target.value
-                      });
-                    }}
-                    label="ICU Days"
-                    required
-                    size="small"
-                    placeholder="5"
-                    sx={{ borderRadius: 40 }}
-                  />
-                </Stack>
-              </Box>
-            )}
+                      placeholder="5"
+                      sx={{ borderRadius: 40 }}
+                    />
+                    <TextField
+                      onChange={(e) => {
+                        setEstimateFields({
+                          ...estimateFileds,
+                          icuDays: +e.target.value
+                        });
+                      }}
+                      label="ICU Days"
+                      required
+                      size="small"
+                      placeholder="5"
+                      sx={{ borderRadius: 40 }}
+                    />
+                  </Box>
+                )}
+              </Stack>
+            </Box>
+
             <Box my={1} bgcolor="white" borderRadius={3} p={1}>
               <Typography fontWeight={500} my={1}>
                 Emergency Details
@@ -714,7 +721,7 @@ setTextFieldValue('');
                     onChange={(e) => {
                       setEstimateFields({
                         ...estimateFileds,
-                        insurancePolicyNumber: e.target.value
+                        insurancePolicyNumber: Number(e.target.value)
                       });
                     }}
                   />
@@ -920,7 +927,7 @@ setTextFieldValue('');
                 )}
               </Box>
             )}
-            
+
             {/* <Box my={1} bgcolor="white" borderRadius={3} p={1}>
               <Typography fontWeight={500} my={1}>
                 Mrd Charges

@@ -31,6 +31,7 @@ const CustomModal = () => {
       const [dialogOpen, setDialogOpen] = useState(false);
        const [chipOpen, setChipOpen] = useState(false);
       const [showForm, setShowForm] = useState(false);
+       const [isVisible, setIsVisible] = useState(true);
       const [formData, setFormData] = useState<iTimer>({
        select:"",
         stoppedTimer: 0,
@@ -60,6 +61,7 @@ const CustomModal = () => {
       }
           setStoppedTimer(timer);
            setShowForm(true);
+         
     };
 
  
@@ -129,16 +131,17 @@ console.log(result," this is call button")
  const isButtonClicked = (buttonName) => formData.select === buttonName;
   return (
     <div>
-      <IconButton
-        sx={{
-          bgcolor: chipOpen ? 'red' : 'green',
-          color: 'white'
-        }}
-        onClick={startTimer}
-      >
-        <Call sx={{ fontSize: '1.5rem' }} />
-      </IconButton>
-
+ 
+        <IconButton
+          sx={{
+            bgcolor: chipOpen ? 'red' : 'green',
+            color: 'white'
+          }}
+          onClick={startTimer}
+        >
+          <Call sx={{ fontSize: '1.5rem' }} />
+        </IconButton>
+      
       {chipOpen && (
         <Chip
           label={`Timer: ${timer} seconds`}

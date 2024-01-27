@@ -91,6 +91,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   const [endDate, setEndDate] = React.useState<string>();
   const [currentReperesentative, setCurrentRepresentative] = useState( '');
   const [filterCount, setFilterCount] = useState(0);
+   const [selectedValue, setSelectedValue] = useState(null);
 
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -248,6 +249,10 @@ console.log(value);
     // setEndDate((prev) => '');
   };
 
+ const handleToggleChange = (event, newValue) => {
+   setSelectedValue(newValue);
+ };
+
   return (
     <Box>
       <IconButton onClick={handleFilterOpen}>
@@ -345,8 +350,26 @@ console.log(value);
               value={result}
               onChange={handleResult}
             >
-              <ToggleButton value="Won">WON</ToggleButton>
-              <ToggleButton value="Lose">LOST</ToggleButton>
+              <ToggleButton
+                value="Won"
+                style={{
+                  backgroundColor: selectedValue === 'Won' ? 'blue' : 'default',
+                  color: selectedValue === 'Won' ? 'white' : 'black'
+                }}
+                onClick={handleToggleChange}
+              >
+                WON
+              </ToggleButton>
+              <ToggleButton
+                value="Lose"
+                style={{
+                  backgroundColor: selectedValue === 'Won' ? 'blue' : 'default',
+                  color: selectedValue === 'Won' ? 'white' : 'black'
+                }}
+                onClick={handleToggleChange}
+              >
+                LOST
+              </ToggleButton>
             </ToggleButtonGroup>
           </Box>
           <Box p={1}>

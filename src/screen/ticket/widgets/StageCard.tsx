@@ -260,7 +260,7 @@ console.log(formdata)
   };
 
   const handleCloseLose = () => {
-  
+ setOpenLose(false);
   };
 
   const handleChangeLose = (event) => {

@@ -233,6 +233,7 @@ const SingleTicketDetails = (props: Props) => {
 
  
 console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
+console.log(currentTicket,"this is current ticet")
 // console.log(callRescheduler, ' this is call rescheduler ');
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
@@ -775,7 +776,7 @@ console.log(currentTicket?.estimate," this is estimate from db");
                 </Typography>
                 <Stack direction="row" spacing={2}>
                   <Button
-                    disabled={currentTicket?.estimate[0] ? false : true}
+                    disabled={currentTicket?.location ? false : true}
                     startIcon={<ReceiptLongOutlined />}
                     color="primary"
                     onClick={fetchPdfUrl}

@@ -90,6 +90,7 @@ export type iCreateTicket = {
   diagnostics: string[];
   caregiver_phone: string | null;
   caregiver_name: string | null;
+
 };
 
   export const createTicketHandler = async (
@@ -127,6 +128,11 @@ export type iCreateTicket = {
     /* @ts-ignore */
     const blob = await (await fetch(prescription.image)).blob();
     prescriptionData.append('image', blob);
+    // const dateString = new Date().toISOString();
+ const currentDate = new Date();
+//  const formattedDate = currentDate.toISOString().replace(/\.\d{3}Z$/, '');
+//  const newDate = formattedDate.replace(/'/g, '');
+ prescriptionData.append('date', JSON.stringify(currentDate));
 
     return await createTicket(prescriptionData);
   };
@@ -194,4 +200,8 @@ export const createTimerHandler = async (timerData: iTimer,ticketId:string) => {
   
    return Promise.resolve(timerAdded);
 };
+
+function getDate(): string | Blob {
+  throw new Error('Function not implemented.');
+}
 

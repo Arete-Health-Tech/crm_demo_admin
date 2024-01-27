@@ -53,8 +53,8 @@ export interface iEstimate {
   icuDays: number;
   ward: string;
   paymentType: number;
-  insuranceCompany: string;
-  insurancePolicyNumber: string;
+  insuranceCompany: string | null;
+  insurancePolicyNumber: number |null;
   insurancePolicyAmount: number;
   service: serviceAdded[];
   // investigation: string[];
@@ -71,6 +71,7 @@ export interface iEstimate {
   total?: number;
   createdAt?: Date;
 }
+
 
 export interface iPrescrition {
   _id: string;

@@ -10,6 +10,7 @@ export const searchConsumerHandler = async (search: string) => {
   console.log(search ,"this is seach in handler")
   const { setSearchResults } = useConsumerStore.getState();
   const consumers = await searchConsumer(search);
+  console.log(consumers)
   setSearchResults(consumers);
 };
 

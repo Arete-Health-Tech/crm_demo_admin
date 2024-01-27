@@ -40,7 +40,10 @@ const drawerWidth = 450;
 export const ticketFilterCount = (selectedFilters: iTicketFilter) => {
   const stageListCount = selectedFilters['stageList'].length;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
-  const total = stageListCount + representativeCount;
+  const resultCount=selectedFilters['results']?1:0;
+  console.log(stageListCount," this is stage list count");
+  console.log(resultCount," this is result counnt")
+  const total = stageListCount + representativeCount + resultCount; ;
   return total;
 };
 
@@ -92,6 +95,8 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   const [currentReperesentative, setCurrentRepresentative] = useState( '');
   const [filterCount, setFilterCount] = useState(0);
    const [selectedValue, setSelectedValue] = useState(null);
+   const [selectedValueLost, setSelectedValueLost] = useState(null);
+
 
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -235,6 +240,9 @@ console.log(value);
      dispatchFilter({ type: filterActions.RESULTS, payload: null });
     setCurrentRepresentative('');
     setFilterCount(ticketFilterCount(selectedFilters));
+  
+    setSelectedValue(null);
+    setSelectedValueLost(null);
     // setTicketFilters({
     //   stageList: [],
     //   admissionType: [],
@@ -252,6 +260,12 @@ console.log(value);
  const handleToggleChange = (event, newValue) => {
    setSelectedValue(newValue);
  };
+
+
+ const handleToggleLostChange=(event,newValue)=>{
+  setSelectedValueLost(newValue);
+ };
+ 
 
   return (
     <Box>
@@ -354,7 +368,7 @@ console.log(value);
                 value="Won"
                 style={{
                   backgroundColor: selectedValue === 'Won' ? 'blue' : 'default',
-                  color: selectedValue === 'Won' ? 'white' : 'black'
+                  color: selectedValue === 'Won' ? 'white' : 'default'
                 }}
                 onClick={handleToggleChange}
               >
@@ -363,10 +377,11 @@ console.log(value);
               <ToggleButton
                 value="Lose"
                 style={{
-                  backgroundColor: selectedValue === 'Won' ? 'blue' : 'default',
-                  color: selectedValue === 'Won' ? 'white' : 'black'
+                  backgroundColor:
+                    selectedValueLost === 'Lose' ? 'blue' : 'default',
+                  color: selectedValueLost === 'Lose' ? 'white' : 'default'
                 }}
-                onClick={handleToggleChange}
+                onClick={handleToggleLostChange}
               >
                 LOST
               </ToggleButton>

@@ -32,11 +32,11 @@ const Search = () => {
   console.log(searchResults," this is search results")
   console.log(search," this is not search result dfdfdfdfdfdf");
 
-  // useEffect(() => {
-  //   (async function () {
-  //     await searchConsumerHandler(search);
-  //   })();
-  // }, [search]);
+  useEffect(() => {
+    (async function () {
+      await searchConsumerHandler(search);
+    })();
+  }, [search]);
 
   return (
     <Box>

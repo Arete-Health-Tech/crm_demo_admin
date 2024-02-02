@@ -294,7 +294,8 @@ const handleInternal = (item: string) => {
                 'Radiation',
                 'MM',
                 'DC',
-                'Internal Reference'
+                'Internal Reference',
+                'Maatri'
               ].map((item) => (
                 <Button
                   size="small"

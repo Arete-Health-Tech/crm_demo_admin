@@ -290,7 +290,7 @@ useEffect(() => {
             <Button onClick={handleImageUpload} style={{ cursor: 'pointer' }}>
               <AttachFileIcon
                 color="primary"
-                sx={{ border: '1px solid green', marginRight: '10px' }}
+               
               />
             </Button>
             <input

@@ -228,7 +228,7 @@ const RegisterConsumer = () => {
           type="text"
           placeholder="33XXX"
           label="UHID"
-          // onBlur={fetchConsumerDataByUhid}
+          onBlur={fetchConsumerDataByUhid}
           error={validations.uid.value}
           helperText={validations.uid.message}
         />

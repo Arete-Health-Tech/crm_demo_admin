@@ -168,7 +168,7 @@ const RegisterConsumer = () => {
   const fetchConsumerDataByUhid = async () => {
     try {
       const response = await axios.get(
-        'https://backend.aretehealth.tech/prod/api/v1/consumer/findConsumer?',
+        'https://arete.demo.aretehealth.tech/prod/api/v1/consumer/findConsumer?',
         { params: { search: consumer.uid } }
       );
       if (response.data) {

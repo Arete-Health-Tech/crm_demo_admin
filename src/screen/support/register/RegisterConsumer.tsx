@@ -50,7 +50,7 @@ const RegisterConsumer = () => {
   const validationsChecker = () => {
     const firstName = consumer.firstName === initialConsumerFields.firstName;
     // const lastName = consumer.lastName === initialConsumerFields.lastName;
-    const phone = false
+    const phone = consumer.phone.length > 12;
 
     const uid = consumer.uid === initialConsumerFields.uid;
 
@@ -60,7 +60,7 @@ const RegisterConsumer = () => {
       prev.firstName = firstName
         ? { message: 'Please enter correct first name', value: true }
         : defaultValidations;
-      // prev.lastName = lastNam
+      // prev.lastName = lastName
       //   ? { message: 'Please enter correct last name', value: true }
       //   : defaultValidations;
       // prev.email = email

@@ -12,7 +12,7 @@ import axios from 'axios';
 import { AnyAaaaRecord } from 'dns';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SERVER_URL } from '../../../api/apiClient';
+import { SERVER_URL, apiClient } from '../../../api/apiClient';
 import { getConsumerByUhid } from '../../../api/consumer/consumer';
 import { registerConsumerHandler } from '../../../api/consumer/consumerHandler';
 import useEventStore from '../../../store/eventStore';
@@ -167,10 +167,11 @@ const RegisterConsumer = () => {
 
   const fetchConsumerDataByUhid = async () => {
     try {
-      const response = await axios.get(
-        'https://arete.demo.aretehealth.tech/prod/api/v1/consumer/findConsumer?',
+      const response = await apiClient.get(
+        '/consumer/findConsumer?',
         { params: { search: consumer.uid } }
       );
+      console.log(response.data)
       if (response.data) {
         updateConsumerState('firstName', response.data.firstName);
         updateConsumerState('lastName', response.data.lastName);
@@ -181,6 +182,14 @@ const RegisterConsumer = () => {
         setExistingData(true);
       } else {
         // setConsumer(initialConsumerFields);
+    
+           updateConsumerState('firstName', '');
+           updateConsumerState('lastName', '');
+           updateConsumerState('phone', '');
+           updateConsumerState('age', '');
+           updateConsumerState('gender', '');
+           setConsumerId('');
+         
         setExistingData(false);
       }
     } catch (error) {

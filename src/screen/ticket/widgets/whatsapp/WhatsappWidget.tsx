@@ -19,18 +19,7 @@ import { sendTextMessage } from '../../../../api/ticket/ticket';
 import useTicketStore from '../../../../store/ticketStore';
 import AgentReply from './AgentReply';
 import dayjs from 'dayjs';
-import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
-import { UNDEFINED } from '../../../../constantUtils/constant';
-import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-import FileCopyIcon from '@mui/icons-material/FileCopyOutlined';
-import SaveIcon from '@mui/icons-material/Save';
-import PrintIcon from '@mui/icons-material/Print';
-import ShareIcon from '@mui/icons-material/Share';
-import SpeedDial from '@mui/material/SpeedDial';
-import SpeedDialAction from '@mui/material/SpeedDialAction';
-import SpeedDialIcon from '@mui/material/SpeedDialIcon';
-import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
 import { apiClient } from '../../../../api/apiClient';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
@@ -177,8 +166,7 @@ useEffect(() => {
         ref={containerRef}
         sx={{
           backgroundImage: `url(${bgWhatsapp})`,
-          overflowY: 'auto',
-         
+          overflowY: 'auto'
         }}
         height="85%"
       >
@@ -281,7 +269,10 @@ useEffect(() => {
           <Box
             display="flex"
             onClick={handleSendMessage}
-            style={{ cursor: sendMessage ? 'pointer' : 'not-allowed' }}
+            style={{
+              cursor: sendMessage ? 'pointer' : 'not-allowed'
+             
+            }}
           >
             <Typography color={sendMessage ? 'blue' : 'gray'}>Reply</Typography>
             <Send htmlColor={sendMessage ? 'blue' : 'gray'} />
@@ -290,7 +281,7 @@ useEffect(() => {
             <Button onClick={handleImageUpload} style={{ cursor: 'pointer' }}>
               <AttachFileIcon
                 color="primary"
-                sx={{ border: '1px solid green', marginRight: '10px' }}
+                sx={{  marginRight: '10px' }}
               />
             </Button>
             <input

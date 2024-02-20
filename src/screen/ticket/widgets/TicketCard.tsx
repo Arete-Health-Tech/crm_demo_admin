@@ -11,6 +11,10 @@ import useTicketStore from '../../../store/ticketStore';
 import { useEffect, useState } from 'react';
 import { iStage } from '../../../types/store/service';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 type Props = {
   patientData: iTicket;
@@ -113,8 +117,11 @@ const TicketCard = (props: Props) => {
         </Box>
       </Box>
       <Typography variant="inherit" textTransform="capitalize">
-        {doctorSetter(props.patientData.prescription[0].doctor)}(
-        {departmentSetter(props.patientData.prescription[0].departments[0])})
+        {doctorSetter(props.patientData.prescription[0].doctor)}
+        {/* ({departmentSetter(props.patientData.prescription[0].departments[0])}) */}
+      </Typography>
+      <Typography variant="inherit" textTransform="capitalize">
+        {departmentSetter(props.patientData.prescription[0].departments[0])}
       </Typography>
       <Typography variant="inherit" textTransform="capitalize">
         {props.patientData.estimate[0]?.service[0]?.name}
@@ -180,8 +187,11 @@ const TicketCard = (props: Props) => {
         />
       </Box>
       <Typography variant="caption" color="blue">
-        Created At:
-        {dayjs(props.patientData.createdAt).format('DD/MMM/YYYY , HHMM')}hrs
+        Created At:{' '}
+        {dayjs(props.patientData.createdAt)
+          .tz('Asia/Kolkata')
+          .format('DD/MMM/YYYY , HH:mm')}{' '}
+        hrs
       </Typography>
       <Grid container spacing={1} alignItems="center">
         <Grid item xs={8}>

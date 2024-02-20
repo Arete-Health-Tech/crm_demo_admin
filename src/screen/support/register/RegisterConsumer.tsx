@@ -50,7 +50,7 @@ const RegisterConsumer = () => {
   const validationsChecker = () => {
     const firstName = consumer.firstName === initialConsumerFields.firstName;
     // const lastName = consumer.lastName === initialConsumerFields.lastName;
-    const phone = consumer.phone.length !== 10;
+    const phone = consumer.phone.length > 12;
 
     const uid = consumer.uid === initialConsumerFields.uid;
 

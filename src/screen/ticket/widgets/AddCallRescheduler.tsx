@@ -64,7 +64,7 @@ const AddCallRescheduler = ({
   const checkIsEmpty = () => {
     if (
       
-      callReschedulerData.description.length > 0 &&
+      
       date.length > 0 &&
       time.length > 0
     ) {
@@ -274,7 +274,7 @@ const AddCallRescheduler = ({
                   ...prev,
                   description: e.target.value
                 }));
-                checkIsEmpty();
+             
               }}
               minRows={3}
               maxRows={3}

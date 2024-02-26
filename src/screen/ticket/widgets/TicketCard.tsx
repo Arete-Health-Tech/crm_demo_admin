@@ -11,10 +11,16 @@ import useTicketStore from '../../../store/ticketStore';
 import { useEffect, useState } from 'react';
 import { iStage } from '../../../types/store/service';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 
 type Props = {
   patientData: iTicket;
 };
+
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const TicketCard = (props: Props) => {
   const { doctors, departments, allServices, stages } = useServiceStore();
@@ -48,8 +54,13 @@ const TicketCard = (props: Props) => {
     );
     setCurrentStage(stageDetail);
   }, [stages]);
-
-// console.log(props.patientData," thui sis patient data ")
+console.log(props.patientData," this is props patient data")
+console.log(
+  dayjs(props.patientData.createdAt)
+    .tz('Asia/Kolkata')
+    .format('DD/MMM/YYYY , HH:mm'),
+  ' thui sis patient data '
+);
 
   return (
     <Box
@@ -112,9 +123,12 @@ const TicketCard = (props: Props) => {
           </Typography>
         </Box>
       </Box>
+
       <Typography variant="inherit" textTransform="capitalize">
-        {doctorSetter(props.patientData.prescription[0].doctor)}(
-        {departmentSetter(props.patientData.prescription[0].departments[0])})
+        {doctorSetter(props.patientData.prescription[0].doctor)}
+      </Typography>
+      <Typography variant="inherit" textTransform="capitalize">
+        {departmentSetter(props.patientData.prescription[0].departments[0])}
       </Typography>
       <Typography variant="inherit" textTransform="capitalize">
         {props.patientData.estimate[0]?.service[0]?.name}
@@ -180,8 +194,11 @@ const TicketCard = (props: Props) => {
         />
       </Box>
       <Typography variant="caption" color="blue">
-        Created At:
-        {dayjs(props.patientData.createdAt).format('DD/MMM/YYYY , HHMM')}hrs
+        Created At:{' '}
+        {dayjs(props.patientData.createdAt)
+          .tz('Asia/Kolkata')
+          .format('DD/MMM/YYYY , HH:mm')}{' '}
+        hrs
       </Typography>
       <Grid container spacing={1} alignItems="center">
         <Grid item xs={8}>

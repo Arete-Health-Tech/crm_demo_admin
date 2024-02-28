@@ -645,12 +645,12 @@ const handleInternal = (item: string) => {
             audio={false}
             screenshotFormat="image/jpeg"
             ref={camera}
-            // videoConstraints={{
-            //   facingMode: { exact: 'environment' }
-            // }}
+            videoConstraints={{
+              facingMode: { exact: 'environment' }
+            }}
           />
         ) : (
-          <Box>
+          <Box> 
             <img
               src={prescription.image}
               style={{ width: '100vw', height: '90vh', objectFit: 'contain' }}

@@ -15,7 +15,7 @@ export const searchConsumerHandler = async (search: string) => {
 
 export const getConsumerTicketsHandler = async (consumerId: string) => {
   const { setConsumerHistory } = useConsumerStore.getState();
-  const tickets = await getConsumerTickets(consumerId);
+  const tickets = await getConsumerTickets(consumerId);  
   setConsumerHistory(tickets);
 };
 

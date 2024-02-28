@@ -181,6 +181,13 @@ const RegisterConsumer = () => {
         setExistingData(true);
       } else {
         // setConsumer(initialConsumerFields);
+         updateConsumerState('firstName', '');
+         updateConsumerState('lastName', '');
+         updateConsumerState('phone', '');
+         updateConsumerState('age', '');
+         updateConsumerState('gender', '');
+         setConsumerId('');
+         
         setExistingData(false);
       }
     } catch (error) {

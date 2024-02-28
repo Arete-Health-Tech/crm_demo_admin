@@ -55,12 +55,20 @@ const DownloadAllTickets = (props: Props) => {
         serviceName: ticket.prescription[0].service
           ? ticket.prescription[0].service.name
           : 'No Advised',
+        isPharmacy:ticket.prescription[0].isPharmacy ? 'Advised' : 'No Advised' ,
+        stage: ticket.stage,
         CTScan: ticket.prescription[0].diagnostics.includes('CT-Scan')
           ? 'Yes'
           : 'No',
         LAB: ticket.prescription[0].diagnostics.includes('Lab') ? 'Yes' : 'No',
         MRI: ticket.prescription[0].diagnostics.includes('MRI') ? 'Yes' : 'No',
         PETCT: ticket.prescription[0].diagnostics.includes('PET_CT')
+          ? 'Yes'
+          : 'No',
+        XRAY: ticket.prescription[0].diagnostics.includes('XRAY')
+          ? 'Yes'
+          : 'No',
+        USG: ticket.prescription[0].diagnostics.includes('USG')
           ? 'Yes'
           : 'No',
         followUpDate: ticket.prescription[0].followUp
@@ -73,7 +81,7 @@ const DownloadAllTickets = (props: Props) => {
         ).format('DD/MMM/YYYY , HHMM ')} hrs`,
         prescriptionLink: ticket.prescription[0].image
       };
-    });
+    })
     const csv = Papa.unparse(data);
     const csvBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     FileSaver.saveAs(

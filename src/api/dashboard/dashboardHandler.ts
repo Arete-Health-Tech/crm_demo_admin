@@ -47,12 +47,10 @@ export const getAllTimerStatusHandlerRescheduledCall = async () => {
 export const getAllWonAndLossHandler = async () => {
 
   const timers = await getAllWonAndLoss();
-console.log(timers," this is won and loss data")
   return timers;
 };
 
 export const getAllStageCountHandler = async () => {
   const timers = await getAllStageCount();
-  console.log(timers, ' this is satge count');
   return timers;
 };

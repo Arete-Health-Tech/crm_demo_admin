@@ -25,7 +25,7 @@ const[reschedule,setReschedule]=useState(0);
 
  getAllTimerStatusHandlerDnd()
    .then((timerData) => {
-     console.log(timerData.tickets.length, 'Dnd');
+   
   const data = timerData.tickets.length;
   setDnd(data)
   }
@@ -36,11 +36,11 @@ const[reschedule,setReschedule]=useState(0);
      console.error('Error fetching timer data:', error);
      // Handle the error here
    });
-console.log("this is dnd number",dnd)
+
 
    getAllTimerStatusHandlerPending()
      .then((timerData) => {
-       console.log(timerData, 'Pending');
+      
        const data = timerData.tickets.length;
        setPending(data)
      })
@@ -52,7 +52,7 @@ console.log("this is dnd number",dnd)
 
 getAllTimerStatusHandlerTodaysTask()
   .then((timerData) => {
-    console.log(timerData, 'TodaysTask');
+  
     const data = timerData.tickets.length;
     setTodaysTask(data)
     // Handle the timerData here
@@ -64,7 +64,7 @@ getAllTimerStatusHandlerTodaysTask()
 
   getAllTimerStatusHandlerCallCompleted()
     .then((timerData) => {
-      console.log(timerData, 'CallCompleted');
+    
       const data = timerData.tickets.length;
       setCallCompleted(data)
       // Handle the timerData here
@@ -76,7 +76,7 @@ getAllTimerStatusHandlerTodaysTask()
 
  getAllWonAndLossHandler()
    .then((timerData) => {
-     console.log(timerData, 'Won and loss');
+   
     
      // Handle the timerData here
    })
@@ -87,7 +87,7 @@ getAllTimerStatusHandlerTodaysTask()
 
     getAllTimerStatusHandlerRescheduledCall()
       .then((timerData) => {
-        console.log(timerData, 'RescheduledCall');
+      
         const data = timerData.tickets.length;
         setReschedule(data)
         // Handle the timerData here
@@ -99,7 +99,7 @@ getAllTimerStatusHandlerTodaysTask()
 
        getAllStageCountHandler()
          .then((timerData) => {
-           console.log(timerData, 'Stage Count');
+         
          
            // Handle the timerData here
          })

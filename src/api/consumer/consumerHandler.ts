@@ -7,10 +7,9 @@ import {
 } from './consumer';
 
 export const searchConsumerHandler = async (search: string) => {
-  console.log(search ,"this is seach in handler")
+
   const { setSearchResults } = useConsumerStore.getState();
   const consumers = await searchConsumer(search);
-  console.log(consumers)
   setSearchResults(consumers);
 };
 
@@ -24,6 +23,5 @@ export const getConsumerTicketsHandler = async (consumerId: string) => {
 export type iConsumerRequest = iConsumer;
 
 export const registerConsumerHandler = async (consumer: iConsumerRequest) => {
-  console.log(consumer);
   return await registerConsumer(consumer);
 };

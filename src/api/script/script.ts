@@ -3,7 +3,6 @@ import { apiClient } from '../apiClient';
 
 export const createScript = async (script: iScript) => {
   const { data } = await apiClient.post('/script', script);
-  console.log(data);
   return data;
 };
 

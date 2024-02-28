@@ -106,7 +106,6 @@ const Ticket = () => {
     event: React.ChangeEvent<unknown>,
     pageNo: number
   ) => {
-    console.log('val', pageNo);
     if (pageNo !== page) {
       setTickets([]);
       // if (
@@ -162,7 +161,7 @@ const Ticket = () => {
     }
     if (e.key === 'Enter') {
       setTickets([]);
-      console.log('search name', value);
+  
       if (value === '') {
         fetchTicketsOnEmpthySearch();
         setSearchError('Type to search & Enter');
@@ -267,7 +266,7 @@ const Ticket = () => {
   // };
 
   const handleCloseModal = async () => {
-    console.log('alaram list', alarmReminderedList);
+   
     const result = await getAllReminderHandler();
     setTimeout(() => {
       setPage(1);
@@ -281,7 +280,7 @@ const Ticket = () => {
   };
 
 const handleCloseCallReschedulerModal=async ()=>{
-console.log('call rescheduler alarm list',alarmCallReschedulerList)
+
  const result = await getAllCallReschedulerHandler();
 
  setTimeout(() => {
@@ -308,7 +307,7 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
 
   useEffect(() => {
     const refetchTickets = async () => {
-      console.log('Received request of refetch tickets from server');
+    
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
     };
 
@@ -335,10 +334,10 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
           reminderDetail.date + 11000 > currentTime.getTime()
           // isAlamredReminderExist(reminderDetail)
         ) {
-          console.log('Alarm SUCCESS');
+         
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
-              console.log(phone," this is remainderr phone number")
+            
               const data = await getTicket(
                 UNDEFINED,
                 1,
@@ -424,10 +423,10 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
           callRescheduleDetail.date + 11000 > currentTime.getTime()
           // isAlamredReminderExist(reminderDetail)
         ) {
-          console.log('Alarm SUCCESS');
+         
           (async () => {
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
-              console.log(phone, ' this is remainderr phone number');
+             
               const data = await getTicket(
                 UNDEFINED,
                 1,

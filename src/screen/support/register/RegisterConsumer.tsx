@@ -125,10 +125,10 @@ const RegisterConsumer = () => {
       consumerPayload.gender = consumer.gender ? consumer.gender : null;
 
       consumerPayload.dob = consumer.age ? dob : null;
-      console.log(consumer);
+     
       const data = await registerConsumerHandler(consumerPayload);
       if (data) {
-        console.log(data);
+      
         setConsumerId(data._id);
         setExistingData(true);
       } else {
@@ -163,7 +163,7 @@ const RegisterConsumer = () => {
   const nextConsumer = () => {
     navigate(`/consumer/${consumerId}`);
   };
-  console.log({ consumerId });
+
 
   const fetchConsumerDataByUhid = async () => {
     try {

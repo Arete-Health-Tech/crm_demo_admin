@@ -3,9 +3,9 @@ import { iConsumerRequest } from './consumerHandler';
 
 export const searchConsumer = async (search: string) => {
   try{
-    console.log(search,"this is search in  consumer.tsx")
+   
   const { data } = await apiClient.get(`/consumer/search?search=${search}`);
-  console.log(data," thi s is data deom consumer")
+  
   return data;
   }catch(error){
 console.error('Error:');

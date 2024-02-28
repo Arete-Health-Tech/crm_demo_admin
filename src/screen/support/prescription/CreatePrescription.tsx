@@ -209,11 +209,11 @@ const CreatePrescription = () => {
 
 
 
-  console.log(prescription)
+
  
 
 const handleInternal = (item: string) => {
-  console.log('this is response');
+
   setButtonVariant(item);
 };
 
@@ -645,9 +645,9 @@ const handleInternal = (item: string) => {
             audio={false}
             screenshotFormat="image/jpeg"
             ref={camera}
-            videoConstraints={{
-              facingMode: { exact: 'environment' }
-            }}
+            // videoConstraints={{
+            //   facingMode: { exact: 'environment' }
+            // }}
           />
         ) : (
           <Box>

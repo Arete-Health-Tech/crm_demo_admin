@@ -29,13 +29,13 @@ export const getAllTimerRescheduledCall = async () => {
 
 export const getAllWonAndLoss = async () => {
   const { data } = await apiClient.get('dashboard/resultData');
- console.log(data," this si sdata of won and loss")
+
   return data;
 };
 
 export const getAllStageCount = async () => {
   const { data } = await apiClient.get('dashboard/stageCount');
-console.log(data," this is data of stage count")
+
   return data;
 };
 

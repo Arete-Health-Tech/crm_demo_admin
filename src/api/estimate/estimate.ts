@@ -4,7 +4,6 @@ import { apiClient } from '../apiClient';
 export const createEstimate = async (estimate: iEstimate) => {
   try {
     const { data } = await apiClient.post('/ticket/estimate', estimate);
-    console.log(data)
     return data;
   } catch (error) {
     // Handle the error here (e.g., log it or show a user-friendly message)

@@ -6,7 +6,6 @@ export const createScriptHandler = async (script: iScript) => {
   const { scripts, setScripts } = useServiceStore.getState();
   const newScriptAdded = await createScript(script);
   setScripts([...scripts, newScriptAdded]);
-  console.log(scripts);
 };
 
 export const getSingleScriptHandler = async (

@@ -28,7 +28,6 @@ export const createTicket = async (prescription: any) => {
       'Content-Type': 'multipart/form-data'
     }
   });
-  console.log(data);
 };
 
 export const updateTicketData = async (payload: {
@@ -41,7 +40,6 @@ export const updateTicketData = async (payload: {
   ticket: string | undefined;
 }) => {
   const { data } = await apiClient.put('/ticket/ticketUpdate', payload);
-  console.log(data);
   return Promise.resolve(data)
 };
 
@@ -53,7 +51,6 @@ export const updateTicketSubStage = async (payload: {
   ticket: string | undefined;
 }) => {
   const { data } = await apiClient.put('/ticket/subStageUpdate', payload);
-  console.log(data);
   return Promise.resolve(data);
 };
 
@@ -68,7 +65,6 @@ export const sendTextMessage = async (
   ticketID: string,
 
 ) => {
-  console.log(message, consumerId);
   const { data } = await apiClient.post('/flow/message', {
     message,
     consumerId,
@@ -90,7 +86,6 @@ export const createNewNote = async (note: iNote) => {
 
 export const getAllReminders = async () => {
   const { data } = await apiClient.get(`task/allReminder/`);
-  console.log(data," this is remainder data")
   return data;
 };
 
@@ -116,7 +111,6 @@ export const createNewCallRescheduler = async (callReschedulerData: iCallResched
 
 export const getAllRescheduler = async () => {
   const { data } = await apiClient.get('task/ticketReschedluer');
-  console.log(data," thisgfsgsd");
   return data;
 };
 
@@ -124,6 +118,5 @@ export const createTimer = async (timerData: iTimer,ticketId:string) => {
   const { data } = await apiClient.post(
     `/dashboard/ticketStatus/${ticketId}`, timerData
   );
-console.log(data, 'createTimer - Successfully created timer:');
   return data;
 };

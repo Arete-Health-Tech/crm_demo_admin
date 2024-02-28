@@ -233,8 +233,7 @@ const SingleTicketDetails = (props: Props) => {
 
 
  
-console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
-console.log(currentTicket,"this is current ticet")
+
 // console.log(callRescheduler, ' this is call rescheduler ');
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
@@ -360,7 +359,7 @@ console.log(currentTicket,"this is current ticet")
 
   const getTicketInfo = (ticketID: string | undefined) => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
-    console.log(fetchTicket," this is refetched dsfgsdgsdghsdhsdfh");
+   
     setCurrentTicket(fetchTicket);
     return fetchTicket;
   };
@@ -495,8 +494,7 @@ const handleIconClickCallRescheduler=async ()=>{
       console.error('Error fetching data:', error);
     }
   };
-console.log(matchedObjects," this is remainder")
-console.log(callReschedulerData," thi sis rescheduler data")
+
 
  const handleCloseModal = () => {
    // Close the modal
@@ -505,7 +503,7 @@ console.log(callReschedulerData," thi sis rescheduler data")
  };
 
 
-console.log(currentTicket?.estimate," this is estimate from db");
+
 
 
   return (

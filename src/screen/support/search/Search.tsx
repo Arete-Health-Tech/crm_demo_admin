@@ -29,8 +29,7 @@ import SearchResult from '../../../assets/images/searchResult.png';
 const Search = () => {
   const [search, setSearch] = useState('');
   const { searchResults } = useConsumerStore();
-  console.log(searchResults," this is search results")
-  console.log(search," this is not search result dfdfdfdfdfdf");
+
 
   useEffect(() => {
     (async function () {

@@ -188,9 +188,7 @@ export const getAllReschedulerHandler = async () => {
 
 export const createTimerHandler = async (timerData: iTimer,ticketId:string) => {
   const { status, setStatus } = useTicketStore.getState();
-  console.log(timerData, 'timerData');
   const timerAdded = await createTimer(timerData,ticketId);
-  console.log(timerAdded," this is timerAdded");
    const updatedStatus = Array.isArray(status)
      ? [...status, timerAdded]
      : [timerAdded];

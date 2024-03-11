@@ -1,5 +1,6 @@
 import { iCallRescheduler, iNote, iReminder, iTimer } from '../../types/store/ticket';
 import { apiClient } from '../apiClient';
+const createTicketRoute = '/ticket/create';
 
 export const getTicket = async (
   name: string,
@@ -15,14 +16,15 @@ export const getTicket = async (
  
 ) => {
   const params = new URLSearchParams(selectedFilters).toString();
+  const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
-    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}`
+    `/ticket/get/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}&timestamp=${timestamp}`
   );
   return data;
 };
 
 export const createTicket = async (prescription: any) => {
-  const { data } = await apiClient.post('/ticket', prescription, {
+  const { data } = await apiClient.post(createTicketRoute, prescription, {
     /* @ts-ignore */
     headers: {
       'Content-Type': 'multipart/form-data'

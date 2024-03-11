@@ -38,6 +38,8 @@ import { createTicketHandler } from '../../../api/ticket/ticketHandler';
 import useServiceStore from '../../../store/serviceStore';
 import { iService } from '../../../types/store/service';
 
+
+
 type iPrescription = {
   department: string;
   // subDepartment: string;
@@ -87,6 +89,7 @@ const CreatePrescription = () => {
   const [buttonVariant, setButtonVariant] = useState<string | null>(null);
  
    const [selectedPharmacy, setSelectedPharmacy] = useState('');
+   const [scannedResult, setScannedResult] = useState(null);
  
 
   const findService = async (query: string) => {
@@ -216,6 +219,11 @@ const handleInternal = (item: string) => {
   console.log('this is response');
   setButtonVariant(item);
 };
+
+
+   
+
+
 
 
   return (
@@ -639,17 +647,19 @@ const handleInternal = (item: string) => {
         }}
       >
         {prescription.image === null ? (
-          <Webcam
-            style={{ height: '90vh' }}
-            audio={false}
-            screenshotFormat="image/jpeg"
-            ref={camera}
-            videoConstraints={{
-              facingMode: { exact: 'environment' }
-            }}
-          />
+          
+            <Webcam
+              style={{ height: '90vh' }}
+              audio={false}
+              screenshotFormat="image/jpeg"
+              ref={camera}
+              videoConstraints={{
+                facingMode: { exact: 'environment' }
+              }}
+            />
+         
         ) : (
-          <Box> 
+          <Box>
             <img
               src={prescription.image}
               style={{ width: '100vw', height: '90vh', objectFit: 'contain' }}

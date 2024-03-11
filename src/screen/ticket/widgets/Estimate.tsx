@@ -30,7 +30,7 @@ import {
   Typography
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { createEstimateHandler, uploadAndSendEstimateHandler } from '../../../api/estimate/estimateHandler';
 import { searchService, searchServiceAll, searchServicePck } from '../../../api/service/service';
@@ -52,6 +52,7 @@ import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import { updateTicketSubStage, validateTicket } from '../../../api/ticket/ticket';
 import axios from 'axios';
 import { apiClient } from '../../../api/apiClient';
+import { toast } from 'react-toastify';
 
 
 
@@ -128,9 +129,10 @@ const Estimate = (props: Props) => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
 const [loading, setLoading] = useState(true);
+const fileInputRef = useRef<HTMLInputElement>(null);
   // D STARTS HERE__________________________
 
-  const [submittedData, setSubmittedData] = useState(['']);
+  
 
   const [alert, setAlert] = useState<AlertType>({
     investigation: '',
@@ -406,6 +408,12 @@ setTextFieldValue('');
     }
   };
 
+
+  const handleButtonClick = () => {
+    fileInputRef.current?.click();
+    toast.success('File selected successfully!'); // Clicking the file input when the button is clicked
+  };
+
   return (
     <div>
       <div>
@@ -433,6 +441,29 @@ setTextFieldValue('');
         >
           Close
         </Button>
+        {/* <div>
+          <input
+            type="file"
+            ref={fileInputRef}
+            style={{ display: 'none' }}
+            onChange={(event) => {
+              // Check if files exist before accessing the first file
+              if (event.target.files && event.target.files.length > 0) {
+                console.log('Selected file:', event.target.files[0]);
+                console.log(event.target.files[0]," this is selected File")
+                // You can handle the file upload logic here
+              }
+            }}
+          />
+          <Button
+            style={{ marginLeft: '10px' }}
+            variant="contained"
+            onClick={handleButtonClick}
+           
+          >
+            Upload Estimate
+          </Button>
+        </div> */}
       </div>
       <Modal
         open={open}

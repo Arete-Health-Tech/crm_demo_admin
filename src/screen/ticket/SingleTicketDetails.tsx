@@ -80,6 +80,7 @@ import PDFDocument from '@react-pdf/pdfkit';
 import { Document, Page } from 'react-pdf';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTone';
+import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
  
 
 import AWS from 'aws-sdk';
@@ -726,11 +727,20 @@ console.log(currentTicket?.estimate," this is estimate from db");
                 <Stack direction="row" spacing={3} my={1}>
                   <MedicalServicesOutlined htmlColor="gray" />
                   <Typography textTransform={'capitalize'}>
-                    {doctorSetter(currentTicket?.prescription[0].doctor!)}(
+                    {doctorSetter(currentTicket?.prescription[0].doctor!)}
+                    {/* (
                     {departmentSetter(
                       currentTicket?.prescription[0].departments[0]!
                     )}
-                    )
+                    ) */}
+                  </Typography>
+                </Stack>
+                <Stack direction="row" spacing={3} my={1}>
+                  <VaccinesOutlinedIcon htmlColor="gray" />
+                  <Typography textTransform={'capitalize'}>
+                    {departmentSetter(
+                      currentTicket?.prescription[0].departments[0]!
+                    )}
                   </Typography>
                 </Stack>
 
@@ -920,7 +930,6 @@ console.log(currentTicket?.estimate," this is estimate from db");
                   <Box>
                     {singleReminder[0] ? (
                       <Box
-                       
                         display="flex"
                         justifyContent="space-between"
                         alignItems="center"

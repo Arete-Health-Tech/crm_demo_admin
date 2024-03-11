@@ -15,7 +15,7 @@ export const SERVER_URL = 'https://arete.demo.aretehealth.tech/prod/api/v1/';
 // export const BACKEND_URL = 'http://localhost:5050';
 
 export const BACKEND_URL = 'https://arete.demo.aretehealth.tech';
-//
+
 const headers: Readonly<Record<string, string | boolean>> = {
   Accept: 'application/json',
   'Content-Type': 'application/json; charset=utf-8'

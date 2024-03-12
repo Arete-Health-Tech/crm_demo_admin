@@ -1,5 +1,12 @@
-import { iCallRescheduler, iNote, iReminder, iTimer } from '../../types/store/ticket';
+import {
+  iCallRescheduler,
+  iNote,
+  iReminder,
+  iTimer
+} from '../../types/store/ticket';
 import { apiClient } from '../apiClient';
+
+const createTicketRoute = 'ticket/create';
 
 export const getTicket = async (
   name: string,
@@ -9,52 +16,26 @@ export const getTicket = async (
   selectedFilters: any,
   ticketId?: string | null,
   fetchUpdated: boolean = false,
-  phone?:any,
-  won?:any,
-  lose?:any,
- 
+  phone?: any,
+  won?: any,
+  lose?: any
 ) => {
-  console.log(selectedFilters," tjiodfsfsfsfs")
   const params = new URLSearchParams(selectedFilters).toString();
-
+  const timeStamp = new Date().getTime();
   const { data } = await apiClient.get(
-    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}`
+    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}&timeStamp=${timeStamp}`
   );
   return data;
 };
 
-// export const getTicket = async (
-//   name: string,
-//   pageNumber: number = 1,
-//   downloadAll: string,
-//   selectedFilters: any,
-//   ticketId?: string | null,
-//   fetchUpdated: boolean = false,
-//   phone?: any,
-//   won?: any,
-//   lose?: any
-// ) => {
-//   let params = '';
-//   if (selectedFilters) {
-//     params = new URLSearchParams(selectedFilters).toString();
-//   }
-
-//   const apiUrl = `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}`;
-
-//   const urlWithParams = params ? `${apiUrl}&${params}` : apiUrl;
-
-//   const { data } = await apiClient.get(urlWithParams);
-//   return data;
-// };
-
 export const createTicket = async (prescription: any) => {
-  const { data } = await apiClient.post('/ticket', prescription, {
+  const { data } = await apiClient.post(createTicketRoute, prescription, {
     /* @ts-ignore */
     headers: {
       'Content-Type': 'multipart/form-data'
     }
   });
-  console.log(data);
+  return data;
 };
 
 export const updateTicketData = async (payload: {
@@ -67,8 +48,7 @@ export const updateTicketData = async (payload: {
   ticket: string | undefined;
 }) => {
   const { data } = await apiClient.put('/ticket/ticketUpdate', payload);
-  console.log(data);
-  return Promise.resolve(data)
+  return Promise.resolve(data);
 };
 
 export const updateTicketSubStage = async (payload: {
@@ -79,27 +59,23 @@ export const updateTicketSubStage = async (payload: {
   ticket: string | undefined;
 }) => {
   const { data } = await apiClient.put('/ticket/subStageUpdate', payload);
-  console.log(data);
   return Promise.resolve(data);
 };
 
 export const validateTicket = async (ticketId: string) => {
-  const result = await apiClient.put('/ticket/validateTicket',{ticketId});
+  const result = await apiClient.put('/ticket/validateTicket', { ticketId });
   return result;
-}
+};
 
 export const sendTextMessage = async (
   message: string,
   consumerId: string,
-  ticketID: string,
-
+  ticketID: string
 ) => {
-  console.log(message, consumerId);
   const { data } = await apiClient.post('/flow/message', {
     message,
     consumerId,
-    ticketID,
-   
+    ticketID
   });
   return data;
 };
@@ -116,7 +92,6 @@ export const createNewNote = async (note: iNote) => {
 
 export const getAllReminders = async () => {
   const { data } = await apiClient.get(`task/allReminder/`);
-  console.log(data," this is remainder data")
   return data;
 };
 
@@ -125,13 +100,14 @@ export const createNewReminder = async (reminderData: iReminder) => {
   return data;
 };
 
-
 export const getAllCallReschedulerHandler = async () => {
   const { data } = await apiClient.get(`task/allRescheduler/`);
   return data;
 };
 
-export const createNewCallRescheduler = async (callReschedulerData: iCallRescheduler) => {
+export const createNewCallRescheduler = async (
+  callReschedulerData: iCallRescheduler
+) => {
   const { data } = await apiClient.post(
     `/task/reschedular`,
     callReschedulerData
@@ -139,17 +115,15 @@ export const createNewCallRescheduler = async (callReschedulerData: iCallResched
   return data;
 };
 
-
 export const getAllRescheduler = async () => {
   const { data } = await apiClient.get('task/ticketReschedluer');
-  console.log(data," thisgfsgsd");
   return data;
 };
 
-export const createTimer = async (timerData: iTimer,ticketId:string) => {
+export const createTimer = async (timerData: iTimer, ticketId: string) => {
   const { data } = await apiClient.post(
-    `/dashboard/ticketStatus/${ticketId}`, timerData
+    `/dashboard/ticketStatus/${ticketId}`,
+    timerData
   );
-console.log(data, 'createTimer - Successfully created timer:');
   return data;
 };

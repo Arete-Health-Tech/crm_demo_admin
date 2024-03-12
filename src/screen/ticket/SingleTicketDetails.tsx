@@ -368,6 +368,7 @@ console.log(currentTicket,"this is current ticet")
   useEffect(() => {
     (async function () {
       const ticketData = getTicketInfo(ticketID);
+      console.log(ticketData," thi s is ticket Data")
       if (currentTicket) {
         setSingleReminder([]);
         setCallReschedule([]);
@@ -398,7 +399,7 @@ console.log(currentTicket,"this is current ticet")
     ticketUpdateFlag,
     reminders.length,
     reminders,
-    currentTicket?.stage,
+    // currentTicket?.stage,
     callRescheduler.length,
     callRescheduler
   ]);

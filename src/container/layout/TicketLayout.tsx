@@ -59,19 +59,19 @@ const Ticket = () => {
     setTickets,
     ticketCache,
     emptyDataText,
-    
+
     reminders,
     callRescheduler,
     loaderOn,
     pageNumber,
     setPageNumber,
   } = useTicketStore();
-  
+
 
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
-  const[phone,setPhone]=useState(null)
+  const [phone, setPhone] = useState(null)
 
   const [reminderList, setReminderList] = useState<any[]>([]);
   const [callReschedulerList, setcallReschedulerList] = useState<any[]>([]);
@@ -79,9 +79,9 @@ const Ticket = () => {
   const [alarmReminderedList, setAlamarReminderList] = useState<iReminder[]>(
     []
   );
-   const [alarmCallReschedulerList, setAlarmCallReschedulerList] = useState<
-     iCallRescheduler[]
-   >([]);
+  const [alarmCallReschedulerList, setAlarmCallReschedulerList] = useState<
+    iCallRescheduler[]
+  >([]);
   const [ticketReminderPatient, setTicketReminderPatient] = useState<any>(null);
   const [ticketCallReschedulerPatient, setTicketCallReschedulerPatient] =
     useState<any>(null);
@@ -106,8 +106,10 @@ const Ticket = () => {
     event: React.ChangeEvent<unknown>,
     pageNo: number
   ) => {
-    console.log('val', pageNo);
+    setPageNumber(pageNo)
     if (pageNo !== page) {
+      console.log(pageNo)
+      console.log(page)
       setTickets([]);
       // if (
       //   ticketCache[pageNo] &&
@@ -122,7 +124,7 @@ const Ticket = () => {
       await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       setPage(pageNo);
       setPageNumber(pageNo);
-     
+
       redirectTicket();
     }
   };
@@ -138,9 +140,9 @@ const Ticket = () => {
     setSearchByName(UNDEFINED);
     // setTicketCount(ticketCache["count"]);
     // setTickets(ticketCache[1]);
-    await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
     setPage(1);
     setPageNumber(1)
+    await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   };
 
   // const handleSeachName = (
@@ -162,7 +164,7 @@ const Ticket = () => {
     }
     if (e.key === 'Enter') {
       setTickets([]);
-      console.log('search name', value);
+
       if (value === '') {
         fetchTicketsOnEmpthySearch();
         setSearchError('Type to search & Enter');
@@ -267,7 +269,7 @@ const Ticket = () => {
   // };
 
   const handleCloseModal = async () => {
-    console.log('alaram list', alarmReminderedList);
+
     const result = await getAllReminderHandler();
     setTimeout(() => {
       setPage(1);
@@ -280,22 +282,22 @@ const Ticket = () => {
     }, 100);
   };
 
-const handleCloseCallReschedulerModal=async ()=>{
-console.log('call rescheduler alarm list',alarmCallReschedulerList)
- const result = await getAllCallReschedulerHandler();
+  const handleCloseCallReschedulerModal = async () => {
 
- setTimeout(() => {
-   setPage(1);
-   setPageNumber(1);
-   let list = alarmCallReschedulerList;
-   list.splice(0, 1);
-   setShowCallReschedulerModal(false);
-   setAlarmCallReschedulerList([]);
-   setcallReschedulerList(result);
- }, 100);
+    const result = await getAllCallReschedulerHandler();
+
+    setTimeout(() => {
+      setPage(1);
+      setPageNumber(1);
+      let list = alarmCallReschedulerList;
+      list.splice(0, 1);
+      setShowCallReschedulerModal(false);
+      setAlarmCallReschedulerList([]);
+      setcallReschedulerList(result);
+    }, 100);
 
 
-}
+  }
 
 
   const clearAllInterval = (AllIntervals: any[]) => {
@@ -335,10 +337,10 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
           reminderDetail.date + 11000 > currentTime.getTime()
           // isAlamredReminderExist(reminderDetail)
         ) {
-          console.log('Alarm SUCCESS');
+
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
-              console.log(phone," this is remainderr phone number")
+
               const data = await getTicket(
                 UNDEFINED,
                 1,
@@ -409,7 +411,7 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
 
 
   }, [reminders]);
-  
+
   useEffect(() => {
     // console.log('gotham FULL', reminders, 'remindelist', reminderList);
     clearAllInterval(AllIntervals);
@@ -424,10 +426,10 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
           callRescheduleDetail.date + 11000 > currentTime.getTime()
           // isAlamredReminderExist(reminderDetail)
         ) {
-          console.log('Alarm SUCCESS');
+
           (async () => {
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
-              console.log(phone, ' this is remainderr phone number');
+
               const data = await getTicket(
                 UNDEFINED,
                 1,
@@ -462,10 +464,10 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
         clearAllInterval(AllIntervals);
       };
     });
-  }, [ callRescheduler]);
+  }, [callRescheduler]);
 
 
-
+  console.log({ page })
 
 
   return (
@@ -554,7 +556,7 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
             <CustomPagination
               handlePagination={handlePagination}
               pageCount={pageCount}
-              page={page}
+              page={pageNumber}
             />
           </div>
         </Box>
@@ -565,7 +567,7 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
       <Box>
         <Modal
           open={showReminderModal}
-          // onClose={() => handleCloseModal()}
+        // onClose={() => handleCloseModal()}
         >
           <Box
             sx={{
@@ -628,7 +630,7 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
       <Box>
         <Modal
           open={showCallReschedulerModal}
-          // onClose={() => handleCloseModal()}
+        // onClose={() => handleCloseModal()}
         >
           <Box
             sx={{
@@ -673,9 +675,9 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
               <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
                 {alarmCallReschedulerList[0]?.selectedLabels
                   ? alarmCallReschedulerList[0].selectedLabels
-                      .map((label) => label.label)
-                      .join(', ')
-                      .toUpperCase()
+                    .map((label) => label.label)
+                    .join(', ')
+                    .toUpperCase()
                   : 'N/A'}
               </Typography>
               <Typography margin={'12px'}>

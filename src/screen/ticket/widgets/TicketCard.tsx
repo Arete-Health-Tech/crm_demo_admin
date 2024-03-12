@@ -13,12 +13,13 @@ import { iStage } from '../../../types/store/service';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-dayjs.extend(utc);
-dayjs.extend(timezone);
 
 type Props = {
   patientData: iTicket;
 };
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const TicketCard = (props: Props) => {
   const { doctors, departments, allServices, stages } = useServiceStore();
@@ -51,9 +52,16 @@ const TicketCard = (props: Props) => {
       ({ _id }) => props.patientData?.stage === _id
     );
     setCurrentStage(stageDetail);
+    const { setStages } = useServiceStore.getState();
+    setStages(stages);
   }, [stages]);
-
-// console.log(props.patientData," thui sis patient data ")
+  console.log(props.patientData, ' this is props patient data');
+  console.log(
+    dayjs(props.patientData.createdAt)
+      .tz('Asia/Kolkata')
+      .format('DD/MMM/YYYY , HH:mm'),
+    ' thui sis patient data '
+  );
 
   return (
     <Box
@@ -116,9 +124,9 @@ const TicketCard = (props: Props) => {
           </Typography>
         </Box>
       </Box>
+
       <Typography variant="inherit" textTransform="capitalize">
         {doctorSetter(props.patientData.prescription[0].doctor)}
-        {/* ({departmentSetter(props.patientData.prescription[0].departments[0])}) */}
       </Typography>
       <Typography variant="inherit" textTransform="capitalize">
         {departmentSetter(props.patientData.prescription[0].departments[0])}

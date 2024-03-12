@@ -40,14 +40,16 @@ const drawerWidth = 450;
 export const ticketFilterCount = (selectedFilters: iTicketFilter) => {
   const stageListCount = selectedFilters['stageList'].length;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
-  const resultCount=selectedFilters['results']?1:0;
-  console.log(stageListCount," this is stage list count");
-  console.log(resultCount," this is result counnt")
-  const total = stageListCount + representativeCount + resultCount; ;
+  const resultCount = selectedFilters['results'] ? 1 : 0;
+  console.log(stageListCount, ' this is stage list count');
+  console.log(resultCount, ' this is result counnt');
+  const total = stageListCount + representativeCount + resultCount;
   return total;
 };
 
-const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<number>>}) => {
+const TicketFilter = (props: {
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+}) => {
   const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     '& .MuiBadge-badge': {
       right: -3,
@@ -60,13 +62,10 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   const initialFilters: ticketFilterTypes = {
     stageList: [],
     representative: null,
-    results:null 
-  
-    
+    results: null
   };
 
-  const { setFilterTickets } = useTicketStore(); 
-  
+  const { setFilterTickets, setPageNumber } = useTicketStore();
 
   // const [ticketFilters, setTicketFilters] = useState<iTicketFilter>({
   //   stageList: [],
@@ -92,11 +91,10 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   );
   const [startDate, setStartDate] = React.useState<string>();
   const [endDate, setEndDate] = React.useState<string>();
-  const [currentReperesentative, setCurrentRepresentative] = useState( '');
+  const [currentReperesentative, setCurrentRepresentative] = useState('');
   const [filterCount, setFilterCount] = useState(0);
-   const [selectedValue, setSelectedValue] = useState(null);
-   const [selectedValueLost, setSelectedValueLost] = useState(null);
-
+  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedValueLost, setSelectedValueLost] = useState(null);
 
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -116,7 +114,6 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
       payload: [...selectedFilters.stageList, value]
     });
   };
-
 
   const handleRepresentative = (e: any) => {
     const value = e.target.value;
@@ -138,36 +135,32 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   ) => {
     setDiagnosticsType(newDiagnostics);
   };
-   const handleResult = (e: any) => {
-     const value = e.target.value;
-console.log(value);
-     console.log(value);
+  const handleResult = (e: any) => {
+    const value = e.target.value;
+    console.log(value);
+    console.log(value);
 
-     if (value === "Won") {
-       setResult(value);
-       dispatchFilter({
-         type: filterActions.RESULTS,
-         payload: '65991601a62baad220000001'
-       });
-
-       
-      
-     }else if (value === 'Lose') {
-       setResult(value);
-       dispatchFilter({
-         type: filterActions.RESULTS,
-         payload: '65991601a62baad220000002'
-       });
-     } else if(value === null) {
-       setResult(value);
-       dispatchFilter({
-         type: filterActions.RESULTS,
-         payload: null
-       });
-     }
-     setResult('');
-    
-   };
+    if (value === 'Won') {
+      setResult(value);
+      dispatchFilter({
+        type: filterActions.RESULTS,
+        payload: '65991601a62baad220000001'
+      });
+    } else if (value === 'Lose') {
+      setResult(value);
+      dispatchFilter({
+        type: filterActions.RESULTS,
+        payload: '65991601a62baad220000002'
+      });
+    } else if (value === null) {
+      setResult(value);
+      dispatchFilter({
+        type: filterActions.RESULTS,
+        payload: null
+      });
+    }
+    setResult('');
+  };
 
   const handleFilterOpen = () => {
     setIsFilterOpen(true);
@@ -193,7 +186,7 @@ console.log(value);
     (async () => {
       const fetchedStageData = await getStagesHandler();
       const fetchedRepresentative = await getRepresntativesHandler();
-      
+
       const transformStages = fetchedStageData.map(({ _id, name }) => {
         return {
           id: _id,
@@ -211,7 +204,6 @@ console.log(value);
       );
       setRepresentativeLabel(transformRepresentative);
       setStagesLabels(transformStages);
-   
     })();
   }, []);
 
@@ -227,22 +219,25 @@ console.log(value);
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
     setIsFilterOpen(false);
+    setPageNumber(1);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     setFilterCount(ticketFilterCount(selectedFilters));
     setFilterTickets(selectedFilters);
-    props.setPage(1)
+    props.setPage(1);
     console.log('filter dtata', selectedFilters);
   };
 
   const handleClearFilter = async () => {
     dispatchFilter({ type: filterActions.STAGES, payload: [] });
     dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
-     dispatchFilter({ type: filterActions.RESULTS, payload: null });
+    dispatchFilter({ type: filterActions.RESULTS, payload: null });
     setCurrentRepresentative('');
     setFilterCount(ticketFilterCount(selectedFilters));
-  
+    setPageNumber(1);
     setSelectedValue(null);
     setSelectedValueLost(null);
+    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+
     // setTicketFilters({
     //   stageList: [],
     //   admissionType: [],
@@ -257,15 +252,13 @@ console.log(value);
     // setEndDate((prev) => '');
   };
 
- const handleToggleChange = (event, newValue) => {
-   setSelectedValue(newValue);
- };
+  const handleToggleChange = (event, newValue) => {
+    setSelectedValue(newValue);
+  };
 
-
- const handleToggleLostChange=(event,newValue)=>{
-  setSelectedValueLost(newValue);
- };
- 
+  const handleToggleLostChange = (event, newValue) => {
+    setSelectedValueLost(newValue);
+  };
 
   return (
     <Box>

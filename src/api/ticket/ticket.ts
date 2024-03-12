@@ -18,7 +18,7 @@ export const getTicket = async (
   const params = new URLSearchParams(selectedFilters).toString();
   const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
-    `/ticket/get/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}&timestamp=${timestamp}`
+    `/ticket/get?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}&timestamp=${timestamp}`
   );
   return data;
 };
@@ -31,6 +31,7 @@ export const createTicket = async (prescription: any) => {
     }
   });
   console.log(data);
+  return data;
 };
 
 export const updateTicketData = async (payload: {

@@ -306,18 +306,18 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
     AllIntervals = [];
   };
 
-  useEffect(() => {
-    const refetchTickets = async () => {
-      console.log('Received request of refetch tickets from server');
-      await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
-    };
+  // useEffect(() => {
+  //   const refetchTickets = async () => {
+  //     console.log('Received request of refetch tickets from server');
+  //     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+  //   };
 
-    socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+  //   socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
 
-    return () => {
-      socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-    };
-  }, []);
+  //   return () => {
+  //     socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+  //   };
+  // }, []);
 
 
   useEffect(() => {

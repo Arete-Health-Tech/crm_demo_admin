@@ -14,12 +14,38 @@ export const getTicket = async (
   lose?:any,
  
 ) => {
+  console.log(selectedFilters," tjiodfsfsfsfs")
   const params = new URLSearchParams(selectedFilters).toString();
+
   const { data } = await apiClient.get(
     `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}`
   );
   return data;
 };
+
+// export const getTicket = async (
+//   name: string,
+//   pageNumber: number = 1,
+//   downloadAll: string,
+//   selectedFilters: any,
+//   ticketId?: string | null,
+//   fetchUpdated: boolean = false,
+//   phone?: any,
+//   won?: any,
+//   lose?: any
+// ) => {
+//   let params = '';
+//   if (selectedFilters) {
+//     params = new URLSearchParams(selectedFilters).toString();
+//   }
+
+//   const apiUrl = `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}`;
+
+//   const urlWithParams = params ? `${apiUrl}&${params}` : apiUrl;
+
+//   const { data } = await apiClient.get(urlWithParams);
+//   return data;
+// };
 
 export const createTicket = async (prescription: any) => {
   const { data } = await apiClient.post('/ticket', prescription, {

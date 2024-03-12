@@ -256,8 +256,8 @@ const fileInputRef = useRef<HTMLInputElement>(null);
         setServicesPack(servicesPack);
       })();
     }, []);
-console.log(servicesAll," this is all services from db")
-console.log(servicesPack," this is all packed services from db");
+// console.log(servicesAll," this is all services from db")
+// console.log(servicesPack," this is all packed services from db");
  
 
 
@@ -283,7 +283,7 @@ console.log(servicesPack," this is all packed services from db");
   };
 
   const serviceGetterAllPackage = (id: string | undefined) => {
-    console.log(id,'tjo ssdsdsd')
+    // console.log(id,'tjo ssdsdsd')
     return (
       servicesPack &&
       servicesPack.find(
@@ -294,14 +294,14 @@ console.log(servicesPack," this is all packed services from db");
 
 
   const handleCreateEstimate = async () => {
-     console.log(estimateFileds, ' this is results before ');
+    //  console.log(estimateFileds, ' this is results before ');
     const result = await createEstimateHandler({
       ...estimateFileds,    
       ticket: ticketID
     });
     
    
-    console.log(estimateFileds," this is results");
+    // console.log(estimateFileds," this is results");
   
     setIsEstimateOpen(false);
     setTimeout(() => {
@@ -326,7 +326,7 @@ console.log(servicesPack," this is all packed services from db");
       
       // D STARTS HERE__________________________
      
-console.log(ticketID,"this is ticketysmfbjsfhjsffs")
+// console.log(ticketID,"this is ticketysmfbjsfhjsffs")
       try {
         
         const { data } = await apiClient.post(
@@ -340,10 +340,10 @@ console.log(ticketID,"this is ticketysmfbjsfhjsffs")
         );
 
         // Handle the response from the server
-        console.log('Server response:', data);
+        // console.log('Server response:', data);
       
 
-   console.log(estimateFileds," this is estimaste from frontend")
+  //  console.log(estimateFileds," this is estimaste from frontend")
       
 
   const payload = {

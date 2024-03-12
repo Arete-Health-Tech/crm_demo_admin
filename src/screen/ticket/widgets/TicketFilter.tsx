@@ -41,8 +41,7 @@ export const ticketFilterCount = (selectedFilters: iTicketFilter) => {
   const stageListCount = selectedFilters['stageList'].length;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
   const resultCount=selectedFilters['results']?1:0;
-  console.log(stageListCount," this is stage list count");
-  console.log(resultCount," this is result counnt")
+ 
   const total = stageListCount + representativeCount + resultCount; ;
   return total;
 };
@@ -96,7 +95,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   const [filterCount, setFilterCount] = useState(0);
    const [selectedValue, setSelectedValue] = useState(null);
    const [selectedValueLost, setSelectedValueLost] = useState(null);
-
+const [page,setPage]=useState(1)
 
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -239,8 +238,13 @@ console.log(value);
     dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
      dispatchFilter({ type: filterActions.RESULTS, payload: null });
     setCurrentRepresentative('');
+    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     setFilterCount(ticketFilterCount(selectedFilters));
-  
+    console.log(props, ' props.setPage(1)');
+
+    console.log(props.setPage(1), "props.setPage(1)");
+
+   props.setPage(1);
     setSelectedValue(null);
     setSelectedValueLost(null);
     // setTicketFilters({

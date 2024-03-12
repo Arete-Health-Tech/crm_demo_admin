@@ -72,7 +72,7 @@ const Ticket = () => {
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
   const[phone,setPhone]=useState(null)
-
+const[newFilterTicket,setNewFilterTicket]=useState<any[]>([]);
   const [reminderList, setReminderList] = useState<any[]>([]);
   const [callReschedulerList, setcallReschedulerList] = useState<any[]>([]);
 
@@ -308,6 +308,7 @@ console.log('call rescheduler alarm list',alarmCallReschedulerList)
 
   useEffect(() => {
     const refetchTickets = async () => {
+      console.log(filterTickets," this is filter Ticketssss");
       console.log('Received request of refetch tickets from server');
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
     };

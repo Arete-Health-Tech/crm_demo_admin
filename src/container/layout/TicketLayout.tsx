@@ -308,18 +308,18 @@ const Ticket = () => {
     AllIntervals = [];
   };
 
-  useEffect(() => {
-    const refetchTickets = async () => {
+  // useEffect(() => {
+  //   const refetchTickets = async () => {
 
-      await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
-    };
+  //     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+  //   };
 
-    socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+  //   socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
 
-    return () => {
-      socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-    };
-  }, []);
+  //   return () => {
+  //     socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+  //   };
+  // }, []);
 
 
   useEffect(() => {

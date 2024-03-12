@@ -23,7 +23,7 @@ export const getTicket = async (
   const params = new URLSearchParams(selectedFilters).toString();
   const timeStamp = new Date().getTime();
   const { data } = await apiClient.get(
-    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}&timeStamp=${timeStamp}`
+    `/ticket/get?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}&timeStamp=${timeStamp}`
   );
   return data;
 };

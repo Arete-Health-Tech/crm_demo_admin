@@ -307,8 +307,9 @@ const handleCloseCallReschedulerModal=async ()=>{
 
   useEffect(() => {
     const refetchTickets = async () => {
-    
-      await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+      const copiedFilterTickets = { ...filterTickets };
+      const pageNumber = page
+      await getTicketHandler(UNDEFINED, pageNumber, 'false', copiedFilterTickets);
     };
 
     socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
@@ -316,7 +317,7 @@ const handleCloseCallReschedulerModal=async ()=>{
     return () => {
       socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
-  }, []);
+  }, [filterTickets, page]);
 
 
   useEffect(() => {

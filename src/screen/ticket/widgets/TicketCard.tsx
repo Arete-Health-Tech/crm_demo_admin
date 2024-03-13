@@ -155,7 +155,7 @@ const TicketCard = (props: Props) => {
           <Chip label="Diagnostics" color="primary" size="small" />
         )}
 
-        <Chip
+        {props.patientData.estimate.length === 0 ? <></> : <Chip
           // D ENDS HERE__________________________
           size="small"
           disabled={props.patientData.estimate.length === 0 ? true : false}
@@ -163,19 +163,19 @@ const TicketCard = (props: Props) => {
             props.patientData.estimate[0]?.paymentType === 0
               ? 'Cash'
               : props.patientData.estimate[0]?.paymentType === 1
-              ? 'Insurance'
-              : props.patientData.estimate[0]?.paymentType === 2
-              ? 'CGHS| ECHS'
-              : ''
+                ? 'Insurance'
+                : props.patientData.estimate[0]?.paymentType === 2
+                  ? 'CGHS| ECHS'
+                  : ''
           }
-          // sx={{
-          //   display: 'block',
-          //   backgroundColor: 'blue',
-          //   color: 'white',
-          //   borderRadius: '4px',
-          //   padding: '4px 8px'
-          // }}
-        />
+        // sx={{
+        //   display: 'block',
+        //   backgroundColor: 'blue',
+        //   color: 'white',
+        //   borderRadius: '4px',
+        //   padding: '4px 8px'
+        // }}
+        />}
 
         <Chip
           sx={{
@@ -189,8 +189,8 @@ const TicketCard = (props: Props) => {
             222 > 15000
               ? 'info'
               : 1500 < 4500 && 4500 < 22200
-              ? 'warning'
-              : 'secondary'
+                ? 'warning'
+                : 'secondary'
           }
         />
       </Box>
@@ -209,9 +209,8 @@ const TicketCard = (props: Props) => {
           />
         </Grid>
         <Grid item xs={4}>
-          <Typography fontSize={'14px'} fontWeight={500}>{`(${
-            currentStage?.code * 20 || 0
-          }%) ${currentStage?.name || 'N/A'}`}</Typography>
+          <Typography fontSize={'14px'} fontWeight={500}>{`(${currentStage?.code * 20 || 0
+            }%) ${currentStage?.name || 'N/A'}`}</Typography>
         </Grid>
       </Grid>
     </Box>

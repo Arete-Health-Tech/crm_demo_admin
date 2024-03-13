@@ -653,9 +653,9 @@ const handleInternal = (item: string) => {
               audio={false}
               screenshotFormat="image/jpeg"
               ref={camera}
-              videoConstraints={{
-                facingMode: { exact: 'environment' }
-              }}
+              // videoConstraints={{
+              //   facingMode: { exact: 'environment' }
+              // }}
             />
          
         ) : (

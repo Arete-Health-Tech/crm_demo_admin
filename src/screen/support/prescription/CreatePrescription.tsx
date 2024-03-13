@@ -50,7 +50,7 @@ type iPrescription = {
   medicines: string[];
   followUp: Date | number;
   image: string | null;
-  isPharmacy:string | null;
+  isPharmacy: string | null;
   caregiver_name: string | null;
   caregiver_phone: string | null;
   service?: { _id: string; label: string };
@@ -66,7 +66,7 @@ const initialPrescription = {
   medicines: [],
   followUp: new Date(),
   image: null,
-  isPharmacy:'',
+  isPharmacy: '',
   caregiver_name: null,
   caregiver_phone: null
 };
@@ -87,10 +87,10 @@ const CreatePrescription = () => {
   const [isCaregiver, setIsCaregiver] = useState(false);
   const [disableButton, setDisableButton] = useState(false);
   const [buttonVariant, setButtonVariant] = useState<string | null>(null);
- 
-   const [selectedPharmacy, setSelectedPharmacy] = useState('');
-   const [scannedResult, setScannedResult] = useState(null);
- 
+
+  const [selectedPharmacy, setSelectedPharmacy] = useState('');
+  const [scannedResult, setScannedResult] = useState(null);
+
 
   const findService = async (query: string) => {
     try {
@@ -129,7 +129,7 @@ const CreatePrescription = () => {
     const doctor = prescription.doctor === '';
     const admission = prescription.admission === '';
     const image = prescription.image === null;
-   
+
     // let service = false;
     // if (prescription.admission !== 'none') {
     //   if (!prescription.service || prescription.service?._id === '') {
@@ -157,7 +157,7 @@ const CreatePrescription = () => {
       prev.image = image
         ? { message: 'Invalid Value', value: true }
         : defaultValidation;
-       
+
       // prev.service = service
       //   ? { message: 'Please specify service', value: true }
       //   : defaultValidation;
@@ -173,7 +173,7 @@ const CreatePrescription = () => {
       // service === false
     );
   };
-  
+
 
 
 
@@ -189,7 +189,7 @@ const CreatePrescription = () => {
       ticket.consumer = id;
       ticket.departments = [prescription.department];
       ticket.diagnostics = diagnostics;
-  
+
       ticket.followup = ticket.followup ? ticket.followup : null;
       await createTicketHandler(ticket);
       setPrescription(structuredClone(initialPrescription));
@@ -213,15 +213,15 @@ const CreatePrescription = () => {
 
 
   console.log(prescription)
- 
-
-const handleInternal = (item: string) => {
-  console.log('this is response');
-  setButtonVariant(item);
-};
 
 
-   
+  const handleInternal = (item: string) => {
+    console.log('this is response');
+    setButtonVariant(item);
+  };
+
+
+
 
 
 
@@ -647,17 +647,17 @@ const handleInternal = (item: string) => {
         }}
       >
         {prescription.image === null ? (
-          
-            <Webcam
-              style={{ height: '90vh' }}
-              audio={false}
-              screenshotFormat="image/jpeg"
-              ref={camera}
-              // videoConstraints={{
-              //   facingMode: { exact: 'environment' }
-              // }}
-            />
-         
+
+          <Webcam
+            style={{ height: '90vh' }}
+            audio={false}
+            screenshotFormat="image/jpeg"
+            ref={camera}
+            videoConstraints={{
+              facingMode: { exact: 'environment' }
+            }}
+          />
+
         ) : (
           <Box>
             <img

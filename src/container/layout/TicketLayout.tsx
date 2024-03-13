@@ -68,7 +68,7 @@ const Ticket = () => {
   } = useTicketStore();
 
 
-
+console.log(filterTickets , "filterTickets");
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
   const [phone, setPhone] = useState(null)
@@ -121,6 +121,7 @@ const Ticket = () => {
       // } else {
       //   await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       // }
+     console.log({filterTickets} ,"001");
       await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       setPage(pageNo);
       setPageNumber(pageNo);
@@ -142,6 +143,7 @@ const Ticket = () => {
     // setTickets(ticketCache[1]);
     setPage(1);
     setPageNumber(1)
+    console.log({filterTickets} ,"002");
     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   };
 
@@ -170,6 +172,7 @@ const Ticket = () => {
         setSearchError('Type to search & Enter');
         return;
       }
+      console.log({filterTickets} ,"003");
       await getTicketHandler(value, 1, 'false', filterTickets);
       setSearchByName(value);
       setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
@@ -250,6 +253,7 @@ const Ticket = () => {
 
   useEffect(() => {
     (async function () {
+      console.log({filterTickets} ,"006");
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
       await getStagesHandler();
       await getSubStagesHandler();
@@ -308,12 +312,39 @@ const Ticket = () => {
     AllIntervals = [];
   };
 
+  // const refetchTickets = async () => {
+  //   const copiedFilterTickets = { ...filterTickets };
+  //   console.log({ filterTickets: copiedFilterTickets }, "pahle");
+  //   console.log('Received request of refetch tickets from server');
+  //   console.log({ filterTickets: copiedFilterTickets }, "jbfusinds");
+  //   await getTicketHandler(UNDEFINED, 1, 'false', copiedFilterTickets);
+  // }
+  useEffect(() => {
+    const refetchTickets = async () => {
+      const copiedFilterTickets = { ...filterTickets };
+      console.log({ filterTickets: copiedFilterTickets }, "pahle");
+      console.log('Received request of refetch tickets from server');
+      console.log({ filterTickets: copiedFilterTickets }, "jbfusinds");
+  
+      // Refresh tickets
+      await getTicketHandler(UNDEFINED, 1, 'false', copiedFilterTickets);
+    };
+  
+    socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+  
+    return () => {
+      socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    };
+  }, [filterTickets]);
+ 
   // useEffect(() => {
   //   const refetchTickets = async () => {
+  //     console.log({filterTickets} ,"pahle");
   //     console.log('Received request of refetch tickets from server');
+  //     console.log({filterTickets} ,"jbfusinds");
   //     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
-  //   };
-
+  //   }
+   
   //   socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
 
   //   return () => {

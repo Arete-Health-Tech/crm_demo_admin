@@ -335,7 +335,7 @@ console.log(filterTickets , "filterTickets");
     return () => {
       socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
-  }, [filterTickets]);
+  }, [filterTickets , page]);
  
   // useEffect(() => {
   //   const refetchTickets = async () => {

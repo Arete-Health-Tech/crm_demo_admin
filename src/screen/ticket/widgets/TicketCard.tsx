@@ -41,7 +41,8 @@ const TicketCard = (props: Props) => {
       navigate(`/ticket/${props.patientData._id}`);
     }
 
-  }, [filterTickets])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterTickets, props.index, props.patientData._id])
 
 
   const doctorSetter = (id: string) => {

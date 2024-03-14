@@ -137,9 +137,9 @@ const Ticket = () => {
     setSearchByName(UNDEFINED);
     // setTicketCount(ticketCache["count"]);
     // setTickets(ticketCache[1]);
-    await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
     setPage(1);
     setPageNumber(1)
+    await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   };
 
   // const handleSeachName = (

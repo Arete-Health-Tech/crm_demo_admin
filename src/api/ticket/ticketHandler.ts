@@ -18,7 +18,7 @@ export const getTicketHandler = async (
   name: string,
   pageNumber: number = 1,
   downloadAll: 'true' | 'false' = 'false',
-  selectedFilters: iTicketFilter,
+  selectedFilters: iTicketFilter | null,
   ticketId: string = UNDEFINED,
   fetchUpdated : boolean = false,
   

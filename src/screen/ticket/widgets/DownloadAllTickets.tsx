@@ -82,6 +82,7 @@ const DownloadAllTickets = (props: Props) => {
         prescriptionLink: ticket.prescription[0].image
       };
     })
+    console.log(data," thuis is data coming from ")
     const csv = Papa.unparse(data);
     const csvBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     FileSaver.saveAs(

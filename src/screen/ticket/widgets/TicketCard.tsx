@@ -53,6 +53,8 @@ const TicketCard = (props: Props) => {
       ({ _id }) => props.patientData?.stage === _id
     );
     setCurrentStage(stageDetail);
+     const { setStages } = useServiceStore.getState();
+     setStages(stages);
   }, [stages]);
   console.log(props.patientData, " this is props patient data")
   console.log(

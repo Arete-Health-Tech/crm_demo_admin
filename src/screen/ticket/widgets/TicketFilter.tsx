@@ -65,7 +65,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
     
   };
 
-  const { setFilterTickets } = useTicketStore(); 
+  const { setFilterTickets, setPageNumber } = useTicketStore(); 
   
 
   // const [ticketFilters, setTicketFilters] = useState<iTicketFilter>({
@@ -227,6 +227,7 @@ console.log(value);
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
     setIsFilterOpen(false);
+    setPageNumber(1);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     setFilterCount(ticketFilterCount(selectedFilters));
     setFilterTickets(selectedFilters);
@@ -240,9 +241,10 @@ console.log(value);
      dispatchFilter({ type: filterActions.RESULTS, payload: null });
     setCurrentRepresentative('');
     setFilterCount(ticketFilterCount(selectedFilters));
-  
+    setPageNumber(1);
     setSelectedValue(null);
     setSelectedValueLost(null);
+    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     // setTicketFilters({
     //   stageList: [],
     //   admissionType: [],

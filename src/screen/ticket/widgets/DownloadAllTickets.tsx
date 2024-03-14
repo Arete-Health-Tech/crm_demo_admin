@@ -38,10 +38,10 @@ const DownloadAllTickets = (props: Props) => {
     await getDoctorsHandler();
     await getDepartmentsHandler();
 
-    const data = sortedTickets?.map((ticket: any, index) => {
+    const data = sortedTickets?.map((ticket: any, index: number) => {
       return {
         serialNo: index + 1,
-        firstName: ticket.consumer[0].firstName,
+        firstName: ticket.consumer[0]?.firstName,
         lastName: ticket.consumer[0].lastName && ticket.consumer[0].lastName,
         uhid: ticket.consumer[0].uid,
         gender: ticket.consumer[0].gender,
@@ -67,7 +67,7 @@ const DownloadAllTickets = (props: Props) => {
           ? dayjs(ticket.prescription[0].followUp).format('DD/MMM/YYYY')
           : 'No Follow Up',
         capturedBy:
-          ticket.creator[0].firstName + ' ' + ticket.creator[0].lastName,
+          ticket.creator[0]?.firstName + ' ' + ticket.creator[0]?.lastName,
         prescriptionCreatedAt: `${dayjs(
           ticket.prescription[0].createdAt
         ).format('DD/MMM/YYYY , HHMM ')} hrs`,

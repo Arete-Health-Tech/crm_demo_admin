@@ -40,6 +40,7 @@ const TicketCard = (props: Props) => {
   });
 
   const { tickets, filterTickets } = useTicketStore();
+  const navigate = useNavigate();
 
   const navigateFunction = () => {
     console.log("inside function")
@@ -74,7 +75,6 @@ const TicketCard = (props: Props) => {
     return departments.find((element) => element._id === id)?.name;
   };
 
-  const navigate = useNavigate();
 
   const { ticketID } = useParams();
   // const { tickets, setTickets } = useTicketStore();

@@ -20,6 +20,7 @@ import {
 import { Box } from '@mui/system';
 import dayjs from 'dayjs';
 import React, { useReducer, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import useTicketStore from '../../../store/ticketStore';
 import { getStagesHandler } from '../../../api/stages/stagesHandler';
@@ -31,9 +32,11 @@ import {
   ticketFilterTypes
 } from '../ticketStateReducers/filter';
 import { filterActions } from '../ticketStateReducers/actions/filterAction';
-import { UNDEFINED } from '../../../constantUtils/constant';
+import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import useUserStore from '../../../store/userStore';
+import { apiClient } from '../../../api/apiClient';
+import { validateTicket } from '../../../api/ticket/ticket';
 
 const drawerWidth = 450;
 
@@ -46,10 +49,11 @@ export const ticketFilterCount = (selectedFilters: iTicketFilter) => {
   const total = stageListCount + representativeCount + resultCount;
   return total;
 };
-
 const TicketFilter = (props: {
   setPage: React.Dispatch<React.SetStateAction<number>>;
 }) => {
+  const { ticketID } = useParams();
+  const navigate = useNavigate();
   const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     '& .MuiBadge-badge': {
       right: -3,
@@ -224,9 +228,12 @@ const TicketFilter = (props: {
     setFilterCount(ticketFilterCount(selectedFilters));
     setFilterTickets(selectedFilters);
     props.setPage(1);
+    if (ticketID) {
+      await validateTicket(ticketID);
+      navigate(NAVIGATE_TO_TICKET);
+    }
     console.log('filter dtata', selectedFilters);
   };
-
   const handleClearFilter = async () => {
     dispatchFilter({ type: filterActions.STAGES, payload: [] });
     dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
@@ -237,7 +244,6 @@ const TicketFilter = (props: {
     setSelectedValue(null);
     setSelectedValueLost(null);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-
     // setTicketFilters({
     //   stageList: [],
     //   admissionType: [],

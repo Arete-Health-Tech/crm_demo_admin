@@ -16,6 +16,7 @@ import timezone from 'dayjs/plugin/timezone';
 
 type Props = {
   patientData: iTicket;
+  index: number;
 };
 
 dayjs.extend(utc);
@@ -33,6 +34,16 @@ const TicketCard = (props: Props) => {
     child: []
   });
 
+  const { tickets, filterTickets } = useTicketStore();
+
+  useEffect(() => {
+    if (filterTickets.stageList.length === 0 && props.index === 0) {
+      navigate(`/ticket/${props.patientData._id}`);
+    }
+
+  }, [filterTickets])
+
+
   const doctorSetter = (id: string) => {
     return doctors.find((element) => element._id === id)?.name;
   };
@@ -44,7 +55,6 @@ const TicketCard = (props: Props) => {
   const navigate = useNavigate();
 
   const { ticketID } = useParams();
-  const { tickets } = useTicketStore();
   // console.log(tickets);
 
   useEffect(() => {
@@ -55,14 +65,7 @@ const TicketCard = (props: Props) => {
     const { setStages } = useServiceStore.getState();
     setStages(stages);
   }, [stages]);
-  console.log(props.patientData, ' this is props patient data');
-  console.log(
-    dayjs(props.patientData.createdAt)
-      .tz('Asia/Kolkata')
-      .format('DD/MMM/YYYY , HH:mm'),
-    ' thui sis patient data '
-  );
-
+  console.log(props);
   return (
     <Box
       p={2}

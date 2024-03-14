@@ -37,8 +37,12 @@ const TicketCard = (props: Props) => {
   const { tickets, filterTickets } = useTicketStore();
 
   const navigateFunction = () => {
-    if (filterTickets.stageList.length === 0 && props.index === 0) {
-      navigate(`/ticket/${props.patientData._id}`);
+    try {
+      if (filterTickets.stageList.length === 0 && props.index === 0) {
+        navigate(`/ticket/${props.patientData._id}`);
+      }
+    } catch (error) {
+      console.error('Error in navigateFunction:', error);
     }
   }
 

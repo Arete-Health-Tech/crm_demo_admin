@@ -38,7 +38,7 @@ const DownloadAllTickets = (props: Props) => {
     await getDoctorsHandler();
     await getDepartmentsHandler();
 
-    const data = sortedTickets?.map((ticket: any, index) => {
+    const data = sortedTickets?.map((ticket: any, index: number) => {
       return {
         serialNo: index + 1,
         firstName: ticket.consumer[0]?.firstName,

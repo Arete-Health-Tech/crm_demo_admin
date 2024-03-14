@@ -42,9 +42,17 @@ const TicketCard = (props: Props) => {
   const { tickets, filterTickets } = useTicketStore();
 
   const navigateFunction = () => {
+    console.log("inside function")
+
     try {
+      console.log("inside try")
+
       if (filterTickets.stageList.length === 0 && props.index === 0) {
+        console.log("inside inside try if")
+
         navigate(`/ticket/${props.patientData._id}`);
+        console.log("after navigate")
+
       }
     } catch (error) {
       console.error('Error in navigateFunction:', error);
@@ -52,6 +60,7 @@ const TicketCard = (props: Props) => {
   }
 
   useEffect(() => {
+    console.log("inside useeffect")
     navigateFunction()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterTickets, props.index, props.patientData._id])

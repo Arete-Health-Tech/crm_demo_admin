@@ -4,17 +4,28 @@ import { iTicketFilter } from '../../../types/store/ticket';
 export interface ticketFilterTypes {
   stageList: Array<any>;
   representative: string | null;
-  results:string | null;
+  results: string | null;
 
- 
- 
+  // ...
+  admissionType: string[];
+  diagnosticsType: string[];
+  dateRange: { startDate: string; endDate: string };
+
+
+
+
 }
 
 export const selectedFiltersState: iTicketFilter = {
   stageList: [],
   representative: null,
- results:null
- 
+  results: null,
+  //  ....
+  admissionType: [],
+  diagnosticsType: [],
+  dateRange: { startDate: '', endDate: '' }
+
+
 };
 
 interface actionType {
@@ -39,10 +50,10 @@ export function selectedFiltersReducer(
       representative: action.payload
     };
   }
-   if (action.type === filterActions.RESULTS) {
+  if (action.type === filterActions.RESULTS) {
     return {
       ...selectedFiltersState,
-    results: action.payload
+      results: action.payload
     };
   }
   //  if (action.type === filterActions.LOSE) {
@@ -51,7 +62,28 @@ export function selectedFiltersReducer(
   //     lose: action.payload
   //   };
   // }
-    
+
+  if (action.type === filterActions.ADMISSIONTYPE) {
+    return {
+      ...selectedFiltersState,
+      admissionType: action.payload
+    };
+  }
+  if (action.type === filterActions.DIAGNOSTICSTYPE) {
+    return {
+      ...selectedFiltersState,
+      diagnosticsType: action.payload
+    };
+  }
+
+  if (action.type === filterActions.DATERANGE) {
+    return {
+      ...selectedFiltersState,
+      dateRange: action.payload
+    };
+  }
+
+
 
   throw new Error('unknown action type');
 }

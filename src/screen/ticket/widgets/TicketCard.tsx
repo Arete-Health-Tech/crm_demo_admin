@@ -36,12 +36,15 @@ const TicketCard = (props: Props) => {
 
   const { tickets, filterTickets } = useTicketStore();
 
-  useEffect(() => {
+  const navigateFunction = () => {
     if (filterTickets.stageList.length === 0 && props.index === 0) {
       navigate(`/ticket/${props.patientData._id}`);
     }
+  }
 
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  useEffect(() => {
+    navigateFunction()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterTickets, props.index, props.patientData._id])
 
 

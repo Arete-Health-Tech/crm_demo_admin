@@ -41,7 +41,7 @@ const DownloadAllTickets = (props: Props) => {
     const data = sortedTickets?.map((ticket: any, index) => {
       return {
         serialNo: index + 1,
-        firstName: ticket.consumer[0].firstName,
+        firstName: ticket.consumer[0]?.firstName,
         lastName: ticket.consumer[0].lastName && ticket.consumer[0].lastName,
         uhid: ticket.consumer[0].uid,
         gender: ticket.consumer[0].gender,

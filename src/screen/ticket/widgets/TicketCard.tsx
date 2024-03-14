@@ -183,11 +183,11 @@ const TicketCard = (props: Props) => {
         <Box>
           <Typography variant="body2">
             {/* .............. */}
-            {isNewTicket ? (
+            {/* {isNewTicket ? (
               <NotificationsActiveIcon style={{ color: '#4859ca' }} />
             ) : (
               <NotificationsActiveIcon style={{ display: 'none' }} />
-            )}
+            )} */}
 
           </Typography>
         </Box>

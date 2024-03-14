@@ -159,6 +159,7 @@ const Ticket = () => {
   // };
 
   const handleSearchKeyPress = async (e: any) => {
+    console.log("e", e)
     const value = e.target?.value;
     if (value) {
       setSearchName(value);

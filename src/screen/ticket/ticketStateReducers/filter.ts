@@ -9,7 +9,7 @@ export interface ticketFilterTypes {
   // ...
   admissionType: string[];
   diagnosticsType: string[];
-  dateRange: { startDate: string; endDate: string };
+  dateRange: string[];
 
 
 
@@ -23,7 +23,7 @@ export const selectedFiltersState: iTicketFilter = {
   //  ....
   admissionType: [],
   diagnosticsType: [],
-  dateRange: { startDate: '', endDate: '' }
+  dateRange: ["",""]
 
 
 };

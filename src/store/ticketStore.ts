@@ -25,7 +25,7 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
     stageList: [],
     representative: null,
     results: null,
-    dateRange: { startDate: "", endDate: "" }
+    dateRange: []
 
   },
   setFilterTickets: (filterTickets) => set({ filterTickets }),

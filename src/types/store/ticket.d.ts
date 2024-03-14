@@ -99,6 +99,8 @@ export interface iTicket {
   location: string;
   createdAt: string;
   creator: iCreator[];
+  // ..
+  isNewTicket: boolean | true;
   subStageCode: {
     active: boolean;
     code: number;
@@ -183,7 +185,7 @@ export interface iTicketFilter {
   diagnosticsType?: string[];
   startDate?: number;
   endDate?: number;
-  dateRange: { startDate: string; endDate: string };
+  dateRange: string[];
   results?: string | null;
 
 }

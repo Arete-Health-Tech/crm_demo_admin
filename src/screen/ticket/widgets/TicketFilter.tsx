@@ -39,13 +39,18 @@ import { apiClient } from '../../../api/apiClient';
 import { validateTicket } from '../../../api/ticket/ticket';
 
 const drawerWidth = 450;
-export const ticketFilterCount = (selectedFilters: iTicketFilter, admissionType: string[], diagnosticsType: string[], dateRange: { startDate: string, endDate: string }) => {
+export const ticketFilterCount = (
+  selectedFilters: iTicketFilter,
+  admissionType: string[],
+  diagnosticsType: string[],
+  dateRange: string[]
+) => {
   const stageListCount = selectedFilters['stageList'].length;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
 
   const admissionCount = admissionType ? admissionType.length : 0;
   const diagnosticsCount = diagnosticsType ? diagnosticsType.length : 0;
-  const DateCount = dateRange && dateRange.startDate && dateRange.endDate ? 1 : 0;
+  const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
   const resultCount = selectedFilters['results'] ? 1 : 0;
 
   console.log(stageListCount, " this is stage list count");
@@ -78,7 +83,7 @@ const TicketFilter = (props: {
     results: null,
     admissionType: [],
     diagnosticsType: [],
-    dateRange: { startDate: '', endDate: '' }
+    dateRange: []
   };
 
   const { setFilterTickets, setPageNumber } = useTicketStore();
@@ -90,6 +95,7 @@ const TicketFilter = (props: {
   //   startDate: NaN,
   //   endDate: NaN
   // });
+
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const [admissionType, setAdmissionType] = React.useState<string[]>([]);
   const [result, setResult] = React.useState('');
@@ -101,14 +107,14 @@ const TicketFilter = (props: {
   // const [selectedStageList, setSelectedStageList] = React.useState<string[]>(
   //   () => []
   // );
+
   const [selectedFilters, dispatchFilter] = useReducer(
     selectedFiltersReducer,
     initialFilters
   );
   const [startDate, setStartDate] = React.useState<string>('');
   const [endDate, setEndDate] = React.useState<string>('');
-  const [dateRange, setDateRange] = React.useState<{ startDate: string, endDate: string }>({ startDate: '', endDate: '' });
-
+  const [dateRange, setDateRange] = React.useState<string[]>(['', '']);
   const [currentReperesentative, setCurrentRepresentative] = useState('');
   const [filterCount, setFilterCount] = useState(0);
   const [selectedValue, setSelectedValue] = useState(null);
@@ -166,32 +172,37 @@ const TicketFilter = (props: {
     });
   };
 
-  // ...........
+
+
+
 
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const startDate = e.target.value;
-    setDateRange(prevState => ({ ...prevState, startDate }));
+    setDateRange(prevState => [startDate, prevState[1]]);
     dispatchFilter({
       type: filterActions.DATERANGE,
-      payload: { startDate, endDate: dateRange.endDate }
+      payload: JSON.stringify([startDate, dateRange[1]])
     });
   };
 
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const endDate = e.target.value;
-    setDateRange(prevState => ({ ...prevState, endDate }));
+    setDateRange(prevState => [prevState[0], endDate]);
     dispatchFilter({
       type: filterActions.DATERANGE,
-      payload: { startDate: dateRange.startDate, endDate }
+      payload: JSON.stringify([dateRange[0], endDate])
     });
   };
+
 
   React.useEffect(() => {
     console.log(" AdmissionType", admissionType);
     console.log("diagnosticType", diagnosticsType);
     console.log("Start Date", dateRange);
 
-  }, [admissionType, diagnosticsType, dateRange]);
+
+
+  }, [admissionType, diagnosticsType, dateRange, selectedFilters]);
 
   // const handleToggleChange = (event, newValue) => {
   //   setSelectedValue(newValue);
@@ -285,7 +296,10 @@ const TicketFilter = (props: {
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange));
 
+
+
     setFilterTickets(selectedFilters);
+
     props.setPage(1);
     if (ticketID) {
       await validateTicket(ticketID);
@@ -317,7 +331,7 @@ const TicketFilter = (props: {
     // setSelectedStageList((prev) => []);
     setAdmissionType((prev) => []);
     setDiagnosticsType((prev) => []);
-    setDateRange({ startDate: '', endDate: '' });
+    setDateRange(["", ""]);
     // setStartDate((prev) => '');
     // setEndDate((prev) => '');
 
@@ -495,10 +509,8 @@ const TicketFilter = (props: {
                 <Typography variant="caption">Start Date</Typography>
                 <TextField
                   fullWidth
-                  // onChange={(e) => setStartDate(e.target.value)}
-                  // value={startDate}
                   onChange={handleStartDateChange}
-                  value={dateRange.startDate}
+                  value={dateRange[0]}
                   type="date"
                 />
               </Box>
@@ -506,10 +518,8 @@ const TicketFilter = (props: {
                 <Typography variant="caption">End Date</Typography>
                 <TextField
                   fullWidth
-                  // value={endDate}
-                  // onChange={(e) => setEndDate(e.target.value)}
                   onChange={handleEndDateChange}
-                  value={dateRange.endDate}
+                  value={dateRange[1]}
                   type="date"
                 />
               </Box>

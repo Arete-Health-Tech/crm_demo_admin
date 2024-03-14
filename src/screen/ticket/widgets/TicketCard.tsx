@@ -14,6 +14,9 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
+// import { updateIsNewTicket } from '../../../api/ticket/ticket';
+
+
 type Props = {
   patientData: iTicket;
   index: number;
@@ -22,8 +25,10 @@ type Props = {
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+
 const TicketCard = (props: Props) => {
   const { doctors, departments, allServices, stages } = useServiceStore();
+  const [isNewTicket, setIsNewTicket] = useState(true);
 
   const [currentStage, setCurrentStage] = useState<iStage>({
     _id: '',
@@ -63,9 +68,17 @@ const TicketCard = (props: Props) => {
   const navigate = useNavigate();
 
   const { ticketID } = useParams();
+  // const { tickets, setTickets } = useTicketStore();
+
   // console.log(tickets);
 
   useEffect(() => {
+    setIsNewTicket(props.patientData.isNewTicket);
+  }, [props.patientData.isNewTicket]);
+
+  useEffect(() => {
+    props.patientData.isNewTicket = true;
+    console.log("-----------------------", props.patientData.isNewTicket, props.patientData.subStageCode.active);
     const stageDetail: any = stages?.find(
       ({ _id }) => props.patientData?.stage === _id
     );
@@ -73,7 +86,40 @@ const TicketCard = (props: Props) => {
     const { setStages } = useServiceStore.getState();
     setStages(stages);
   }, [stages]);
-  console.log(props);
+  console.log(props.patientData, ' this is props patient data');
+  console.log(
+    dayjs(props.patientData.createdAt)
+      .tz('Asia/Kolkata')
+      .format('DD/MMM/YYYY , HH:mm'),
+    ' thui sis patient data '
+
+
+  );
+
+  const showTicket = () => {
+
+    // updateIsNewTicket(props.patientData._id, false);
+
+    setIsNewTicket(false);
+    navigate(`/ticket/${props.patientData._id}`);
+  }
+
+  // const updateIsNewTicket = (ticketId: any, newValue: boolean) => {
+
+  //   const ticketIndex = tickets.findIndex(ticket => ticket._id === ticketId);
+
+
+  //   if (ticketIndex !== -1) {
+
+  //     const updatedTickets = [...tickets];
+  //     updatedTickets[ticketIndex] = {
+  //       ...updatedTickets[ticketIndex],
+  //       isNewTicket: newValue
+  //     };
+  //   }
+  // }
+
+
   return (
     <Box
       p={2}
@@ -86,9 +132,10 @@ const TicketCard = (props: Props) => {
           cursor: 'pointer'
         }
       }}
-      onClick={() => {
-        navigate(`/ticket/${props.patientData._id}`);
-      }}
+      // onClick={() => {
+      //   navigate(`/ticket/${props.patientData._id}`);
+      // }}
+      onClick={showTicket}
     >
       <Box
         display="flex"
@@ -126,7 +173,13 @@ const TicketCard = (props: Props) => {
         </Box>
         <Box>
           <Typography variant="body2">
-            {/* <NotificationsActiveIcon style={{ color: 'var(--primaryColor)' }} /> */}
+            {/* .............. */}
+            {isNewTicket ? (
+              <NotificationsActiveIcon style={{ color: '#4859ca' }} />
+            ) : (
+              <NotificationsActiveIcon style={{ display: 'none' }} />
+            )}
+
           </Typography>
         </Box>
         <Box>
@@ -206,6 +259,7 @@ const TicketCard = (props: Props) => {
         />
       </Box>
       <Typography variant="caption" color="blue">
+
         Created At:{' '}
         {dayjs(props.patientData.createdAt)
           .tz('Asia/Kolkata')
@@ -221,7 +275,10 @@ const TicketCard = (props: Props) => {
         </Grid>
         <Grid item xs={4}>
           <Typography fontSize={'14px'} fontWeight={500}>{`(${currentStage?.code * 20 || 0
-            }%) ${currentStage?.name || 'N/A'}`}</Typography>
+            }%) ${currentStage?.name || 'N/A'}`}
+
+
+          </Typography>
         </Grid>
       </Grid>
     </Box>

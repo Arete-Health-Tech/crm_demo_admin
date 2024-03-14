@@ -106,6 +106,7 @@ const Ticket = () => {
     event: React.ChangeEvent<unknown>,
     pageNo: number
   ) => {
+     setPageNumber(pageNo);
     if (pageNo !== page) {
       setTickets([]);
       // if (

@@ -67,7 +67,7 @@ const DownloadAllTickets = (props: Props) => {
           ? dayjs(ticket.prescription[0].followUp).format('DD/MMM/YYYY')
           : 'No Follow Up',
         capturedBy:
-          ticket.creator[0].firstName + ' ' + ticket.creator[0].lastName,
+          ticket.creator[0]?.firstName + ' ' + ticket.creator[0]?.lastName,
         prescriptionCreatedAt: `${dayjs(
           ticket.prescription[0].createdAt
         ).format('DD/MMM/YYYY , HHMM ')} hrs`,

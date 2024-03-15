@@ -183,7 +183,7 @@ const TicketCard = (props: Props) => {
         <Box>
           <Typography variant="body2">
             {/* .............. */}
-            {/* {isNewTicket ? (
+            {/* {(currentStage?.name) == "New Lead" ? (
               <NotificationsActiveIcon style={{ color: '#4859ca' }} />
             ) : (
               <NotificationsActiveIcon style={{ display: 'none' }} />

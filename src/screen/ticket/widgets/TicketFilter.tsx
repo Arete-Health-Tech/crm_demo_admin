@@ -19,7 +19,7 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import dayjs from 'dayjs';
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import useTicketStore from '../../../store/ticketStore';
@@ -51,6 +51,7 @@ export const ticketFilterCount = (
   const admissionCount = admissionType ? admissionType.length : 0;
   const diagnosticsCount = diagnosticsType ? diagnosticsType.length : 0;
   const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
+
   const resultCount = selectedFilters['results'] ? 1 : 0;
 
   console.log(stageListCount, " this is stage list count");
@@ -104,9 +105,6 @@ const TicketFilter = (props: {
   );
   const [stagesLabel, setStagesLabels] = React.useState<any>([]);
   const [representativeLabel, setRepresentativeLabel] = React.useState<any>([]);
-  // const [selectedStageList, setSelectedStageList] = React.useState<string[]>(
-  //   () => []
-  // );
 
   const [selectedFilters, dispatchFilter] = useReducer(
     selectedFiltersReducer,
@@ -119,6 +117,8 @@ const TicketFilter = (props: {
   const [filterCount, setFilterCount] = useState(0);
   const [selectedValue, setSelectedValue] = useState(null);
   const [selectedValueLost, setSelectedValueLost] = useState(null);
+
+  ;
 
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -173,9 +173,6 @@ const TicketFilter = (props: {
   };
 
 
-
-
-
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const startDate = e.target.value;
     setDateRange(prevState => [startDate, prevState[1]]);
@@ -195,14 +192,12 @@ const TicketFilter = (props: {
   };
 
 
-  React.useEffect(() => {
-    console.log(" AdmissionType", admissionType);
-    console.log("diagnosticType", diagnosticsType);
-    console.log("Start Date", dateRange);
+  // React.useEffect(() => {
+  //   console.log(" AdmissionType", admissionType);
+  //   console.log("diagnosticType", diagnosticsType);
+  //   console.log("Start Date", dateRange);
 
-
-
-  }, [admissionType, diagnosticsType, dateRange, selectedFilters]);
+  // }, [admissionType, diagnosticsType, dateRange, selectedFilters]);
 
   // const handleToggleChange = (event, newValue) => {
   //   setSelectedValue(newValue);
@@ -211,7 +206,6 @@ const TicketFilter = (props: {
   const handleResult = (e: any) => {
     const value = e.target.value;
     console.log(value);
-    console.log(value);
 
     if (value === 'Won') {
       setResult(value);
@@ -219,21 +213,26 @@ const TicketFilter = (props: {
         type: filterActions.RESULTS,
         payload: '65991601a62baad220000001'
       });
+
     } else if (value === 'Lose') {
       setResult(value);
       dispatchFilter({
         type: filterActions.RESULTS,
         payload: '65991601a62baad220000002'
       });
+
     } else if (value === null) {
       setResult(value);
       dispatchFilter({
         type: filterActions.RESULTS,
         payload: null
       });
+
     }
     setResult('');
   };
+
+
 
   const handleFilterOpen = () => {
     setIsFilterOpen(true);
@@ -291,6 +290,7 @@ const TicketFilter = (props: {
     //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
+
     setIsFilterOpen(false);
     setPageNumber(1);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
@@ -307,19 +307,27 @@ const TicketFilter = (props: {
     }
     console.log('filter dtata', selectedFilters);
   };
+
+
   const handleClearFilter = async () => {
     dispatchFilter({ type: filterActions.STAGES, payload: [] });
     dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
     dispatchFilter({ type: filterActions.ADMISSIONTYPE, payload: [] });
     dispatchFilter({ type: filterActions.DIAGNOSTICSTYPE, payload: [] });
     dispatchFilter({ type: filterActions.DATERANGE, payload: [] });
-
     dispatchFilter({ type: filterActions.RESULTS, payload: null });
+
     setCurrentRepresentative('');
     setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange));
+    setFilterCount(0);
     setPageNumber(1);
     setSelectedValue(null);
     setSelectedValueLost(null);
+    setResult(" ")
+    setAdmissionType((prev) => []);
+    setDiagnosticsType((prev) => []);
+    setDateRange(["", ""]);
+
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     // setTicketFilters({
     //   stageList: [],
@@ -329,26 +337,31 @@ const TicketFilter = (props: {
     //   endDate: 0
     // });
     // setSelectedStageList((prev) => []);
-    setAdmissionType((prev) => []);
-    setDiagnosticsType((prev) => []);
-    setDateRange(["", ""]);
+
+
+
     // setStartDate((prev) => '');
     // setEndDate((prev) => '');
 
-    console.log("clear AdmissionType  inside", admissionType);
-    console.log("clear DiagnosticType inside", diagnosticsType);
-    console.log("clear DiagnosticType inside", dateRange);
+    // console.log("clear AdmissionType  inside", admissionType);
+    // console.log("clear DiagnosticType inside", diagnosticsType);
+    // console.log("clear value Lost", selectedValueLost)
+    // console.log("clear DateRange inside", dateRange);
 
 
   };
 
-  const handleToggleChange = (event, newValue) => {
-    setSelectedValue(newValue);
+  const handleToggleChange = (event, newValue: any) => {
+    setSelectedValue(newValue === selectedValue ? null : newValue);
+    setResult(newValue);
   };
 
-  const handleToggleLostChange = (event, newValue) => {
-    setSelectedValueLost(newValue);
+
+  const handleToggleLostChange = (event, newValue: any) => {
+    setSelectedValueLost(newValue === selectedValueLost ? null : newValue);
+    setResult(newValue);
   };
+
 
   return (
     <Box>
@@ -450,8 +463,8 @@ const TicketFilter = (props: {
               <ToggleButton
                 value="Won"
                 style={{
-                  backgroundColor: selectedValue === 'Won' ? 'blue' : 'default',
-                  color: selectedValue === 'Won' ? 'white' : 'default'
+                  backgroundColor: selectedValue === 'Won' ? '#3949AB14' : 'white',
+                  color: selectedValue === 'Won' ? '#3949AB' : 'grey'
                 }}
                 onClick={handleToggleChange}
               >
@@ -461,13 +474,15 @@ const TicketFilter = (props: {
                 value="Lose"
                 style={{
                   backgroundColor:
-                    selectedValueLost === 'Lose' ? 'blue' : 'default',
-                  color: selectedValueLost === 'Lose' ? 'white' : 'default'
+                    selectedValueLost === 'Lose' ? '#3949AB14' : 'white',
+
+                  color: selectedValueLost === 'Lose' ? '#3949AB' : 'grey'
                 }}
                 onClick={handleToggleLostChange}
               >
                 LOST
               </ToggleButton>
+
             </ToggleButtonGroup>
           </Box>
           <Box p={1}>

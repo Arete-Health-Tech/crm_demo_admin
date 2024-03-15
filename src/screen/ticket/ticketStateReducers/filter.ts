@@ -23,7 +23,7 @@ export const selectedFiltersState: iTicketFilter = {
   //  ....
   admissionType: [],
   diagnosticsType: [],
-  dateRange: ["",""]
+  dateRange: ["", ""]
 
 
 };

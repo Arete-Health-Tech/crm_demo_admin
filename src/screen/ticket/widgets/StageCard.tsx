@@ -156,7 +156,7 @@ const StageCard = (props: Props) => {
           pageNumber,
           'false',
           filterTickets,
-         
+
         );
         setTicketUpdateFlag(result);
       })();
@@ -194,7 +194,7 @@ const StageCard = (props: Props) => {
     let isPayloadEmpty = true;
 
     const formdata = new FormData();
-  
+
     formdata.append('ticket', currentTicket._id);
     formdata.append(
       'consumer',
@@ -226,26 +226,26 @@ const StageCard = (props: Props) => {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-        
+
       });
-       setTimeout(() => {
-         (async () => {
-           const result = await getTicketHandler(
-             searchByName,
-             pageNumber,
-             'false',
-             filterTickets,
-           
-           );
-           setTicketUpdateFlag(result);
-         })();
-       }, 1000);
-console.log(formdata)
+      setTimeout(() => {
+        (async () => {
+          const result = await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            filterTickets,
+
+          );
+          setTicketUpdateFlag(result);
+        })();
+      }, 1000);
+      console.log(formdata)
       setPaymentIDValue('');
       setNoteTextValue('');
-        setOpenLose(false);
-         handleCloseLose();
-         setHospitalName('');
+      setOpenLose(false);
+      handleCloseLose();
+      setHospitalName('');
       setFile(null);
       setLose('');
       redirectTicket();
@@ -260,7 +260,7 @@ console.log(formdata)
   };
 
   const handleCloseLose = () => {
- setOpenLose(false);
+    setOpenLose(false);
   };
 
   const handleChangeLose = (event) => {

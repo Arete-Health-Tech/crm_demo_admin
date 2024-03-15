@@ -155,7 +155,7 @@ const CustomModal = () => {
       )}
       <Dialog
         open={showForm}
-        onClose={() => setShowForm(false)}
+        onClose={() => { }}
         aria-labelledby="form-dialog-title"
         aria-describedby="form-dialog-description"
       >
@@ -192,7 +192,9 @@ const CustomModal = () => {
           </Button>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleFormSubmit} variant="contained">
+          <Button onClick={handleFormSubmit}
+            disabled={!formData.select}
+            variant="contained">
             Submit
           </Button>
         </DialogActions>

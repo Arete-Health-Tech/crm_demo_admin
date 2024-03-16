@@ -38,8 +38,6 @@ const CustomModal = () => {
   });
 
 
-
-
   const startTimer = () => {
     if (timerRef.current !== null) {
       clearInterval(timerRef.current);

@@ -11,10 +11,14 @@ import {
   Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+
+import { filterActions } from '../../screen/ticket/ticketStateReducers/actions/filterAction';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { useEffect, useState, useRef } from 'react';
+import {
+  useEffect, useState, useRef, useReducer
+} from 'react';
 import {
   getAllReminderHandler,
   getTicketHandler
@@ -30,6 +34,8 @@ import { ArrowBack } from '@mui/icons-material';
 import TicketFilter, {
   ticketFilterCount
 } from '../../screen/ticket/widgets/TicketFilter';
+import handleClearFilter from '../../screen/ticket/widgets/TicketFilter';
+
 import DownloadAllTickets from '../../screen/ticket/widgets/DownloadAllTickets';
 import dayjs from 'dayjs';
 import CustomPagination from './CustomPagination';
@@ -45,7 +51,9 @@ import CustomSpinLoader from '../../components/CustomSpinLoader';
 import { socket } from '../../api/apiClient';
 import { socketEventConstants } from '../../constantUtils/socketEventsConstants';
 import useUserStore from '../../store/userStore';
+import { selectedFiltersReducer, ticketFilterTypes } from '../../screen/ticket/ticketStateReducers/filter';
 
+// .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
 
 const Ticket = () => {
@@ -90,6 +98,7 @@ const Ticket = () => {
   const [searchError, setSearchError] = useState<string>(
     'Type to search & Enter'
   );
+
   const [pageCount, setPageCount] = useState<number>(1);
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [showCallReschedulerModal, setShowCallReschedulerModal] =
@@ -146,6 +155,8 @@ const Ticket = () => {
     console.log({ filterTickets }, "002");
     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   };
+
+
 
   // const handleSeachName = (
   //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -375,6 +386,7 @@ const Ticket = () => {
                 1,
                 'false',
                 filterTickets,
+                // selectedFilters,
                 reminderDetail?.ticket,
                 true,
                 phone
@@ -495,12 +507,27 @@ const Ticket = () => {
     });
   }, [callRescheduler]);
 
+
+
+  const { setFilterTickets } = useTicketStore();
+  const initialFilters = {
+    stageList: [],
+    representative: null,
+    results: null,
+    admissionType: [],
+    diagnosticsType: [],
+    dateRange: []
+  };
+
   const backToDashboard = () => {
-    getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+
+    getTicketHandler(UNDEFINED, 1, 'false', initialFilters);
+    setFilterTickets(initialFilters);
     navigate('/')
   }
-  console.log({ page })
 
+
+  console.log({ page })
 
   return (
     <Box height={'100vh'} display="flex" position="fixed" width="100%">

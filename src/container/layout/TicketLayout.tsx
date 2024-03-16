@@ -28,7 +28,7 @@ import TicketCard from '../../screen/ticket/widgets/TicketCard';
 import { iCallRescheduler, iReminder, iTicket } from '../../types/store/ticket';
 import { getDoctorsHandler } from '../../api/doctor/doctorHandler';
 import { getDepartmentsHandler } from '../../api/department/departmentHandler';
-import { Outlet, useMatch, useNavigate } from 'react-router-dom';
+import { Outlet, useMatch, useNavigate, useParams } from 'react-router-dom';
 import DefaultScreen from '../../components/DefaultScreen';
 import { ArrowBack } from '@mui/icons-material';
 import TicketFilter, {
@@ -57,6 +57,7 @@ import { selectedFiltersReducer, ticketFilterTypes } from '../../screen/ticket/t
 let AllIntervals: any[] = [];
 
 const Ticket = () => {
+  const { ticketID } = useParams();
   const {
     tickets,
     filterTickets,
@@ -76,8 +77,6 @@ const Ticket = () => {
   } = useTicketStore();
 
 
-  console.log(filterTickets, "filterTickets");
-  console.log(window.location.href.split('/')[3]);
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
   const [phone, setPhone] = useState(null)
@@ -335,8 +334,13 @@ const Ticket = () => {
   useEffect(() => {
     const refetchTickets = async () => {
       const copiedFilterTickets = { ...filterTickets };
-      const pageNumber = page
-      await getTicketHandler(UNDEFINED, pageNumber, 'false', copiedFilterTickets);
+      let pageNumber = page
+      if (ticketID) {
+        console.log("Id Present")
+      } else {
+        await getTicketHandler(UNDEFINED, pageNumber, 'false', copiedFilterTickets);
+      }
+
     };
 
     socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);

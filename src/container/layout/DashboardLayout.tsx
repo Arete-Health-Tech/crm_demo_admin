@@ -93,7 +93,7 @@ export default function ResponsiveDrawer(props: Props) {
     {
       title: 'Tickets',
       icon: <ConfirmationNumberOutlined />,
-      link: '/ticket'
+      link: '/tickets'
     },
 
     {

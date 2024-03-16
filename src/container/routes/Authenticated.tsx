@@ -43,6 +43,7 @@ const Authenticated = (props: Props) => {
       <Route path="ticket" element={<TicketLayout />}>
         <Route path=":ticketID" element={<SingleTicketDetails />} />
       </Route>
+      <Route path="tickets" element={<TicketLayout />}/>
       <Route path="dump" element={<Dump />} />
     </Routes>
   );

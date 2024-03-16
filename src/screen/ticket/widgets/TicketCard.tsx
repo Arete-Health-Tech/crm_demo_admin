@@ -27,6 +27,7 @@ dayjs.extend(timezone);
 
 
 const TicketCard = (props: Props) => {
+  const { ticketID } = useParams();
   const { doctors, departments, allServices, stages } = useServiceStore();
   const [isNewTicket, setIsNewTicket] = useState(true);
 
@@ -42,27 +43,10 @@ const TicketCard = (props: Props) => {
   const { tickets, filterTickets } = useTicketStore();
   const navigate = useNavigate();
 
-  const navigateFunction = () => {
-    console.log("inside function")
-
-    try {
-      console.log("inside try")
-
-      if (filterTickets.stageList.length === 0 && props.index === 0) {
-        console.log("inside inside try if")
-
-        navigate(`/ticket/${props.patientData._id}`);
-        console.log("after navigate")
-
-      }
-    } catch (error) {
-      console.error('Error in navigateFunction:', error);
-    }
-  }
-
   useEffect(() => {
-    console.log("inside useeffect")
-    navigateFunction()
+    if (filterTickets.stageList.length === 0 && props.index === 0 && window.location.href.split('/')[3]==="tickets") {
+      navigate(`/ticket/${props.patientData._id}`);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filterTickets, props.index, props.patientData._id])
 
@@ -76,7 +60,6 @@ const TicketCard = (props: Props) => {
   };
 
 
-  const { ticketID } = useParams();
   // const { tickets, setTickets } = useTicketStore();
 
   // console.log(tickets);

@@ -69,6 +69,7 @@ const Ticket = () => {
 
 
   console.log(filterTickets, "filterTickets");
+  console.log(window.location.href.split('/')[3]);
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
   const [phone, setPhone] = useState(null)
@@ -262,6 +263,7 @@ const Ticket = () => {
       await getAllReminderHandler();
       await getAllCallReschedulerHandler();
     })();
+    setPageNumber(1)
   }, []);
 
   // const isAlamredReminderExist = (reminder: iReminder) => {
@@ -493,7 +495,10 @@ const Ticket = () => {
     });
   }, [callRescheduler]);
 
-
+  const backToDashboard = () => {
+    getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+    navigate('/')
+  }
   console.log({ page })
 
 
@@ -507,7 +512,7 @@ const Ticket = () => {
             alignItems="center"
           >
             <Button
-              onClick={() => navigate('/')}
+              onClick={backToDashboard}
               color="inherit"
               startIcon={<ArrowBack />}
               sx={{ mb: 1 }}
@@ -724,7 +729,7 @@ const Ticket = () => {
       </Box>
 
       {/* <CustomSpinLoader open={loaderOn} /> */}
-    </Box>
+    </Box >
   );
 };
 

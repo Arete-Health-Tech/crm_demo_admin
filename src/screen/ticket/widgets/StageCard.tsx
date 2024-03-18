@@ -136,7 +136,7 @@ const StageCard = (props: Props) => {
   }, [currentTicket, stages, subStages, changeStageName]);
 
   const handleStages = async (e: any) => {
-    console.log('selected', e.target.value);
+    // console.log('selected', e.target.value);
 
     setChangeStageName(e.target.value);
     const payload = {
@@ -163,13 +163,13 @@ const StageCard = (props: Props) => {
     }, 1000);
     if ((currentTicket?.subStageCode.code || 0) + 1 > 3) {
       redirectTicket();
-      console.log('redirect to ticket');
+      // console.log('redirect to ticket');
     }
-    console.log('redirect to ticket ?', currentTicket?.subStageCode.code + 1);
+    // console.log('redirect to ticket ?', currentTicket?.subStageCode.code + 1);
   };
 
   const handleOpen = () => {
-    console.log('Open Modal');
+    // console.log('Open Modal');
     setOpen(true);
   };
   const handleClose = () => {
@@ -240,7 +240,7 @@ const StageCard = (props: Props) => {
           setTicketUpdateFlag(result);
         })();
       }, 1000);
-      console.log(formdata)
+      // console.log(formdata)
       setPaymentIDValue('');
       setNoteTextValue('');
       setOpenLose(false);
@@ -249,7 +249,7 @@ const StageCard = (props: Props) => {
       setFile(null);
       setLose('');
       redirectTicket();
-      console.log('patient status res', data);
+      // console.log('patient status res', data);
     }
 
     setOpen(false);

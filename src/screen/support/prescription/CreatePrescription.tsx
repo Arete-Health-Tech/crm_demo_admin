@@ -212,11 +212,11 @@ const CreatePrescription = () => {
 
 
 
-  console.log(prescription)
+  // console.log(prescription)
 
 
   const handleInternal = (item: string) => {
-    console.log('this is response');
+    // console.log('this is response');
     setButtonVariant(item);
   };
 

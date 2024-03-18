@@ -22,8 +22,8 @@ export const getTicket = async (
   lose?: any
 ) => {
   const params = new URLSearchParams(selectedFilters).toString();
-  console.log(params, "params")
-  console.log(selectedFilters, "--------------------Selected Filters after click on ticket---------------------------------------")
+  // console.log(params, "params")
+  // console.log(selectedFilters, "--------------------Selected Filters after click on ticket---------------------------------------")
 
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
@@ -39,7 +39,7 @@ export const createTicket = async (prescription: any) => {
       'Content-Type': 'multipart/form-data'
     }
   });
-  console.log(data);
+  // console.log(data);
   // return data;
 };
 

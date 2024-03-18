@@ -54,12 +54,12 @@ export const ticketFilterCount = (
 
   const resultCount = selectedFilters['results'] ? 1 : 0;
 
-  console.log(stageListCount, " this is stage list count");
-  console.log(admissionCount, " this is Admission Count")
-  console.log(diagnosticsCount, "this is diagnostic Count")
-  console.log(DateCount, "this is Date Count")
-  console.log(stageListCount, " this is stage list count");
-  console.log(resultCount, " this is result counnt")
+  // console.log(stageListCount, " this is stage list count");
+  // console.log(admissionCount, " this is Admission Count")
+  // console.log(diagnosticsCount, "this is diagnostic Count")
+  // console.log(DateCount, "this is Date Count")
+  // console.log(stageListCount, " this is stage list count");
+  // console.log(resultCount, " this is result counnt")
 
   const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount;
   return total;
@@ -126,7 +126,7 @@ const TicketFilter = (props: {
     if (selectedFilters.stageList.includes(value)) {
       const modifiedStageList = selectedFilters.stageList;
       modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
-      // console.log(modifiedStageList, 'moda');
+
       dispatchFilter({
         type: filterActions.STAGES,
         payload: [...modifiedStageList]
@@ -205,7 +205,7 @@ const TicketFilter = (props: {
 
   const handleResult = (e: any) => {
     const value = e.target.value;
-    console.log(value);
+    // console.log(value);
 
     if (value === 'Won') {
       setResult(value);
@@ -305,7 +305,7 @@ const TicketFilter = (props: {
       await validateTicket(ticketID);
       navigate(NAVIGATE_TO_TICKET);
     }
-    console.log('filter dtata', selectedFilters);
+    // console.log('filter dtata', selectedFilters);
   };
 
 

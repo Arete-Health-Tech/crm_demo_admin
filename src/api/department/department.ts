@@ -12,7 +12,7 @@ export const createDepartment = async (
   parent?: string,
   tags?: string[]
 ) => {
-  console.log(name, parent, tags);
+  // console.log(name, parent, tags);
   const { data } = await apiClient.post('/department', { name, parent, tags });
   return data;
 };

@@ -44,7 +44,7 @@ const TicketCard = (props: Props) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (filterTickets.stageList.length === 0 && props.index === 0 && window.location.href.split('/')[3]==="tickets") {
+    if (filterTickets.stageList.length === 0 && props.index === 0 && window.location.href.split('/')[3] === "tickets") {
       navigate(`/ticket/${props.patientData._id}`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -78,15 +78,15 @@ const TicketCard = (props: Props) => {
     const { setStages } = useServiceStore.getState();
     setStages(stages);
   }, [stages]);
-  console.log(props.patientData, ' this is props patient data');
-  console.log(
-    dayjs(props.patientData.createdAt)
-      .tz('Asia/Kolkata')
-      .format('DD/MMM/YYYY , HH:mm'),
-    ' thui sis patient data '
+  // console.log(props.patientData, ' this is props patient data');
+  // console.log(
+  //   dayjs(props.patientData.createdAt)
+  //     .tz('Asia/Kolkata')
+  //     .format('DD/MMM/YYYY , HH:mm'),
+  //   ' thui sis patient data '
 
 
-  );
+  // );
 
   const showTicket = () => {
 

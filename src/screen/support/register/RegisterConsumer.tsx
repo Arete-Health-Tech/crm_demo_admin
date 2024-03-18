@@ -125,7 +125,7 @@ const RegisterConsumer = () => {
       consumerPayload.gender = consumer.gender ? consumer.gender : null;
 
       consumerPayload.dob = consumer.age ? dob : null;
-      console.log(consumer);
+      // console.log(consumer);
       const data = await registerConsumerHandler(consumerPayload);
       if (data) {
         console.log(data);
@@ -163,7 +163,7 @@ const RegisterConsumer = () => {
   const nextConsumer = () => {
     navigate(`/consumer/${consumerId}`);
   };
-  console.log({ consumerId });
+  // console.log({ consumerId });
 
   const fetchConsumerDataByUhid = async () => {
     try {
@@ -171,7 +171,7 @@ const RegisterConsumer = () => {
         '/consumer/findConsumer?',
         { params: { search: consumer.uid } }
       );
-      console.log(response.data)
+      // console.log(response.data)
       if (response.data) {
         updateConsumerState('firstName', response.data.firstName);
         updateConsumerState('lastName', response.data.lastName);
@@ -182,14 +182,14 @@ const RegisterConsumer = () => {
         setExistingData(true);
       } else {
         // setConsumer(initialConsumerFields);
-    
-           updateConsumerState('firstName', '');
-           updateConsumerState('lastName', '');
-           updateConsumerState('phone', '');
-           updateConsumerState('age', '');
-           updateConsumerState('gender', '');
-           setConsumerId('');
-         
+
+        updateConsumerState('firstName', '');
+        updateConsumerState('lastName', '');
+        updateConsumerState('phone', '');
+        updateConsumerState('age', '');
+        updateConsumerState('gender', '');
+        setConsumerId('');
+
         setExistingData(false);
       }
     } catch (error) {

@@ -117,8 +117,8 @@ const Ticket = () => {
   ) => {
     setPageNumber(pageNo)
     if (pageNo !== page) {
-      console.log(pageNo)
-      console.log(page)
+      // console.log(pageNo)
+      // console.log(page)
       setTickets([]);
       // if (
       //   ticketCache[pageNo] &&
@@ -151,7 +151,7 @@ const Ticket = () => {
     // setTickets(ticketCache[1]);
     setPage(1);
     setPageNumber(1)
-    console.log({ filterTickets }, "002");
+    // console.log({ filterTickets }, "002");
     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   };
 
@@ -170,7 +170,7 @@ const Ticket = () => {
   // };
 
   const handleSearchKeyPress = async (e: any) => {
-    console.log("e", e)
+    // console.log("e", e)
     const value = e.target?.value;
     if (value) {
       setSearchName(value);
@@ -184,7 +184,7 @@ const Ticket = () => {
         redirectTicket()
         return;
       }
-      console.log({ filterTickets }, "003");
+      // console.log({ filterTickets }, "003");
       await getTicketHandler(value, 1, 'false', filterTickets);
       setSearchByName(value);
       setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
@@ -265,7 +265,7 @@ const Ticket = () => {
 
   useEffect(() => {
     (async function () {
-      console.log({ filterTickets }, "006");
+      // console.log({ filterTickets }, "006");
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
       await getStagesHandler();
       await getSubStagesHandler();
@@ -337,7 +337,7 @@ const Ticket = () => {
       const copiedFilterTickets = { ...filterTickets };
       let pageNumber = page
       if (ticketID) {
-        console.log("Id Present")
+
       } else {
         await getTicketHandler(searchName, pageNumber, 'false', copiedFilterTickets);
       }
@@ -532,7 +532,7 @@ const Ticket = () => {
   }
 
 
-  console.log({ page })
+  // console.log({ page })
 
   return (
     <Box height={'100vh'} display="flex" position="fixed" width="100%">

@@ -181,6 +181,7 @@ const Ticket = () => {
       if (value === '') {
         fetchTicketsOnEmpthySearch();
         setSearchError('Type to search & Enter');
+        redirectTicket()
         return;
       }
       console.log({ filterTickets }, "003");
@@ -338,7 +339,7 @@ const Ticket = () => {
       if (ticketID) {
         console.log("Id Present")
       } else {
-        await getTicketHandler(UNDEFINED, pageNumber, 'false', copiedFilterTickets);
+        await getTicketHandler(searchName, pageNumber, 'false', copiedFilterTickets);
       }
 
     };
@@ -348,7 +349,7 @@ const Ticket = () => {
     return () => {
       socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
-  }, [filterTickets, page]);
+  }, [filterTickets, page, searchName]);
 
   // useEffect(() => {
   //   const refetchTickets = async () => {

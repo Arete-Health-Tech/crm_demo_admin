@@ -70,7 +70,7 @@ const TicketCard = (props: Props) => {
 
   useEffect(() => {
     props.patientData.isNewTicket = true;
-    console.log("-----------------------", props.patientData.isNewTicket, props.patientData.subStageCode.active);
+    // console.log("-----------------------", props.patientData.isNewTicket, props.patientData.subStageCode.active);
     const stageDetail: any = stages?.find(
       ({ _id }) => props.patientData?.stage === _id
     );

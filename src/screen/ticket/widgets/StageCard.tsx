@@ -493,13 +493,19 @@ const StageCard = (props: Props) => {
                   disableAutoFocusItem: true // Disable automatic focus
                 }}
               >
-                <MenuItem value={10}>
+                <MenuItem value={"Too expensive / Have a better pricing"}>
                   Too expensive / Have a better pricing
                 </MenuItem>
-                <MenuItem value={20}>Financial Constraint</MenuItem>
-                <MenuItem value={30}>Chose to stay back in home city</MenuItem>
-                <MenuItem value={40}>Adopted alternative medicines</MenuItem>
-                <MenuItem value={50}>
+                <MenuItem value={"Financial Constraint"}>
+                  Financial Constraint
+                </MenuItem>
+                <MenuItem value={"Chose to stay back in home city"}>
+                  Chose to stay back in home city
+                </MenuItem>
+                <MenuItem value={"Adopted alternative medicines"}>
+                  Adopted alternative medicines
+                </MenuItem>
+                <MenuItem value={"Chose another hospital - Which Hospital"}>
                   Chose another hospital - Which Hospital ?
                   <TextField
                     id="hospitalName"

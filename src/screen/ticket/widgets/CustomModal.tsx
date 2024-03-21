@@ -38,8 +38,6 @@ const CustomModal = () => {
   });
 
 
-
-
   const startTimer = () => {
     if (timerRef.current !== null) {
       clearInterval(timerRef.current);
@@ -67,13 +65,13 @@ const CustomModal = () => {
 
 
   const handleFormSubmit = async () => {
-    console.log("this is results")
+    // console.log("this is results")
     try {
       setFormData((prevData) => ({
         ...prevData,
         stoppedTimer: stoppedTimer
       }));
-      console.log("this is next one")
+      // console.log("this is next one")
       const sachin: any = ticketID;
       const result = await createTimerHandler(formData, sachin);
       setTimeout(() => {
@@ -88,7 +86,7 @@ const CustomModal = () => {
         })();
       }, 1000);
 
-      console.log(result, " this is call button")
+      // console.log(result, " this is call button")
       // Check if result is truthy (not undefined or null)
       if (result !== undefined && result !== null) {
         setFormData({ select: '' });
@@ -97,12 +95,12 @@ const CustomModal = () => {
         setTimer(0);
         setChipOpen(false);
 
-        console.log(
-          'Form submitted with stopped timer:',
-          stoppedTimer,
-          'and data:',
-          result
-        );
+        // console.log(
+        //   'Form submitted with stopped timer:',
+        //   stoppedTimer,
+        //   'and data:',
+        //   result
+        // );
         // console.log(result1, " this is result one")
       }
     } catch (error) {
@@ -125,7 +123,7 @@ const CustomModal = () => {
       select: buttonName,
       stoppedTimer: stoppedTimer
     }));
-    console.log(`Button ${buttonName} clicked`);
+    // console.log(`Button ${buttonName} clicked`);
   };
 
   const isButtonClicked = (buttonName) => formData.select === buttonName;
@@ -155,7 +153,7 @@ const CustomModal = () => {
       )}
       <Dialog
         open={showForm}
-        onClose={() => setShowForm(false)}
+        onClose={() => { }}
         aria-labelledby="form-dialog-title"
         aria-describedby="form-dialog-description"
       >
@@ -192,7 +190,9 @@ const CustomModal = () => {
           </Button>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleFormSubmit} variant="contained">
+          <Button onClick={handleFormSubmit}
+            disabled={!formData.select}
+            variant="contained">
             Submit
           </Button>
         </DialogActions>

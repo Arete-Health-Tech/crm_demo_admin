@@ -11,10 +11,14 @@ import {
   Typography
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+
+import { filterActions } from '../../screen/ticket/ticketStateReducers/actions/filterAction';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import CloseIcon from '@mui/icons-material/Close';
 
-import { useEffect, useState, useRef } from 'react';
+import {
+  useEffect, useState, useRef, useReducer
+} from 'react';
 import {
   getAllReminderHandler,
   getTicketHandler
@@ -24,12 +28,14 @@ import TicketCard from '../../screen/ticket/widgets/TicketCard';
 import { iCallRescheduler, iReminder, iTicket } from '../../types/store/ticket';
 import { getDoctorsHandler } from '../../api/doctor/doctorHandler';
 import { getDepartmentsHandler } from '../../api/department/departmentHandler';
-import { Outlet, useMatch, useNavigate } from 'react-router-dom';
+import { Outlet, useMatch, useNavigate, useParams } from 'react-router-dom';
 import DefaultScreen from '../../components/DefaultScreen';
 import { ArrowBack } from '@mui/icons-material';
 import TicketFilter, {
   ticketFilterCount
 } from '../../screen/ticket/widgets/TicketFilter';
+import handleClearFilter from '../../screen/ticket/widgets/TicketFilter';
+
 import DownloadAllTickets from '../../screen/ticket/widgets/DownloadAllTickets';
 import dayjs from 'dayjs';
 import CustomPagination from './CustomPagination';
@@ -45,10 +51,13 @@ import CustomSpinLoader from '../../components/CustomSpinLoader';
 import { socket } from '../../api/apiClient';
 import { socketEventConstants } from '../../constantUtils/socketEventsConstants';
 import useUserStore from '../../store/userStore';
+import { selectedFiltersReducer, ticketFilterTypes } from '../../screen/ticket/ticketStateReducers/filter';
 
+// .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
 
 const Ticket = () => {
+  const { ticketID } = useParams();
   const {
     tickets,
     filterTickets,
@@ -59,19 +68,18 @@ const Ticket = () => {
     setTickets,
     ticketCache,
     emptyDataText,
-    
+
     reminders,
     callRescheduler,
     loaderOn,
     pageNumber,
     setPageNumber,
   } = useTicketStore();
-  
 
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
-  const[phone,setPhone]=useState(null)
+  const [phone, setPhone] = useState(null)
 
   const [reminderList, setReminderList] = useState<any[]>([]);
   const [callReschedulerList, setcallReschedulerList] = useState<any[]>([]);
@@ -79,9 +87,9 @@ const Ticket = () => {
   const [alarmReminderedList, setAlamarReminderList] = useState<iReminder[]>(
     []
   );
-   const [alarmCallReschedulerList, setAlarmCallReschedulerList] = useState<
-     iCallRescheduler[]
-   >([]);
+  const [alarmCallReschedulerList, setAlarmCallReschedulerList] = useState<
+    iCallRescheduler[]
+  >([]);
   const [ticketReminderPatient, setTicketReminderPatient] = useState<any>(null);
   const [ticketCallReschedulerPatient, setTicketCallReschedulerPatient] =
     useState<any>(null);
@@ -89,6 +97,7 @@ const Ticket = () => {
   const [searchError, setSearchError] = useState<string>(
     'Type to search & Enter'
   );
+
   const [pageCount, setPageCount] = useState<number>(1);
   const [showReminderModal, setShowReminderModal] = useState(false);
   const [showCallReschedulerModal, setShowCallReschedulerModal] =
@@ -106,7 +115,10 @@ const Ticket = () => {
     event: React.ChangeEvent<unknown>,
     pageNo: number
   ) => {
+    setPageNumber(pageNo)
     if (pageNo !== page) {
+      // console.log(pageNo)
+      // console.log(page)
       setTickets([]);
       // if (
       //   ticketCache[pageNo] &&
@@ -121,7 +133,7 @@ const Ticket = () => {
       await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       setPage(pageNo);
       setPageNumber(pageNo);
-     
+
       redirectTicket();
     }
   };
@@ -137,10 +149,13 @@ const Ticket = () => {
     setSearchByName(UNDEFINED);
     // setTicketCount(ticketCache["count"]);
     // setTickets(ticketCache[1]);
-    await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
     setPage(1);
     setPageNumber(1)
+    // console.log({ filterTickets }, "002");
+    await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   };
+
+
 
   // const handleSeachName = (
   //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -155,18 +170,21 @@ const Ticket = () => {
   // };
 
   const handleSearchKeyPress = async (e: any) => {
+    // console.log("e", e)
     const value = e.target?.value;
     if (value) {
       setSearchName(value);
     }
     if (e.key === 'Enter') {
       setTickets([]);
-  
+
       if (value === '') {
         fetchTicketsOnEmpthySearch();
         setSearchError('Type to search & Enter');
+        redirectTicket()
         return;
       }
+      // console.log({ filterTickets }, "003");
       await getTicketHandler(value, 1, 'false', filterTickets);
       setSearchByName(value);
       setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
@@ -247,6 +265,7 @@ const Ticket = () => {
 
   useEffect(() => {
     (async function () {
+      // console.log({ filterTickets }, "006");
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
       await getStagesHandler();
       await getSubStagesHandler();
@@ -255,6 +274,7 @@ const Ticket = () => {
       await getAllReminderHandler();
       await getAllCallReschedulerHandler();
     })();
+    setPageNumber(1)
   }, []);
 
   // const isAlamredReminderExist = (reminder: iReminder) => {
@@ -266,7 +286,7 @@ const Ticket = () => {
   // };
 
   const handleCloseModal = async () => {
-   
+
     const result = await getAllReminderHandler();
     setTimeout(() => {
       setPage(1);
@@ -279,22 +299,22 @@ const Ticket = () => {
     }, 100);
   };
 
-const handleCloseCallReschedulerModal=async ()=>{
+  const handleCloseCallReschedulerModal = async () => {
 
- const result = await getAllCallReschedulerHandler();
+    const result = await getAllCallReschedulerHandler();
 
- setTimeout(() => {
-   setPage(1);
-   setPageNumber(1);
-   let list = alarmCallReschedulerList;
-   list.splice(0, 1);
-   setShowCallReschedulerModal(false);
-   setAlarmCallReschedulerList([]);
-   setcallReschedulerList(result);
- }, 100);
+    setTimeout(() => {
+      setPage(1);
+      setPageNumber(1);
+      let list = alarmCallReschedulerList;
+      list.splice(0, 1);
+      setShowCallReschedulerModal(false);
+      setAlarmCallReschedulerList([]);
+      setcallReschedulerList(result);
+    }, 100);
 
 
-}
+  }
 
 
   const clearAllInterval = (AllIntervals: any[]) => {
@@ -305,11 +325,23 @@ const handleCloseCallReschedulerModal=async ()=>{
     AllIntervals = [];
   };
 
+  // const refetchTickets = async () => {
+  //   const copiedFilterTickets = { ...filterTickets };
+  //   console.log({ filterTickets: copiedFilterTickets }, "pahle");
+  //   console.log('Received request of refetch tickets from server');
+  //   console.log({ filterTickets: copiedFilterTickets }, "jbfusinds");
+  //   await getTicketHandler(UNDEFINED, 1, 'false', copiedFilterTickets);
+  // }
   useEffect(() => {
     const refetchTickets = async () => {
       const copiedFilterTickets = { ...filterTickets };
-      const pageNumber = page
-      await getTicketHandler(UNDEFINED, pageNumber, 'false', copiedFilterTickets);
+      let pageNumber = page
+      if (ticketID) {
+
+      } else {
+        await getTicketHandler(searchName, pageNumber, 'false', copiedFilterTickets);
+      }
+
     };
 
     socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
@@ -317,7 +349,22 @@ const handleCloseCallReschedulerModal=async ()=>{
     return () => {
       socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
-  }, [filterTickets, page]);
+  }, [filterTickets, page, searchName]);
+
+  // useEffect(() => {
+  //   const refetchTickets = async () => {
+  //     console.log({filterTickets} ,"pahle");
+  //     console.log('Received request of refetch tickets from server');
+  //     console.log({filterTickets} ,"jbfusinds");
+  //     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+  //   }
+
+  //   socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+
+  //   return () => {
+  //     socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+  //   };
+  // }, []);
 
 
   useEffect(() => {
@@ -335,15 +382,16 @@ const handleCloseCallReschedulerModal=async ()=>{
           reminderDetail.date + 11000 > currentTime.getTime()
           // isAlamredReminderExist(reminderDetail)
         ) {
-         
+
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
-            
+
               const data = await getTicket(
                 UNDEFINED,
                 1,
                 'false',
                 filterTickets,
+                // selectedFilters,
                 reminderDetail?.ticket,
                 true,
                 phone
@@ -409,7 +457,7 @@ const handleCloseCallReschedulerModal=async ()=>{
 
 
   }, [reminders]);
-  
+
   useEffect(() => {
     // console.log('gotham FULL', reminders, 'remindelist', reminderList);
     clearAllInterval(AllIntervals);
@@ -424,10 +472,10 @@ const handleCloseCallReschedulerModal=async ()=>{
           callRescheduleDetail.date + 11000 > currentTime.getTime()
           // isAlamredReminderExist(reminderDetail)
         ) {
-         
+
           (async () => {
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
-             
+
               const data = await getTicket(
                 UNDEFINED,
                 1,
@@ -462,11 +510,29 @@ const handleCloseCallReschedulerModal=async ()=>{
         clearAllInterval(AllIntervals);
       };
     });
-  }, [ callRescheduler]);
+  }, [callRescheduler]);
 
 
 
+  const { setFilterTickets } = useTicketStore();
+  const initialFilters = {
+    stageList: [],
+    representative: null,
+    results: null,
+    admissionType: [],
+    diagnosticsType: [],
+    dateRange: []
+  };
 
+  const backToDashboard = () => {
+
+    getTicketHandler(UNDEFINED, 1, 'false', initialFilters);
+    setFilterTickets(initialFilters);
+    navigate('/')
+  }
+
+
+  // console.log({ page })
 
   return (
     <Box height={'100vh'} display="flex" position="fixed" width="100%">
@@ -478,7 +544,7 @@ const handleCloseCallReschedulerModal=async ()=>{
             alignItems="center"
           >
             <Button
-              onClick={() => navigate('/')}
+              onClick={backToDashboard}
               color="inherit"
               startIcon={<ArrowBack />}
               sx={{ mb: 1 }}
@@ -514,7 +580,7 @@ const handleCloseCallReschedulerModal=async ()=>{
         <Box
           position="relative"
           p={1}
-          height={'86vh'}
+          height={'76vh'}
           sx={{
             overflowY: 'scroll',
             '&::-webkit-scrollbar ': {
@@ -523,8 +589,8 @@ const handleCloseCallReschedulerModal=async ()=>{
           }}
         >
           {tickets.length > 0 ? (
-            tickets.map((item: iTicket) => (
-              <TicketCard key={item._id} patientData={item} />
+            tickets.map((item: iTicket, index: number) => (
+              <TicketCard key={item._id} patientData={item} index={index} />
             ))
           ) : emptyDataText !== '' ? (
             <Alert
@@ -550,14 +616,14 @@ const handleCloseCallReschedulerModal=async ()=>{
               />
             ))
           )}
-          <div>
-            <CustomPagination
-              handlePagination={handlePagination}
-              pageCount={pageCount}
-              page={page}
-            />
-          </div>
         </Box>
+        <div>
+          <CustomPagination
+            handlePagination={handlePagination}
+            pageCount={pageCount}
+            page={pageNumber}
+          />
+        </div>
       </Box>
       <Box bgcolor="#E2ECFB" width="75%">
         {currentRoute ? <DefaultScreen /> : <Outlet />}
@@ -565,7 +631,7 @@ const handleCloseCallReschedulerModal=async ()=>{
       <Box>
         <Modal
           open={showReminderModal}
-          // onClose={() => handleCloseModal()}
+        // onClose={() => handleCloseModal()}
         >
           <Box
             sx={{
@@ -628,7 +694,7 @@ const handleCloseCallReschedulerModal=async ()=>{
       <Box>
         <Modal
           open={showCallReschedulerModal}
-          // onClose={() => handleCloseModal()}
+        // onClose={() => handleCloseModal()}
         >
           <Box
             sx={{
@@ -673,9 +739,9 @@ const handleCloseCallReschedulerModal=async ()=>{
               <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
                 {alarmCallReschedulerList[0]?.selectedLabels
                   ? alarmCallReschedulerList[0].selectedLabels
-                      .map((label) => label.label)
-                      .join(', ')
-                      .toUpperCase()
+                    .map((label) => label.label)
+                    .join(', ')
+                    .toUpperCase()
                   : 'N/A'}
               </Typography>
               <Typography margin={'12px'}>
@@ -695,7 +761,7 @@ const handleCloseCallReschedulerModal=async ()=>{
       </Box>
 
       {/* <CustomSpinLoader open={loaderOn} /> */}
-    </Box>
+    </Box >
   );
 };
 

@@ -2,28 +2,28 @@ import { apiClient } from "../apiClient";
 
 export const getAllTimerDnd = async () => {
   const { data } = await apiClient.get('dashboard/dnd');
- 
+
   return data;
 };
 
 export const getAllTimerPending = async () => {
   const { data } = await apiClient.get('dashboard/pending');
- 
+
   return data;
 };
 export const getAllTimerTodaysTask = async () => {
   const { data } = await apiClient.get('dashboard/todaytask');
- 
+
   return data;
 };
 export const getAllTimerCallCompleted = async () => {
   const { data } = await apiClient.get('dashboard/callCompleted');
-  
+
   return data;
 };
 export const getAllTimerRescheduledCall = async () => {
   const { data } = await apiClient.get('dashboard/RescheduleCall');
- 
+
   return data;
 };
 

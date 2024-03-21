@@ -18,10 +18,10 @@ export const getTicketHandler = async (
   name: string,
   pageNumber: number = 1,
   downloadAll: 'true' | 'false' = 'false',
-  selectedFilters: iTicketFilter,
+  selectedFilters: iTicketFilter | null,
   ticketId: string = UNDEFINED,
-  fetchUpdated : boolean = false,
-  
+  fetchUpdated: boolean = false,
+
 
 ) => {
   const {
@@ -32,17 +32,18 @@ export const getTicketHandler = async (
     setEmptyDataText,
     setDownloadTickets,
     setLoaderOn,
-  
-  
+
+
   } = useTicketStore.getState();
-  const {user} = useUserStore.getState();
-  const phone=user?.phone
-
- 
+  const { user } = useUserStore.getState();
+  const phone = user?.phone
 
 
- 
+
+
+
   setLoaderOn(true);
+  // console.log(selectedFilters," this is selected filters");
   const data = await getTicket(
     name,
     pageNumber,
@@ -51,7 +52,7 @@ export const getTicketHandler = async (
     ticketId,
     fetchUpdated,
     phone,
-   
+
   );
   const sortedTickets = data.tickets;
   const count = data.count;
@@ -67,7 +68,7 @@ export const getTicketHandler = async (
   if (downloadAll === 'true') {
     setDownloadTickets(sortedTickets);
     setLoaderOn(false);
-    console.log("total download data",sortedTickets.length);
+    // console.log("total download data",sortedTickets.length);
     return sortedTickets;
   }
   setTicketCount(count);
@@ -85,57 +86,57 @@ export type iCreateTicket = {
   followUp: Date | number;
   image: string | null;
   consumer: string;
-  isPharmacy:string;
+  isPharmacy: string;
   service?: { _id: string; label: string };
   diagnostics: string[];
   caregiver_phone: string | null;
   caregiver_name: string | null;
 };
 
-  export const createTicketHandler = async (
-    prescription: iCreateTicket,
-   
-  ) => {
-    const prescriptionData = new FormData();
-    prescriptionData.append('consumer', prescription.consumer);
-    prescriptionData.append(
-      'departments',
-      JSON.stringify(prescription.departments)
-    );
-    prescriptionData.append('admission', prescription.admission);
-    prescriptionData.append('doctor', prescription.doctor);
-    prescriptionData.append('symptoms', prescription.symptoms!);
-    prescription.condition &&
-      prescriptionData.append('condition', prescription.condition);
-    prescription.caregiver_name &&
-      prescriptionData.append('caregiver_name', prescription.caregiver_name);
-    prescription.caregiver_phone &&
-      prescriptionData.append('caregiver_phone', prescription.caregiver_phone);
-    prescriptionData.append(
-      'medicines',
-      JSON.stringify(prescription.medicines)
-    );
-    prescriptionData.append('followUp', JSON.stringify(prescription.followUp));
-    prescriptionData.append('isPharmacy', prescription.isPharmacy);
-    prescriptionData.append(
-      'diagnostics',
-      JSON.stringify(prescription.diagnostics)
-    );
-    prescription.service &&
-      prescriptionData.append('service', prescription.service._id);
-    console.log('file log', prescription);
-    /* @ts-ignore */
-    const blob = await (await fetch(prescription.image)).blob();
-    prescriptionData.append('image', blob);
+export const createTicketHandler = async (
+  prescription: iCreateTicket,
 
-    return await createTicket(prescriptionData);
-  };
+) => {
+  const prescriptionData = new FormData();
+  prescriptionData.append('consumer', prescription.consumer);
+  prescriptionData.append(
+    'departments',
+    JSON.stringify(prescription.departments)
+  );
+  prescriptionData.append('admission', prescription.admission);
+  prescriptionData.append('doctor', prescription.doctor);
+  prescriptionData.append('symptoms', prescription.symptoms!);
+  prescription.condition &&
+    prescriptionData.append('condition', prescription.condition);
+  prescription.caregiver_name &&
+    prescriptionData.append('caregiver_name', prescription.caregiver_name);
+  prescription.caregiver_phone &&
+    prescriptionData.append('caregiver_phone', prescription.caregiver_phone);
+  prescriptionData.append(
+    'medicines',
+    JSON.stringify(prescription.medicines)
+  );
+  prescriptionData.append('followUp', JSON.stringify(prescription.followUp));
+  prescriptionData.append('isPharmacy', prescription.isPharmacy);
+  prescriptionData.append(
+    'diagnostics',
+    JSON.stringify(prescription.diagnostics)
+  );
+  prescription.service &&
+    prescriptionData.append('service', prescription.service._id);
+  // console.log('file log', prescription);
+  /* @ts-ignore */
+  const blob = await (await fetch(prescription.image)).blob();
+  prescriptionData.append('image', blob);
 
-  export const getAllNotesHandler = async (ticketId: string) => {
-    const { setNotes } = useTicketStore.getState();
-    const notes = await getAllNotes(ticketId);
-    setNotes(notes);
-  };
+  return await createTicket(prescriptionData);
+};
+
+export const getAllNotesHandler = async (ticketId: string) => {
+  const { setNotes } = useTicketStore.getState();
+  const notes = await getAllNotes(ticketId);
+  setNotes(notes);
+};
 
 export const createNotesHandler = async (note: iNote) => {
   const { notes, setNotes } = useTicketStore.getState();
@@ -180,17 +181,17 @@ export const getAllReschedulerHandler = async () => {
 };
 
 
-export const createTimerHandler = async (timerData: iTimer,ticketId:string) => {
+export const createTimerHandler = async (timerData: iTimer, ticketId: string) => {
   const { status, setStatus } = useTicketStore.getState();
   const timerAdded = await createTimer(timerData,ticketId);
    const updatedStatus = Array.isArray(status)
      ? [...status, timerAdded]
      : [timerAdded];
 
-   setStatus(updatedStatus);
-  
-  
-   return Promise.resolve(timerAdded);
+  setStatus(updatedStatus);
+
+
+  return Promise.resolve(timerAdded);
 };
 
 function getDate(): string | Blob {

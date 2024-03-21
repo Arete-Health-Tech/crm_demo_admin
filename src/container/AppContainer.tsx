@@ -11,6 +11,7 @@ import RepresentativeTwo from './routes/RepresentativeTwo';
 import RepresentativeThree from './routes/RepresentativeThree';
 import RepresentativeFour from './routes/RepresentativeFour';
 import RepresentativeFive from './routes/RepresentativeFive';
+import OrderList from '../screen/orders/OrderList';
 
 const AppContainer = () => {
   const { user, setUser } = useUserStore();
@@ -23,7 +24,7 @@ const AppContainer = () => {
 
       const decoded: any = jwtDecode(token);
       if (decoded.exp * 1000 < Date.now()) {
-        // console.log(decoded.exp * 1000 < Date.now());
+
         setUser(null);
       } else {
         setUser(parsedUserString);
@@ -49,6 +50,8 @@ const AppContainer = () => {
     return <RepresentativeFour />;
   } else if (user !== null && user.role === Roles.REPRESENTATIVEFIVE) {
     return <RepresentativeFive />;
+  } else if (user !== null && user.role === Roles.PHARMACY) {
+    return <OrderList />;
   } else {
     return <UnAuthenticated />;
   }

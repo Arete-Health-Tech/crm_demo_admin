@@ -136,7 +136,7 @@ const StageCard = (props: Props) => {
   }, [currentTicket, stages, subStages, changeStageName]);
 
   const handleStages = async (e: any) => {
-    console.log('selected', e.target.value);
+    // console.log('selected', e.target.value);
 
     setChangeStageName(e.target.value);
     const payload = {
@@ -156,20 +156,20 @@ const StageCard = (props: Props) => {
           pageNumber,
           'false',
           filterTickets,
-         
+
         );
         setTicketUpdateFlag(result);
       })();
     }, 1000);
     if ((currentTicket?.subStageCode.code || 0) + 1 > 3) {
       redirectTicket();
-      console.log('redirect to ticket');
+      // console.log('redirect to ticket');
     }
-    console.log('redirect to ticket ?', currentTicket?.subStageCode.code + 1);
+    // console.log('redirect to ticket ?', currentTicket?.subStageCode.code + 1);
   };
 
   const handleOpen = () => {
-    console.log('Open Modal');
+    // console.log('Open Modal');
     setOpen(true);
   };
   const handleClose = () => {
@@ -194,7 +194,7 @@ const StageCard = (props: Props) => {
     let isPayloadEmpty = true;
 
     const formdata = new FormData();
-  
+
     formdata.append('ticket', currentTicket._id);
     formdata.append(
       'consumer',
@@ -226,30 +226,30 @@ const StageCard = (props: Props) => {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-        
+
       });
-       setTimeout(() => {
-         (async () => {
-           const result = await getTicketHandler(
-             searchByName,
-             pageNumber,
-             'false',
-             filterTickets,
-           
-           );
-           setTicketUpdateFlag(result);
-         })();
-       }, 1000);
-console.log(formdata)
+      setTimeout(() => {
+        (async () => {
+          const result = await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            filterTickets,
+
+          );
+          setTicketUpdateFlag(result);
+        })();
+      }, 1000);
+      // console.log(formdata)
       setPaymentIDValue('');
       setNoteTextValue('');
-        setOpenLose(false);
-         handleCloseLose();
-         setHospitalName('');
+      setOpenLose(false);
+      handleCloseLose();
+      setHospitalName('');
       setFile(null);
       setLose('');
       redirectTicket();
-      console.log('patient status res', data);
+      // console.log('patient status res', data);
     }
 
     setOpen(false);
@@ -260,7 +260,7 @@ console.log(formdata)
   };
 
   const handleCloseLose = () => {
- setOpenLose(false);
+    setOpenLose(false);
   };
 
   const handleChangeLose = (event) => {
@@ -493,13 +493,19 @@ console.log(formdata)
                   disableAutoFocusItem: true // Disable automatic focus
                 }}
               >
-                <MenuItem value={10}>
+                <MenuItem value={"Too expensive / Have a better pricing"}>
                   Too expensive / Have a better pricing
                 </MenuItem>
-                <MenuItem value={20}>Financial Constraint</MenuItem>
-                <MenuItem value={30}>Chose to stay back in home city</MenuItem>
-                <MenuItem value={40}>Adopted alternative medicines</MenuItem>
-                <MenuItem value={50}>
+                <MenuItem value={"Financial Constraint"}>
+                  Financial Constraint
+                </MenuItem>
+                <MenuItem value={"Chose to stay back in home city"}>
+                  Chose to stay back in home city
+                </MenuItem>
+                <MenuItem value={"Adopted alternative medicines"}>
+                  Adopted alternative medicines
+                </MenuItem>
+                <MenuItem value={"Chose another hospital - Which Hospital"}>
                   Chose another hospital - Which Hospital ?
                   <TextField
                     id="hospitalName"

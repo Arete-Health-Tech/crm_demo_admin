@@ -47,7 +47,7 @@ export default function PreviewDrawer(props: Props) {
   };
 
   const uploadServices = async () => {
-    console.log(props.serviceArray);
+    // console.log(props.serviceArray);
     await createServiceHandler(props.serviceArray);
     toggleDrawer(false);
     props.setServiceArray([]);

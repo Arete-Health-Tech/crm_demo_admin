@@ -81,7 +81,7 @@ import { Document, Page } from 'react-pdf';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTone';
 import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
- 
+
 
 import AWS from 'aws-sdk';
 import CustomModal from './widgets/CustomModal';
@@ -166,12 +166,12 @@ const questions = [
   // Add more questions as needed
 ];
 interface iConsumer {
-  uid:string;
+  uid: string;
   firstName: string;
   lastName: string;
-  phone:number;
+  phone: number;
   age: number;
-  gender:string;
+  gender: string;
 
   // Add other fields as needed
 }
@@ -214,27 +214,28 @@ const SingleTicketDetails = (props: Props) => {
   const [selectedResponses, setSelectedResponses] = useState({});
   const [pdfUrl, setPdfUrl] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-   const [editedConsumer, setEditedConsumer] = useState<iConsumer>({
-    uid:'',
-     firstName: '',
-     lastName: '',
-     phone:0,
-     age:0,
-     gender:'',
-     // Add other fields as needed
-   });
+  const [editedConsumer, setEditedConsumer] = useState<iConsumer>({
+    uid: '',
+    firstName: '',
+    lastName: '',
+    phone: 0,
+    age: 0,
+    gender: '',
+    // Add other fields as needed
+  });
 
-    const [openModal, setOpenModal] = useState(false);  
-    const [modalOpenRemainder, setModalOpenRemainder] = useState(false);
-    const [modalOpenRescheduler, setModalOpenRescheduler]=useState(false)
-    const [matchedObjects, setMatchedObjects] = useState([]);
-    const [callReschedulerData, setCallReschedulerData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalOpenRemainder, setModalOpenRemainder] = useState(false);
+  const [modalOpenRescheduler, setModalOpenRescheduler] = useState(false)
+  const [matchedObjects, setMatchedObjects] = useState([]);
+  const [callReschedulerData, setCallReschedulerData] = useState([]);
 
 
 
- 
 
-// console.log(callRescheduler, ' this is call rescheduler ');
+  // console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
+  // console.log(currentTicket,"this is current ticet")
+  // console.log(callRescheduler, ' this is call rescheduler ');
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
   // const handlePhoneCall = async (e: React.SyntheticEvent) => {
@@ -242,7 +243,7 @@ const SingleTicketDetails = (props: Props) => {
   //   const currentStage = currentTicket?.stage;
   //   if (currentStage === desiredStage) {
   //     const currentSubStageCode = currentTicket?.subStageCode?.code;
-    
+
   //     const stageDetail: any = stages?.find(
   //       ({ _id }) => currentTicket?.stage === _id
   //     );
@@ -278,7 +279,7 @@ const SingleTicketDetails = (props: Props) => {
   //     }
   //   }else {
   //      const currentSubStageCode = currentTicket?.subStageCode?.code;
-      
+
   //      const stageDetail: any = stages?.find(
   //        ({ _id }) => currentTicket?.stage === _id
   //      );
@@ -289,7 +290,7 @@ const SingleTicketDetails = (props: Props) => {
   //          currentSubStageCode > noOfChilds - 3) &&
   //        currentSubStageCode < noOfChilds
   //      ) {
-       
+
 
   //        const payload = {
   //          subStageCode: {
@@ -314,10 +315,10 @@ const SingleTicketDetails = (props: Props) => {
   //      }
   //   }
   // }
-    
-  
 
-      
+
+
+
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -359,7 +360,7 @@ const SingleTicketDetails = (props: Props) => {
 
   const getTicketInfo = (ticketID: string | undefined) => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
-   
+    // console.log(fetchTicket," this is refetched dsfgsdgsdghsdhsdfh");
     setCurrentTicket(fetchTicket);
     return fetchTicket;
   };
@@ -367,6 +368,7 @@ const SingleTicketDetails = (props: Props) => {
   useEffect(() => {
     (async function () {
       const ticketData = getTicketInfo(ticketID);
+      // console.log(ticketData," thi s is ticket Data")
       if (currentTicket) {
         setSingleReminder([]);
         setCallReschedule([]);
@@ -397,7 +399,7 @@ const SingleTicketDetails = (props: Props) => {
     ticketUpdateFlag,
     reminders.length,
     reminders,
-    currentTicket?.stage,
+    // currentTicket?.stage,
     callRescheduler.length,
     callRescheduler
   ]);
@@ -432,28 +434,28 @@ const SingleTicketDetails = (props: Props) => {
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
   const estimateId = getEstimateIdByDataId(tickets, ticketID);
 
- 
+
 
 
 
   const fetchPdfUrl = async () => {
-   if (currentTicket?.location) {
-     window.open(currentTicket.location, '_blank');
-   }else{
-     alert('Please create an estimate.');
-   }
+    if (currentTicket?.location) {
+      window.open(currentTicket.location, '_blank');
+    } else {
+      alert('Please create an estimate.');
+    }
   };
 
 
 
 
- 
 
 
- 
 
 
- 
+
+
+
   const handleIconClickRemainder = async () => {
     try {
       const { data } = await apiClient.get('/task/ticketRemainder', {
@@ -466,18 +468,18 @@ const SingleTicketDetails = (props: Props) => {
       setMatchedObjects(filteredData);
       setModalOpenRemainder(true);
       if (filteredData.length === 0) {
-        console.log('No data found for the specified ticketId');
+
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
- 
-// Now you can access matchedObjects outside the function
-// For example
-const handleIconClickCallRescheduler=async ()=>{
- try {
+
+  // Now you can access matchedObjects outside the function
+  // For example
+  const handleIconClickCallRescheduler = async () => {
+    try {
       const { data } = await apiClient.get('/task/ticketReschedluer', {
         headers: {
           'Content-Type': 'application/json'
@@ -488,7 +490,7 @@ const handleIconClickCallRescheduler=async ()=>{
       setCallReschedulerData(filteredData);
       setModalOpenRescheduler(true);
       if (filteredData.length === 0) {
-        console.log('No data found for the specified ticketId');
+
       }
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -496,11 +498,11 @@ const handleIconClickCallRescheduler=async ()=>{
   };
 
 
- const handleCloseModal = () => {
-   // Close the modal
-   setModalOpenRemainder(false);
-   setModalOpenRescheduler(false);
- };
+  const handleCloseModal = () => {
+    // Close the modal
+    setModalOpenRemainder(false);
+    setModalOpenRescheduler(false);
+  };
 
 
 
@@ -726,11 +728,11 @@ const handleIconClickCallRescheduler=async ()=>{
                   <MedicalServicesOutlined htmlColor="gray" />
                   <Typography textTransform={'capitalize'}>
                     {doctorSetter(currentTicket?.prescription[0].doctor!)}
-                    {/* ( */}
-                    {/* {departmentSetter(
+                    {/* (
+                    {departmentSetter(
                       currentTicket?.prescription[0].departments[0]!
-                    )} */}
-                    {/* ) */}
+                    )}
+                    ) */}
                   </Typography>
                 </Stack>
                 <Stack direction="row" spacing={3} my={1}>
@@ -814,8 +816,8 @@ const handleIconClickCallRescheduler=async ()=>{
                       <Chip
                         color={
                           currentTicket?.estimate[0].paymentType === 0 ||
-                          currentTicket?.estimate[0].paymentType === 1 ||
-                          currentTicket?.estimate[0].paymentType === 2
+                            currentTicket?.estimate[0].paymentType === 1 ||
+                            currentTicket?.estimate[0].paymentType === 2
                             ? 'info'
                             : 'default'
                         }
@@ -823,10 +825,10 @@ const handleIconClickCallRescheduler=async ()=>{
                           currentTicket?.estimate[0]?.paymentType === 0
                             ? 'Cash'
                             : currentTicket?.estimate[0]?.paymentType === 1
-                            ? 'Insurance'
-                            : currentTicket?.estimate[0]?.paymentType === 2
-                            ? 'CGHS| ECHS'
-                            : 'Payment Type Not Available'
+                              ? 'Insurance'
+                              : currentTicket?.estimate[0]?.paymentType === 2
+                                ? 'CGHS| ECHS'
+                                : 'Payment Type Not Available'
                         }
                         variant="filled"
                         size="medium"

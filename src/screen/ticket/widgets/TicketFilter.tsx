@@ -19,7 +19,8 @@ import {
 } from '@mui/material';
 import { Box } from '@mui/system';
 import dayjs from 'dayjs';
-import React, { useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import useTicketStore from '../../../store/ticketStore';
 import { getStagesHandler } from '../../../api/stages/stagesHandler';
@@ -31,23 +32,43 @@ import {
   ticketFilterTypes
 } from '../ticketStateReducers/filter';
 import { filterActions } from '../ticketStateReducers/actions/filterAction';
-import { UNDEFINED } from '../../../constantUtils/constant';
+import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import useUserStore from '../../../store/userStore';
+import { apiClient } from '../../../api/apiClient';
+import { validateTicket } from '../../../api/ticket/ticket';
 
 const drawerWidth = 450;
-
-export const ticketFilterCount = (selectedFilters: iTicketFilter) => {
+export const ticketFilterCount = (
+  selectedFilters: iTicketFilter,
+  admissionType: string[],
+  diagnosticsType: string[],
+  dateRange: string[]
+) => {
   const stageListCount = selectedFilters['stageList'].length;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
-  const resultCount=selectedFilters['results']?1:0;
-  console.log(stageListCount," this is stage list count");
-  console.log(resultCount," this is result counnt")
-  const total = stageListCount + representativeCount + resultCount; ;
+
+  const admissionCount = admissionType ? admissionType.length : 0;
+  const diagnosticsCount = diagnosticsType ? diagnosticsType.length : 0;
+  const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
+
+  const resultCount = selectedFilters['results'] ? 1 : 0;
+
+  // console.log(stageListCount, " this is stage list count");
+  // console.log(admissionCount, " this is Admission Count")
+  // console.log(diagnosticsCount, "this is diagnostic Count")
+  // console.log(DateCount, "this is Date Count")
+  // console.log(stageListCount, " this is stage list count");
+  // console.log(resultCount, " this is result counnt")
+
+  const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount;
   return total;
 };
-
-const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<number>>}) => {
+const TicketFilter = (props: {
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+}) => {
+  const { ticketID } = useParams();
+  const navigate = useNavigate();
   const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     '& .MuiBadge-badge': {
       right: -3,
@@ -60,13 +81,13 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   const initialFilters: ticketFilterTypes = {
     stageList: [],
     representative: null,
-    results:null 
-  
-    
+    results: null,
+    admissionType: [],
+    diagnosticsType: [],
+    dateRange: []
   };
 
-  const { setFilterTickets } = useTicketStore(); 
-  
+  const { setFilterTickets, setPageNumber } = useTicketStore();
 
   // const [ticketFilters, setTicketFilters] = useState<iTicketFilter>({
   //   stageList: [],
@@ -75,28 +96,29 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
   //   startDate: NaN,
   //   endDate: NaN
   // });
+
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
-  const [admissionType, setAdmissionType] = React.useState<string[]>(() => []);
+  const [admissionType, setAdmissionType] = React.useState<string[]>([]);
   const [result, setResult] = React.useState('');
   const [diagnosticsType, setDiagnosticsType] = React.useState<string[]>(
     () => []
   );
   const [stagesLabel, setStagesLabels] = React.useState<any>([]);
   const [representativeLabel, setRepresentativeLabel] = React.useState<any>([]);
-  // const [selectedStageList, setSelectedStageList] = React.useState<string[]>(
-  //   () => []
-  // );
+
   const [selectedFilters, dispatchFilter] = useReducer(
     selectedFiltersReducer,
     initialFilters
   );
-  const [startDate, setStartDate] = React.useState<string>();
-  const [endDate, setEndDate] = React.useState<string>();
-  const [currentReperesentative, setCurrentRepresentative] = useState( '');
+  const [startDate, setStartDate] = React.useState<string>('');
+  const [endDate, setEndDate] = React.useState<string>('');
+  const [dateRange, setDateRange] = React.useState<string[]>(['', '']);
+  const [currentReperesentative, setCurrentRepresentative] = useState('');
   const [filterCount, setFilterCount] = useState(0);
-   const [selectedValue, setSelectedValue] = useState(null);
-   const [selectedValueLost, setSelectedValueLost] = useState(null);
+  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedValueLost, setSelectedValueLost] = useState(null);
 
+  ;
 
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -104,7 +126,7 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
     if (selectedFilters.stageList.includes(value)) {
       const modifiedStageList = selectedFilters.stageList;
       modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
-      // console.log(modifiedStageList, 'moda');
+
       dispatchFilter({
         type: filterActions.STAGES,
         payload: [...modifiedStageList]
@@ -116,7 +138,6 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
       payload: [...selectedFilters.stageList, value]
     });
   };
-
 
   const handleRepresentative = (e: any) => {
     const value = e.target.value;
@@ -131,43 +152,87 @@ const TicketFilter = (props: {setPage : React.Dispatch<React.SetStateAction<numb
     newAdmission: string[]
   ) => {
     setAdmissionType(newAdmission);
+
+    dispatchFilter({
+      type: filterActions.ADMISSIONTYPE,
+      payload: newAdmission
+    });
+
   };
+
+
   const handleDiagnosticsType = (
     event: React.MouseEvent<HTMLElement>,
     newDiagnostics: string[]
   ) => {
     setDiagnosticsType(newDiagnostics);
+    dispatchFilter({
+      type: filterActions.DIAGNOSTICSTYPE,
+      payload: newDiagnostics
+    });
   };
-   const handleResult = (e: any) => {
-     const value = e.target.value;
-console.log(value);
-     console.log(value);
 
-     if (value === "Won") {
-       setResult(value);
-       dispatchFilter({
-         type: filterActions.RESULTS,
-         payload: '65991601a62baad220000001'
-       });
 
-       
-      
-     }else if (value === 'Lose') {
-       setResult(value);
-       dispatchFilter({
-         type: filterActions.RESULTS,
-         payload: '65991601a62baad220000002'
-       });
-     } else if(value === null) {
-       setResult(value);
-       dispatchFilter({
-         type: filterActions.RESULTS,
-         payload: null
-       });
-     }
-     setResult('');
-    
-   };
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const startDate = e.target.value;
+    setDateRange(prevState => [startDate, prevState[1]]);
+    dispatchFilter({
+      type: filterActions.DATERANGE,
+      payload: JSON.stringify([startDate, dateRange[1]])
+    });
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const endDate = e.target.value;
+    setDateRange(prevState => [prevState[0], endDate]);
+    dispatchFilter({
+      type: filterActions.DATERANGE,
+      payload: JSON.stringify([dateRange[0], endDate])
+    });
+  };
+
+
+  // React.useEffect(() => {
+  //   console.log(" AdmissionType", admissionType);
+  //   console.log("diagnosticType", diagnosticsType);
+  //   console.log("Start Date", dateRange);
+
+  // }, [admissionType, diagnosticsType, dateRange, selectedFilters]);
+
+  // const handleToggleChange = (event, newValue) => {
+  //   setSelectedValue(newValue);
+  // };
+
+  const handleResult = (e: any) => {
+    const value = e.target.value;
+    // console.log(value);
+
+    if (value === 'Won') {
+      setResult(value);
+      dispatchFilter({
+        type: filterActions.RESULTS,
+        payload: '65991601a62baad220000001'
+      });
+
+    } else if (value === 'Lose') {
+      setResult(value);
+      dispatchFilter({
+        type: filterActions.RESULTS,
+        payload: '65991601a62baad220000002'
+      });
+
+    } else if (value === null) {
+      setResult(value);
+      dispatchFilter({
+        type: filterActions.RESULTS,
+        payload: null
+      });
+
+    }
+    setResult('');
+  };
+
+
 
   const handleFilterOpen = () => {
     setIsFilterOpen(true);
@@ -193,7 +258,7 @@ console.log(value);
     (async () => {
       const fetchedStageData = await getStagesHandler();
       const fetchedRepresentative = await getRepresntativesHandler();
-      
+
       const transformStages = fetchedStageData.map(({ _id, name }) => {
         return {
           id: _id,
@@ -211,7 +276,6 @@ console.log(value);
       );
       setRepresentativeLabel(transformRepresentative);
       setStagesLabels(transformStages);
-   
     })();
   }, []);
 
@@ -226,23 +290,45 @@ console.log(value);
     //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
+
     setIsFilterOpen(false);
+    setPageNumber(1);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-    setFilterCount(ticketFilterCount(selectedFilters));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange));
+
+
+
     setFilterTickets(selectedFilters);
-    props.setPage(1)
-    console.log('filter dtata', selectedFilters);
+
+    props.setPage(1);
+    if (ticketID) {
+      await validateTicket(ticketID);
+      navigate(NAVIGATE_TO_TICKET);
+    }
+    // console.log('filter dtata', selectedFilters);
   };
+
 
   const handleClearFilter = async () => {
     dispatchFilter({ type: filterActions.STAGES, payload: [] });
     dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
-     dispatchFilter({ type: filterActions.RESULTS, payload: null });
+    dispatchFilter({ type: filterActions.ADMISSIONTYPE, payload: [] });
+    dispatchFilter({ type: filterActions.DIAGNOSTICSTYPE, payload: [] });
+    dispatchFilter({ type: filterActions.DATERANGE, payload: [] });
+    dispatchFilter({ type: filterActions.RESULTS, payload: null });
+
     setCurrentRepresentative('');
-    setFilterCount(ticketFilterCount(selectedFilters));
-  
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange));
+    setFilterCount(0);
+    setPageNumber(1);
     setSelectedValue(null);
     setSelectedValueLost(null);
+    setResult(" ")
+    setAdmissionType((prev) => []);
+    setDiagnosticsType((prev) => []);
+    setDateRange(["", ""]);
+
+    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     // setTicketFilters({
     //   stageList: [],
     //   admissionType: [],
@@ -251,21 +337,31 @@ console.log(value);
     //   endDate: 0
     // });
     // setSelectedStageList((prev) => []);
-    // setAdmissionType((prev) => []);
-    // setDiagnosticsType((prev) => []);
+
+
+
     // setStartDate((prev) => '');
     // setEndDate((prev) => '');
+
+    // console.log("clear AdmissionType  inside", admissionType);
+    // console.log("clear DiagnosticType inside", diagnosticsType);
+    // console.log("clear value Lost", selectedValueLost)
+    // console.log("clear DateRange inside", dateRange);
+
+
   };
 
- const handleToggleChange = (event, newValue) => {
-   setSelectedValue(newValue);
- };
+  const handleToggleChange = (event, newValue: any) => {
+    setSelectedValue(newValue === selectedValue ? null : newValue);
+    setResult(newValue);
+  };
 
 
- const handleToggleLostChange=(event,newValue)=>{
-  setSelectedValueLost(newValue);
- };
- 
+  const handleToggleLostChange = (event, newValue: any) => {
+    setSelectedValueLost(newValue === selectedValueLost ? null : newValue);
+    setResult(newValue);
+  };
+
 
   return (
     <Box>
@@ -367,8 +463,8 @@ console.log(value);
               <ToggleButton
                 value="Won"
                 style={{
-                  backgroundColor: selectedValue === 'Won' ? 'blue' : 'default',
-                  color: selectedValue === 'Won' ? 'white' : 'default'
+                  backgroundColor: selectedValue === 'Won' ? '#3949AB14' : 'white',
+                  color: selectedValue === 'Won' ? '#3949AB' : 'grey'
                 }}
                 onClick={handleToggleChange}
               >
@@ -378,13 +474,15 @@ console.log(value);
                 value="Lose"
                 style={{
                   backgroundColor:
-                    selectedValueLost === 'Lose' ? 'blue' : 'default',
-                  color: selectedValueLost === 'Lose' ? 'white' : 'default'
+                    selectedValueLost === 'Lose' ? '#3949AB14' : 'white',
+
+                  color: selectedValueLost === 'Lose' ? '#3949AB' : 'grey'
                 }}
                 onClick={handleToggleLostChange}
               >
                 LOST
               </ToggleButton>
+
             </ToggleButtonGroup>
           </Box>
           <Box p={1}>
@@ -426,8 +524,8 @@ console.log(value);
                 <Typography variant="caption">Start Date</Typography>
                 <TextField
                   fullWidth
-                  onChange={(e) => setStartDate(e.target.value)}
-                  value={startDate}
+                  onChange={handleStartDateChange}
+                  value={dateRange[0]}
                   type="date"
                 />
               </Box>
@@ -435,8 +533,8 @@ console.log(value);
                 <Typography variant="caption">End Date</Typography>
                 <TextField
                   fullWidth
-                  value={endDate}
-                  onChange={(e) => setEndDate(e.target.value)}
+                  onChange={handleEndDateChange}
+                  value={dateRange[1]}
                   type="date"
                 />
               </Box>

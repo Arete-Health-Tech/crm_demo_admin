@@ -1,5 +1,5 @@
 import useTicketStore from "../../store/ticketStore";
-import {  getAllStageCount, getAllTimerDnd, getAllTimerRescheduledCall, getAllWonAndLoss,  } from "./dashboard";
+import { getAllStageCount, getAllTimerDnd, getAllTimerRescheduledCall, getAllWonAndLoss, } from "./dashboard";
 import { getAllTimerPending } from './dashboard';
 
 import { getAllTimerTodaysTask } from './dashboard';

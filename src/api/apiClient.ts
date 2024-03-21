@@ -10,11 +10,11 @@ enum StatusCode {
   InternalServerError = 500
 }
 
-export const SERVER_URL = 'https://backend.aretehealth.tech/prod/api/v1/';
-// export const SERVER_URL = 'http://localhost:9000/prod/api/v1/';
-// export const BACKEND_URL = 'http://localhost:5050';
+// export const SERVER_URL = 'https://backend.aretehealth.tech/prod/api/v1/';
+export const SERVER_URL = 'http://localhost:3000/prod/api/v1/';
+export const BACKEND_URL = 'http://localhost:5050';
 // 
-export const BACKEND_URL = 'https://backend.aretehealth.tech';
+// export const BACKEND_URL = 'https://backend.aretehealth.tech';
 //
 const headers: Readonly<Record<string, string | boolean>> = {
   Accept: 'application/json',
@@ -23,11 +23,13 @@ const headers: Readonly<Record<string, string | boolean>> = {
   // 'X-Requested-With': 'XMLHttpRequest'
 };
 
-export const socket = io(BACKEND_URL,{withCredentials: false, rejectUnauthorized: false}); //connecting to socket server
-socket.on("connect_error", (err) => {
+export const socket = io(BACKEND_URL, {
+  withCredentials: false,
+  rejectUnauthorized: false
+}); //connecting to socket server
+socket.on('connect_error', (err) => {
   console.log(`connect_error due to ${err.message}`);
 });
-
 
 // We can use the following function to inject the JWT token through an interceptor
 // We get the `accessToken` from the localStorage that we set when we authenticate

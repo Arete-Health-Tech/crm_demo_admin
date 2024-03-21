@@ -26,13 +26,13 @@ import { getAllCallReschedulerHandler } from '../../../api/ticket/ticket';
 import { iCallRescheduler } from '../../../types/store/ticket';
 
 type Props = {
-  
+
   setIsModalOpenCall: any;
   isModalOpenCall: boolean;
 };
 
 const AddCallRescheduler = ({
- 
+
   setIsModalOpenCall,
   isModalOpenCall
 }: Props) => {
@@ -63,8 +63,8 @@ const AddCallRescheduler = ({
   // console.log("date: ",date, "time",time,"\nreminderData",reminderData);
   const checkIsEmpty = () => {
     if (
-      
-      
+
+      callReschedulerData.description.length > 0 &&
       date.length > 0 &&
       time.length > 0
     ) {
@@ -88,7 +88,7 @@ const AddCallRescheduler = ({
         ticket: ticketID
       });
 
-      console.log('Reminder created:', result);
+      // console.log('Reminder created:', result);
 
       setCallReschedulerData({
         date: 0,
@@ -110,29 +110,29 @@ const AddCallRescheduler = ({
     }
   };
 
-   const handleCheckboxChange = (label:string) => () => {
-     const isSelected = callReschedulerData.selectedLabels.some(
-       (selectedLabel) => selectedLabel.label === label
-     )
+  const handleCheckboxChange = (label: string) => () => {
+    const isSelected = callReschedulerData.selectedLabels.some(
+      (selectedLabel) => selectedLabel.label === label
+    )
 
-     if (isSelected) {
-       // If label is already selected, remove it from the array
-       setCallReschedulerData((prev) => ({
-         ...prev,
-         selectedLabels: prev.selectedLabels.filter(
-           (selectedLabel) => selectedLabel.label !== label
-         )
-       }));
-     } else {
-       // If label is not selected, add it to the array
-       setCallReschedulerData((prev) => ({
-         ...prev,
-         selectedLabels: [...prev.selectedLabels, {label}]
-       }));
-     }
+    if (isSelected) {
+      // If label is already selected, remove it from the array
+      setCallReschedulerData((prev) => ({
+        ...prev,
+        selectedLabels: prev.selectedLabels.filter(
+          (selectedLabel) => selectedLabel.label !== label
+        )
+      }));
+    } else {
+      // If label is not selected, add it to the array
+      setCallReschedulerData((prev) => ({
+        ...prev,
+        selectedLabels: [...prev.selectedLabels, { label }]
+      }));
+    }
 
-     checkIsEmpty();
-   };
+    checkIsEmpty();
+  };
 
   return (
     <Modal
@@ -140,7 +140,7 @@ const AddCallRescheduler = ({
       onClose={() => setIsModalOpenCall(false)}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
-      
+
     >
       <Box sx={style}>
         <Stack
@@ -238,7 +238,7 @@ const AddCallRescheduler = ({
                 }
                 label="Patient/Caregiver Was Inaudible understandable"
               />
-               
+
               <FormControlLabel
                 control={
                   <Checkbox
@@ -280,7 +280,7 @@ const AddCallRescheduler = ({
               maxRows={3}
               placeholder="Other Comments"
               style={{
-                border:"1px solid grey",
+                border: "1px solid grey",
                 // borderBottom: 'inherit',
                 // borderBottomWidth: 1.5,
                 padding: 1,
@@ -313,7 +313,7 @@ const AddCallRescheduler = ({
                 size="medium"
               />
             </Box>
-            
+
           </Stack>
           <Button
             disabled={disableButton}

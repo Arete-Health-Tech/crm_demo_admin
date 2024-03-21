@@ -28,7 +28,9 @@ const DownloadAllTickets = (props: Props) => {
   };
 
   const downloadData = async () => {
+    console.log("download all")
     setDisable(true);
+    console.log("download all 2")
     const sortedTickets = await getTicketHandler(
       UNDEFINED,
       1,
@@ -52,36 +54,38 @@ const DownloadAllTickets = (props: Props) => {
         admissionType: ticket.prescription[0].admission
           ? ticket.prescription[0].admission
           : 'Not Advised',
-        serviceName: ticket.prescription[0].service
-          ? ticket.prescription[0].service.name
+        serviceName: ticket?.prescription[0]?.service
+          ? ticket?.prescription[0]?.service?.name
           : 'No Advised',
-        isPharmacy:ticket.prescription[0].isPharmacy ? 'Advised' : 'No Advised' ,
-        stage: ticket.stage,
-        CTScan: ticket.prescription[0].diagnostics.includes('CT-Scan')
+        isPharmacy:ticket?.prescription[0]?.isPharmacy ? 'Advised' : 'No Advised' ,
+        stage: ticket?.stage,
+        CTScan: ticket?.prescription[0]?.diagnostics.includes('CT-Scan')
           ? 'Yes'
           : 'No',
-        LAB: ticket.prescription[0].diagnostics.includes('Lab') ? 'Yes' : 'No',
-        MRI: ticket.prescription[0].diagnostics.includes('MRI') ? 'Yes' : 'No',
-        PETCT: ticket.prescription[0].diagnostics.includes('PET_CT')
+        LAB: ticket.prescription[0]?.diagnostics.includes('Lab') ? 'Yes' : 'No',
+        MRI: ticket.prescription[0]?.diagnostics.includes('MRI') ? 'Yes' : 'No',
+        PETCT: ticket.prescription[0]?.diagnostics.includes('PET_CT')
           ? 'Yes'
           : 'No',
-        XRAY: ticket.prescription[0].diagnostics.includes('XRAY')
+        XRAY: ticket.prescription[0]?.diagnostics.includes('XRAY')
           ? 'Yes'
           : 'No',
-        USG: ticket.prescription[0].diagnostics.includes('USG')
+        USG: ticket.prescription[0]?.diagnostics.includes('USG')
           ? 'Yes'
           : 'No',
-        followUpDate: ticket.prescription[0].followUp
-          ? dayjs(ticket.prescription[0].followUp).format('DD/MMM/YYYY')
+        followUpDate: ticket.prescription[0]?.followUp
+          ? dayjs(ticket?.prescription[0]?.followUp).format('DD/MMM/YYYY')
           : 'No Follow Up',
         capturedBy:
-          ticket.creator[0]?.firstName + ' ' + ticket.creator[0]?.lastName,
+          ticket?.creator[0]?.firstName + ' ' + ticket?.creator[0]?.lastName,
         prescriptionCreatedAt: `${dayjs(
-          ticket.prescription[0].createdAt
+          ticket?.prescription[0]?.createdAt
         ).format('DD/MMM/YYYY , HHMM ')} hrs`,
-        prescriptionLink: ticket.prescription[0].image
+        prescriptionLink: ticket?.prescription[0]?.image
       };
     })
+     console.log(" thuis is data coming from without data ")
+    console.log(data," thuis is data coming from ")
     const csv = Papa.unparse(data);
     const csvBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     FileSaver.saveAs(

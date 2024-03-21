@@ -87,7 +87,8 @@ const TicketFilter = (props: {
     dateRange: []
   };
 
-  const { setFilterTickets, setPageNumber } = useTicketStore();
+  const { setFilterTickets, setPageNumber } = useTicketStore(); 
+  
 
   // const [ticketFilters, setTicketFilters] = useState<iTicketFilter>({
   //   stageList: [],

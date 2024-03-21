@@ -4,6 +4,12 @@ import {
   iReminder,
   iTimer
 } from '../../types/store/ticket';
+import {
+  iCallRescheduler,
+  iNote,
+  iReminder,
+  iTimer
+} from '../../types/store/ticket';
 import { apiClient } from '../apiClient';
 
 
@@ -22,9 +28,6 @@ export const getTicket = async (
   lose?: any
 ) => {
   const params = new URLSearchParams(selectedFilters).toString();
-  // console.log(params, "params")
-  // console.log(selectedFilters, "--------------------Selected Filters after click on ticket---------------------------------------")
-
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
     `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}`
@@ -39,6 +42,8 @@ export const createTicket = async (prescription: any) => {
       'Content-Type': 'multipart/form-data'
     }
   });
+  console.log(data);
+  // return data;
 };
 
 export const updateTicketData = async (payload: {
@@ -51,7 +56,7 @@ export const updateTicketData = async (payload: {
   ticket: string | undefined;
 }) => {
   const { data } = await apiClient.put('/ticket/ticketUpdate', payload);
-  return Promise.resolve(data)
+  return Promise.resolve(data);
 };
 
 export const updateTicketSubStage = async (payload: {

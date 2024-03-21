@@ -4,12 +4,6 @@ import {
   iReminder,
   iTimer
 } from '../../types/store/ticket';
-import {
-  iCallRescheduler,
-  iNote,
-  iReminder,
-  iTimer
-} from '../../types/store/ticket';
 import { apiClient } from '../apiClient';
 
 

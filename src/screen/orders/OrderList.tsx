@@ -3,7 +3,6 @@ import React from 'react'
 import Logout from '../login/Logout'
 import useUserStore from '../../store/userStore';
 import OrderListBody from './OrderListBody';
-import OrderDetailContainer from './orderDetailPage/OrderDetailContainer';
 
 const drawerWidth = 240;
 
@@ -36,9 +35,8 @@ const OrderList = () => {
                     </Toolbar>
                 </AppBar>
             </Box>
-            <br /><br />
             <Box>
-                <OrderDetailContainer />
+                <OrderListBody />
             </Box>
         </>
     )

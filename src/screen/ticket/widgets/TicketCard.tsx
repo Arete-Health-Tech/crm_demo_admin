@@ -14,16 +14,22 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 
+// import { updateIsNewTicket } from '../../../api/ticket/ticket';
+
+
 type Props = {
   patientData: iTicket;
+  index: number;
 };
-
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
+
 const TicketCard = (props: Props) => {
+  const { ticketID } = useParams();
   const { doctors, departments, allServices, stages } = useServiceStore();
+  const [isNewTicket, setIsNewTicket] = useState(true);
 
   const [currentStage, setCurrentStage] = useState<iStage>({
     _id: '',
@@ -34,6 +40,17 @@ const TicketCard = (props: Props) => {
     child: []
   });
 
+  const { tickets, filterTickets } = useTicketStore();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (filterTickets.stageList.length === 0 && props.index === 0 && window.location.href.split('/')[3] === "tickets") {
+      navigate(`/ticket/${props.patientData._id}`);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterTickets, props.index, props.patientData._id])
+
+
   const doctorSetter = (id: string) => {
     return doctors.find((element) => element._id === id)?.name;
   };
@@ -42,25 +59,58 @@ const TicketCard = (props: Props) => {
     return departments.find((element) => element._id === id)?.name;
   };
 
-  const navigate = useNavigate();
 
-  const { ticketID } = useParams();
-  const { tickets } = useTicketStore();
+  // const { tickets, setTickets } = useTicketStore();
+
   // console.log(tickets);
 
   useEffect(() => {
+    setIsNewTicket(props.patientData.isNewTicket);
+  }, [props.patientData.isNewTicket]);
+
+  useEffect(() => {
+    props.patientData.isNewTicket = true;
+    // console.log("-----------------------", props.patientData.isNewTicket, props.patientData.subStageCode.active);
     const stageDetail: any = stages?.find(
       ({ _id }) => props.patientData?.stage === _id
     );
     setCurrentStage(stageDetail);
+    const { setStages } = useServiceStore.getState();
+    setStages(stages);
   }, [stages]);
-console.log(props.patientData," this is props patient data")
-console.log(
-  dayjs(props.patientData.createdAt)
-    .tz('Asia/Kolkata')
-    .format('DD/MMM/YYYY , HH:mm'),
-  ' thui sis patient data '
-);
+  // console.log(props.patientData, ' this is props patient data');
+  // console.log(
+  //   dayjs(props.patientData.createdAt)
+  //     .tz('Asia/Kolkata')
+  //     .format('DD/MMM/YYYY , HH:mm'),
+  //   ' thui sis patient data '
+
+
+  // );
+
+  const showTicket = () => {
+
+    // updateIsNewTicket(props.patientData._id, false);
+
+    setIsNewTicket(false);
+    navigate(`/ticket/${props.patientData._id}`);
+  }
+
+  // const updateIsNewTicket = (ticketId: any, newValue: boolean) => {
+
+  //   const ticketIndex = tickets.findIndex(ticket => ticket._id === ticketId);
+
+
+  //   if (ticketIndex !== -1) {
+
+  //     const updatedTickets = [...tickets];
+  //     updatedTickets[ticketIndex] = {
+  //       ...updatedTickets[ticketIndex],
+  //       isNewTicket: newValue
+  //     };
+  //   }
+  // }
+
 
   return (
     <Box
@@ -74,9 +124,10 @@ console.log(
           cursor: 'pointer'
         }
       }}
-      onClick={() => {
-        navigate(`/ticket/${props.patientData._id}`);
-      }}
+      // onClick={() => {
+      //   navigate(`/ticket/${props.patientData._id}`);
+      // }}
+      onClick={showTicket}
     >
       <Box
         display="flex"
@@ -114,7 +165,13 @@ console.log(
         </Box>
         <Box>
           <Typography variant="body2">
-            {/* <NotificationsActiveIcon style={{ color: 'var(--primaryColor)' }} /> */}
+            {/* .............. */}
+            {/* {(currentStage?.name) == "New Lead" ? (
+              <NotificationsActiveIcon style={{ color: '#4859ca' }} />
+            ) : (
+              <NotificationsActiveIcon style={{ display: 'none' }} />
+            )} */}
+
           </Typography>
         </Box>
         <Box>
@@ -154,7 +211,7 @@ console.log(
           <Chip label="Diagnostics" color="primary" size="small" />
         )}
 
-        <Chip
+        {props.patientData.estimate.length === 0 ? <></> : <Chip
           // D ENDS HERE__________________________
           size="small"
           disabled={props.patientData.estimate.length === 0 ? true : false}
@@ -162,19 +219,19 @@ console.log(
             props.patientData.estimate[0]?.paymentType === 0
               ? 'Cash'
               : props.patientData.estimate[0]?.paymentType === 1
-              ? 'Insurance'
-              : props.patientData.estimate[0]?.paymentType === 2
-              ? 'CGHS| ECHS'
-              : ''
+                ? 'Insurance'
+                : props.patientData.estimate[0]?.paymentType === 2
+                  ? 'CGHS| ECHS'
+                  : ''
           }
-          // sx={{
-          //   display: 'block',
-          //   backgroundColor: 'blue',
-          //   color: 'white',
-          //   borderRadius: '4px',
-          //   padding: '4px 8px'
-          // }}
-        />
+        // sx={{
+        //   display: 'block',
+        //   backgroundColor: 'blue',
+        //   color: 'white',
+        //   borderRadius: '4px',
+        //   padding: '4px 8px'
+        // }}
+        />}
 
         <Chip
           sx={{
@@ -188,12 +245,13 @@ console.log(
             222 > 15000
               ? 'info'
               : 1500 < 4500 && 4500 < 22200
-              ? 'warning'
-              : 'secondary'
+                ? 'warning'
+                : 'secondary'
           }
         />
       </Box>
       <Typography variant="caption" color="blue">
+
         Created At:{' '}
         {dayjs(props.patientData.createdAt)
           .tz('Asia/Kolkata')
@@ -208,9 +266,11 @@ console.log(
           />
         </Grid>
         <Grid item xs={4}>
-          <Typography fontSize={'14px'} fontWeight={500}>{`(${
-            currentStage?.code * 20 || 0
-          }%) ${currentStage?.name || 'N/A'}`}</Typography>
+          <Typography fontSize={'14px'} fontWeight={500}>{`(${currentStage?.code * 20 || 0
+            }%) ${currentStage?.name || 'N/A'}`}
+
+
+          </Typography>
         </Grid>
       </Grid>
     </Box>

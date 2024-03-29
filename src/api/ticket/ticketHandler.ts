@@ -1,5 +1,11 @@
 import useTicketStore from '../../store/ticketStore';
-import { iCallRescheduler, iNote, iReminder, iTicketFilter, iTimer } from '../../types/store/ticket';
+import {
+  iCallRescheduler,
+  iNote,
+  iReminder,
+  iTicketFilter,
+  iTimer
+} from '../../types/store/ticket';
 import {
   createNewNote,
   getAllNotes,
@@ -9,7 +15,8 @@ import {
   createNewReminder,
   createNewCallRescheduler,
   getAllRescheduler,
-  createTimer
+  createTimer,
+  getPharmacyTickets
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -18,11 +25,9 @@ export const getTicketHandler = async (
   name: string,
   pageNumber: number = 1,
   downloadAll: 'true' | 'false' = 'false',
-  selectedFilters: iTicketFilter,
+  selectedFilters: iTicketFilter | null,
   ticketId: string = UNDEFINED,
-  fetchUpdated : boolean = false,
-  
-
+  fetchUpdated: boolean = false
 ) => {
   const {
     setTickets,
@@ -31,18 +36,13 @@ export const getTicketHandler = async (
     ticketCache,
     setEmptyDataText,
     setDownloadTickets,
-    setLoaderOn,
-  
-  
+    setLoaderOn
   } = useTicketStore.getState();
-  const {user} = useUserStore.getState();
-  const phone=user?.phone
+  const { user } = useUserStore.getState();
+  const phone = user?.phone;
 
- 
-
-
- 
   setLoaderOn(true);
+  // console.log(selectedFilters," this is selected filters");
   const data = await getTicket(
     name,
     pageNumber,
@@ -50,8 +50,7 @@ export const getTicketHandler = async (
     selectedFilters,
     ticketId,
     fetchUpdated,
-    phone,
-   
+    phone
   );
   const sortedTickets = data.tickets;
   const count = data.count;
@@ -67,12 +66,43 @@ export const getTicketHandler = async (
   if (downloadAll === 'true') {
     setDownloadTickets(sortedTickets);
     setLoaderOn(false);
-    console.log("total download data",sortedTickets.length);
+    // console.log("total download data",sortedTickets.length);
     return sortedTickets;
   }
   setTicketCount(count);
   setTickets(sortedTickets);
   setLoaderOn(false);
+};
+
+export const getPharmcyTicketHandler = async () => {
+  const {
+    setTickets,
+    setTicketCount,
+    setEmptyDataText,
+    setLoaderOn,
+    pageNumber
+  } = useTicketStore.getState();
+
+  setLoaderOn(true);
+
+  try {
+    const data = await getPharmacyTickets(pageNumber);
+    const count = data.count;
+
+    if (data.tickets.length < 1) {
+      setEmptyDataText('No Data Found');
+    } else {
+      setEmptyDataText('');
+    }
+
+    setTicketCount(count);
+    setTickets(data.tickets);
+    setLoaderOn(false);
+  } catch (error) {
+    console.error('Error fetching tickets:', error);
+    // Handle error, show message, etc.
+    setLoaderOn(false);
+  }
 };
 
 export type iCreateTicket = {
@@ -85,57 +115,51 @@ export type iCreateTicket = {
   followUp: Date | number;
   image: string | null;
   consumer: string;
-  isPharmacy:string;
+  isPharmacy: string;
   service?: { _id: string; label: string };
   diagnostics: string[];
   caregiver_phone: string | null;
   caregiver_name: string | null;
 };
 
-  export const createTicketHandler = async (
-    prescription: iCreateTicket,
-   
-  ) => {
-    const prescriptionData = new FormData();
-    prescriptionData.append('consumer', prescription.consumer);
-    prescriptionData.append(
-      'departments',
-      JSON.stringify(prescription.departments)
-    );
-    prescriptionData.append('admission', prescription.admission);
-    prescriptionData.append('doctor', prescription.doctor);
-    prescriptionData.append('symptoms', prescription.symptoms!);
-    prescription.condition &&
-      prescriptionData.append('condition', prescription.condition);
-    prescription.caregiver_name &&
-      prescriptionData.append('caregiver_name', prescription.caregiver_name);
-    prescription.caregiver_phone &&
-      prescriptionData.append('caregiver_phone', prescription.caregiver_phone);
-    prescriptionData.append(
-      'medicines',
-      JSON.stringify(prescription.medicines)
-    );
-    prescriptionData.append('followUp', JSON.stringify(prescription.followUp));
-    prescriptionData.append('isPharmacy', prescription.isPharmacy);
-    prescriptionData.append(
-      'diagnostics',
-      JSON.stringify(prescription.diagnostics)
-    );
-    prescription.service &&
-      prescriptionData.append('service', prescription.service._id);
-    console.log('file log', prescription);
-    /* @ts-ignore */
-    const blob = await (await fetch(prescription.image)).blob();
-    prescriptionData.append('image', blob);
+export const createTicketHandler = async (prescription: iCreateTicket) => {
+  const prescriptionData = new FormData();
+  prescriptionData.append('consumer', prescription.consumer);
+  prescriptionData.append(
+    'departments',
+    JSON.stringify(prescription.departments)
+  );
+  prescriptionData.append('admission', prescription.admission);
+  prescriptionData.append('doctor', prescription.doctor);
+  prescriptionData.append('symptoms', prescription.symptoms!);
+  prescription.condition &&
+    prescriptionData.append('condition', prescription.condition);
+  prescription.caregiver_name &&
+    prescriptionData.append('caregiver_name', prescription.caregiver_name);
+  prescription.caregiver_phone &&
+    prescriptionData.append('caregiver_phone', prescription.caregiver_phone);
+  prescriptionData.append('medicines', JSON.stringify(prescription.medicines));
+  prescriptionData.append('followUp', JSON.stringify(prescription.followUp));
+  prescriptionData.append('isPharmacy', prescription.isPharmacy);
+  prescriptionData.append(
+    'diagnostics',
+    JSON.stringify(prescription.diagnostics)
+  );
+  prescription.service &&
+    prescriptionData.append('service', prescription.service._id);
+  // console.log('file log', prescription);
+  /* @ts-ignore */
+  const blob = await (await fetch(prescription.image)).blob();
+  prescriptionData.append('image', blob);
 
-    return await createTicket(prescriptionData);
-  };
+  return await createTicket(prescriptionData);
+};
 
-  export const getAllNotesHandler = async (ticketId: string) => {
-    const { setNotes } = useTicketStore.getState();
-    const notes = await getAllNotes(ticketId);
-    setNotes(notes);
-  };
+export const getAllNotesHandler = async (ticketId: string) => {
+  const { setNotes } = useTicketStore.getState();
+  const notes = await getAllNotes(ticketId);
+  setNotes(notes);
+};
 
 export const createNotesHandler = async (note: iNote) => {
   const { notes, setNotes } = useTicketStore.getState();
@@ -155,9 +179,8 @@ export const createNewReminderHandler = async (reminderData: iReminder) => {
   const { reminders, setReminders } = useTicketStore.getState();
   const reminderAdded = await createNewReminder(reminderData);
   setReminders([...reminders, reminderAdded]);
-  return reminderAdded
+  return reminderAdded;
 };
-
 
 export const getAllCallReschedulerHandler = async () => {
   const { setCallRescheduler } = useTicketStore.getState();
@@ -166,9 +189,13 @@ export const getAllCallReschedulerHandler = async () => {
   return Promise.resolve(callRescheduler);
 };
 
-export const createNewCallReschedulerHandler = async (callReschedulerData: iCallRescheduler) => {
+export const createNewCallReschedulerHandler = async (
+  callReschedulerData: iCallRescheduler
+) => {
   const { callRescheduler, setCallRescheduler } = useTicketStore.getState();
-  const callReschedulerAdded = await createNewCallRescheduler(callReschedulerData);
+  const callReschedulerAdded = await createNewCallRescheduler(
+    callReschedulerData
+  );
   setCallRescheduler([...callRescheduler, callReschedulerAdded]);
   return callReschedulerAdded;
 };
@@ -179,23 +206,21 @@ export const getAllReschedulerHandler = async () => {
   setCallRescheduler(reschedular);
 };
 
-
-export const createTimerHandler = async (timerData: iTimer,ticketId:string) => {
+export const createTimerHandler = async (
+  timerData: iTimer,
+  ticketId: string
+) => {
   const { status, setStatus } = useTicketStore.getState();
-  console.log(timerData, 'timerData');
-  const timerAdded = await createTimer(timerData,ticketId);
-  console.log(timerAdded," this is timerAdded");
-   const updatedStatus = Array.isArray(status)
-     ? [...status, timerAdded]
-     : [timerAdded];
+  const timerAdded = await createTimer(timerData, ticketId);
+  const updatedStatus = Array.isArray(status)
+    ? [...status, timerAdded]
+    : [timerAdded];
 
-   setStatus(updatedStatus);
-  
-  
-   return Promise.resolve(timerAdded);
+  setStatus(updatedStatus);
+
+  return Promise.resolve(timerAdded);
 };
 
 function getDate(): string | Blob {
   throw new Error('Function not implemented.');
 }
-

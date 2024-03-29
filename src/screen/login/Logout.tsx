@@ -66,8 +66,8 @@ const Logout = (props: Props) => {
     setAnchorEl(event.currentTarget);
   };
   const handleLogout = async () => {
-    console.log(user?._id,"this is user from logout")
-    const { data } = await apiClient.post('/representative/logOut',{userId:user?._id});
+    // console.log(user?._id,"this is user from logout")
+    const { data } = await apiClient.post('/representative/logOut', { userId: user?._id });
     handleClose();
     cookie.remove('user');
     setUser(null);

@@ -6,7 +6,7 @@ export interface iConsumer {
   lastName: string;
   email: string;
   phone: string;
-  age:string;
+  age: string;
   dob: string;
   gender: 'M' | 'F' | 'O';
   uid: string;
@@ -46,7 +46,7 @@ export interface iConsumer {
 // }
 
 export interface iEstimate {
- 
+
   type: number;
   isEmergency: boolean;
   wardDays: number;
@@ -54,7 +54,7 @@ export interface iEstimate {
   ward: string;
   paymentType: number;
   insuranceCompany: string | null;
-  insurancePolicyNumber: number |null;
+  insurancePolicyNumber: number | null;
   insurancePolicyAmount: number;
   service: serviceAdded[];
   // investigation: string[];
@@ -96,16 +96,18 @@ export interface iTicket {
   creator: string;
   assigned: string;
   stage: string;
-  location:string;
+  location: string;
   createdAt: string;
   creator: iCreator[];
+  // ..
+  isNewTicket: boolean | true;
   subStageCode: {
     active: boolean;
     code: number;
   };
   modifiedDate: Date | string | null;
-  won:string;
-  loss:string;
+  won: string;
+  loss: string;
 
 }
 
@@ -149,7 +151,7 @@ export interface iNote {
 }
 
 export interface iTimer {
-select:string;
+  select: string;
   stoppedTimer?: number | null | undefined;
 }
 
@@ -180,10 +182,12 @@ export interface iTicketFilter {
   stageList: any[];
   representative: string | null;
   admissionType?: string[];
-  diagnosticType?: string[];
+  diagnosticsType?: string[];
   startDate?: number;
   endDate?: number;
- results?:string |null;
+  dateRange: string[];
+  results?: string | null;
+
 }
 
 export interface iCreator {

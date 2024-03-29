@@ -12,7 +12,7 @@ import axios from 'axios';
 import { AnyAaaaRecord } from 'dns';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SERVER_URL } from '../../../api/apiClient';
+import { SERVER_URL, apiClient } from '../../../api/apiClient';
 import { getConsumerByUhid } from '../../../api/consumer/consumer';
 import { registerConsumerHandler } from '../../../api/consumer/consumerHandler';
 import useEventStore from '../../../store/eventStore';
@@ -47,48 +47,69 @@ const RegisterConsumer = () => {
   const { setSnacks } = useEventStore();
   const navigate = useNavigate();
 
+  // const validationsChecker = () => {
+  //   const firstName = consumer.firstName === initialConsumerFields.firstName;
+  //   // const lastName = consumer.lastName === initialConsumerFields.lastName;
+  //   const phone = consumer.phone.length > 12;
+
+  //   const uid = consumer.uid === initialConsumerFields.uid;
+
+  //   // const age = consumer.age === initialConsumerFields.age;
+  //   // const gender = consumer.gender === initialConsumerFields.gender;
+  //   setValidations((prev) => {
+  //     prev.firstName = firstName
+  //       ? { message: 'Please enter correct first name', value: true }
+  //       : defaultValidations;
+  //     // prev.lastName = lastName
+  //     //   ? { message: 'Please enter correct last name', value: true }
+  //     //   : defaultValidations;
+  //     // prev.email = email
+  //     //   ? { message: 'Please enter correct email', value: true }
+  //     //   : defaultValidations;
+  //     prev.phone = phone
+  //       ? { message: 'Please enter correct phone number', value: true }
+  //       : defaultValidations;
+  //     prev.uid = uid
+  //       ? { message: 'Please enter correct UHID', value: true }
+  //       : defaultValidations;
+  //     // prev.age = age
+  //     //   ? { message: 'Please enter correct age', value: true }
+  //     //   : defaultValidations;
+  //     // prev.gender = gender
+  //     //   ? { message: 'Please enter correct gender', value: true }
+  //     //   : defaultValidations;
+  //     return { ...prev };
+  //   });
+  //   return (
+  //     firstName === false &&
+  //     // lastName === false &&
+  //     // email === false &&
+  //     phone === false &&
+  //     uid === false
+  //     // age === false &&
+  //     // gender === false
+  //   );
+  // };
+
   const validationsChecker = () => {
-    const firstName = consumer.firstName === initialConsumerFields.firstName;
-    // const lastName = consumer.lastName === initialConsumerFields.lastName;
-    const phone = consumer.phone.length !== 10;
+    const firstNameValid = consumer.firstName.trim() !== '';
+    const phoneValid = consumer.phone.length === 10;
+    const uidValid = /^[a-zA-Z0-9]{13}$/.test(consumer.uid.trim());
 
-    const uid = consumer.uid === initialConsumerFields.uid;
+    setValidations((prev) => ({
+      ...prev,
+      firstName: firstNameValid
+        ? defaultValidations
+        : { message: 'Please enter correct first name', value: true },
+      phone: phoneValid
+        ? defaultValidations
+        : { message: 'Please enter correct phone number', value: true },
+      uid: uidValid
+        ? defaultValidations
+        : { message: 'Please enter correct UHID', value: true },
+    }));
 
-    // const age = consumer.age === initialConsumerFields.age;
-    // const gender = consumer.gender === initialConsumerFields.gender;
-    setValidations((prev) => {
-      prev.firstName = firstName
-        ? { message: 'Please enter correct first name', value: true }
-        : defaultValidations;
-      // prev.lastName = lastName
-      //   ? { message: 'Please enter correct last name', value: true }
-      //   : defaultValidations;
-      // prev.email = email
-      //   ? { message: 'Please enter correct email', value: true }
-      //   : defaultValidations;
-      prev.phone = phone
-        ? { message: 'Please enter correct phone number', value: true }
-        : defaultValidations;
-      prev.uid = uid
-        ? { message: 'Please enter correct UHID', value: true }
-        : defaultValidations;
-      // prev.age = age
-      //   ? { message: 'Please enter correct age', value: true }
-      //   : defaultValidations;
-      // prev.gender = gender
-      //   ? { message: 'Please enter correct gender', value: true }
-      //   : defaultValidations;
-      return { ...prev };
-    });
-    return (
-      firstName === false &&
-      // lastName === false &&
-      // email === false &&
-      phone === false &&
-      uid === false
-      // age === false &&
-      // gender === false
-    );
+    return firstNameValid && phoneValid && uidValid;
   };
 
   const updateConsumerState = (field: string, value: any) => {
@@ -107,6 +128,11 @@ const RegisterConsumer = () => {
 
   const registerConsumer = async () => {
     const check = validationsChecker();
+    const isValid = validationsChecker();
+    if (!isValid) {
+      setSnacks('Please fill in all required fields correctly!', 'error');
+      return; // Exit early if validations fail
+    }
     if (check === true) {
       const dob = new Date();
       dob.setFullYear(dob.getFullYear() - +consumer.age);
@@ -125,10 +151,10 @@ const RegisterConsumer = () => {
       consumerPayload.gender = consumer.gender ? consumer.gender : null;
 
       consumerPayload.dob = consumer.age ? dob : null;
-      console.log(consumer);
+
       const data = await registerConsumerHandler(consumerPayload);
       if (data) {
-        console.log(data);
+
         setConsumerId(data._id);
         setExistingData(true);
       } else {
@@ -163,14 +189,15 @@ const RegisterConsumer = () => {
   const nextConsumer = () => {
     navigate(`/consumer/${consumerId}`);
   };
-  console.log({ consumerId });
+
 
   const fetchConsumerDataByUhid = async () => {
     try {
-      const response = await axios.get(
-        'https://backend.aretehealth.tech/prod/api/v1/consumer/findConsumer?',
+      const response = await apiClient.get(
+        '/consumer/findConsumer?',
         { params: { search: consumer.uid } }
       );
+      // console.log(response.data)
       if (response.data) {
         updateConsumerState('firstName', response.data.firstName);
         updateConsumerState('lastName', response.data.lastName);
@@ -181,6 +208,14 @@ const RegisterConsumer = () => {
         setExistingData(true);
       } else {
         // setConsumer(initialConsumerFields);
+
+        updateConsumerState('firstName', '');
+        updateConsumerState('lastName', '');
+        updateConsumerState('phone', '');
+        updateConsumerState('age', '');
+        updateConsumerState('gender', '');
+        setConsumerId('');
+
         setExistingData(false);
       }
     } catch (error) {
@@ -228,7 +263,7 @@ const RegisterConsumer = () => {
           type="text"
           placeholder="33XXX"
           label="UHID"
-          // onBlur={fetchConsumerDataByUhid}
+          onBlur={fetchConsumerDataByUhid}
           error={validations.uid.value}
           helperText={validations.uid.message}
         />

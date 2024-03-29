@@ -12,7 +12,6 @@ function PaginationTicket({ tickets }) {
   const indexOfLastItem = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstItem = indexOfLastItem - ITEMS_PER_PAGE;
   const currentItems = tickets.slice(indexOfFirstItem, indexOfLastItem);
-  console.log(currentItems);
 
   const handlePageChange = (event, value) => {
     setCurrentPage(value);

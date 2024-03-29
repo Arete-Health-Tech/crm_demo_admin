@@ -4,7 +4,6 @@ import { createEstimate, uploadAndSendEstimate } from './estimate';
 export const createEstimateHandler = async (estimate: iEstimate) => {
   try {
     const createdEstimate = await createEstimate(estimate);
-    console.log(createdEstimate);
     return createdEstimate;
   } catch (error) {
     // Handle the error here (e.g., log it or show a user-friendly message)

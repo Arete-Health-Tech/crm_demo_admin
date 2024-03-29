@@ -12,8 +12,7 @@ export default function ChartThree({ dnd, pending, todaysTask, callCompleted, re
             'Pending',
             'Today Task',
             'Call Completed',
-           
-            'reschedule'
+            'Reschedule'
           ],
           scaleType: 'band'
         }
@@ -23,7 +22,7 @@ export default function ChartThree({ dnd, pending, todaysTask, callCompleted, re
           data: [dnd, pending, todaysTask, callCompleted, reschedule]
         }
       ]}
-      width={500}
+      width={550}
       height={450}
     />
   );

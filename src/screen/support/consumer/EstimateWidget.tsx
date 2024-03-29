@@ -198,9 +198,9 @@ const EstimateWidget = (props: Props) => {
   };
 
   const handleCreateEstimate = () => {
-    console.log(estimateFileds," this is in estimate widget")
+    // console.log(estimateFileds," this is in estimate widget")
     createEstimateHandler(estimateFileds);
-   
+
   };
 
   return (
@@ -452,9 +452,8 @@ const EstimateWidget = (props: Props) => {
               {estimateFileds.service.map((item, index: number) => (
                 <Chip
                   color="primary"
-                  label={`${serviceGetter(item.id)}/ ${
-                    item.isSameSite ? 'Same Site' : 'Different Site'
-                  }`}
+                  label={`${serviceGetter(item.id)}/ ${item.isSameSite ? 'Same Site' : 'Different Site'
+                    }`}
                   variant="outlined"
                   sx={{ textTransform: 'capitalize' }}
                   onDelete={() => deleteService(index)}
@@ -773,8 +772,8 @@ const EstimateWidget = (props: Props) => {
                 {estimateFileds.paymentType === 0
                   ? 'Cash'
                   : estimateFileds.paymentType === 1
-                  ? 'Insurance'
-                  : 'CGHS | ECHS'}
+                    ? 'Insurance'
+                    : 'CGHS | ECHS'}
               </Typography>
 
               {estimateFileds.paymentType === 1 && (
@@ -820,9 +819,8 @@ const EstimateWidget = (props: Props) => {
                   <Chip
                     size="small"
                     color="primary"
-                    label={`${serviceGetter(item.id)}/ ${
-                      item.isSameSite ? 'Same Site' : 'Different Site'
-                    }`}
+                    label={`${serviceGetter(item.id)}/ ${item.isSameSite ? 'Same Site' : 'Different Site'
+                      }`}
                     variant="outlined"
                     sx={{ textTransform: 'capitalize', mx: 1 }}
                   />
@@ -853,7 +851,7 @@ const EstimateWidget = (props: Props) => {
                   No Investigation Selected
                 </Typography>
               )} */}
-              {/* <Stack my-={1}>
+            {/* <Stack my-={1}>
                 <Typography fontWeight={500} variant="caption">
                   Investigation Amount : {estimateFileds.investigationAmount}
                 </Typography>

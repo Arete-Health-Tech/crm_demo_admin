@@ -81,7 +81,7 @@ import { Document, Page } from 'react-pdf';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTone';
 import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
- 
+
 
 import AWS from 'aws-sdk';
 import CustomModal from './widgets/CustomModal';
@@ -166,12 +166,12 @@ const questions = [
   // Add more questions as needed
 ];
 interface iConsumer {
-  uid:string;
+  uid: string;
   firstName: string;
   lastName: string;
-  phone:number;
+  phone: number;
   age: number;
-  gender:string;
+  gender: string;
 
   // Add other fields as needed
 }
@@ -214,28 +214,28 @@ const SingleTicketDetails = (props: Props) => {
   const [selectedResponses, setSelectedResponses] = useState({});
   const [pdfUrl, setPdfUrl] = useState('');
   const [isEditing, setIsEditing] = useState(false);
-   const [editedConsumer, setEditedConsumer] = useState<iConsumer>({
-    uid:'',
-     firstName: '',
-     lastName: '',
-     phone:0,
-     age:0,
-     gender:'',
-     // Add other fields as needed
-   });
+  const [editedConsumer, setEditedConsumer] = useState<iConsumer>({
+    uid: '',
+    firstName: '',
+    lastName: '',
+    phone: 0,
+    age: 0,
+    gender: '',
+    // Add other fields as needed
+  });
 
-    const [openModal, setOpenModal] = useState(false);  
-    const [modalOpenRemainder, setModalOpenRemainder] = useState(false);
-    const [modalOpenRescheduler, setModalOpenRescheduler]=useState(false)
-    const [matchedObjects, setMatchedObjects] = useState([]);
-    const [callReschedulerData, setCallReschedulerData] = useState([]);
+  const [openModal, setOpenModal] = useState(false);
+  const [modalOpenRemainder, setModalOpenRemainder] = useState(false);
+  const [modalOpenRescheduler, setModalOpenRescheduler] = useState(false)
+  const [matchedObjects, setMatchedObjects] = useState([]);
+  const [callReschedulerData, setCallReschedulerData] = useState([]);
 
 
 
- 
-console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
-console.log(currentTicket,"this is current ticet")
-// console.log(callRescheduler, ' this is call rescheduler ');
+
+  // console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
+  // console.log(currentTicket,"this is current ticet")
+  // console.log(callRescheduler, ' this is call rescheduler ');
   // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
   // const handlePhoneCall = async (e: React.SyntheticEvent) => {
@@ -243,7 +243,7 @@ console.log(currentTicket,"this is current ticet")
   //   const currentStage = currentTicket?.stage;
   //   if (currentStage === desiredStage) {
   //     const currentSubStageCode = currentTicket?.subStageCode?.code;
-    
+
   //     const stageDetail: any = stages?.find(
   //       ({ _id }) => currentTicket?.stage === _id
   //     );
@@ -279,7 +279,7 @@ console.log(currentTicket,"this is current ticet")
   //     }
   //   }else {
   //      const currentSubStageCode = currentTicket?.subStageCode?.code;
-      
+
   //      const stageDetail: any = stages?.find(
   //        ({ _id }) => currentTicket?.stage === _id
   //      );
@@ -290,7 +290,7 @@ console.log(currentTicket,"this is current ticet")
   //          currentSubStageCode > noOfChilds - 3) &&
   //        currentSubStageCode < noOfChilds
   //      ) {
-       
+
 
   //        const payload = {
   //          subStageCode: {
@@ -315,10 +315,10 @@ console.log(currentTicket,"this is current ticet")
   //      }
   //   }
   // }
-    
-  
 
-      
+
+
+
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
@@ -360,7 +360,7 @@ console.log(currentTicket,"this is current ticet")
 
   const getTicketInfo = (ticketID: string | undefined) => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
-    console.log(fetchTicket," this is refetched dsfgsdgsdghsdhsdfh");
+    // console.log(fetchTicket," this is refetched dsfgsdgsdghsdhsdfh");
     setCurrentTicket(fetchTicket);
     return fetchTicket;
   };
@@ -368,6 +368,7 @@ console.log(currentTicket,"this is current ticet")
   useEffect(() => {
     (async function () {
       const ticketData = getTicketInfo(ticketID);
+      // console.log(ticketData," thi s is ticket Data")
       if (currentTicket) {
         setSingleReminder([]);
         setCallReschedule([]);
@@ -398,7 +399,7 @@ console.log(currentTicket,"this is current ticet")
     ticketUpdateFlag,
     reminders.length,
     reminders,
-    currentTicket?.stage,
+    // currentTicket?.stage,
     callRescheduler.length,
     callRescheduler
   ]);
@@ -433,28 +434,28 @@ console.log(currentTicket,"this is current ticet")
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
   const estimateId = getEstimateIdByDataId(tickets, ticketID);
 
- 
+
 
 
 
   const fetchPdfUrl = async () => {
-   if (currentTicket?.location) {
-     window.open(currentTicket.location, '_blank');
-   }else{
-     alert('Please create an estimate.');
-   }
+    if (currentTicket?.location) {
+      window.open(currentTicket.location, '_blank');
+    } else {
+      alert('Please create an estimate.');
+    }
   };
 
 
 
 
- 
 
 
- 
 
 
- 
+
+
+
   const handleIconClickRemainder = async () => {
     try {
       const { data } = await apiClient.get('/task/ticketRemainder', {
@@ -467,18 +468,18 @@ console.log(currentTicket,"this is current ticet")
       setMatchedObjects(filteredData);
       setModalOpenRemainder(true);
       if (filteredData.length === 0) {
-        console.log('No data found for the specified ticketId');
+
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
 
- 
-// Now you can access matchedObjects outside the function
-// For example
-const handleIconClickCallRescheduler=async ()=>{
- try {
+
+  // Now you can access matchedObjects outside the function
+  // For example
+  const handleIconClickCallRescheduler = async () => {
+    try {
       const { data } = await apiClient.get('/task/ticketReschedluer', {
         headers: {
           'Content-Type': 'application/json'
@@ -489,23 +490,22 @@ const handleIconClickCallRescheduler=async ()=>{
       setCallReschedulerData(filteredData);
       setModalOpenRescheduler(true);
       if (filteredData.length === 0) {
-        console.log('No data found for the specified ticketId');
+
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-console.log(matchedObjects," this is remainder")
-console.log(callReschedulerData," thi sis rescheduler data")
-
- const handleCloseModal = () => {
-   // Close the modal
-   setModalOpenRemainder(false);
-   setModalOpenRescheduler(false);
- };
 
 
-console.log(currentTicket?.estimate," this is estimate from db");
+  const handleCloseModal = () => {
+    // Close the modal
+    setModalOpenRemainder(false);
+    setModalOpenRescheduler(false);
+  };
+
+
+
 
 
   return (
@@ -728,11 +728,11 @@ console.log(currentTicket?.estimate," this is estimate from db");
                   <MedicalServicesOutlined htmlColor="gray" />
                   <Typography textTransform={'capitalize'}>
                     {doctorSetter(currentTicket?.prescription[0].doctor!)}
-                    {/* ( */}
-                    {/* {departmentSetter(
+                    {/* (
+                    {departmentSetter(
                       currentTicket?.prescription[0].departments[0]!
-                    )} */}
-                    {/* ) */}
+                    )}
+                    ) */}
                   </Typography>
                 </Stack>
                 <Stack direction="row" spacing={3} my={1}>
@@ -816,8 +816,8 @@ console.log(currentTicket?.estimate," this is estimate from db");
                       <Chip
                         color={
                           currentTicket?.estimate[0].paymentType === 0 ||
-                          currentTicket?.estimate[0].paymentType === 1 ||
-                          currentTicket?.estimate[0].paymentType === 2
+                            currentTicket?.estimate[0].paymentType === 1 ||
+                            currentTicket?.estimate[0].paymentType === 2
                             ? 'info'
                             : 'default'
                         }
@@ -825,10 +825,10 @@ console.log(currentTicket?.estimate," this is estimate from db");
                           currentTicket?.estimate[0]?.paymentType === 0
                             ? 'Cash'
                             : currentTicket?.estimate[0]?.paymentType === 1
-                            ? 'Insurance'
-                            : currentTicket?.estimate[0]?.paymentType === 2
-                            ? 'CGHS| ECHS'
-                            : 'Payment Type Not Available'
+                              ? 'Insurance'
+                              : currentTicket?.estimate[0]?.paymentType === 2
+                                ? 'CGHS| ECHS'
+                                : 'Payment Type Not Available'
                         }
                         variant="filled"
                         size="medium"

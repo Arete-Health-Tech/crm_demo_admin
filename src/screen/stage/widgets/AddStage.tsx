@@ -41,13 +41,13 @@ const AddStage = (props: Props) => {
     code: 0,
     description: '',
     parent: '',
-     child:[],
+    child: [],
     children: [
       {
         code: 0,
         description: '',
         name: '',
-        _id:''
+        _id: ''
       }
     ]
   });
@@ -56,7 +56,7 @@ const AddStage = (props: Props) => {
 
   const handleAddStage = async () => {
     await createStageHandler(stage);
-    console.log(stage);
+    // console.log(stage);
     setMessage('Stage Added');
   };
 

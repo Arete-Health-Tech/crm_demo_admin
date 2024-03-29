@@ -23,7 +23,7 @@ import CloseIcon from '@mui/icons-material/Close';
 type Props = {
   isModalOpen: boolean;
   setIsModalOpen: any;
- 
+
 };
 
 const AddReminderWidget = ({
@@ -79,7 +79,7 @@ const AddReminderWidget = ({
       ...reminderData,
       ticket: ticketID
     });
-    console.log('reminder created', result);
+    // console.log('reminder created', result);
     setReminderData({
       date: 0,
       title: '',

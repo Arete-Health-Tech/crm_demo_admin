@@ -10,6 +10,6 @@ export const getDoctorsHandler = async () => {
 export const createNewDoctorHandler = async (doctor: any) => {
   const { setDoctors, doctors } = useServiceStore.getState();
   const addedDoctor = await createNewDoctor(doctor);
-  console.log(addedDoctor);
+  // console.log(addedDoctor);
   setDoctors([...doctors, addedDoctor]);
 };

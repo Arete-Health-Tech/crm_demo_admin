@@ -22,13 +22,14 @@ import { useNavigate } from 'react-router-dom';
 import useTicketStore from '../../store/ticketStore';
 import { iTicket } from '../../types/store/ticket';
 import { getPharmacyTickets, getTicket } from '../../api/ticket/ticket';
-import { apiClient } from '../../api/apiClient';
+import { apiClient, socket } from '../../api/apiClient';
 import axios from 'axios';
 import { getDoctors } from '../../api/doctor/doctor';
 import { getPharmcyTicketHandler } from '../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../constantUtils/constant';
 import { iDepartment, iDoctor } from '../../types/store/service';
 import { getDepartments } from '../../api/department/department';
+import { socketEventConstants } from '../../constantUtils/socketEventsConstants';
 
 const getColorForOption = (optionValue: string): string => {
     switch (optionValue) {
@@ -89,12 +90,7 @@ const OrderListBody = () => {
             await getPharmcyTicketHandler();
         })();
         setPageNumber(1);
-    }, []);
-    useEffect(() => {
-        (async function () {
-            await getPharmcyTicketHandler();
-        })();
-    }, [page])
+    }, [page]);
 
 
     const handleChange = (event: SelectChangeEvent) => {
@@ -312,6 +308,18 @@ const OrderListBody = () => {
             )
         );
     }
+
+    // useEffect(() => {
+    //     const refetchTickets = async () => {
+    //         await getPharmcyTicketHandler();
+    //     };
+
+    //     socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+
+    //     return () => {
+    //         socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    //     };
+    // }, [pageNumber]);
 
     return (
         <>

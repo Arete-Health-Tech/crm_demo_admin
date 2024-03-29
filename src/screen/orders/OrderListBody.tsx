@@ -128,6 +128,8 @@ const OrderListBody = () => {
             [ticketId]: newValue,
         }));
 
+        console.log("ticketid", ticketId)
+
     };
 
     function createData(

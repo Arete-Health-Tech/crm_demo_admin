@@ -1,5 +1,11 @@
 import useTicketStore from '../../store/ticketStore';
-import { iCallRescheduler, iNote, iReminder, iTicketFilter, iTimer } from '../../types/store/ticket';
+import {
+  iCallRescheduler,
+  iNote,
+  iReminder,
+  iTicketFilter,
+  iTimer
+} from '../../types/store/ticket';
 import {
   createNewNote,
   getAllNotes,
@@ -9,7 +15,8 @@ import {
   createNewReminder,
   createNewCallRescheduler,
   getAllRescheduler,
-  createTimer
+  createTimer,
+  getPharmacyTickets
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -20,9 +27,7 @@ export const getTicketHandler = async (
   downloadAll: 'true' | 'false' = 'false',
   selectedFilters: iTicketFilter | null,
   ticketId: string = UNDEFINED,
-  fetchUpdated: boolean = false,
-
-
+  fetchUpdated: boolean = false
 ) => {
   const {
     setTickets,
@@ -31,16 +36,10 @@ export const getTicketHandler = async (
     ticketCache,
     setEmptyDataText,
     setDownloadTickets,
-    setLoaderOn,
-
-
+    setLoaderOn
   } = useTicketStore.getState();
   const { user } = useUserStore.getState();
-  const phone = user?.phone
-
-
-
-
+  const phone = user?.phone;
 
   setLoaderOn(true);
   // console.log(selectedFilters," this is selected filters");
@@ -51,8 +50,7 @@ export const getTicketHandler = async (
     selectedFilters,
     ticketId,
     fetchUpdated,
-    phone,
-
+    phone
   );
   const sortedTickets = data.tickets;
   const count = data.count;
@@ -76,6 +74,37 @@ export const getTicketHandler = async (
   setLoaderOn(false);
 };
 
+export const getPharmcyTicketHandler = async () => {
+  const {
+    setTickets,
+    setTicketCount,
+    setEmptyDataText,
+    setLoaderOn,
+    pageNumber
+  } = useTicketStore.getState();
+
+  setLoaderOn(true);
+
+  try {
+    const data = await getPharmacyTickets(pageNumber);
+    const count = data.count;
+
+    if (data.tickets.length < 1) {
+      setEmptyDataText('No Data Found');
+    } else {
+      setEmptyDataText('');
+    }
+
+    setTicketCount(count);
+    setTickets(data.tickets);
+    setLoaderOn(false);
+  } catch (error) {
+    console.error('Error fetching tickets:', error);
+    // Handle error, show message, etc.
+    setLoaderOn(false);
+  }
+};
+
 export type iCreateTicket = {
   departments: string[];
   doctor: string;
@@ -93,10 +122,7 @@ export type iCreateTicket = {
   caregiver_name: string | null;
 };
 
-export const createTicketHandler = async (
-  prescription: iCreateTicket,
-
-) => {
+export const createTicketHandler = async (prescription: iCreateTicket) => {
   const prescriptionData = new FormData();
   prescriptionData.append('consumer', prescription.consumer);
   prescriptionData.append(
@@ -112,10 +138,7 @@ export const createTicketHandler = async (
     prescriptionData.append('caregiver_name', prescription.caregiver_name);
   prescription.caregiver_phone &&
     prescriptionData.append('caregiver_phone', prescription.caregiver_phone);
-  prescriptionData.append(
-    'medicines',
-    JSON.stringify(prescription.medicines)
-  );
+  prescriptionData.append('medicines', JSON.stringify(prescription.medicines));
   prescriptionData.append('followUp', JSON.stringify(prescription.followUp));
   prescriptionData.append('isPharmacy', prescription.isPharmacy);
   prescriptionData.append(
@@ -156,9 +179,8 @@ export const createNewReminderHandler = async (reminderData: iReminder) => {
   const { reminders, setReminders } = useTicketStore.getState();
   const reminderAdded = await createNewReminder(reminderData);
   setReminders([...reminders, reminderAdded]);
-  return reminderAdded
+  return reminderAdded;
 };
-
 
 export const getAllCallReschedulerHandler = async () => {
   const { setCallRescheduler } = useTicketStore.getState();
@@ -167,9 +189,13 @@ export const getAllCallReschedulerHandler = async () => {
   return Promise.resolve(callRescheduler);
 };
 
-export const createNewCallReschedulerHandler = async (callReschedulerData: iCallRescheduler) => {
+export const createNewCallReschedulerHandler = async (
+  callReschedulerData: iCallRescheduler
+) => {
   const { callRescheduler, setCallRescheduler } = useTicketStore.getState();
-  const callReschedulerAdded = await createNewCallRescheduler(callReschedulerData);
+  const callReschedulerAdded = await createNewCallRescheduler(
+    callReschedulerData
+  );
   setCallRescheduler([...callRescheduler, callReschedulerAdded]);
   return callReschedulerAdded;
 };
@@ -180,16 +206,17 @@ export const getAllReschedulerHandler = async () => {
   setCallRescheduler(reschedular);
 };
 
-
-export const createTimerHandler = async (timerData: iTimer, ticketId: string) => {
+export const createTimerHandler = async (
+  timerData: iTimer,
+  ticketId: string
+) => {
   const { status, setStatus } = useTicketStore.getState();
-  const timerAdded = await createTimer(timerData,ticketId);
-   const updatedStatus = Array.isArray(status)
-     ? [...status, timerAdded]
-     : [timerAdded];
+  const timerAdded = await createTimer(timerData, ticketId);
+  const updatedStatus = Array.isArray(status)
+    ? [...status, timerAdded]
+    : [timerAdded];
 
   setStatus(updatedStatus);
-
 
   return Promise.resolve(timerAdded);
 };
@@ -197,4 +224,3 @@ export const createTimerHandler = async (timerData: iTimer, ticketId: string) =>
 function getDate(): string | Blob {
   throw new Error('Function not implemented.');
 }
-

@@ -13,9 +13,12 @@ import Button from '@mui/material/Button';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PatientCard from './PatientCard';
 import DoctorCard from './DoctorCard';
-import { TablePagination } from '@mui/material';
+import { ButtonGroup, TablePagination } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
-// Define the RowData interface
+
 interface RowData {
     prescription: string;
     orderID: number;
@@ -23,7 +26,6 @@ interface RowData {
     amount: number;
 }
 
-// Define the createData function to create RowData objects
 const createData = (
     prescription: string,
     orderID: number,
@@ -70,6 +72,9 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 const OrderDetailContainer = () => {
 
+    const { ticketId } = useParams();
+    console.log(ticketId, "-----------Ticket ID");
+    const navigate = useNavigate();
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
@@ -89,9 +94,7 @@ const OrderDetailContainer = () => {
                 justifyContent: 'space-between',
                 padding: '2vh 5vw 0 5vw',
                 backgroundColor: '#ESE7EB',
-                position: 'sticky',
-                top: '8vh',
-                zIndex: 100
+                marginTop: '11vh',
             }}>
                 <Typography
                     variant="h4"
@@ -103,19 +106,27 @@ const OrderDetailContainer = () => {
                     }}>
                     Patient Order History
                 </Typography>
-                <Button
-                    variant="contained"
-                    sx={{
-                        fontWeight: 'bold'
-                    }}
-                > Processing
-                    <KeyboardArrowDownIcon />
-                </Button>
+                <ButtonGroup variant="contained" aria-label="Basic button group">
+                    <Button
+                        sx={{
+                            fontWeight: 'bold',
+                            marginRight: '5px'
+                        }}
+                        onClick={() => navigate('/')}
+                    > <ArrowBackIcon /> Back
+                    </Button>
+                    <Button
+                        sx={{
+                            fontWeight: 'bold'
+                        }}
+                    > Processing
+                        <KeyboardArrowDownIcon />
+                    </Button>
+                </ButtonGroup>
+
             </Box>
             <Box sx={{
-                padding: '25px 60px',
-                margin: '20px',
-                marginTop: '28px'
+                padding: '5px 60px',
             }}>
 
                 <Box sx={{
@@ -125,7 +136,7 @@ const OrderDetailContainer = () => {
                     marginTop: '18px',
                     marginBottom: '30px',
                 }} >
-                    <PatientCard />
+                    <PatientCard ticketId={ticketId} />
                     <DoctorCard />
                 </Box>
                 <Box

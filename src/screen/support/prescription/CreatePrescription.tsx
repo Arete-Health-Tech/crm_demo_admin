@@ -67,7 +67,7 @@ const initialPrescription = {
   medicines: [],
   followUp: new Date(),
   image: null,
-  isPharmacy: 'yes',
+  isPharmacy: 'Pharmacy Advised',
   caregiver_name: null,
   caregiver_phone: null
 };
@@ -89,7 +89,7 @@ const CreatePrescription = () => {
   const [disableButton, setDisableButton] = useState(false);
   const [buttonVariant, setButtonVariant] = useState<string | null>(null);
 
-  const [selectedPharmacy, setSelectedPharmacy] = useState('yes');
+  const [selectedPharmacy, setSelectedPharmacy] = useState('Pharmacy Advised');
   const [scannedResult, setScannedResult] = useState(null);
 
 
@@ -481,9 +481,9 @@ const CreatePrescription = () => {
               <Button
                 size="small"
                 sx={{ m: 0.4 }}
-                variant={selectedPharmacy === 'yes' ? 'contained' : 'outlined'}
+                variant={selectedPharmacy === 'Pharmacy Advised' ? 'contained' : 'outlined'}
                 onClick={() => {
-                  setSelectedPharmacy('yes');
+                  setSelectedPharmacy('Pharmacy Advised');
                   changePrescriptionValue('isPharmacy', 'Pharmacy Advised');
                 }}
               >
@@ -492,9 +492,9 @@ const CreatePrescription = () => {
               <Button
                 size="small"
                 sx={{ m: 0.4 }}
-                variant={selectedPharmacy === 'no' ? 'contained' : 'outlined'}
+                variant={selectedPharmacy === 'Not Advised' ? 'contained' : 'outlined'}
                 onClick={() => {
-                  setSelectedPharmacy('no');
+                  setSelectedPharmacy('Not Advised');
                   changePrescriptionValue('isPharmacy', 'Not Advised');
                 }}
               >
@@ -653,9 +653,9 @@ const CreatePrescription = () => {
             audio={false}
             screenshotFormat="image/jpeg"
             ref={camera}
-          videoConstraints={{
-            facingMode: { exact: 'environment' }
-          }}
+          // videoConstraints={{
+          //   facingMode: { exact: 'environment' }
+          // }}
           />
 
         ) : (
@@ -766,7 +766,7 @@ export default CreatePrescription;
 //   medicines: [],
 //   followUp: new Date(),
 //   image: [],
-//   isPharmacy: 'yes',
+//   isPharmacy: 'Pharmacy Advised',
 //   caregiver_name: null,
 //   caregiver_phone: null
 // };
@@ -788,7 +788,7 @@ export default CreatePrescription;
 //   const [disableButton, setDisableButton] = useState(false);
 //   const [buttonVariant, setButtonVariant] = useState<string | null>(null);
 
-//   const [selectedPharmacy, setSelectedPharmacy] = useState('yes');
+//   const [selectedPharmacy, setSelectedPharmacy] = useState('Pharmacy Advised');
 //   const [scannedResult, setScannedResult] = useState(null);
 
 
@@ -1190,9 +1190,9 @@ export default CreatePrescription;
 //               <Button
 //                 size="small"
 //                 sx={{ m: 0.4 }}
-//                 variant={selectedPharmacy === 'yes' ? 'contained' : 'outlined'}
+//                 variant={selectedPharmacy === 'Pharmacy Advised' ? 'contained' : 'outlined'}
 //                 onClick={() => {
-//                   setSelectedPharmacy('yes');
+//                   setSelectedPharmacy('Pharmacy Advised');
 //                   changePrescriptionValue('isPharmacy', 'Pharmacy Advised');
 //                 }}
 //               >
@@ -1201,9 +1201,9 @@ export default CreatePrescription;
 //               <Button
 //                 size="small"
 //                 sx={{ m: 0.4 }}
-//                 variant={selectedPharmacy === 'no' ? 'contained' : 'outlined'}
+//                 variant={selectedPharmacy === 'Not Advised' ? 'contained' : 'outlined'}
 //                 onClick={() => {
-//                   setSelectedPharmacy('no');
+//                   setSelectedPharmacy('Not Advised');
 //                   changePrescriptionValue('isPharmacy', 'Not Advised');
 //                 }}
 //               >

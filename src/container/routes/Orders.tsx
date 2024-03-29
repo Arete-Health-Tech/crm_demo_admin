@@ -1,13 +1,18 @@
-import React from 'react'
-import { Route, Routes } from 'react-router-dom'
-import OrderList from '../../screen/orders/OrderList'
+import React from 'react';
+import { Routes, Route } from 'react-router-dom';
+import OrderDetailContainer from '../../screen/orders/orderDetailPage/OrderDetailContainer';
+import OrderListBody from '../../screen/orders/OrderListBody';
 
-const Orders = () => {
+type props = {}
+
+const Orders = (props: props) => {
     return (
         <Routes>
-            <Route path="/" element={<OrderList />} />
-        </Routes>
-    )
-}
+            <Route path="/" element={<OrderListBody />} />
+            <Route index path="orderDetails/:ticketId" element={<OrderDetailContainer />} />
 
-export default Orders
+        </Routes>
+    );
+};
+
+export default Orders;

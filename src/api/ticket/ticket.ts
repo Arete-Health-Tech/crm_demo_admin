@@ -6,9 +6,6 @@ import {
 } from '../../types/store/ticket';
 import { apiClient } from '../apiClient';
 
-
-
-
 export const getTicket = async (
   name: string,
 
@@ -127,5 +124,11 @@ export const createTimer = async (timerData: iTimer, ticketId: string) => {
     `/dashboard/ticketStatus/${ticketId}`,
     timerData
   );
+  return data;
+};
+
+export const getPharmacyTickets = async (pageNumber: number) => {
+  const { data } = await apiClient.get(`/pharmacy/pharmacyTickets?page=${pageNumber}`);
+  console.log(data);
   return data;
 };

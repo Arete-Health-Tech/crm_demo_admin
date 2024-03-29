@@ -3,6 +3,9 @@ import React from 'react'
 import Logout from '../login/Logout'
 import useUserStore from '../../store/userStore';
 import OrderListBody from './OrderListBody';
+import { Routes, Route } from 'react-router-dom';
+import OrderDetailContainer from './orderDetailPage/OrderDetailContainer';
+import Orders from '../../container/routes/Orders';
 
 const drawerWidth = 240;
 
@@ -10,6 +13,7 @@ const OrderList = () => {
     const { user } = useUserStore();
     return (
         <>
+
             <Box sx={{ display: 'flex' }}>
                 <CssBaseline />
                 <AppBar
@@ -36,7 +40,7 @@ const OrderList = () => {
                 </AppBar>
             </Box>
             <Box>
-                <OrderListBody />
+                <Orders />
             </Box>
         </>
     )

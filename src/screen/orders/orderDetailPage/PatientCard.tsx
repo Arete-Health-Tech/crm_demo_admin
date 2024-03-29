@@ -10,10 +10,34 @@ import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 import { Stack, colors } from '@mui/material';
+import useTicketStore from '../../../store/ticketStore';
+import { iTicket } from '../../../types/store/ticket';
 
 
-const PatientCard = () => {
+const PatientCard = (props) => {
+
+
+    const {
+        tickets,
+        filterTickets,
+        setPageNumber,
+    } = useTicketStore();
+
+    const [patientTicket, setPatientTicket] = React.useState<iTicket[]>();
     const theme = useTheme();
+    const { ticketId } = props;
+
+
+    React.useEffect(() => {
+        console.log(tickets, "tickets in patient card---");
+        const filteredTickets = tickets.filter(item => item._id === ticketId);
+        setPatientTicket(filteredTickets);
+        console.log(filteredTickets, "filter tickets in patient card---");
+    }, []);
+
+    console.log("ticked id in patiend card", ticketId);
+    console.log("ticket data of patient", patientTicket);
+
 
     return (
 

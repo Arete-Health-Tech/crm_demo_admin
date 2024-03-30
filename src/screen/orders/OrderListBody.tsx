@@ -14,22 +14,24 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Input } from '@mui/material';
+import { Button, Input, TextField } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useNavigate } from 'react-router-dom';
 
 import useTicketStore from '../../store/ticketStore';
-import { iTicket } from '../../types/store/ticket';
+import { iPrescrition, iTicket } from '../../types/store/ticket';
 import { getPharmacyTickets, getTicket } from '../../api/ticket/ticket';
-import { apiClient, socket } from '../../api/apiClient';
+import { apiClient } from '../../api/apiClient';
 import axios from 'axios';
 import { getDoctors } from '../../api/doctor/doctor';
 import { getPharmcyTicketHandler } from '../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../constantUtils/constant';
 import { iDepartment, iDoctor } from '../../types/store/service';
 import { getDepartments } from '../../api/department/department';
-import { socketEventConstants } from '../../constantUtils/socketEventsConstants';
+import { DatePicker } from '@mui/lab';
+import { MenuOpen } from '@mui/icons-material';
+import ShowPrescription from '../ticket/widgets/ShowPrescriptionModal';
 
 const getColorForOption = (optionValue: string): string => {
     switch (optionValue) {
@@ -53,7 +55,7 @@ interface Data {
     number: string;
     doctor: string;
     specialty: string;
-    prescription: string;
+    prescription: iPrescrition[];
     orderStatus: string;
     action: string;
     // handleStatusChange: (ticketId: string, newValue: string) => void;
@@ -65,7 +67,7 @@ interface Column {
     label: string;
     minWidth: number;
     align?: 'left' | 'right';
-    format?: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, row: Data) => JSX.Element;
+    format?: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => JSX.Element;
 }
 
 const OrderListBody = () => {
@@ -79,36 +81,25 @@ const OrderListBody = () => {
     } = useTicketStore();
     const [page, setPage] = React.useState<number>(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [filter, setFilter] = React.useState('');
+    const [filter, setFilter] = useState<string>('');
     const navigate = useNavigate();
     const [doctors, setDoctors] = useState<iDoctor[] | null>(null);
     const [department, setDepartment] = useState<iDepartment[] | null>(null);
+    const [orderStatusFilterValue, setOrderStatusFilterValue] = useState("");
+    const [dateFilterValue, setDateFilterValue] = useState("");
     const [orderStatuses, setOrderStatuses] = useState<{ [key: string]: string }>({});
     const [selectedValues, setSelectedValues] = useState<string>('Pending');
     useEffect(() => {
         (async function () {
-            await getPharmcyTicketHandler();
+            await getPharmcyTicketHandler(filter);
         })();
-        setPageNumber(1);
     }, [page]);
-
-
-    const handleChange = (event: SelectChangeEvent) => {
-        setFilter(event.target.value as string);
-    };
 
     const handleChangePage = (event: any, newPage: number) => {
         console.log(newPage)
-        console.log(event)
-        if (newPage + 1 > pageNumber) {
-            setPage(newPage); //page changed in this component
-            setPageNumber(pageNumber + 1);//pagenumber changed in the store 
-        } else if (newPage + 1 < pageNumber) {
-            setPage(newPage);//page changed in this component
-            setPageNumber(pageNumber - 1);//pagenumber changed in the store 
-        }
+        setPage(newPage); //page changed in this component
+        setPageNumber(newPage + 1);//pagenumber changed in the store 
     };
-
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(+event.target.value);
         setPage(0);
@@ -123,10 +114,24 @@ const OrderListBody = () => {
             ...prevStatuses,
             [ticketId]: newValue,
         }));
-
-        console.log("ticketid", ticketId)
-
     };
+
+    const handleOrderStatusFilter = (event: SelectChangeEvent) => {
+
+        setOrderStatusFilterValue(event.target.value as string);
+        console.log("orderStatusFilter", event.target.value)
+
+    }
+
+    const handleDateFilter = (event: SelectChangeEvent) => {
+        setDateFilterValue(event.target.value as string);
+        console.log("dateFilter", event.target.value);
+    }
+
+    const handleViewPrescription = (prescription: iPrescrition[]) => {
+        console.log("viewPrescription");
+        console.log(prescription, "prescription array");
+    }
 
     function createData(
         _id: string,
@@ -135,7 +140,7 @@ const OrderListBody = () => {
         number: string,
         doctor: string,
         specialty: string,
-        prescription: string,
+        prescription: iPrescrition[],
         orderStatus: string,
         action: string,
         // handleStatusChange: (ticketId: string, newValue: string) => void,
@@ -157,9 +162,15 @@ const OrderListBody = () => {
             id: 'prescription',
             label: 'Prescription',
             minWidth: 150,
-            format: (value: string) => (
-                <Box component="a" sx={{ color: '#4990bd' }} href={value} target="_blank" rel="noopener noreferrer">
-                    {value}
+            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
+                <Box component="a"
+                    sx={{ color: '#4990bd' }}
+                    // onClick={() => handleViewPrescription(row.prescription)}
+                    rel="view Prescription"
+                >
+                    <ShowPrescription
+                        image={row.prescription[0].image}
+                    />
                 </Box>
             ),
         },
@@ -167,7 +178,7 @@ const OrderListBody = () => {
             id: 'orderStatus',
             label: 'Order Status',
             minWidth: 150,
-            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, row: Data) => (
+            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
                 <Select
                     value={orderStatuses[row._id] || value}
                     onChange={(e) => handleStatusChange(row._id, e.target.value as string)}
@@ -202,7 +213,7 @@ const OrderListBody = () => {
             id: 'action',
             label: ' ',
             minWidth: 50,
-            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, row: Data) => (
+            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
                 <Button
                     sx={{ color: '#4990bd', backgroundColor: '#1976D214', fontSize: '11px' }}
                     onClick={() => onClickDetail(row._id)}
@@ -287,12 +298,14 @@ const OrderListBody = () => {
     };
 
     for (const ticket of tickets) {
+        // const prescriptionImage = 
         const ticketId = ticket?._id;
         const uid = ticket?.consumer[0]?.uid;
         const name = patientName(ticket);
         const phoneNumber = ticket?.consumer[0]?.phone;
         const doctorName = fetchDoctorName(ticket);
         const departmentName = fetchDepartmentName(ticket);
+        const prescription = ticket?.prescription;
 
         rows.push(
             createData(
@@ -302,24 +315,26 @@ const OrderListBody = () => {
                 phoneNumber,
                 doctorName,
                 departmentName,
-                'View Prescription',
+                prescription,
                 selectedValues,
                 'View Detail',
             )
         );
     }
 
-    // useEffect(() => {
-    //     const refetchTickets = async () => {
-    //         await getPharmcyTicketHandler();
-    //     };
+    const handleSearchKeyPress = async (e: any) => {
+        // console.log("e", e)
+        const value = e.target?.value;
+        if (value) {
+            setFilter(value)
+        }
+        if (e.key === 'Enter') {
+            (async function () {
+                await getPharmcyTicketHandler(filter);
+            })();
+        }
 
-    //     socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-
-    //     return () => {
-    //         socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-    //     };
-    // }, [pageNumber]);
+    };
 
     return (
         <>
@@ -343,26 +358,17 @@ const OrderListBody = () => {
                         color: 'black',
                     }}
                 >
-                    <FormControl sx={{
-                        my: 1,
-                        borderRadius: '0',
-                        backgroundColor: 'white',
-                        border: '2px solid #ccc',
-                        borderTopLeftRadius: '12px',
-                        borderBottomLeftRadius: '12px',
-                        borderRight: '1px solid #ccc',
-                    }}>
+                    <FormControl>
                         <span style={{
-                            width: '50px',
+                            backgroundColor: 'white',
+                            width: '44px',
+                            padding: '12px 5px',
                             position: 'relative',
-                            left: '12px',
-                            top: '12px',
-                            borderRadius: '0',
+                            border: '1px solid #ccc',
+                            top: '8px',
+                            fontSize: '20px',
                             borderTopLeftRadius: '15px',
                             borderBottomLeftRadius: '15px',
-                            color: '',
-                            fontSize: '20px',
-                            outline: 'none',
 
                         }}><FilterListIcon sx={{ fontSize: '28px' }} /></span>
                     </FormControl>
@@ -377,143 +383,96 @@ const OrderListBody = () => {
                             sx={{
                                 backgroundColor: 'white',
                                 width: '145px',
-                                height: '58px',
-                                borderRadius: '0',
-                                border: '2px solid #ccc',
-                                borderLeft: '1px solid #ccc',
-                                borderRight: '1px solid #ccc',
-                                outline: 'none',
-
+                                height: '56px',
+                                border: '1px solid #ccc',
+                                borderBottom: 'none',
                                 '&::placeholder': {
                                     textAlign: 'center',
                                     marginLeft: '20px'
                                 }
 
                             }}
+                            onKeyDown={handleSearchKeyPress}
+                        // onChange={(event) => setFilter(event.target.value as string)}
                         />
                     </FormControl>
-                    <FormControl
-                        sx={{
-                            my: 1,
-                            backgroundColor: 'white',
-                            border: '1px solid #ccc',
-                            borderLeft: 'none',
-                            borderRight: 'none',
-                        }}
-                    >
-                        <InputLabel id="demo-simple-select-label" sx={{ color: 'black', fontWeight: 'bold', display: 'flex' }}>Date By<KeyboardArrowDownIcon /></InputLabel>
+                    <FormControl sx={{ my: 1 }}>
+
+                        <InputLabel id="demo-simple-select-label" sx={{ color: 'black', fontWeight: 'bold', display: 'flex' }}>Date By</InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={filter}
-                            label="Date By ^"
-                            onChange={handleChange}
-                            IconComponent={() => null}
+                            onClose={() => { }}
+                            label="Date By"
+                            // onOpen={handleSelectOpen}
+                            // value={selectDate}
                             sx={{
-                                width: '110px',
+                                backgroundColor: 'white',
+                                width: '127px',
                                 borderRadius: '0',
-                                paddding: '0px 50px',
-                                border: 'none',
+                                border: 0,
                                 '&:focus': {
-                                    border: 'none',
+                                    border: 0,
                                     outline: 'none',
                                 },
                             }}
                         >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
+                            <MenuItem > <em>Select Date</em></MenuItem>
+                            <MenuItem
+                            // value={selectDate}
+                            >
+                                <input
+                                    type='date'
+                                    value={dateFilterValue}
+                                    onChange={handleDateFilter}
+                                    id='your_unique_id'
+                                    onClick={(event) => {
+                                        event.stopPropagation();
+                                    }}
+                                />
+                            </MenuItem>
                         </Select>
+
+
                     </FormControl>
-                    <FormControl
-                        sx={{
-                            my: 1,
-                            backgroundColor: 'white',
-                            border: '1px solid #ccc',
-                            borderLeft: 'none',
-                            borderRight: 'none',
-                        }}
-                    >
-                        <InputLabel id="demo-simple-select-label" sx={{ color: 'black', fontWeight: 'bold', display: 'flex' }}>Order Type <KeyboardArrowDownIcon /></InputLabel>
+
+                    <FormControl sx={{ my: 1 }}>
+                        <InputLabel id="demo-simple-select-label" sx={{ color: 'black', fontWeight: 'bold', display: 'flex' }}>Order Status </InputLabel>
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={filter}
-                            label="Order Type @"
-                            onChange={handleChange}
-                            IconComponent={() => null}
-                            sx={{
-                                width: '130px',
-                                borderRadius: '0',
-                                paddding: '0px 50px',
-                                border: 'none',
-                                '&:focus': {
-                                    border: 'none',
-                                    outline: 'none',
-                                },
-                            }}
-                        >
-                            <MenuItem value={10}>Ten</MenuItem>
-                            <MenuItem value={20}>Twenty</MenuItem>
-                            <MenuItem value={30}>Thirty</MenuItem>
-                        </Select>
-                    </FormControl>
-                    <FormControl
-                        sx={{
-                            my: 1,
-                            backgroundColor: 'white',
-                            border: '1px solid #ccc',
-                            borderLeft: 'none',
-                            borderRight: 'none',
-                        }}
-                    >
-                        <InputLabel id="demo-simple-select-label" sx={{ color: 'black', fontWeight: 'bold', display: 'flex' }}>Order Status <KeyboardArrowDownIcon /></InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={filter}
+                            value={orderStatusFilterValue}
                             label="order status ^"
-                            onChange={handleChange}
-                            IconComponent={() => null}
+                            onChange={handleOrderStatusFilter}
+                            // IconComponent={() => null}
                             sx={{
                                 width: '145px',
                                 borderRadius: '0',
-                                paddding: '0px 50px',
-                                border: 'none',
+                                border: 0,
+                                backgroundColor: 'white',
                                 '&:focus': {
                                     border: 'none',
                                     outline: 'none',
                                 },
                             }}
                         >
-                            <MenuItem value={10}>Processing</MenuItem>
-                            <MenuItem value={20}>Completed</MenuItem>
-                            <MenuItem value={30}>Ready</MenuItem>
-                            <MenuItem value={30}>Canceled</MenuItem>
+                            <MenuItem value={"Ready"}>Ready</MenuItem>
+                            <MenuItem value={"Completed"}>Completed</MenuItem>
+                            <MenuItem value={"Canceled"}>Canceled</MenuItem>
                         </Select>
                     </FormControl>
 
-                    <FormControl sx={{
-                        my: 1,
-                        borderRadius: '0',
-                        backgroundColor: 'white',
-                        border: '2px solid #ccc',
-                        borderTopRightRadius: '12px',
-                        borderBottomRightRadius: '12px',
-                        borderLeft: '1px solid #ccc',
-                    }}>
+                    <FormControl sx={{ my: 1 }}>
                         <button style={{
-                            marginTop: '4px',
-                            width: '145px',
-                            position: 'relative',
-                            left: '12px',
-                            top: '12px',
-                            borderRadius: '0',
-                            borderTopLeftRadius: '15px',
-                            borderBottomLeftRadius: '15px',
-                            outline: 'none',
+                            backgroundColor: 'white',
+                            padding: '15px 15px',
+                            border: '1px solid #ccc',
+                            width: '150px',
+                            borderTopRightRadius: '15px',
+                            borderBottomRightRadius: '15px',
                             color: 'red',
-                            fontWeight: 'bold', display: 'flex'
+                            fontWeight: 'bold', display: 'flex',
+                            cursor: 'pointer'
 
                         }}><RefreshIcon sx={{ marginRight: '5px' }} />Reset Filter</button>
                     </FormControl>
@@ -546,7 +505,7 @@ const OrderListBody = () => {
                                                     const value = row[column.id];
                                                     return (
                                                         <TableCell key={column.id} align={column.align || 'center'}>
-                                                            {column.format ? column.format(value, handleStatusChange, onClickDetail, row) : value}
+                                                            {column.format ? column.format(value, handleStatusChange, onClickDetail, handleViewPrescription, row) : value}
                                                         </TableCell>
                                                     );
                                                 })}
@@ -562,6 +521,7 @@ const OrderListBody = () => {
                             page={page}
                             onPageChange={handleChangePage}
                             onRowsPerPageChange={handleChangeRowsPerPage}
+                            rowsPerPageOptions={[]}
                         />
                     </Paper>
                 </Box>

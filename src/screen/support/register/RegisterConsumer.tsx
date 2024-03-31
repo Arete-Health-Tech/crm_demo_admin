@@ -266,6 +266,7 @@ const RegisterConsumer = () => {
           onBlur={fetchConsumerDataByUhid}
           error={validations.uid.value}
           helperText={validations.uid.message}
+          inputProps={{ maxLength: 13, pattern: "\\d{0,12}" }}
         />
         <Stack direction="row" spacing={2}>
           <TextField

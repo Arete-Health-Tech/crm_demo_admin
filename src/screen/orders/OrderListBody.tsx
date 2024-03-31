@@ -87,7 +87,7 @@ const OrderListBody = () => {
     const [selectedValues, setSelectedValues] = useState<string>('Pending');
     useEffect(() => {
         (async function () {
-            await getPharmcyTicketHandler();
+            await getPharmcyTicketHandler(filter);
         })();
         setPageNumber(1);
     }, [page]);
@@ -320,10 +320,9 @@ const OrderListBody = () => {
     useEffect(() => {
 
         const refetchTickets = async () => {
-            await getPharmcyTicketHandler();
+            await getPharmcyTicketHandler(filter);
         };
         //  pageNumber = page
-
         socket.on(socketEventConstants.PHARMACY_REFETCH_TICKETS, refetchTickets);
 
         return () => {

@@ -15,7 +15,6 @@ const ShowPrescription = ({ image }: Props) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-
   const drawerWidth = 600;
 
   const downloadPrescription = () => {

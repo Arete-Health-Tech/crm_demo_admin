@@ -74,7 +74,7 @@ export const getTicketHandler = async (
   setLoaderOn(false);
 };
 
-export const getPharmcyTicketHandler = async () => {
+export const getPharmcyTicketHandler = async (filter: string) => {
   const {
     setTickets,
     setTicketCount,
@@ -86,7 +86,7 @@ export const getPharmcyTicketHandler = async () => {
   setLoaderOn(true);
 
   try {
-    const data = await getPharmacyTickets(pageNumber);
+    const data = await getPharmacyTickets(pageNumber, filter);
     const count = data.count;
 
     if (data.tickets.length < 1) {

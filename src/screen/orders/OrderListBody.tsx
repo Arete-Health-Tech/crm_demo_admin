@@ -96,18 +96,26 @@ const OrderListBody = () => {
     const handleChange = (event: SelectChangeEvent) => {
         setFilter(event.target.value as string);
     };
+    console.log(tickets.length , "shivam");
+    console.log(ticketCount ,"ticketcount");
 
+    // const handleChangePage = (event: any, newPage: number) => {
+    //     console.log(newPage)
+    //     console.log(event)
+    //     if (newPage + 1 > pageNumber) {
+    //         setPage(newPage); //page changed in this component
+    //         setPageNumber(pageNumber + 1);//pagenumber changed in the store 
+    //     } else if (newPage + 1 < pageNumber) {
+    //         setPage(newPage);//page changed in this component
+    //         setPageNumber(pageNumber - 1);//pagenumber changed in the store 
+    //     }
+    // };
     const handleChangePage = (event: any, newPage: number) => {
-        console.log(newPage)
-        console.log(event)
-        if (newPage + 1 > pageNumber) {
-            setPage(newPage); //page changed in this component
-            setPageNumber(pageNumber + 1);//pagenumber changed in the store 
-        } else if (newPage + 1 < pageNumber) {
-            setPage(newPage);//page changed in this component
-            setPageNumber(pageNumber - 1);//pagenumber changed in the store 
-        }
-    };
+        console.log(newPage);
+        console.log(event);
+        setPage(newPage); // Update the current page in this component
+        setPageNumber(newPage + 1); // Update the page number in the store
+    }
 
     const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
         setRowsPerPage(+event.target.value);
@@ -309,17 +317,19 @@ const OrderListBody = () => {
         );
     }
 
-    // useEffect(() => {
-    //     const refetchTickets = async () => {
-    //         await getPharmcyTicketHandler();
-    //     };
+    useEffect(() => {
 
-    //     socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+        const refetchTickets = async () => {
+            await getPharmcyTicketHandler();
+        };
+        //  pageNumber = page
 
-    //     return () => {
-    //         socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-    //     };
-    // }, [pageNumber]);
+        socket.on(socketEventConstants.PHARMACY_REFETCH_TICKETS, refetchTickets);
+
+        return () => {
+            socket.off(socketEventConstants.PHARMACY_REFETCH_TICKETS, refetchTickets);
+        };
+    }, [pageNumber]);
 
     return (
         <>

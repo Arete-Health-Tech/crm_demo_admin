@@ -86,7 +86,7 @@ const Dashboard = (props: Props) => {
     .then((timerData) => {
       if (timerData && timerData.tickets) {
         const data = timerData.tickets.length;
-        
+
       } else {
         console.error('Invalid timer data:', timerData.wonCount);
         setWonCount(timerData.wonCount);
@@ -182,20 +182,20 @@ const Dashboard = (props: Props) => {
       content: callCompleted,
       color: 'violet'
     },
+    // {
+    //   id: 5,
+    //   title: 'Won',
+    //   content: wonCount,
+    //   color: 'pink'
+    // },
+    // {
+    //   id: 6,
+    //   title: 'Loss',
+    //   content: lossCount,
+    //   color: 'grey'
+    // },
     {
       id: 5,
-      title: 'Won',
-      content: wonCount,
-      color: 'pink'
-    },
-    {
-      id: 6,
-      title: 'Loss',
-      content: lossCount,
-      color: 'grey'
-    },
-    {
-      id: 7,
       title: 'Rescheduled Call',
       content: reschedule,
       color: 'pink'
@@ -259,7 +259,7 @@ const Dashboard = (props: Props) => {
           </Grid>
         ))}
       </Grid>
-      <Grid container spacing={2} sx={{ marginTop: '45px' }}>
+      <Grid container spacing={2} sx={{ marginTop: '45px', padding: '45px 0px' }}>
         {/* Grid item for PieChart */}
         <Grid item xs={8} sm={2}>
           {/* <PieChart /> */}

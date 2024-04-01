@@ -46,7 +46,6 @@ export interface iConsumer {
 // }
 
 export interface iEstimate {
-
   type: number;
   isEmergency: boolean;
   wardDays: number;
@@ -71,7 +70,6 @@ export interface iEstimate {
   total?: number;
   createdAt?: Date;
 }
-
 
 export interface iPrescrition {
   _id: string;
@@ -108,7 +106,7 @@ export interface iTicket {
   modifiedDate: Date | string | null;
   won: string;
   loss: string;
-
+  pharmacyStatus: string;
 }
 
 export interface iTicketStore {
@@ -140,6 +138,12 @@ export interface iTicketStore {
   setEstimates: (estimates: iEstimate[]) => void;
   status: iTimer[];
   setStatus: (status: iTimer[]) => void;
+  pharmacyDateFilter: date;
+  setPharmacyDateFilter: (pharmacyDateFilter: date) => void;
+  pharmacyOrderStatusFilter: string;
+  setPharmacyOrderStatusFilter: (pharmacyOrderStatusFilter: string) => void;
+  pharmacySearchFilter: string;
+  setPharmacySearchFilter: (pharmacySearchFilter: string) => void;
 }
 
 export interface iNote {
@@ -177,7 +181,6 @@ interface SelectedLabel {
   label: string;
 }
 
-
 export interface iTicketFilter {
   stageList: any[];
   representative: string | null;
@@ -187,7 +190,6 @@ export interface iTicketFilter {
   endDate?: number;
   dateRange: string[];
   results?: string | null;
-
 }
 
 export interface iCreator {
@@ -197,4 +199,3 @@ export interface iCreator {
   email: string;
   phone: number;
 }
-

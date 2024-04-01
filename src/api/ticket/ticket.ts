@@ -127,10 +127,28 @@ export const createTimer = async (timerData: iTimer, ticketId: string) => {
   return data;
 };
 
-export const getPharmacyTickets = async (pageNumber: number, filter: string) => {
+export const getPharmacyTickets = async (
+  pageNumber: number,
+  pharmacyDateFilter: string,
+  pharmacyOrderStatusFilter: string,
+  pharmacySearchFilter: string
+) => {
+  console.log(pharmacySearchFilter);
   const { data } = await apiClient.get(
-    `/pharmacy/pharmacyTickets?page=${pageNumber}&search=${filter}`
+    `/pharmacy/pharmacyTickets?page=${pageNumber}&search=${pharmacyOrderStatusFilter}&date=${pharmacyDateFilter}&pharmacyStatus=${pharmacySearchFilter}`
   );
+  console.log(data);
+  return data;
+};
+
+export const updatePharmacyOrderStatus = async (
+  ticketId: string,
+  newValue: string
+) => {
+  const { data } = await apiClient.put(`/pharmacy/updatePharmacyStatus`, {
+    ticketId: ticketId,
+    pharmacyStatus: newValue
+  });
   console.log(data);
   return data;
 };

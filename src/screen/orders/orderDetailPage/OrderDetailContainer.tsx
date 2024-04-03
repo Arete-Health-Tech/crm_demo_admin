@@ -103,13 +103,14 @@ const OrderDetailContainer = () => {
         const parsedData = storedData ? JSON.parse(storedData) : [];
 
         return parsedData.map(ticket => {
+            const orderStatus = ticket.pharmacyStatus === "Pending" ? "Processing" : ticket.pharmacyStatus === "Completed" || ticket.pharmacyStatus === "Ready" || ticket.pharmacyStatus === "Cancelled" ? ticket.pharmacyStatus : "";
             const prescriptionLink = (
                 <ShowPrescription
                     image={ticket?.prescription[0].image}
                 // other props
                 />
             );
-            return createData(prescriptionLink, ticket?.prescription[0]?.created_Date || '', ticket.pharmacyStatus || '');
+            return createData(prescriptionLink, ticket?.prescription[0]?.created_Date || '', orderStatus || '');
         });
     }, [pharmcyTicket]);
 
@@ -137,18 +138,18 @@ const OrderDetailContainer = () => {
                     <Button
                         sx={{
                             fontWeight: 'bold',
-                            marginRight: '5px'
+                            // marginRight: '5px'
                         }}
                         onClick={() => navigate('/')}
                     > <ArrowBackIcon /> Back
                     </Button>
-                    <Button
+                    {/* <Button
                         sx={{
                             fontWeight: 'bold'
                         }}
                     > {orderStatus}
                         <KeyboardArrowDownIcon />
-                    </Button>
+                    </Button> */}
                 </ButtonGroup>
             </Box>
             <Box sx={{

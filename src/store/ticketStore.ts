@@ -5,6 +5,8 @@ import useUserStore from './userStore';
 const useTicketStore = create<iTicketStore>((set, get) => ({
   tickets: [],
   setTickets: (tickets) => set({ tickets }),
+  pharmcyTicket: [],
+  setPharmcyTickets: (pharmcyTicket) => set({ pharmcyTicket }),
   ticketCount: 0,
   setTicketCount: (ticketCount) => set({ ticketCount }),
   searchByName: 'undefined',
@@ -43,7 +45,19 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
     set({ pharmacyOrderStatusFilter }),
   pharmacySearchFilter: '',
   setPharmacySearchFilter: (pharmacySearchFilter) =>
-    set({ pharmacySearchFilter })
+    set({ pharmacySearchFilter }),
+  pharmacyOrderPendingCount: '',
+  setPharmacyOrderPendingCount: (pharmacyOrderPendingCount) =>
+    set({ pharmacyOrderPendingCount }),
+  pharmacyOrderReadyCount: '',
+  setPharmacyOrderReadyCount: (pharmacyOrderReadyCount) =>
+    set({ pharmacyOrderReadyCount }),
+  pharmacyOrderCompletedCount: '',
+  setPharmacyOrderCompletedCount: (pharmacyOrderCompletedCount) =>
+    set({ pharmacyOrderCompletedCount }),
+  pharmacyOrderCancelledCount: '',
+  setPharmacyOrderCancelledCount: (pharmacyOrderCancelledCount) =>
+    set({ pharmacyOrderCancelledCount })
 }));
 
 export default useTicketStore;

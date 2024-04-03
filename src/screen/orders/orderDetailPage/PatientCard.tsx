@@ -3,83 +3,126 @@ import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
-import { Stack, colors } from '@mui/material';
-import useTicketStore from '../../../store/ticketStore';
 import { iTicket } from '../../../types/store/ticket';
+import useTicketStore from '../../../store/ticketStore';
 
+interface PatientData {
+    patientTicket: iTicket[];
+    patientName: string;
+    uhid: string;
+    phone: string;
+    gender: string;
+    age: string;
+}
 
 const PatientCard = (props) => {
-
-
     const {
         tickets,
-        filterTickets,
-        setPageNumber,
     } = useTicketStore();
 
-    const [patientTicket, setPatientTicket] = React.useState<iTicket[]>();
+    const { uid } = props;
     const theme = useTheme();
-    const { ticketId } = props;
 
+    const [patientData, setPatientData] = React.useState<PatientData>({
+        patientTicket: [],
+        patientName: localStorage.getItem('patientName') || '',
+        uhid: localStorage.getItem('uhid') || '',
+        phone: localStorage.getItem('phone') || '',
+        gender: localStorage.getItem('gender') || '',
+        age: localStorage.getItem('age') || '',
+    });
+
+    const [isGender, setIsGender] = React.useState<boolean>(localStorage.getItem('isGen') === 'true');
+    const [isAge, setIsAge] = React.useState<boolean>(localStorage.getItem('isAge') === 'true');
 
     React.useEffect(() => {
-        console.log(tickets, "tickets in patient card---");
-        const filteredTickets = tickets.filter(item => item._id === ticketId);
-        setPatientTicket(filteredTickets);
-        console.log(filteredTickets, "filter tickets in patient card---");
-    }, []);
+        const filteredTickets = tickets.filter(item => item.consumer[0].uid === uid);
+        setPatientData(prevState => ({
+            ...prevState,
+            patientTicket: filteredTickets,
+        }));
 
-    console.log("ticked id in patiend card", ticketId);
-    console.log("ticket data of patient", patientTicket);
+        handlePatientData(filteredTickets);
+
+    }, [uid, tickets]);
+
+    const handlePatientData = (patientTicket: iTicket[]) => {
+        if (patientTicket && patientTicket.length > 0) {
+            const patient = patientTicket[0].consumer[0];
+            const patientName = handlePatientName(patient.firstName, patient.lastName);
+
+            let gender = '';
+            if (patient.gender === 'M') {
+                gender = 'Male';
+            } else if (patient.gender === 'F') {
+                gender = 'Female';
+            }
+
+            setPatientData(prevState => ({
+                ...prevState,
+                patientName: patientName,
+                uhid: patient.uid,
+                phone: patient.phone,
+                gender: gender,
+                age: patient.age,
+            }));
+
+            setIsGender(patient.gender === null);
+            setIsAge(patient.age === null || patient.age === '');
+
+            localStorage.setItem('patientName', patientName);
+            localStorage.setItem('uhid', patient.uid);
+            localStorage.setItem('phone', patient.phone);
+            localStorage.setItem('gender', gender);
+            localStorage.setItem('age', patient.age);
+            localStorage.setItem('isGen', (patient.gender === null).toString());
+            localStorage.setItem('isAge', (patient.age === null || patient.age === '').toString());
+        } else {
+            console.log("No patient ticket data available.");
+        }
+    }
+
+    const handlePatientName = (firstName: string, lastName: string) => {
+        let patientName = '';
+        if (firstName && lastName) {
+            const capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+            const capitalizedLastName = lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
+            patientName = capitalizedFirstName + ' ' + capitalizedLastName;
+        } else if (firstName) {
+            patientName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+        }
+
+        return patientName;
+    }
 
 
     return (
-
-        <Box
-            sx={{
-                width: 750,
-            }}
-        >
-            <Card sx={{ display: 'flex', flexDirection: 'row', padding: '12px 17px', borderRadius: '15px' }}>
-
-                <Box sx={{ display: 'flex', flexDirection: 'coloumn' }}>
-
-                    <CardContent sx={{ flex: '1 0 auto', wordSpacing: '2px' }}>
-
-                        <Typography component="div" variant="h6">
-                            <span style={{ color: "grey", fontSize: '19px' }}>Patient Name:</span>  <span style={{ color: "black", fontSize: '19px', fontWeight: "bold" }}>Nithya JayKumar</span>
-                        </Typography>
-
+        <Box >
+            <Card sx={{ display: 'flex', flexDirection: 'row', padding: '12px 7px 28px 12px', borderRadius: '15px' }}>
+                <CardContent sx={{ flex: '1 0 auto', wordSpacing: '2px' }}>
+                    <Typography component="div" variant="h6">
+                        <span style={{ color: "grey", fontSize: '19px' }}>Patient Name:</span> <span style={{ color: "black", fontSize: '19px', fontWeight: "bold" }}>{patientData.patientName}</span>
+                    </Typography>
+                    <Typography variant="subtitle1" color="text.secondary" component="div">
+                        <span style={{ color: "grey", fontSize: '15px' }}>Uhid:</span> <span style={{ color: "black", fontSize: '15px' }}>{patientData.uhid}</span>
+                    </Typography>
+                    {!isGender && (
                         <Typography variant="subtitle1" color="text.secondary" component="div">
-                            <span style={{ color: "grey", fontSize: '15px' }}>Order Id:</span>  <span style={{ color: "black", fontSize: '15px' }}>957832</span>
+                            <span style={{ color: "grey", fontSize: '15px' }}>Gender:</span> <span style={{ color: "black", fontSize: '15px' }}>{patientData.gender}</span>
                         </Typography>
+                    )}
+                    {!isAge && (
                         <Typography variant="subtitle1" color="text.secondary" component="div">
-                            <span style={{ color: "grey", fontSize: '15px' }}>Gender:</span> <span style={{ color: "black", fontSize: '15px' }}> Male</span>
+                            <span style={{ color: "grey", fontSize: '15px' }}>Age:</span> <span style={{ color: "black", fontSize: '15px' }}>{patientData.age}</span>
                         </Typography>
-                        <Typography variant="subtitle1" color="text.secondary" component="div">
-                            <span style={{ color: "grey", fontSize: '15px' }}>Age:</span> <span style={{ color: "black", fontSize: '15px' }}> 24</span>
-                        </Typography>
-                        <Typography variant="subtitle1" color="text.secondary" component="div">
-                            <span style={{ color: "grey", fontSize: '15px' }}>Mobile Number:</span>  <span style={{ color: "black", fontSize: '15px' }}>786422232</span>
-                        </Typography>
-                        <Typography variant="subtitle1" color="text.secondary" component="div">
-                            <span style={{ color: "grey", fontSize: '15px' }}>Email:</span>  <span style={{ color: "black", fontSize: '15px' }}>Nithya234@gmail.com</span>
-                        </Typography>
-
-
-                    </CardContent>
-                </Box>
-
+                    )}
+                    <Typography variant="subtitle1" color="text.secondary" component="div">
+                        <span style={{ color: "grey", fontSize: '15px' }}>Mobile Number:</span> <span style={{ color: "black", fontSize: '15px' }}>{patientData.phone}</span>
+                    </Typography>
+                </CardContent>
             </Card>
         </Box>
-
-
     );
 }
 

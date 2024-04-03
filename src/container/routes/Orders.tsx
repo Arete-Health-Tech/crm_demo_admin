@@ -9,7 +9,7 @@ const Orders = (props: props) => {
     return (
         <Routes>
             <Route path="/" element={<OrderListBody />} />
-            <Route index path="orderDetails/:ticketId" element={<OrderDetailContainer />} />
+            <Route index path="orderDetails/:uid" element={<OrderDetailContainer />} />
 
         </Routes>
     );

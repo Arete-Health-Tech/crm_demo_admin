@@ -93,6 +93,30 @@ export interface iTicket {
   estimate: iEstimate[];
   creator: string;
   assigned: string;
+  date: string;
+  stage: string;
+  location: string;
+  createdAt: string;
+  creator: iCreator[];
+  // ..
+  isNewTicket: boolean | true;
+  subStageCode: {
+    active: boolean;
+    code: number;
+  };
+  modifiedDate: Date | string | null;
+  won: string;
+  loss: string;
+  pharmacyStatus: string;
+}
+
+export interface iPharmcyTicket {
+  _id: string;
+  consumer: iConsumer[];
+  prescription: iPrescription[];
+  estimate: iEstimate[];
+  creator: string;
+  assigned: string;
   stage: string;
   location: string;
   createdAt: string;
@@ -112,6 +136,8 @@ export interface iTicket {
 export interface iTicketStore {
   tickets: iTicket[];
   setTickets: (tickets: iTicket[]) => void;
+  pharmcyTicket: iPharmcyTicket[];
+  setPharmcyTickets: (tickets: iPharmcyTicket[]) => void;
   ticketCount: number;
   setTicketCount: (count: number) => void;
   searchByName: string;
@@ -144,6 +170,14 @@ export interface iTicketStore {
   setPharmacyOrderStatusFilter: (pharmacyOrderStatusFilter: string) => void;
   pharmacySearchFilter: string;
   setPharmacySearchFilter: (pharmacySearchFilter: string) => void;
+  pharmacyOrderPendingCount: string;
+  setPharmacyOrderPendingCount: (pharmacyOrderPendingCount: string) => void;
+  pharmacyOrderReadyCount: string;
+  setPharmacyOrderReadyCount: (pharmacyOrderReadyCount: string) => void;
+  pharmacyOrderCompletedCount: string;
+  setPharmacyOrderCompletedCount: (pharmacyOrderCompletedCount: string) => void;
+  pharmacyOrderCancelledCount: string;
+  setPharmacyOrderCancelledCount: (pharmacyOrderCancelledCount: string) => void;
 }
 
 export interface iNote {

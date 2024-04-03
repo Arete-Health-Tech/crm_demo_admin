@@ -1,52 +1,43 @@
+
 import * as React from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
-import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PatientCard from './PatientCard';
 import DoctorCard from './DoctorCard';
-import { ButtonGroup, TablePagination } from '@mui/material';
+import { ButtonGroup, Stack } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { useNavigate } from 'react-router-dom';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import useTicketStore from '../../../store/ticketStore';
+import ShowPrescription from '../../ticket/widgets/ShowPrescriptionModal';
+import { iTicket } from '../../../types/store/ticket';
+import { getPharmcyTicketHandler } from '../../../api/ticket/ticketHandler';
 
+interface PatientData {
+    patientTicket: iTicket[];
+}
 
 interface RowData {
-    prescription: string;
-    orderID: number;
+    prescription: JSX.Element;
+    orderDate: string;
     orderStatus: string;
-    amount: number;
 }
 
 const createData = (
-    prescription: string,
-    orderID: number,
+    prescription: JSX.Element,
+    orderDate: string,
     orderStatus: string,
-    amount: number,
 ): RowData => {
-    return { prescription, orderID, orderStatus, amount };
+    return { prescription, orderDate, orderStatus };
 };
-
-const PatientDetail: RowData[] = [
-    createData('View Prescription', 123324, 'Pending', 100),
-    createData('View Prescription', 223234, 'Shipped', 150),
-    createData('View Prescription', 323234, 'Delivered', 200),
-    createData('View Prescription', 223234, 'Shipped', 150),
-    createData('View Prescription', 323234, 'Delivered', 200),
-    createData('View Prescription', 223234, 'Shipped', 150),
-    createData('View Prescription', 323234, 'Delivered', 200),
-    createData('View Prescription', 223234, 'Shipped', 150),
-    createData('View Prescription', 323234, 'Delivered', 200),
-    // Add more data as needed
-];
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
     backgroundColor: "rgba(146, 143, 143, 0.183)",
@@ -71,20 +62,56 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 const OrderDetailContainer = () => {
-
-    const { ticketId } = useParams();
-    console.log(ticketId, "-----------Ticket ID");
+    const { tickets, pharmcyTicket, setPharmcyTickets } = useTicketStore();
+    console.log(tickets, pharmcyTicket, "----------");
+    const { uid } = useParams();
     const navigate = useNavigate();
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
+    const [orderStatus, setOrderStatus] = React.useState<string | null>(null);
 
-    const handleChangePage = (event: React.MouseEvent<HTMLButtonElement> | null, newPage: number) => {
-        setPage(newPage);
-    };
+    React.useEffect(() => {
+        async function fetchData() {
+            await getPharmcyTicketHandler();
 
-    const startIndex = page * rowsPerPage;
-    const endIndex = startIndex + rowsPerPage;
-    const displayedData = PatientDetail.slice(startIndex, endIndex);
+            let filteredTickets = tickets.filter(item => item.consumer[0].uid === uid);
+            setPharmcyTickets(filteredTickets);
+            if (filteredTickets.length > 0) {
+                localStorage.setItem('orderStatus', filteredTickets[0]?.pharmacyStatus);
+            }
+            // const orderStatus = localStorage.getItem('orderStatus');
+            const orderStatus = localStorage.getItem('orderStatus');
+            if (orderStatus === "Pending") {
+                setOrderStatus("Processing");
+            } else if (orderStatus === "Completed" || orderStatus === "Ready" || orderStatus === "Cancelled") {
+                setOrderStatus(orderStatus)
+            }
+            else {
+                setOrderStatus("");
+            }
+            // setOrderStatus(orderStatus);
+
+        }
+
+        fetchData();
+    }, [uid, getPharmcyTicketHandler]);
+
+
+    const PatientDetail: RowData[] = React.useMemo(() => {
+        if (pharmcyTicket.length > 0) {
+            localStorage.setItem('pTicket', JSON.stringify(pharmcyTicket));
+        }
+        const storedData = localStorage.getItem('pTicket');
+        const parsedData = storedData ? JSON.parse(storedData) : [];
+
+        return parsedData.map(ticket => {
+            const prescriptionLink = (
+                <ShowPrescription
+                    image={ticket?.prescription[0].image}
+                // other props
+                />
+            );
+            return createData(prescriptionLink, ticket?.prescription[0]?.created_Date || '', ticket.pharmacyStatus || '');
+        });
+    }, [pharmcyTicket]);
 
     return (
         <>
@@ -119,16 +146,14 @@ const OrderDetailContainer = () => {
                         sx={{
                             fontWeight: 'bold'
                         }}
-                    > Processing
+                    > {orderStatus}
                         <KeyboardArrowDownIcon />
                     </Button>
                 </ButtonGroup>
-
             </Box>
             <Box sx={{
                 padding: '5px 60px',
             }}>
-
                 <Box sx={{
                     display: 'flex',
                     flexDirection: 'row',
@@ -136,8 +161,8 @@ const OrderDetailContainer = () => {
                     marginTop: '18px',
                     marginBottom: '30px',
                 }} >
-                    <PatientCard ticketId={ticketId} />
-                    <DoctorCard />
+                    <Stack sx={{ width: 750 }}><PatientCard uid={uid} /></Stack>
+                    <Stack sx={{ width: 750 }}> <DoctorCard uid={uid} /></Stack>
                 </Box>
                 <Box
                     sx={{
@@ -161,39 +186,19 @@ const OrderDetailContainer = () => {
                                     <TableCell align="center">Prescription</TableCell>
                                     <TableCell align="center">Order DATE</TableCell>
                                     <TableCell align="center">Order Status</TableCell>
-                                    <TableCell align="center">Amount</TableCell>
                                 </TableRow>
                             </StyledTableHead>
                             <TableBody>
-                                {displayedData.map((row) => (
-                                    <StyledTableRow key={row.orderID}>
+                                {PatientDetail.map((row, index) => (
+                                    <StyledTableRow key={index}>
                                         <TableCell align="center">{row.prescription}</TableCell>
-                                        <TableCell align="center">{row.orderID}</TableCell>
+                                        <TableCell align="center">{row.orderDate}</TableCell>
                                         <TableCell align="center">{row.orderStatus}</TableCell>
-                                        <TableCell align="center">{row.amount}</TableCell>
                                     </StyledTableRow>
                                 ))}
                             </TableBody>
                         </Table>
                     </TableContainer>
-                    {/* <TablePagination
-                    component="div"
-                    count={PatientDetail.length}
-                    rowsPerPage={rowsPerPage}
-                    page={page}
-                    onPageChange={handleChangePage}
-                />
-
-                <Typography
-                    variant="h6"
-                    component="h2"
-                    mt={3}
-                    sx={{
-                        textAlign: "right",
-                        fontSize: "16px"
-                    }}>
-                    Total orders: 165
-                </Typography> */}
                 </Box>
             </Box>
         </>

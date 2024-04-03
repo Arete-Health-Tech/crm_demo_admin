@@ -133,9 +133,13 @@ export const getPharmacyTickets = async (
   pharmacyOrderStatusFilter: string,
   pharmacySearchFilter: string
 ) => {
-  console.log(pharmacySearchFilter);
+  const pharmacyOrderStatusFiltes =
+    pharmacyOrderStatusFilter.length == 10
+      ? `91${pharmacyOrderStatusFilter}`
+      : pharmacyOrderStatusFilter;
+
   const { data } = await apiClient.get(
-    `/pharmacy/pharmacyTickets?page=${pageNumber}&search=${pharmacyOrderStatusFilter}&date=${pharmacyDateFilter}&pharmacyStatus=${pharmacySearchFilter}`
+    `/pharmacy/pharmacyTickets?page=${pageNumber}&search=${pharmacyOrderStatusFiltes}&date=${pharmacyDateFilter}&pharmacyStatus=${pharmacySearchFilter}`
   );
   console.log(data);
   return data;

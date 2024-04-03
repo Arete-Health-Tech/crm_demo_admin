@@ -83,7 +83,11 @@ export const getPharmcyTicketHandler = async () => {
     pageNumber,
     pharmacyDateFilter,
     pharmacySearchFilter,
-    pharmacyOrderStatusFilter
+    pharmacyOrderStatusFilter,
+    setPharmacyOrderPendingCount,
+    setPharmacyOrderReadyCount,
+    setPharmacyOrderCompletedCount,
+    setPharmacyOrderCancelledCount
   } = useTicketStore.getState();
 
   setLoaderOn(true);
@@ -96,6 +100,10 @@ export const getPharmcyTicketHandler = async () => {
       pharmacyOrderStatusFilter
     );
     const count = data.count;
+    const Pending = data.statusCounts.Pending;
+    const Ready = data.statusCounts.Ready;
+    const Completed = data.statusCounts.Completed;
+    const Cancelled = data.statusCounts.Cancelled;
 
     if (data.tickets.length < 1) {
       setEmptyDataText('No Data Found');
@@ -105,6 +113,10 @@ export const getPharmcyTicketHandler = async () => {
 
     setTicketCount(count);
     setTickets(data.tickets);
+    setPharmacyOrderPendingCount(Pending);
+    setPharmacyOrderReadyCount(Ready);
+    setPharmacyOrderCompletedCount(Completed);
+    setPharmacyOrderCancelledCount(Cancelled);
     setLoaderOn(false);
   } catch (error) {
     console.error('Error fetching tickets:', error);

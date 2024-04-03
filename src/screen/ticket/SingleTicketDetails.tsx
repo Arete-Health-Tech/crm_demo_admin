@@ -505,7 +505,7 @@ const SingleTicketDetails = (props: Props) => {
   };
 
 
-
+  console.log(currentTicket," thi sisi currentTicket")
 
 
   return (

@@ -14,7 +14,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Input, TextField } from '@mui/material';
+import { Button, Card, CardContent, Grid, Input, TextField } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useNavigate } from 'react-router-dom';
@@ -67,6 +67,7 @@ interface Data {
     _id: string;
     uhid: string;
     name: string;
+    date: string;
     number: string;
     doctor: string;
     specialty: string;
@@ -82,7 +83,7 @@ interface Column {
     label: string;
     minWidth: number;
     align?: 'left' | 'right';
-    format?: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => JSX.Element;
+    format?: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (uid: string, ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => JSX.Element;
 }
 
 const OrderListBody = () => {
@@ -98,7 +99,11 @@ const OrderListBody = () => {
         pharmacyOrderStatusFilter,
         setPharmacyOrderStatusFilter,
         pharmacySearchFilter,
-        setPharmacySearchFilter
+        setPharmacySearchFilter,
+        pharmacyOrderPendingCount,
+        pharmacyOrderReadyCount,
+        pharmacyOrderCompletedCount,
+        pharmacyOrderCancelledCount
     } = useTicketStore();
     const [page, setPage] = React.useState<number>(pageNumber - 1);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
@@ -110,6 +115,21 @@ const OrderListBody = () => {
     // const [dateFilterValue, setDateFilterValue] = useState("");
     const [orderStatuses, setOrderStatuses] = useState<{ [key: string]: string }>({});
     // const [selectedValues, setSelectedValues] = useState<string>('Pending');
+
+    console.log(tickets)
+    useEffect(() => {
+
+        const refetchTickets = async () => {
+            await getPharmcyTicketHandler();
+        };
+        //  pageNumber = page
+        socket.on(socketEventConstants.PHARMACY_REFETCH_TICKETS, refetchTickets);
+
+        return () => {
+            socket.off(socketEventConstants.PHARMACY_REFETCH_TICKETS, refetchTickets);
+        };
+    }, [pageNumber]);
+
     useEffect(() => {
         (async function () {
             await getPharmcyTicketHandler();
@@ -126,8 +146,8 @@ const OrderListBody = () => {
         setPage(0);
     };
 
-    const onClickDetail = (ticketId: string) => {
-        navigate(`orderDetails/${ticketId}`);
+    const onClickDetail = (uid: string, ticketId: string) => {
+        navigate(`orderDetails/${uid}`);
     };
 
     const handleStatusChange = async (ticketId: string, newValue: string) => {
@@ -142,7 +162,6 @@ const OrderListBody = () => {
     const handleOrderStatusFilter = (event: SelectChangeEvent) => {
 
         setPharmacyOrderStatusFilter(event.target.value as string);
-        console.log("orderStatusFilter", event.target.value)
 
     }
 
@@ -156,26 +175,29 @@ const OrderListBody = () => {
     }
 
     function createData(
-        _id: string,
-        uhid: string,
-        name: string,
-        number: string,
-        doctor: string,
-        specialty: string,
-        prescription: iPrescrition[],
-        orderStatus: string,
-        action: string,
+        _id: string, uhid: string, date: string, name: string, number: string, doctor: string, specialty: string, prescription: iPrescrition[], orderStatus: string, action: string
         // handleStatusChange: (ticketId: string, newValue: string) => void,
         // onClickDetail: (ticketId: string) => void
     ): Data {
         const uniqueKey = `${_id}`;
-        return { _id: uniqueKey, uhid, name, number, doctor, specialty, prescription, orderStatus, action };
+        return { _id: uniqueKey, uhid, date, name, number, doctor, specialty, prescription, orderStatus, action };
     }
 
     let rows: Data[] = [];
 
     const columns: Column[] = [
         { id: 'uhid', label: 'UHID', minWidth: 60 },
+        {
+            id: 'date', label: 'Date', minWidth: 60,
+            format: (value: string) => (
+                <Box component="a"
+                    sx={{ fontSize: '14px' }}
+                >
+                    {/* {Math.ceil((new Date().getTime() - new Date(value).getTime()) / (1000 * 60 * 60 * 24))} */}
+                    {value.split("T")[0]}
+                </Box>
+            ),
+        },
         { id: 'name', label: 'Name', minWidth: 120 },
         { id: 'number', label: 'Number', minWidth: 80 },
         { id: 'doctor', label: 'Doctor', minWidth: 130 },
@@ -184,7 +206,7 @@ const OrderListBody = () => {
             id: 'prescription',
             label: 'Prescription',
             minWidth: 150,
-            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
+            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (uid: string, ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
                 <Box component="a"
                     sx={{ color: '#4990bd', fontSize: '14px' }}
                     // onClick={() => handleViewPrescription(row.prescription)}
@@ -200,7 +222,7 @@ const OrderListBody = () => {
             id: 'orderStatus',
             label: 'Order Status',
             minWidth: 150,
-            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
+            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (uid: string, ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
                 <Select
                     value={orderStatuses[row._id] || value}
                     onChange={(e) => handleStatusChange(row._id, e.target.value as string)}
@@ -239,10 +261,10 @@ const OrderListBody = () => {
             id: 'action',
             label: ' ',
             minWidth: 50,
-            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
+            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (uid: string, ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
                 <Button
                     sx={{ color: '#4990bd', backgroundColor: '#1976D214', fontSize: '11px' }}
-                    onClick={() => onClickDetail(row._id)}
+                    onClick={() => onClickDetail(row.uhid, row._id)}
                 >
                     {value}
                 </Button>
@@ -327,6 +349,7 @@ const OrderListBody = () => {
         // const prescriptionImage = 
         const ticketId = ticket?._id;
         const uid = ticket?.consumer[0]?.uid;
+        const date = ticket?.date;
         const name = patientName(ticket);
         const phoneNumber = ticket?.consumer[0]?.phone;
         const doctorName = fetchDoctorName(ticket);
@@ -338,13 +361,14 @@ const OrderListBody = () => {
             createData(
                 ticketId,
                 uid,
+                date,
                 name,
                 phoneNumber,
                 doctorName,
                 departmentName,
                 prescription,
                 pharmacyStatus,
-                'View Detail',
+                'View Detail'
             )
         );
     }
@@ -361,18 +385,36 @@ const OrderListBody = () => {
         }
 
     };
-    useEffect(() => {
 
-        const refetchTickets = async () => {
-            await getPharmcyTicketHandler();
-        };
-        //  pageNumber = page
-        socket.on(socketEventConstants.PHARMACY_REFETCH_TICKETS, refetchTickets);
 
-        return () => {
-            socket.off(socketEventConstants.PHARMACY_REFETCH_TICKETS, refetchTickets);
-        };
-    }, [pageNumber]);
+
+    const cardsData = [
+        {
+            id: 1,
+            title: 'Processing',
+            content: pharmacyOrderPendingCount,
+            color: '#cddefe'
+        },
+        {
+            id: 2,
+            title: 'Ready',
+            content: pharmacyOrderReadyCount,
+            color: '#fff1cc'
+        },
+        {
+            id: 3,
+            title: 'Completed',
+            content: pharmacyOrderCompletedCount,
+            color: '#dbf0e7'
+        },
+        {
+            id: 4,
+            title: 'Cancelled',
+            content: pharmacyOrderCancelledCount,
+            color: '#f7c0bb'
+        }
+    ];
+
 
     return (
         <>
@@ -391,117 +433,153 @@ const OrderListBody = () => {
                 <Box
                     sx={{
                         display: 'flex',
+                        justifyContent: 'space-between',
                         flexDirection: 'row',
                         marginTop: '5px',
                         color: 'black',
                     }}
                 >
-                    <FormControl>
-                        <span style={{
-                            backgroundColor: 'white',
-                            width: '44px',
-                            padding: '12px 5px',
-                            position: 'relative',
-                            border: '1px solid #ccc',
-                            top: '8px',
-                            fontSize: '20px',
-                            borderTopLeftRadius: '15px',
-                            borderBottomLeftRadius: '15px',
+                    <Box>
+                        <FormControl>
+                            <span style={{
+                                backgroundColor: 'white',
+                                width: '44px',
+                                padding: '12px 5px',
+                                position: 'relative',
+                                border: '1px solid #ccc',
+                                top: '8px',
+                                fontSize: '20px',
+                                borderTopLeftRadius: '15px',
+                                borderBottomLeftRadius: '15px',
 
-                        }}><FilterListIcon sx={{ fontSize: '28px' }} /></span>
-                    </FormControl>
+                            }}><FilterListIcon sx={{ fontSize: '28px' }} /></span>
+                        </FormControl>
 
-                    <FormControl
-                        sx={{ my: 1 }}
-                    >
-                        <Input
+                        <FormControl
+                            sx={{ my: 1 }}
+                        >
+                            <Input
 
-                            type='text'
-                            placeholder='Search ...'
+                                type='text'
+                                placeholder='Search ...'
+                                sx={{
+                                    backgroundColor: 'white',
+                                    width: '145px',
+                                    height: '56px',
+                                    border: '1px solid #ccc',
+                                    borderBottom: 'none',
+                                    paddingLeft: '10px',
+                                    paddingRight: '10px',
+                                    '&::placeholder': {
+                                        textAlign: 'center',
+                                        marginLeft: '20px',
+                                    }
+
+                                }}
+                                value={pharmacySearchFilter}
+                                onChange={(event) => setPharmacySearchFilter(event.target?.value)}
+                                onKeyPress={handleSearchKeyPress}
+                            />
+                        </FormControl>
+                        <FormControl
                             sx={{
                                 backgroundColor: 'white',
-                                width: '145px',
-                                height: '56px',
                                 border: '1px solid #ccc',
-                                borderBottom: 'none',
-                                '&::placeholder': {
-                                    textAlign: 'center',
-                                    marginLeft: '20px'
-                                }
-
+                                my: 1
                             }}
-                            value={pharmacySearchFilter}
-                            onChange={(event) => setPharmacySearchFilter(event.target?.value)}
-                            onKeyPress={handleSearchKeyPress}
-                        />
-                    </FormControl>
-                    <FormControl
-                        sx={{
-                            backgroundColor: 'white',
-                            border: '1px solid #ccc',
-                            my: 1
-                        }}
-                    // onClick={(event) => {
-                    //     event.stopPropagation();
-                    // }}
-                    >
-                        <input
-                            type='date'
-                            value={pharmacyDateFilter}
-                            onChange={handleDateFilter}
-                            id='your_unique_id'
-                            style={{
-                                width: '127px',
-                                height: '54px',
-                                border: 0,
-                                outline: 'none',
+
+                        // onClick={(event) => {
+                        //     event.stopPropagation();
+                        // }}
+                        >
+                            <input
+                                type='date'
+                                value={pharmacyDateFilter}
+                                onChange={handleDateFilter}
+                                id='your_unique_id'
+                                placeholder="DD-MM-YY"
+                                style={{
+                                    width: '127px',
+                                    height: '54px',
+                                    border: 0,
+                                    outline: 'none',
+                                    cursor: 'pointer',
+                                    margin: '0px 10px 0px 10px'
+                                }}
+                            />
+                        </FormControl>
+
+                        <FormControl sx={{ my: 1 }}>
+                            {/* <InputLabel id="demo-simple-select-label" sx={{ color: 'black', fontWeight: 'bold', display: 'flex' }}>Order Status </InputLabel> */}
+                            <Select
+                                // labelId="demo-simple-select-label"
+                                // id="demo-simple-select"
+                                value={pharmacyOrderStatusFilter}
+                                inputProps={{ 'aria-label': 'Select' }}
+                                // label="order status ^"
+                                displayEmpty
+                                onChange={handleOrderStatusFilter}
+                                // IconComponent={() => null}
+                                sx={{
+                                    width: '145px',
+                                    borderRadius: '0',
+                                    border: 0,
+                                    backgroundColor: 'white',
+                                    '&:focus': {
+                                        border: 'none',
+                                        outline: 'none',
+                                    },
+                                }}
+                            >
+                                <MenuItem value="" disabled>
+                                    Select Status
+                                </MenuItem>
+                                <MenuItem value={"Pending"}>Processing</MenuItem>
+                                <MenuItem value={"Ready"}>Ready</MenuItem>
+                                <MenuItem value={"Completed"}>Completed</MenuItem>
+                                <MenuItem value={"Cancelled"}>Cancelled</MenuItem>
+                            </Select>
+                        </FormControl>
+
+                        <FormControl sx={{ my: 1 }}>
+                            <button style={{
+                                backgroundColor: 'white',
+                                padding: '15px 15px',
+                                border: '1px solid #ccc',
+                                width: '150px',
+                                borderTopRightRadius: '15px',
+                                borderBottomRightRadius: '15px',
+                                color: 'red',
+                                fontWeight: 'bold', display: 'flex',
                                 cursor: 'pointer'
                             }}
-                            placeholder='Select Date Here ...'
-                        />
-                    </FormControl>
-
-                    <FormControl sx={{ my: 1 }}>
-                        <InputLabel id="demo-simple-select-label" sx={{ color: 'black', fontWeight: 'bold', display: 'flex' }}>Order Status </InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            value={pharmacyOrderStatusFilter}
-                            label="order status ^"
-                            onChange={handleOrderStatusFilter}
-                            // IconComponent={() => null}
-                            sx={{
-                                width: '145px',
-                                borderRadius: '0',
-                                border: 0,
-                                backgroundColor: 'white',
-                                '&:focus': {
-                                    border: 'none',
-                                    outline: 'none',
-                                },
-                            }}
-                        >
-                            <MenuItem value={"Ready"}>Ready</MenuItem>
-                            <MenuItem value={"Completed"}>Completed</MenuItem>
-                            <MenuItem value={"Cancelled"}>Cancelled</MenuItem>
-                        </Select>
-                    </FormControl>
-
-                    <FormControl sx={{ my: 1 }}>
-                        <button style={{
-                            backgroundColor: 'white',
-                            padding: '15px 15px',
-                            border: '1px solid #ccc',
-                            width: '150px',
-                            borderTopRightRadius: '15px',
-                            borderBottomRightRadius: '15px',
-                            color: 'red',
-                            fontWeight: 'bold', display: 'flex',
-                            cursor: 'pointer'
-                        }}
-                            onClick={() => { setPharmacyDateFilter(""); setPharmacyOrderStatusFilter(""); setPharmacySearchFilter("") }}
-                        ><RefreshIcon sx={{ marginRight: '5px' }} />Reset Filter</button>
-                    </FormControl>
+                                onClick={() => { setPharmacyDateFilter(""); setPharmacyOrderStatusFilter(""); setPharmacySearchFilter("") }}
+                            ><RefreshIcon sx={{ marginRight: '5px' }} />Reset Filter</button>
+                        </FormControl>
+                    </Box>
+                    <Box sx={{ width: '35vw', display: 'flex', justifyContent: 'space-around' }}>
+                        {cardsData.map((card) => (
+                            <Grid container spacing={1} justifyContent="center" alignItems="center">
+                                <Grid item>
+                                    <Card sx={{
+                                        width: '8vw', borderRadius: "7px ",
+                                    }}>
+                                        <CardContent
+                                            style={{
+                                                borderTop: `4px solid ${card.color}`,
+                                                borderRadius: 10,
+                                                padding: '6px 15px 6px 15px'
+                                            }}>
+                                            <h3 style={{ fontSize: '16px', fontWeight: 600 }}>
+                                                {card.title}
+                                            </h3>
+                                            <p style={{ fontSize: '14px', fontWeight: 500 }}>{card.content}</p>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            </Grid>
+                        ))}
+                    </Box>
                 </Box>
 
                 <Box sx={{ marginTop: '18px' }}>

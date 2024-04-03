@@ -74,19 +74,27 @@ export const getTicketHandler = async (
   setLoaderOn(false);
 };
 
-export const getPharmcyTicketHandler = async (filter: string) => {
+export const getPharmcyTicketHandler = async () => {
   const {
     setTickets,
     setTicketCount,
     setEmptyDataText,
     setLoaderOn,
-    pageNumber
+    pageNumber,
+    pharmacyDateFilter,
+    pharmacySearchFilter,
+    pharmacyOrderStatusFilter
   } = useTicketStore.getState();
 
   setLoaderOn(true);
 
   try {
-    const data = await getPharmacyTickets(pageNumber, filter);
+    const data = await getPharmacyTickets(
+      pageNumber,
+      pharmacyDateFilter,
+      pharmacySearchFilter,
+      pharmacyOrderStatusFilter
+    );
     const count = data.count;
 
     if (data.tickets.length < 1) {

@@ -21,7 +21,7 @@ import { useNavigate } from 'react-router-dom';
 
 import useTicketStore from '../../store/ticketStore';
 import { iPrescrition, iTicket } from '../../types/store/ticket';
-import { getPharmacyTickets, getTicket } from '../../api/ticket/ticket';
+import { getPharmacyTickets, getTicket, updatePharmacyOrderStatus } from '../../api/ticket/ticket';
 import { apiClient, socket } from '../../api/apiClient';
 import axios from 'axios';
 import { getDoctors } from '../../api/doctor/doctor';
@@ -37,13 +37,27 @@ import { socketEventConstants } from '../../constantUtils/socketEventsConstants'
 const getColorForOption = (optionValue: string): string => {
     switch (optionValue) {
         case 'Completed':
-            return 'green';
+            return '#41a179';
         case 'Ready':
             return '#FFCE56';
         case 'Cancelled':
-            return 'red';
+            return '#ea574a';
         case 'Pending':
-            return 'blue';
+            return '#043999';
+        default:
+            return '';
+    }
+};
+const getBgColor = (optionValue: string): string => {
+    switch (optionValue) {
+        case 'Completed':
+            return '#dbf0e7';
+        case 'Ready':
+            return ' #fff1cc';
+        case 'Cancelled':
+            return ' #f7c0bb';
+        case 'Pending':
+            return '#cddefe';
         default:
             return '';
     }
@@ -79,22 +93,28 @@ const OrderListBody = () => {
         ticketCount,
         pageNumber,
         setPageNumber,
+        pharmacyDateFilter,
+        setPharmacyDateFilter,
+        pharmacyOrderStatusFilter,
+        setPharmacyOrderStatusFilter,
+        pharmacySearchFilter,
+        setPharmacySearchFilter
     } = useTicketStore();
-    const [page, setPage] = React.useState<number>(0);
+    const [page, setPage] = React.useState<number>(pageNumber - 1);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
-    const [filter, setFilter] = useState<string>('');
+    // const [filter, setFilter] = useState<string>('');
     const navigate = useNavigate();
     const [doctors, setDoctors] = useState<iDoctor[] | null>(null);
     const [department, setDepartment] = useState<iDepartment[] | null>(null);
-    const [orderStatusFilterValue, setOrderStatusFilterValue] = useState("");
-    const [dateFilterValue, setDateFilterValue] = useState("");
+    // const [orderStatusFilterValue, setOrderStatusFilterValue] = useState("");
+    // const [dateFilterValue, setDateFilterValue] = useState("");
     const [orderStatuses, setOrderStatuses] = useState<{ [key: string]: string }>({});
-    const [selectedValues, setSelectedValues] = useState<string>('Pending');
+    // const [selectedValues, setSelectedValues] = useState<string>('Pending');
     useEffect(() => {
         (async function () {
-            await getPharmcyTicketHandler(filter);
+            await getPharmcyTicketHandler();
         })();
-    }, [page]);
+    }, [page, pharmacyDateFilter, pharmacyOrderStatusFilter]);
 
     const handleChangePage = (event: any, newPage: number) => {
         console.log(newPage)
@@ -110,7 +130,9 @@ const OrderListBody = () => {
         navigate(`orderDetails/${ticketId}`);
     };
 
-    const handleStatusChange = (ticketId: string, newValue: string) => {
+    const handleStatusChange = async (ticketId: string, newValue: string) => {
+        console.log(ticketId, newValue)
+        const data = await updatePharmacyOrderStatus(ticketId, newValue)
         setOrderStatuses(prevStatuses => ({
             ...prevStatuses,
             [ticketId]: newValue,
@@ -119,14 +141,13 @@ const OrderListBody = () => {
 
     const handleOrderStatusFilter = (event: SelectChangeEvent) => {
 
-        setOrderStatusFilterValue(event.target.value as string);
+        setPharmacyOrderStatusFilter(event.target.value as string);
         console.log("orderStatusFilter", event.target.value)
 
     }
 
     const handleDateFilter = (event: SelectChangeEvent) => {
-        setDateFilterValue(event.target.value as string);
-        console.log("dateFilter", event.target.value);
+        setPharmacyDateFilter(event.target.value);
     }
 
     const handleViewPrescription = (prescription: iPrescrition[]) => {
@@ -165,7 +186,7 @@ const OrderListBody = () => {
             minWidth: 150,
             format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
                 <Box component="a"
-                    sx={{ color: '#4990bd' }}
+                    sx={{ color: '#4990bd', fontSize: '14px' }}
                     // onClick={() => handleViewPrescription(row.prescription)}
                     rel="view Prescription"
                 >
@@ -185,7 +206,11 @@ const OrderListBody = () => {
                     onChange={(e) => handleStatusChange(row._id, e.target.value as string)}
                     sx={{
                         fontSize: '14px',
+                        fontWeight: 500,
                         padding: '0px',
+                        color: getColorForOption(value),
+                        backgroundColor: getBgColor(value),
+                        border: 'none',
                         '& .MuiSelect-select': {
                             padding: '5px',
                         },
@@ -195,16 +220,16 @@ const OrderListBody = () => {
                         },
                     }}
                 >
-                    <MenuItem value="Pending" sx={{ color: getColorForOption('Pending') }}>
-                        Pending
+                    <MenuItem value="Pending" sx={{ color: getColorForOption('Processing'), backgroundColor: getBgColor('Processing') }}>
+                        Processing
                     </MenuItem>
-                    <MenuItem value="Ready" sx={{ color: getColorForOption('Ready') }}>
+                    <MenuItem value="Ready" sx={{ color: getColorForOption('Ready'), backgroundColor: getBgColor('Ready') }}>
                         Ready
                     </MenuItem>
-                    <MenuItem value="Completed" sx={{ color: getColorForOption('Completed') }}>
+                    <MenuItem value="Completed" sx={{ color: getColorForOption('Completed'), backgroundColor: getBgColor('Completed') }}>
                         Completed
                     </MenuItem>
-                    <MenuItem value="Cancelled" sx={{ color: getColorForOption('Cancelled') }}>
+                    <MenuItem value="Cancelled" sx={{ color: getColorForOption('Cancelled'), backgroundColor: getBgColor('Cancelled') }}>
                         Cancelled
                     </MenuItem>
                 </Select>
@@ -307,6 +332,7 @@ const OrderListBody = () => {
         const doctorName = fetchDoctorName(ticket);
         const departmentName = fetchDepartmentName(ticket);
         const prescription = ticket?.prescription;
+        const pharmacyStatus = ticket?.pharmacyStatus;
 
         rows.push(
             createData(
@@ -317,21 +343,20 @@ const OrderListBody = () => {
                 doctorName,
                 departmentName,
                 prescription,
-                selectedValues,
+                pharmacyStatus,
                 'View Detail',
             )
         );
     }
 
     const handleSearchKeyPress = async (e: any) => {
-        // console.log("e", e)
-        const value = e.target?.value;
-        if (value) {
-            setFilter(value)
-        }
+        // console.log(e)
+        // if (e.target.value) {
+        //     setPharmacySearchFilter(e.target?.value)
+        // }
         if (e.key === 'Enter') {
             (async function () {
-                await getPharmcyTicketHandler(filter);
+                await getPharmcyTicketHandler();
             })();
         }
 
@@ -339,7 +364,7 @@ const OrderListBody = () => {
     useEffect(() => {
 
         const refetchTickets = async () => {
-            await getPharmcyTicketHandler(filter);
+            await getPharmcyTicketHandler();
         };
         //  pageNumber = page
         socket.on(socketEventConstants.PHARMACY_REFETCH_TICKETS, refetchTickets);
@@ -405,48 +430,35 @@ const OrderListBody = () => {
                                 }
 
                             }}
-                            onKeyDown={handleSearchKeyPress}
-                        // onChange={(event) => setFilter(event.target.value as string)}
+                            value={pharmacySearchFilter}
+                            onChange={(event) => setPharmacySearchFilter(event.target?.value)}
+                            onKeyPress={handleSearchKeyPress}
                         />
                     </FormControl>
-                    <FormControl sx={{ my: 1 }}>
-
-                        <InputLabel id="demo-simple-select-label" sx={{ color: 'black', fontWeight: 'bold', display: 'flex' }}>Date By</InputLabel>
-                        <Select
-                            labelId="demo-simple-select-label"
-                            id="demo-simple-select"
-                            onClose={() => { }}
-                            label="Date By"
-                            // onOpen={handleSelectOpen}
-                            // value={selectDate}
-                            sx={{
-                                backgroundColor: 'white',
+                    <FormControl
+                        sx={{
+                            backgroundColor: 'white',
+                            border: '1px solid #ccc',
+                            my: 1
+                        }}
+                    // onClick={(event) => {
+                    //     event.stopPropagation();
+                    // }}
+                    >
+                        <input
+                            type='date'
+                            value={pharmacyDateFilter}
+                            onChange={handleDateFilter}
+                            id='your_unique_id'
+                            style={{
                                 width: '127px',
-                                borderRadius: '0',
+                                height: '54px',
                                 border: 0,
-                                '&:focus': {
-                                    border: 0,
-                                    outline: 'none',
-                                },
+                                outline: 'none',
+                                cursor: 'pointer'
                             }}
-                        >
-                            <MenuItem > <em>Select Date</em></MenuItem>
-                            <MenuItem
-                            // value={selectDate}
-                            >
-                                <input
-                                    type='date'
-                                    value={dateFilterValue}
-                                    onChange={handleDateFilter}
-                                    id='your_unique_id'
-                                    onClick={(event) => {
-                                        event.stopPropagation();
-                                    }}
-                                />
-                            </MenuItem>
-                        </Select>
-
-
+                            placeholder='Select Date Here ...'
+                        />
                     </FormControl>
 
                     <FormControl sx={{ my: 1 }}>
@@ -454,7 +466,7 @@ const OrderListBody = () => {
                         <Select
                             labelId="demo-simple-select-label"
                             id="demo-simple-select"
-                            value={orderStatusFilterValue}
+                            value={pharmacyOrderStatusFilter}
                             label="order status ^"
                             onChange={handleOrderStatusFilter}
                             // IconComponent={() => null}
@@ -471,7 +483,7 @@ const OrderListBody = () => {
                         >
                             <MenuItem value={"Ready"}>Ready</MenuItem>
                             <MenuItem value={"Completed"}>Completed</MenuItem>
-                            <MenuItem value={"Canceled"}>Canceled</MenuItem>
+                            <MenuItem value={"Cancelled"}>Cancelled</MenuItem>
                         </Select>
                     </FormControl>
 
@@ -486,8 +498,9 @@ const OrderListBody = () => {
                             color: 'red',
                             fontWeight: 'bold', display: 'flex',
                             cursor: 'pointer'
-
-                        }}><RefreshIcon sx={{ marginRight: '5px' }} />Reset Filter</button>
+                        }}
+                            onClick={() => { setPharmacyDateFilter(""); setPharmacyOrderStatusFilter(""); setPharmacySearchFilter("") }}
+                        ><RefreshIcon sx={{ marginRight: '5px' }} />Reset Filter</button>
                     </FormControl>
                 </Box>
 

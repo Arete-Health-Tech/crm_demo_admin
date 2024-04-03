@@ -26,7 +26,6 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
     representative: null,
     results: null,
     dateRange: []
-
   },
   setFilterTickets: (filterTickets) => set({ filterTickets }),
   loaderOn: false,
@@ -36,7 +35,15 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   estimates: [],
   setEstimates: (estimates) => set({ estimates }),
   status: [],
-  setStatus: (status) => set({ status })
+  setStatus: (status) => set({ status }),
+  pharmacyDateFilter: '',
+  setPharmacyDateFilter: (pharmacyDateFilter) => set({ pharmacyDateFilter }),
+  pharmacyOrderStatusFilter: '',
+  setPharmacyOrderStatusFilter: (pharmacyOrderStatusFilter) =>
+    set({ pharmacyOrderStatusFilter }),
+  pharmacySearchFilter: '',
+  setPharmacySearchFilter: (pharmacySearchFilter) =>
+    set({ pharmacySearchFilter })
 }));
 
 export default useTicketStore;

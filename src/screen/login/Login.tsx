@@ -28,12 +28,17 @@ const Login = () => {
 
   const handleLogin = () => {
     <Loader isOpen={true} />;
-    const phoneNumber = `91${phone}`;
-    loginHandler(phoneNumber, password.secret);
+    let phoneNumber: string
+    if (phone.length == 10 && /^[0-9]+$/.test(phone)) {
+      phoneNumber = `91${phone}`;
+    } else {
+      phoneNumber = phone;
+    }
+    console.log({phone})
+    loginHandler(phoneNumber, password.secret); 
     navigate('/');
     <Loader isOpen={false} />;
   };
-
   const handleClickShowPassword = () => {
     setPassword({ ...password, show: !password.show });
   };

@@ -222,11 +222,6 @@ const CreatePrescription = () => {
   };
 
 
-
-
-
-
-
   return (
     <>
       <Box display={openCamera ? 'none' : 'block'}>

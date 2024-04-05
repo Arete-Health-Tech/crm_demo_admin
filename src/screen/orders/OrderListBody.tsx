@@ -134,7 +134,7 @@ const OrderListBody = () => {
         (async function () {
             await getPharmcyTicketHandler();
         })();
-    }, [page, pharmacyDateFilter, pharmacyOrderStatusFilter]);
+    }, [page, pharmacyDateFilter, pharmacyOrderStatusFilter, orderStatuses]);
 
     const handleChangePage = (event: any, newPage: number) => {
         console.log(newPage)
@@ -193,6 +193,12 @@ const OrderListBody = () => {
                 <Box component="a"
                     sx={{ fontSize: '14px' }}
                 >
+                    {/* {
+                        (
+                            new Date().getFullYear() === new Date(value).getFullYear() &&
+                            new Date().getMonth() === new Date(value).getMonth() &&
+                            new Date().getDate() === new Date(value).getDate()
+                        ) ? (Math.floor((new Date().getTime() - new Date(value).getTime()) / (1000 * 60 * 60))) : (Math.ceil((new Date().getTime() - new Date(value).getTime()) / (1000 * 60 * 60 * 24)))} */}
                     {/* {Math.ceil((new Date().getTime() - new Date(value).getTime()) / (1000 * 60 * 60 * 24))} */}
                     {value.split("T")[0]}
                 </Box>

@@ -125,7 +125,10 @@ const DoctorCard = ({ uid }) => {
                             <span style={{ color: "grey", fontSize: '15px' }}>Department Name:</span> <span style={{ color: "black", fontSize: '15px' }}>{doctorData.deptName}</span>
                         </Typography>
                         <Typography variant="subtitle1" color="text.secondary" component="div">
-                            <span style={{ color: "grey", fontSize: '15px' }}>Admission Type:</span> <span style={{ color: "black", fontSize: '15px' }}>{doctorData.admissionType}</span>
+                            <span style={{ color: "grey", fontSize: '15px' }}>Admission Type:</span>
+                            <span style={{ color: 'black', fontSize: '15px' }}>
+                                {doctorData.admissionType ? doctorData.admissionType : ' No Admission Type'}
+                            </span>
                         </Typography>
                         <Typography variant="subtitle1" color="text.secondary" component="div">
                             <span style={{ color: "grey", fontSize: '15px' }}>Diagonstics:</span>

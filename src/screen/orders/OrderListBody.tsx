@@ -67,7 +67,7 @@ interface Data {
     _id: string;
     uhid: string;
     name: string;
-    date: string;
+    date: any;
     number: string;
     doctor: string;
     specialty: string;
@@ -175,7 +175,7 @@ const OrderListBody = () => {
     }
 
     function createData(
-        _id: string, uhid: string, date: string, name: string, number: string, doctor: string, specialty: string, prescription: iPrescrition[], orderStatus: string, action: string
+        _id: string, uhid: string, date: any, name: string, number: string, doctor: string, specialty: string, prescription: iPrescrition[], orderStatus: string, action: string
         // handleStatusChange: (ticketId: string, newValue: string) => void,
         // onClickDetail: (ticketId: string) => void
     ): Data {
@@ -188,19 +188,12 @@ const OrderListBody = () => {
     const columns: Column[] = [
         { id: 'uhid', label: 'UHID', minWidth: 60 },
         {
-            id: 'date', label: 'Date', minWidth: 60,
-            format: (value: string) => (
+            id: 'date', label: 'Laed Age', minWidth: 60,
+            format: (value: any) => (
                 <Box component="a"
                     sx={{ fontSize: '14px' }}
                 >
-                    {/* {
-                        (
-                            new Date().getFullYear() === new Date(value).getFullYear() &&
-                            new Date().getMonth() === new Date(value).getMonth() &&
-                            new Date().getDate() === new Date(value).getDate()
-                        ) ? (Math.floor((new Date().getTime() - new Date(value).getTime()) / (1000 * 60 * 60))) : (Math.ceil((new Date().getTime() - new Date(value).getTime()) / (1000 * 60 * 60 * 24)))} */}
-                    {/* {Math.ceil((new Date().getTime() - new Date(value).getTime()) / (1000 * 60 * 60 * 24))} */}
-                    {value.split("T")[0]}
+                    {value}
                 </Box>
             ),
         },
@@ -351,11 +344,35 @@ const OrderListBody = () => {
         return patientName;
     };
 
+    const calculatedDate = (date: any) => {
+        const creationDate = new Date(date);
+
+        // Get today's date
+        const today = new Date();
+
+        // Calculate the difference in milliseconds
+        const timeDifference = today.getTime() - creationDate.getTime();
+
+        // Calculate the difference in days
+        const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+
+        if (dayDifference < 1) {
+            // Calculate the difference in hours
+            const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
+            const minuteDifference = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+            const formattedTimeDifference = `${hourDifference.toString().padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
+            console.log(formattedTimeDifference)
+            return `${formattedTimeDifference}Hrs`
+        } else {
+            return `${dayDifference}Days`
+        }
+    }
+
     for (const ticket of tickets) {
         // const prescriptionImage = 
         const ticketId = ticket?._id;
         const uid = ticket?.consumer[0]?.uid;
-        const date = ticket?.date;
+        const date = calculatedDate(ticket?.date);
         const name = patientName(ticket);
         const phoneNumber = ticket?.consumer[0]?.phone;
         const doctorName = fetchDoctorName(ticket);

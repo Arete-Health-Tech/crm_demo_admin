@@ -81,7 +81,9 @@ const DownloadAllTickets = (props: Props) => {
         prescriptionCreatedAt: `${dayjs(
           ticket?.prescription[0]?.createdAt
         ).format('DD/MMM/YYYY , HHMM ')} hrs`,
-        prescriptionLink: ticket?.prescription[0]?.image
+        prescriptionLink: ticket?.prescription[0]?.image,
+        substage: ticket?.substage[0]?.code,
+        result: ticket?.result[0],
       };
     })
      console.log(" thuis is data coming from without data ")

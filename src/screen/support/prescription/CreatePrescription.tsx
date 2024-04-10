@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
-  Camera,
   Check,
   Close,
   Delete,
@@ -7,6 +7,7 @@ import {
   Undo,
   Upload
 } from '@mui/icons-material';
+import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import {
   MenuItem,
   Autocomplete,
@@ -30,14 +31,15 @@ import {
 import { Stack } from '@mui/system';
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import Webcam from 'react-webcam';
+// import Webcam from 'react-webcam';
 import { apiClient } from '../../../api/apiClient';
 import { getDepartmentsHandler } from '../../../api/department/departmentHandler';
 import { getDoctorsHandler } from '../../../api/doctor/doctorHandler';
 import { createTicketHandler } from '../../../api/ticket/ticketHandler';
 import useServiceStore from '../../../store/serviceStore';
 import { iService } from '../../../types/store/service';
-
+import { Camera, FACING_MODES } from 'react-html5-camera-photo';
+import 'react-html5-camera-photo/build/css/index.css';
 
 
 type iPrescription = {
@@ -77,7 +79,7 @@ const CreatePrescription = () => {
   // const [medicine, setMedicine] = useState('');
   const [openCamera, setOpenCamera] = useState(false);
   const [foundServices, setFoundServices] = useState<iService[]>([]);
-  const camera = useRef<Webcam>(null);
+  // const camera = useRef<Camera/>(null);
   const { id } = useParams();
   const navigate = useNavigate();
   const [prescription, setPrescription] = useState<iPrescription>(
@@ -114,6 +116,15 @@ const CreatePrescription = () => {
   });
 
   const changePrescriptionValue = (field: any, value: any) => {
+    // if (field == "image") {
+    //   camera.current?.takePhoto({ width: 1280, height: 720 }, 'jpeg', 1, false, true).then((value: any) => {
+    //     setPrescription((prev: any) => {
+    //       prev[field] = value;
+    //       return { ...prev };
+    //     });
+    //   });
+    // } else {
+    // }
     setPrescription((prev: any) => {
       prev[field] = value;
       return { ...prev };
@@ -220,6 +231,16 @@ const CreatePrescription = () => {
     // console.log('this is response');
     setButtonVariant(item);
   };
+
+
+
+  // const videoConstraints = {
+  //   width: 1280,
+  //   height: 720,
+  //   facingMode: 'environment', // or 'environment' for back camera
+  //   screenshotQuality: 1, // Adjust screenshot quality here
+  // } as MediaTrackConstraints;
+
 
 
   return (
@@ -565,7 +586,7 @@ const CreatePrescription = () => {
                           onClick={() => setOpenCamera(true)}
                           fullWidth
                           variant="outlined"
-                          startIcon={<Camera />}
+                          startIcon={<CameraAltIcon />}
                         >
                           Capture
                         </Button>
@@ -576,7 +597,9 @@ const CreatePrescription = () => {
                             fullWidth
                             variant="outlined"
                             startIcon={<Undo />}
-                            onClick={() => setOpenCamera(true)}
+                            onClick={() => (setOpenCamera(true),
+                              changePrescriptionValue('image', null)
+                            )}
                           >
                             Retake
                           </Button>
@@ -643,21 +666,29 @@ const CreatePrescription = () => {
       >
         {prescription.image === null ? (
 
-          <Webcam
-            style={{ height: '90vh' }}
-            audio={false}
-            screenshotFormat="image/jpeg"
-            ref={camera}
-            videoConstraints={{
-              facingMode: { exact: 'environment' }
-            }}
+          // <Webcam
+          //   style={{ height: '90vh' }}
+          //   audio={false}
+          //   screenshotFormat="image/jpeg"
+          //   ref={camera}
+          //   videoConstraints={videoConstraints}
+          // />
+          <Camera
+            idealFacingMode={FACING_MODES.ENVIRONMENT}
+            idealResolution={{ width: 1280, height: 720 }} // Set higher resolution
+            isImageMirror={false}
+            imageCompression={0.97} // Adjust JPEG quality (0.97 is high quality)
+            onTakePhoto={(dataUri:any) => changePrescriptionValue('image', dataUri)}
+            imageType="jpg" // Specify image type (optional, default is 'png')
+            // imageCompressionFactor={0.8} // Specify image compression factor (optional, default is 0.92)
+            isMaxResolution={false}
           />
-
         ) : (
           <Box>
             <img
               src={prescription.image}
               style={{ width: '100vw', height: '90vh', objectFit: 'contain' }}
+              alt=''
             />
           </Box>
         )}
@@ -665,16 +696,16 @@ const CreatePrescription = () => {
           <IconButton onClick={() => changePrescriptionValue('image', null)}>
             <Undo fontSize="large" />
           </IconButton>
-          <IconButton
-            onClick={() => {
-              changePrescriptionValue(
-                'image',
-                camera.current!.getScreenshot()!
-              );
-            }}
+          {/* <IconButton
+          // onClick={() => {
+          //   changePrescriptionValue(
+          //     'image',
+          //     camera.current.takePhoto({ width: 1280, height: 720 }, 'jpeg', 1, false, true)
+          //   );
+          // }}
           >
-            <Camera fontSize="large" />
-          </IconButton>
+            <Check fontSize="large" />
+          </IconButton> */}
           <IconButton onClick={() => setOpenCamera(false)}>
             {prescription.image === null ? (
               <Close fontSize="large" />

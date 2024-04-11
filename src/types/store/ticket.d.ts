@@ -92,7 +92,7 @@ export interface iTicket {
   prescription: iPrescription[];
   estimate: iEstimate[];
   creator: string;
-  assigned: string;
+  assigned: iAssigned[];
   date: string;
   stage: string;
   location: string;
@@ -116,7 +116,7 @@ export interface iPharmcyTicket {
   prescription: iPrescription[];
   estimate: iEstimate[];
   creator: string;
-  assigned: string;
+  assigned: iAssigned[];
   stage: string;
   location: string;
   createdAt: string;
@@ -227,6 +227,13 @@ export interface iTicketFilter {
 }
 
 export interface iCreator {
+  _id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: number;
+}
+export interface iAssigned {
   _id: string;
   firstName: string;
   lastName: string;

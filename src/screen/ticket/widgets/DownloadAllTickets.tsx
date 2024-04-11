@@ -15,8 +15,8 @@ import { UNDEFINED } from '../../../constantUtils/constant';
 type Props = {};
 
 const DownloadAllTickets = (props: Props) => {
-  const { doctors, departments } = useServiceStore();
-  const { filterTickets } = useTicketStore();
+  const { doctors, departments ,stages } = useServiceStore();
+  const { filterTickets , tickets } = useTicketStore();
   const [disable, setDisable] = useState(false);
 
   const doctorSetter = (id: string) => {
@@ -26,6 +26,24 @@ const DownloadAllTickets = (props: Props) => {
   const departmentSetter = (id: string) => {
     return departments.find((element) => element._id === id)?.name;
   };
+
+
+
+
+  function subStageName(code: number): string {
+    switch (code) {
+      case 1:
+        return "Send Engagement";
+      case 2:
+        return "Create Estimate";
+      case 3:
+        return "Call Patient";
+      case 4:
+        return "Add Call Summary";
+      default:
+        return "Unknown";
+    }
+  }
 
   const downloadData = async () => {
     console.log("download all")
@@ -57,8 +75,9 @@ const DownloadAllTickets = (props: Props) => {
         serviceName: ticket?.prescription[0]?.service
           ? ticket?.prescription[0]?.service?.name
           : 'No Advised',
-        isPharmacy:ticket?.prescription[0]?.isPharmacy ? 'Advised' : 'No Advised' ,
-        stage: ticket?.stage,
+        isPharmacy:ticket?.prescription[0]?.isPharmacy ? 'Advised' : 'No Advised',
+        assigned:  ticket?.assigned[0]?.firstName + ' ' + ticket?.assigned[0]?.lastNmae,
+        stage:ticket?.stage,
         CTScan: ticket?.prescription[0]?.diagnostics.includes('CT-Scan')
           ? 'Yes'
           : 'No',
@@ -82,7 +101,12 @@ const DownloadAllTickets = (props: Props) => {
           ticket?.prescription[0]?.createdAt
         ).format('DD/MMM/YYYY , HHMM ')} hrs`,
         prescriptionLink: ticket?.prescription[0]?.image,
-        result: ticket?.result,
+        result: ticket ? (ticket.result === "65991601a62baad220000001" ? "won" : (ticket.result === "65991601a62baad220000002" ? "loss" : null)) : null,
+        pharmacyStatus : ticket?.pharmacyStatus,
+        date : ticket?.date,
+        subStageName: subStageName(ticket?.subStageCode?.code),
+        status : ticket?.status,
+        
       };
     })
      console.log(" thuis is data coming from without data ")
@@ -95,6 +119,7 @@ const DownloadAllTickets = (props: Props) => {
     );
     setDisable(false);
   };
+
 
   return (
     <Box>

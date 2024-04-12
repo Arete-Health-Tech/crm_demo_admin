@@ -52,6 +52,7 @@ import { socket } from '../../api/apiClient';
 import { socketEventConstants } from '../../constantUtils/socketEventsConstants';
 import useUserStore from '../../store/userStore';
 import { selectedFiltersReducer, ticketFilterTypes } from '../../screen/ticket/ticketStateReducers/filter';
+import { getAllNotesWithoutTicketId } from '../../api/notes/allNote';
 
 // .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
@@ -267,6 +268,7 @@ const Ticket = () => {
     (async function () {
       // console.log({ filterTickets }, "006");
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+      await getAllNotesWithoutTicketId();
       await getStagesHandler();
       await getSubStagesHandler();
       await getDoctorsHandler();

@@ -15,7 +15,6 @@ const PrescriptionTabsWidget = ({ currentTicket }: Props) => {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
-  console.log(currentTicket)
   return (
     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
       <TabContext value={value}>

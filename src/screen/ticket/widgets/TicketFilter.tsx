@@ -87,8 +87,8 @@ const TicketFilter = (props: {
     dateRange: []
   };
 
-  const { setFilterTickets, setPageNumber } = useTicketStore(); 
-  
+  const { setFilterTickets, setPageNumber } = useTicketStore();
+
 
   // const [ticketFilters, setTicketFilters] = useState<iTicketFilter>({
   //   stageList: [],
@@ -528,6 +528,8 @@ const TicketFilter = (props: {
                   onChange={handleStartDateChange}
                   value={dateRange[0]}
                   type="date"
+                   InputLabelProps={{ shrink: true }}
+                  inputProps={{ max: new Date().toISOString().split('T')[0] }}
                 />
               </Box>
               <Box>
@@ -537,6 +539,8 @@ const TicketFilter = (props: {
                   onChange={handleEndDateChange}
                   value={dateRange[1]}
                   type="date"
+                   InputLabelProps={{ shrink: true }}
+                  inputProps={{ max: new Date().toISOString().split('T')[0], min: new Date(dateRange[0]).toDateString().split('T')[0] }}
                 />
               </Box>
             </Stack>

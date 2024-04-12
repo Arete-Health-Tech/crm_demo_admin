@@ -79,7 +79,7 @@ export const sendTextMessage = async (
   return data;
 };
 
-export const getAllNotes = async (ticketId: string) => {
+export const getAllNotesByTicketId = async (ticketId: string) => {
   const { data } = await apiClient.get(`ticket/note/${ticketId}`);
   return data;
 };

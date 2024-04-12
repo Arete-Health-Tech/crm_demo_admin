@@ -65,15 +65,15 @@ const DownloadAllTickets = (props: Props) => {
     const data = sortedTickets?.map((ticket: any, index: number) => {
       return {
         serialNo: index + 1,
-        firstName: ticket.consumer[0]?.firstName,
-        lastName: ticket.consumer[0].lastName && ticket.consumer[0].lastName,
-        uhid: ticket.consumer[0].uid,
-        gender: ticket.consumer[0].gender,
-        phone: ticket.consumer[0].phone,
-        age: ageSetter(ticket.consumer[0].dob),
-        stage: stageSetter(ticket.stage) ? stageSetter(ticket.stage) : "",
-        department: departmentSetter(ticket.prescription[0].departments[0]),
-        doctor: doctorSetter(ticket.prescription[0].doctor),
+        firstName: ticket?.consumer[0]?.firstName,
+        lastName: ticket?.consumer[0]?.lastName && ticket?.consumer[0]?.lastName,
+        uhid: ticket?.consumer[0]?.uid,
+        gender: ticket?.consumer[0]?.gender,
+        phone: ticket?.consumer[0]?.phone,
+        age: ageSetter(ticket?.consumer[0]?.dob),
+        stage: stageSetter(ticket?.stage) ? stageSetter(ticket?.stage) : "",
+        department: departmentSetter(ticket?.prescription[0]?.departments[0]),
+        doctor: doctorSetter(ticket?.prescription[0]?.doctor),
         admissionType: ticket.prescription[0].admission
           ? ticket.prescription[0].admission
           : 'Not Advised',

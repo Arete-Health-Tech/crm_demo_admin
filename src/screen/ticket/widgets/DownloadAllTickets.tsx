@@ -26,8 +26,7 @@ const DownloadAllTickets = (props: Props) => {
   const departmentSetter = (id: string) => {
     return departments.find((element) => element._id === id)?.name;
   };
-
-
+console.log(tickets , "this is the tid")
 
 
   function subStageName(code: number): string {
@@ -76,7 +75,7 @@ const DownloadAllTickets = (props: Props) => {
           ? ticket?.prescription[0]?.service?.name
           : 'No Advised',
         isPharmacy:ticket?.prescription[0]?.isPharmacy ? 'Advised' : 'No Advised',
-        assigned:  ticket?.assigned[0]?.firstName + ' ' + ticket?.assigned[0]?.lastNmae,
+        assigned:  ticket?.assigned[0]?.firstName + ' ' + ticket?.assigned[0]?.lastName,
         stage:ticket?.stage,
         CTScan: ticket?.prescription[0]?.diagnostics.includes('CT-Scan')
           ? 'Yes'
@@ -96,7 +95,7 @@ const DownloadAllTickets = (props: Props) => {
           ? dayjs(ticket?.prescription[0]?.followUp).format('DD/MMM/YYYY')
           : 'No Follow Up',
         capturedBy:
-          ticket?.creator[0]?.firstName + ' ' + ticket?.creator[0]?.lastName,
+          ticket?.creator[0]?.firstName + ' ' + ticket?.creator[0]?.lastName  ,
         prescriptionCreatedAt: `${dayjs(
           ticket?.prescription[0]?.createdAt
         ).format('DD/MMM/YYYY , HHMM ')} hrs`,

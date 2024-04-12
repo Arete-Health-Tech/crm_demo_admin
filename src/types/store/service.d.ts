@@ -103,10 +103,10 @@ export interface iServicePackage {
 export interface iStage {
   children?: [
     {
-      code: Number,
-      description: String,
-      name: String,
-      _id: String
+      code: Number;
+      description: String;
+      name: String;
+      _id: String;
     }
   ];
   _id?: string;
@@ -132,6 +132,8 @@ export interface iScript {
 }
 
 export interface iServiceStore {
+  allNotes: iNote[];
+  setAllNotes: (allNotes: iNote[]) => void;
   departments: iDepartment[];
   setDepartments: (departments: iDepartment[]) => void;
   serviceTags: iServiceTag[];

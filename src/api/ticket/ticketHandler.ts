@@ -8,7 +8,7 @@ import {
 } from '../../types/store/ticket';
 import {
   createNewNote,
-  getAllNotes,
+  getAllNotesByTicketId,
   createTicket,
   getTicket,
   getAllReminders,
@@ -177,7 +177,7 @@ export const createTicketHandler = async (prescription: iCreateTicket) => {
 
 export const getAllNotesHandler = async (ticketId: string) => {
   const { setNotes } = useTicketStore.getState();
-  const notes = await getAllNotes(ticketId);
+  const notes = await getAllNotesByTicketId(ticketId);
   setNotes(notes);
 };
 

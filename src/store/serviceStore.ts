@@ -1,6 +1,8 @@
 import { create } from 'zustand';
 import { iServiceStore } from '../types/store/service';
 const useServiceStore = create<iServiceStore>((set, get) => ({
+  allNotes: [],
+  setAllNotes: (allNotes) => set({ allNotes }),
   departments: [],
   setDepartments: (departments) => set({ departments }),
   doctors: [],

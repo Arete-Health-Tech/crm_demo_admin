@@ -11,11 +11,13 @@ import Papa from 'papaparse';
 import FileSaver from 'file-saver';
 import { ageSetter } from '../../../utils/ageReturn';
 import { UNDEFINED } from '../../../constantUtils/constant';
+import useReprentativeStore from '../../../store/representative';
 
 type Props = {};
 
 const DownloadAllTickets = (props: Props) => {
   const { doctors, departments, stages, allNotes } = useServiceStore();
+  const { representative } = useReprentativeStore();
   const { filterTickets } = useTicketStore();
   const [disable, setDisable] = useState(false);
   const doctorSetter = (id: string) => {
@@ -28,6 +30,9 @@ const DownloadAllTickets = (props: Props) => {
   };
   const stageSetter = (id: string) => {
     return stages.find((element) => element._id === id)?.name;
+  };
+  const assigneSetter = (id: string) => {
+    return representative.find((element) => element._id === id);
   };
   const noteSetter = (id: string) => {
     const foundItems = allNotes.filter(item => item.ticket === id);
@@ -61,7 +66,6 @@ const DownloadAllTickets = (props: Props) => {
     await getDoctorsHandler();
     await getDepartmentsHandler();
 
-    console.log(sortedTickets)
     const data = sortedTickets?.map((ticket: any, index: number) => {
       return {
         serialNo: index + 1,
@@ -81,7 +85,7 @@ const DownloadAllTickets = (props: Props) => {
           ? ticket.prescription[0].service.name
           : 'No Advised',
         isPharmacy: ticket?.prescription[0]?.isPharmacy ? 'Advised' : 'No Advised',
-        assigned: ticket?.assigned[0]?.firstName + ' ' + ticket?.assigned[0]?.lastName,
+        assigned: assigneSetter(ticket.assigned)?.firstName + '' + assigneSetter(ticket.assigned)?.lastName,
         CTScan: ticket?.prescription[0]?.diagnostics.includes('CT-Scan')
           ? 'Yes'
           : 'No',

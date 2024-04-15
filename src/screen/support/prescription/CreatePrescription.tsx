@@ -207,7 +207,7 @@ const CreatePrescription = () => {
       setPrescription(structuredClone(initialPrescription));
       setDiagnostics([]);
       setDisableButton(false);
-
+      setOpenCamera(false)
       navigate('/');
     } else {
       setDisableButton(false);
@@ -664,7 +664,7 @@ const CreatePrescription = () => {
           overflow: 'hidden'
         }}
       >
-        {prescription.image === null ? (
+        {prescription.image === null && openCamera ? (
 
           // <Webcam
           //   style={{ height: '90vh' }}
@@ -678,18 +678,18 @@ const CreatePrescription = () => {
             idealResolution={{ width: 1280, height: 720 }} // Set higher resolution
             isImageMirror={false}
             imageCompression={0.97} // Adjust JPEG quality (0.97 is high quality)
-            onTakePhoto={(dataUri:any) => changePrescriptionValue('image', dataUri)}
+            onTakePhoto={(dataUri: any) => changePrescriptionValue('image', dataUri)}
             imageType="jpg" // Specify image type (optional, default is 'png')
             // imageCompressionFactor={0.8} // Specify image compression factor (optional, default is 0.92)
             isMaxResolution={false}
           />
         ) : (
           <Box>
-            <img
-              src={prescription.image}
+            {prescription.image && <img
+              src={prescription?.image}
               style={{ width: '100vw', height: '90vh', objectFit: 'contain' }}
               alt=''
-            />
+            />}
           </Box>
         )}
         <Box display="flex" justifyContent="space-evenly" alignItems="center">

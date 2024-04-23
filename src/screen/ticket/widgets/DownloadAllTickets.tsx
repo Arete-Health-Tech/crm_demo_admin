@@ -91,6 +91,10 @@ const DownloadAllTickets = (props: Props) => {
           : 'No',
         LAB: ticket.prescription[0].diagnostics.includes('Lab') ? 'Yes' : 'No',
         MRI: ticket.prescription[0].diagnostics.includes('MRI') ? 'Yes' : 'No',
+        EEG: ticket.prescription[0].diagnostics.includes('EEG') ? 'Yes' : 'No',
+        EMG: ticket.prescription[0].diagnostics.includes('EMG') ? 'Yes' : 'No',
+        XRAY: ticket.prescription[0].diagnostics.includes('X-RAY') ? 'Yes' : 'No',
+        USG: ticket.prescription[0].diagnostics.includes('USG') ? 'Yes' : 'No',
         PETCT: ticket.prescription[0].diagnostics.includes('PET_CT')
           ? 'Yes'
           : 'No',

@@ -82,22 +82,22 @@ const Dashboard = (props: Props) => {
       // Handle the error here
     });
 
-  getAllWonAndLossHandler()
-    .then((timerData) => {
-      if (timerData && timerData.tickets) {
-        const data = timerData.tickets.length;
+  // getAllWonAndLossHandler()
+  //   .then((timerData) => {
+  //     if (timerData && timerData.tickets) {
+  //       const data = timerData.tickets.length;
 
-      } else {
-        console.error('Invalid timer data:', timerData.wonCount);
-        setWonCount(timerData.wonCount);
-        setLossCount(timerData.lossCount);
-      }
+  //     } else {
+  //       console.error('Invalid timer data:', timerData.wonCount);
+  //       setWonCount(timerData.wonCount);
+  //       setLossCount(timerData.lossCount);
+  //     }
 
-    })
-    .catch((error) => {
-      console.error('Error fetching timer data:', error);
-      // Handle the error here
-    });
+  //   })
+  //   .catch((error) => {
+  //     console.error('Error fetching timer data:', error);
+  //     // Handle the error here
+  //   });
 
   getAllTimerStatusHandlerRescheduledCall()
     .then((timerData) => {

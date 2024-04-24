@@ -130,10 +130,21 @@ export interface iScript {
   service: string;
   stage: string;
 }
+export interface iAllRepresentative {
+  _id?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  role?: string;
+  phone?: number;
+  image?: string;
+}
 
 export interface iServiceStore {
   allNotes: iNote[];
   setAllNotes: (allNotes: iNote[]) => void;
+  allRepresentative: iAllRepresentative[];
+  setAllRepresentative: (allRepresentative: iAllRepresentative[]) => void;
   departments: iDepartment[];
   setDepartments: (departments: iDepartment[]) => void;
   serviceTags: iServiceTag[];

@@ -83,6 +83,7 @@ export interface iPrescrition {
   doctor: string;
   followUp: string;
   image: string;
+  image1: string;
   symptoms: string;
 }
 

@@ -133,7 +133,7 @@ export type iCreateTicket = {
   condition: string | null;
   medicines: string[];
   followUp: Date | number;
-  image: string | null;
+  image: string[];
   consumer: string;
   isPharmacy: string;
   service?: { _id: string; label: string };
@@ -169,9 +169,26 @@ export const createTicketHandler = async (prescription: iCreateTicket) => {
     prescriptionData.append('service', prescription.service._id);
   // console.log('file log', prescription);
   /* @ts-ignore */
-  const blob = await (await fetch(prescription.image)).blob();
-  prescriptionData.append('image', blob);
-
+  // const blob = await (await fetch(prescription.image)).blob();
+  const imageBlobs: Blob[] = [];
+  for (const imageUrl of prescription.image) {
+    try {
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`Failed to fetch image: ${imageUrl}`);
+      }
+      const blob = await response.blob();
+      imageBlobs.push(blob); // Append blob to array
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  imageBlobs.forEach((blob, index) => {
+    prescriptionData.append(`image${index}`, blob, `image${index + 1}.jpg`);
+  });
+  // const formDataArray = Array.from(prescriptionData.entries());
+  // console.log(formDataArray);
+  // prescriptionData.append('image', blob);
   return await createTicket(prescriptionData);
 };
 

@@ -11,11 +11,13 @@ import Papa from 'papaparse';
 import FileSaver from 'file-saver';
 import { ageSetter } from '../../../utils/ageReturn';
 import { UNDEFINED } from '../../../constantUtils/constant';
+import useReprentativeStore from '../../../store/representative';
 
 type Props = {};
 
 const DownloadAllTickets = (props: Props) => {
   const { doctors, departments, stages, allNotes } = useServiceStore();
+  const { representative } = useReprentativeStore();
   const { filterTickets } = useTicketStore();
   const [disable, setDisable] = useState(false);
   const doctorSetter = (id: string) => {
@@ -28,6 +30,9 @@ const DownloadAllTickets = (props: Props) => {
   };
   const stageSetter = (id: string) => {
     return stages.find((element) => element._id === id)?.name;
+  };
+  const assigneSetter = (id: string) => {
+    return representative.find((element) => element._id === id);
   };
   const noteSetter = (id: string) => {
     const foundItems = allNotes.filter(item => item.ticket === id);
@@ -61,19 +66,18 @@ const DownloadAllTickets = (props: Props) => {
     await getDoctorsHandler();
     await getDepartmentsHandler();
 
-    console.log(sortedTickets)
     const data = sortedTickets?.map((ticket: any, index: number) => {
       return {
         serialNo: index + 1,
-        firstName: ticket.consumer[0]?.firstName,
-        lastName: ticket.consumer[0].lastName && ticket.consumer[0].lastName,
-        uhid: ticket.consumer[0].uid,
-        gender: ticket.consumer[0].gender,
-        phone: ticket.consumer[0].phone,
-        age: ageSetter(ticket.consumer[0].dob),
-        stage: stageSetter(ticket.stage) ? stageSetter(ticket.stage) : "",
-        department: departmentSetter(ticket.prescription[0].departments[0]),
-        doctor: doctorSetter(ticket.prescription[0].doctor),
+        firstName: ticket?.consumer[0]?.firstName,
+        lastName: ticket?.consumer[0]?.lastName && ticket?.consumer[0]?.lastName,
+        uhid: ticket?.consumer[0]?.uid,
+        gender: ticket?.consumer[0]?.gender,
+        phone: ticket?.consumer[0]?.phone,
+        age: ageSetter(ticket?.consumer[0]?.dob),
+        stage: stageSetter(ticket?.stage) ? stageSetter(ticket?.stage) : "",
+        department: departmentSetter(ticket?.prescription[0]?.departments[0]),
+        doctor: doctorSetter(ticket?.prescription[0]?.doctor),
         admissionType: ticket.prescription[0].admission
           ? ticket.prescription[0].admission
           : 'Not Advised',
@@ -81,12 +85,16 @@ const DownloadAllTickets = (props: Props) => {
           ? ticket.prescription[0].service.name
           : 'No Advised',
         isPharmacy: ticket?.prescription[0]?.isPharmacy ? 'Advised' : 'No Advised',
-        assigned: ticket?.assigned[0]?.firstName + ' ' + ticket?.assigned[0]?.lastName,
+        assigned: assigneSetter(ticket.assigned)?.firstName + '' + assigneSetter(ticket.assigned)?.lastName,
         CTScan: ticket?.prescription[0]?.diagnostics.includes('CT-Scan')
           ? 'Yes'
           : 'No',
         LAB: ticket.prescription[0].diagnostics.includes('Lab') ? 'Yes' : 'No',
         MRI: ticket.prescription[0].diagnostics.includes('MRI') ? 'Yes' : 'No',
+        EEG: ticket.prescription[0].diagnostics.includes('EEG') ? 'Yes' : 'No',
+        EMG: ticket.prescription[0].diagnostics.includes('EMG') ? 'Yes' : 'No',
+        XRAY: ticket.prescription[0].diagnostics.includes('X-RAY') ? 'Yes' : 'No',
+        USG: ticket.prescription[0].diagnostics.includes('USG') ? 'Yes' : 'No',
         PETCT: ticket.prescription[0].diagnostics.includes('PET_CT')
           ? 'Yes'
           : 'No',

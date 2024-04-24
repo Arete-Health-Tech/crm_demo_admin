@@ -8,7 +8,6 @@ import { apiClient } from '../apiClient';
 
 export const getTicket = async (
   name: string,
-
   pageNumber: number = 1,
   downloadAll: string,
   selectedFilters: any,

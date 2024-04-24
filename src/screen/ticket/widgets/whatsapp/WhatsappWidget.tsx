@@ -50,11 +50,11 @@ const MessagingWidget = (props: Props) => {
 
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
 
-  // if (consumerId) {
+  if (consumerId) {
 
-  // } else {
-  //   console.log('Consumer ID not found for the given dataId.');
-  // }
+  } else {
+    console.log('Consumer ID not found for the given dataId.');
+  }
 
   const TextInput = {
     border: 0,
@@ -102,11 +102,6 @@ const MessagingWidget = (props: Props) => {
     await sendTextMessage(sendMessage, consumerId, ticketID as string);
     setSendMessage('');
   };
-
-
-
-
-
 
 
   const handleImageUpload = () => {

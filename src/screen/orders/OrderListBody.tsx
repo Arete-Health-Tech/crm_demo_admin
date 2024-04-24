@@ -212,7 +212,8 @@ const OrderListBody = () => {
                     rel="view Prescription"
                 >
                     <ShowPrescription
-                        image={row.prescription[0].image}
+                        image={row.prescription[0]?.image}
+                        image1={row.prescription[0]?.image1}
                     />
                 </Box>
             ),

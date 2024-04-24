@@ -107,6 +107,7 @@ const OrderDetailContainer = () => {
             const prescriptionLink = (
                 <ShowPrescription
                     image={ticket?.prescription[0].image}
+                    image1={ticket?.prescription[0].image1}
                 // other props
                 />
             );

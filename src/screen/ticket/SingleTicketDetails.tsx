@@ -764,7 +764,8 @@ const SingleTicketDetails = (props: Props) => {
                 <Stack direction="row" spacing={3} my={1}>
                   <img src={Rx} alt="prescriptionIcon" />
                   <ShowPrescription
-                    image={currentTicket?.prescription[0].image}
+                    image={currentTicket?.prescription[0]?.image}
+                    image1={currentTicket?.prescription[0]?.image1}
                   />
                 </Stack>
               </Box>

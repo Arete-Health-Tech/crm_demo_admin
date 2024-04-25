@@ -19,7 +19,7 @@ const ShowPrescription = ({ image, image1 }: Props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const drawerWidth = 1300;
+  const drawerWidth = 'auto';
 
   const downloadPrescription = () => {
     FileSaver.saveAs(image, 'prescription_img.jpg');
@@ -134,7 +134,8 @@ const ShowPrescription = ({ image, image1 }: Props) => {
         </Box>
         <Box style={{
           display: 'flex',
-          justifyContent: 'space-around'
+          justifyContent: image1 ? 'space-around' : 'end',
+          marginRight: image1 ? 0 : 10
         }}>
           {/* {image ? (
             <img src={image} alt="Prescription" width="600vw" height="auto"
@@ -161,40 +162,80 @@ const ShowPrescription = ({ image, image1 }: Props) => {
 
           {/* first image */}
 
-          <div className="img-zoom-container" style={{ position: 'relative' }}>
-            <img
-              src={image} // Change to your actual image URL
-              alt="Zoomable"
-              width="600"
-              height="90vh"
-              onMouseMove={handleMouseMove}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
-              style={{
-                width: '600px',
-                height: '90vh',
-                display: isHovering1 ? 'none' : 'block'
-              }}
-            />
-          </div>
-          <div
-            ref={resultRef}
-            style={{
-              display: isHovering ? 'block' : 'none',
-              // position: 'absolute',
-              border: '1px solid #d4d4d4',
-              width: '600px',
-              height: '90vh',
-              overflow: 'hidden',
-              zIndex: 9999,
-              top: '0',
-              left: '0',
-              backgroundImage: `url(${image})`, // Same as the image above
-              backgroundSize: '1200px 960px', // Double the size of the original image for zoom
-              backgroundPosition: bgPos,
-              backgroundRepeat: 'no-repeat'
-            }}
-          />
+          {image1 ?
+            <>
+              <div className="img-zoom-container">
+                <img
+                  src={image} // Change to your actual image URL
+                  alt="Zoomable"
+                  width="600"
+                  height="480"
+                  onMouseMove={handleMouseMove}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  style={{
+                    width: '600px',
+                    height: '480px',
+                    display: isHovering1 ? 'none' : 'block',
+                    margin: 10
+                  }}
+                />
+              </div>
+              <div
+                ref={resultRef}
+                style={{
+                  display: isHovering ? 'block' : 'none',
+                  // position: 'absolute',
+                  border: '1px solid #d4d4d4',
+                  width: '600px',
+                  height: '480px',
+                  overflow: 'hidden',
+                  zIndex: 9999,
+                  backgroundImage: `url(${image})`, // Same as the image above
+                  backgroundSize: '1200px 960px', // Double the size of the original image for zoom
+                  backgroundPosition: bgPos,
+                  backgroundRepeat: 'no-repeat'
+                }}
+              />
+            </>
+            :
+            <>
+              <div
+                ref={resultRef}
+                style={{
+                  display: isHovering ? 'block' : 'none',
+                  // position: 'absolute',
+                  border: '1px solid #d4d4d4',
+                  width: '600px',
+                  height: '480px',
+                  overflow: 'hidden',
+                  zIndex: 9999,
+                  backgroundImage: `url(${image})`, // Same as the image above
+                  backgroundSize: '1200px 960px', // Double the size of the original image for zoom
+                  backgroundPosition: bgPos,
+                  backgroundRepeat: 'no-repeat'
+                }}
+              />
+              <div className="img-zoom-container">
+                <img
+                  src={image} // Change to your actual image URL
+                  alt="Zoomable"
+                  width="600"
+                  height="480"
+                  onMouseMove={handleMouseMove}
+                  onMouseEnter={handleMouseEnter}
+                  onMouseLeave={handleMouseLeave}
+                  style={{
+                    width: '600px',
+                    height: '480px',
+                    display: isHovering1 ? 'none' : 'block',
+                    marginLeft: 10
+                  }}
+                />
+              </div>
+
+            </>
+          }
 
           {/* second image */}
           <div
@@ -204,30 +245,30 @@ const ShowPrescription = ({ image, image1 }: Props) => {
               // position: 'absolute',
               border: '1px solid #d4d4d4',
               width: '600px',
-              height: '90vh',
+              height: '480px',
               overflow: 'hidden',
               zIndex: 9999,
-              top: '0',
-              left: '0',
               backgroundImage: `url(${image1})`, // Same as the image above
               backgroundSize: '1200px 960px', // Double the size of the original image for zoom
               backgroundPosition: bgPos1,
-              backgroundRepeat: 'no-repeat'
+              backgroundRepeat: 'no-repeat',
+              margin: 10
             }}
           />
-          <div className="img-zoom-container" style={{ position: 'relative' }}>
+          <div className="img-zoom-container">
             {image1 && <img
               src={image1} // Change to your actual image URL\
               alt="Zoomable"
               width="600"
-              height="90vh"
+              height="480"
               onMouseMove={handleMouseMove1}
               onMouseEnter={handleMouseEnter1}
               onMouseLeave={handleMouseLeave1}
               style={{
                 width: '600px',
-                height: '90vh',
-                display: isHovering ? 'none' : 'block'
+                height: '480px',
+                display: isHovering ? 'none' : 'block',
+                margin: 10
               }}
             />}
           </div>

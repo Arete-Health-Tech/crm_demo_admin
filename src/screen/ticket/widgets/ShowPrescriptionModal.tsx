@@ -169,13 +169,13 @@ const ShowPrescription = ({ image, image1 }: Props) => {
                   src={image} // Change to your actual image URL
                   alt="Zoomable"
                   width="600"
-                  height="480"
+                  height="90vh"
                   onMouseMove={handleMouseMove}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                   style={{
                     width: '600px',
-                    height: '480px',
+                    height: '90vh',
                     display: isHovering1 ? 'none' : 'block',
                     margin: 10
                   }}
@@ -188,7 +188,7 @@ const ShowPrescription = ({ image, image1 }: Props) => {
                   // position: 'absolute',
                   border: '1px solid #d4d4d4',
                   width: '600px',
-                  height: '480px',
+                  height: '90vh',
                   overflow: 'hidden',
                   zIndex: 9999,
                   backgroundImage: `url(${image})`, // Same as the image above
@@ -207,7 +207,7 @@ const ShowPrescription = ({ image, image1 }: Props) => {
                   // position: 'absolute',
                   border: '1px solid #d4d4d4',
                   width: '600px',
-                  height: '480px',
+                  height: '90vh',
                   overflow: 'hidden',
                   zIndex: 9999,
                   backgroundImage: `url(${image})`, // Same as the image above
@@ -221,13 +221,13 @@ const ShowPrescription = ({ image, image1 }: Props) => {
                   src={image} // Change to your actual image URL
                   alt="Zoomable"
                   width="600"
-                  height="480"
+                  height="90vh"
                   onMouseMove={handleMouseMove}
                   onMouseEnter={handleMouseEnter}
                   onMouseLeave={handleMouseLeave}
                   style={{
                     width: '600px',
-                    height: '480px',
+                    height: '90vh',
                     display: isHovering1 ? 'none' : 'block',
                     marginLeft: 10
                   }}
@@ -245,7 +245,7 @@ const ShowPrescription = ({ image, image1 }: Props) => {
               // position: 'absolute',
               border: '1px solid #d4d4d4',
               width: '600px',
-              height: '480px',
+              height: '90vh',
               overflow: 'hidden',
               zIndex: 9999,
               backgroundImage: `url(${image1})`, // Same as the image above
@@ -260,13 +260,13 @@ const ShowPrescription = ({ image, image1 }: Props) => {
               src={image1} // Change to your actual image URL\
               alt="Zoomable"
               width="600"
-              height="480"
+              height="90vh"
               onMouseMove={handleMouseMove1}
               onMouseEnter={handleMouseEnter1}
               onMouseLeave={handleMouseLeave1}
               style={{
                 width: '600px',
-                height: '480px',
+                height: '90vh',
                 display: isHovering ? 'none' : 'block',
                 margin: 10
               }}

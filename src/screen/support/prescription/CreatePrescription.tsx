@@ -911,7 +911,7 @@ const CreatePrescription = () => {
   };
 
   const handelUploadPrescription = async () => {
-    // setDisableButton(true);
+    setDisableButton(true);
     const validationCheck = validation();
     if (validationCheck === true) {
       const ticket: any = structuredClone(prescription);

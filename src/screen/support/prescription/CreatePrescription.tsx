@@ -1377,7 +1377,7 @@ const CreatePrescription = () => {
           overflow: 'hidden'
         }}
       >
-        {prescription.image.length < 2 ? (
+        {prescription.image.length < 2 && openCamera ? (
 
           // <Webcam
           //   style={{ height: '90vh' }}
@@ -1393,19 +1393,19 @@ const CreatePrescription = () => {
             idealResolution={{ width: 1280, height: 720 }} // Set higher resolution
             isImageMirror={false}
             imageCompression={0.97} // Adjust JPEG quality (0.97 is high quality)
-            onTakePhoto={(dataUri) => changePrescriptionValue('image', dataUri)}
+            onTakePhoto={(dataUri) => (changePrescriptionValue('image', dataUri), setOpenCamera(false))}
             imageType="jpg" // Specify image type (optional, default is 'png')
             // imageCompressionFactor={0.8} // Specify image compression factor (optional, default is 0.92)
             isMaxResolution={false}
           />
         ) : (
-          <Box>
+          <Box sx={{ display: 'flex' }}>
             {prescription.image.map((item) => {
               return (
                 <div className='d-flex justify-content-between'>
                   <img
                     src={item}
-                    style={{ width: '20vw', height: '20vh', margin: '10px' }}
+                    style={{ width: '40vw', height: '80vh', margin: '10px' }}
                     alt="" />
                 </div>
               )

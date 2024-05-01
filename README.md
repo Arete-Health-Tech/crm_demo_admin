@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
@@ -48,3 +49,6 @@ To learn React, check out the [React documentation](https://reactjs.org/).
 =======
 # crm_demo_admin
 >>>>>>> origin/main
+=======
+# version-2-admin
+>>>>>>> refs/remotes/origin/main

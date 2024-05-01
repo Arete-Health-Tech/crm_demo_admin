@@ -107,6 +107,7 @@ const DownloadAllTickets = (props: Props) => {
           ticket.prescription[0].createdAt
         ).format('DD/MMM/YYYY , HHMM ')} hrs`,
         prescriptionLink: ticket?.prescription[0]?.image,
+        prescriptionLink1: ticket?.prescription[0]?.image1,
         result: ticket ? (ticket.result === "65991601a62baad220000001" ? "won" : (ticket.result === "65991601a62baad220000002" ? "loss" : null)) : null,
         pharmacyStatus: ticket?.pharmacyStatus,
         date: ticket?.date,

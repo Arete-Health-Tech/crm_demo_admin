@@ -39,3 +39,8 @@ export const getAllStageCount = async () => {
   return data;
 };
 
+export const getAllSubStageCount = async () => {
+  const { data } = await apiClient.get('dashboard/substageCount');
+
+  return data;
+};

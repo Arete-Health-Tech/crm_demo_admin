@@ -1,4 +1,14 @@
-import { Box, Chip, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Chip,
+  IconButton,
+  Menu,
+  MenuItem,
+  Modal,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
@@ -12,44 +22,62 @@ import dayjs from 'dayjs';
 import { iNote } from '../../../types/store/ticket';
 import { Send, StickyNote2Outlined } from '@mui/icons-material';
 import { UNDEFINED } from '../../../constantUtils/constant';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import expandIcon from '../../../assets/expandIcon.svg';
+import CloseModalIcon from '../../../assets/CloseModalIcon.svg';
+import notesAttachmentIcon from '../../../assets/notesAttachmentIcon.svg';
+import NotesIcon from '../../../assets/NotesIcon.svg';
+import avatar1 from '../../../assets/avatar1.svg';
+import arrowright from '../../../assets/arrowright.svg';
+import arrowLeft from '../../../assets/arrowLeft.svg';
+import styles from './Notes.module.css';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
+import ReactHtmlParser from 'html-react-parser';
 
 type Props = { setTicketUpdateFlag: any };
 
 const NotesWidget = (props: Props) => {
   const { filterTickets, searchByName, pageNumber } = useTicketStore();
-  const TextInput = {
-    border: 0,
-    width: '100%',
-    padding: '1rem',
-    'input:focus': {
-      outline: 'none'
-    }
-  };
+  const [notesModal, setNotesModal] = useState(false);
+  const [note, setNote] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [notesClickedData, setNotesClickedData] = useState<iNote | null>(null);
+  const [open, setOpen] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [isNoteEdited, setIsNoteEdited] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
   const { ticketID } = useParams();
 
   const handleAddNewNote = async () => {
-    const data: iNote = {
-      text: note,
-      ticket: ticketID!
-    };
-    await createNotesHandler(data);
-    setTimeout(() => {
-      (async () => {
-        const result = await getTicketHandler(
-          searchByName,
-          pageNumber,
-          'false',
-          filterTickets
-        );
-        props.setTicketUpdateFlag(result);
-      })();
-    }, 1000);
+    if (note !== '<p><br></p>') {
+      const data: iNote = {
+        text: note,
+        ticket: ticketID!
+      };
+      await createNotesHandler(data);
+      setTimeout(() => {
+        (async () => {
+          const result = await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            filterTickets
+          );
+          props.setTicketUpdateFlag(result);
+        })();
+      }, 1000);
 
-    setNote('');
+      setNote('');
+      setNotesModal(false);
+    }
+  };
+  const handleNoteEdited = async () => {
+    console.log('coming data');
   };
 
-  const [note, setNote] = useState('');
-  const [loading, setLoading] = useState(true);
+  console.log(note);
+
   useEffect(() => {
     const fetchNotes = async () => {
       await getAllNotesHandler(ticketID as string);
@@ -59,100 +87,289 @@ const NotesWidget = (props: Props) => {
   }, [ticketID]);
 
   const { notes } = useTicketStore();
-  const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && note.trim() !== '') {
-      handleAddNewNote();
-    }
+  // Handles opening the menu
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget); // Necessary for positioning
+    setOpen(true);
+  };
+
+  // Handles closing the menu
+  const handleClose = () => {
+    setOpen(false);
   };
 
   return (
-    <Box height="95%" position="relative" bgcolor="white" p={1}>
-      {loading ? (
-        <Box height="90%">Loading... </Box>
-      ) : notes.length > 0 ? (
-        <Box
-          height="90%"
-          sx={{
-            overflowY: 'scroll',
-            '&::-webkit-scrollbar ': {
-              display: 'none'
-            }
-          }}
-        >
-          {notes.map((note: iNote) => {
-            return (
-              <Box key={note._id}>
-                <Stack
-                  my={1}
-                  borderRadius={1}
-                  bgcolor="#F1F5F7"
-                  p={1}
-                  direction="column"
-                  spacing={1}
-                >
-                  <StickyNote2Outlined />
-                  <Typography variant="caption">{note.text}</Typography>
-                  <Chip
-                    sx={{ width: '25%' }}
-                    size="small"
-                    label={dayjs(note.createdAt).format('DD MMM YYYY hh:mm A')}
-                  />
-                </Stack>
-              </Box>
-            );
-          })}
-        </Box>
-      ) : (
-        <Stack
-          height="90%"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-        >
-          <NoResultFoundSVG />
-          <Typography color="gray" variant="caption" mt={1}>
-            No notes available.
-          </Typography>
-        </Stack>
-      )}
-
-      <Box
-        height="10%"
-        position="sticky"
-        bottom={2}
-        borderTop={2.5}
-        borderColor="#317AE2"
-        bgcolor="white"
-      >
-        <Stack direction="row" spacing={1} alignItems="center">
-          <TextField
-            variant="standard"
-            margin="normal"
-            value={note}
-            fullWidth
-            id="note"
-            autoFocus
-            onChange={(e) => setNote(e.target.value)}
-            onKeyPress={handleKeyPress}
-            placeholder="Write Your Note "
-            InputProps={{
-              disableUnderline: true
-            }}
-          />
+    <>
+      <Box height="95%" position="relative" bgcolor="white" p={1}>
+        {loading ? (
+          <Box height="45vh">Loading... </Box>
+        ) : notes.length > 0 && notesClickedData === null ? (
           <Box
-            width="25%"
-            sx={{ cursor: 'pointer' }}
-            display="flex"
-            justifyContent="space-evenly"
-            onClick={handleAddNewNote}
-            style={{ color: note ? 'blue' : 'gray' }}
+            height="45vh"
+            sx={{
+              overflowY: 'scroll',
+              '&::-webkit-scrollbar ': {
+                display: 'none'
+              }
+            }}
           >
-            <Typography color={note ? 'blue' : 'gray'}>Add Note</Typography>
-            <Send htmlColor={note ? 'blue' : 'gray'} />
+            {notes.map((note: iNote) => {
+              return (
+                <Box
+                  key={note._id}
+                  display={'flex'}
+                  padding={'0rem 1rem 0rem 1rem'}
+                >
+                  <Box className={styles.noteIcon}>
+                    <img src={NotesIcon} alt="" />
+                  </Box>
+                  <Box className={styles.notestextArea}>
+                    <Box className={styles.notestext}>
+                      <span>{ReactHtmlParser(note.text)}</span>
+                      <img
+                        src={arrowright}
+                        alt=""
+                        onClick={() => setNotesClickedData(note)}
+                      />
+                    </Box>
+                    <Box display={'flex'} justifyContent={'space-between'}>
+                      <Box className={styles.notesDate}>
+                        {dayjs(note.createdAt).format('DD MMM YYYY hh:mm A')}
+                      </Box>
+                      <Box
+                        className={styles.notesImage}
+                        height={'1.25rem'}
+                        width={'1.25rem'}
+                      >
+                        <img src={avatar1} alt="" />
+                      </Box>
+                    </Box>
+                  </Box>
+                </Box>
+              );
+            })}
           </Box>
-        </Stack>
+        ) : notesClickedData === null ? (
+          <Stack
+            height="45vh"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <NoResultFoundSVG />
+            <Typography color="gray" variant="caption" mt={1}>
+              No notes available.
+            </Typography>
+          </Stack>
+        ) : (
+          <Box
+            height="45vh"
+            sx={{
+              overflowY: 'scroll',
+              '&::-webkit-scrollbar ': {
+                display: 'none'
+              }
+            }}
+          >
+            <Box className={styles.ClickedNoteHeader}>
+              <img
+                src={arrowLeft}
+                alt=""
+                onClick={() => setNotesClickedData(null)}
+              />
+              <div>
+                <IconButton
+                  aria-label="more"
+                  aria-controls="simple-menu"
+                  aria-haspopup="true"
+                  onClick={handleClick}
+                >
+                  <MoreHorizIcon />
+                </IconButton>
+                <Menu
+                  id="simple-menu"
+                  anchorEl={anchorEl}
+                  keepMounted
+                  open={open}
+                  onClose={handleClose}
+                  PaperProps={{
+                    style: {
+                      maxHeight: 48 * 4.5,
+                      width: '15ch',
+                      borderRadius: 20
+                    }
+                  }}
+                >
+                  <MenuItem
+                    onClick={handleClose}
+                    style={{ color: '#080F1A', fontFamily: 'Outfit,san-serif' }}
+                    onClickCapture={() => (
+                      setIsNoteEdited(true),
+                      setNotesModal(true),
+                      setNote(notesClickedData.text)
+                    )}
+                  >
+                    Edit
+                  </MenuItem>
+                  <MenuItem
+                    onClick={() => {
+                      setDeleteModal(true);
+                      setOpen(false);
+                    }}
+                    style={{ color: '#F94839', fontFamily: 'Outfit,san-serif' }}
+                  >
+                    Delete
+                  </MenuItem>
+                </Menu>
+              </div>
+            </Box>
+            <Box className={styles.ClickedNoteText}>
+              <Box>{ReactHtmlParser(notesClickedData.text)}</Box>
+              <Box className={styles.notesDate}>
+                {dayjs(notesClickedData.createdAt).format(
+                  'DD MMM YYYY hh:mm A'
+                )}
+              </Box>
+            </Box>
+          </Box>
+        )}
+
+        <Box
+          height="15vh"
+          bottom={2}
+          borderTop={2.5}
+          borderColor="#317AE2"
+          bgcolor="white"
+        >
+          <Box
+            display={'flex'}
+            justifyContent={'end'}
+            marginTop={1}
+            paddingRight={2}
+          >
+            <img src={expandIcon} alt="" />
+          </Box>
+          <Box
+            display={'flex'}
+            justifyContent={'center'}
+            color={'#647491'}
+            fontFamily={'Outfit, sans-serif'}
+            fontSize={'1rem'}
+            fontWeight={400}
+          >
+            This a guided text will be added
+          </Box>
+          <Box
+            className={styles.initiateCallButton}
+            onClick={() => setNotesModal(true)}
+          >
+            <span>Create a note</span>
+          </Box>
+        </Box>
       </Box>
-    </Box>
+
+      {/* MODAL for create note and edit note */}
+
+      <Modal
+        open={notesModal}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box className={styles.openedModal}>
+          <Stack
+            className={styles.reminder_modal_title}
+            direction="row"
+            spacing={1}
+            display="flex"
+            alignItems="center"
+          >
+            <Stack>SMS</Stack>
+            <Stack
+              className={styles.modal_close}
+              onClick={() => (setNotesModal(false), setNote(''))}
+            >
+              <img src={CloseModalIcon} alt="" />
+            </Stack>
+          </Stack>
+          <Stack height={'43vh'}>
+            <ReactQuill
+              theme="snow"
+              value={note}
+              onChange={(content) => setNote(content)}
+              className={styles.noteBox}
+              style={{ height: '35vh' }}
+            />
+          </Stack>
+          <Box className={styles.AttachmentFooter}>
+            <Box>
+              <img src={notesAttachmentIcon} alt="" />
+            </Box>
+            <Box className={styles.AttachmentText}>Add Attachments</Box>
+          </Box>
+          <Box className={styles.NotesFooter}>
+            <Box
+              className={styles.Cancel}
+              onClick={() => (setNote(''), setNotesModal(false))}
+            >
+              Cancel
+            </Box>
+            <Box
+              className={
+                note !== '<p><br></p>'
+                  ? styles.createNoteActive
+                  : styles.createNote
+              }
+              onClick={isNoteEdited ? handleNoteEdited : handleAddNewNote}
+            >
+              {isNoteEdited ? 'Save Changes' : 'Create Note'}
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+
+      {/* MODAL for Delete the notes */}
+
+      <Modal
+        open={deleteModal}
+        aria-labelledby="parent-modal-title"
+        aria-describedby="parent-modal-description"
+      >
+        <Box className={styles.deleteOpenedModal}>
+          <Stack
+            className={styles.delete_reminder_modal_title}
+            direction="row"
+            spacing={1}
+            display="flex"
+            alignItems="center"
+          >
+            <Stack>Delete Note</Stack>
+            <Stack
+              className={styles.modal_close}
+              onClick={() => setDeleteModal(false)}
+            >
+              <img src={CloseModalIcon} alt="" />
+            </Stack>
+          </Stack>
+          <Box className={styles.deleteNoteText}>
+            Are you sure want to delete this permanently, this action is irreversible.
+          </Box>
+          <Box className={styles.DeleteNotesFooter}>
+            <Box
+              className={styles.Cancel}
+              onClick={() => setDeleteModal(false)}
+            >
+              Cancel
+            </Box>
+            <Box
+              className={styles.DeleteNoteButton}
+            >
+              Delete
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+
+    </>
   );
 };
 export default NotesWidget;

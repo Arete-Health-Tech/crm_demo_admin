@@ -1,0 +1,104 @@
+.doc_dep {
+  color: var(--Text-Grey, #354869);
+
+  /* Body/Small */
+  font-family: Outfit, sans-serif;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.125rem */
+}
+.date {
+  color: var(--Text-Light-Grey, #647491);
+  font-family: Outfit, sans-serif;
+  font-size: 0.625rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 0.9375rem */
+}
+.Resolve {
+  display: flex;
+  height: 1.5rem;
+  padding: 0.5rem;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.75rem;
+  background: var(--Alerts-Light-Green, #daf2e3);
+  color: var(--Alerts-Green, #08a742);
+  text-align: center;
+
+  /* Body/Small */
+  font-family: Outfit, sans-serif;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.125rem */
+}
+.Open {
+  display: flex;
+  height: 1.5rem;
+  padding: 0.5rem;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.75rem;
+  background: var(--Alerts-Light-Green, #dae8ff);
+  color: var(--Alerts-Green, #0566ff);
+  text-align: center;
+
+  /* Body/Small */
+  font-family: Outfit, sans-serif;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.125rem */
+}
+.ClickedQueryHeader {
+  display: flex;
+  justify-content: space-between;
+}
+.ClickedQueryHeader img {
+  cursor: pointer;
+}
+.roomName {
+  display: flex;
+  align-items: center;
+  padding-left: 0.5rem;
+  color: #000;
+
+  /* Body/Large */
+  font-family: 'Outfit', sans-serif;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.5rem */
+  white-space: nowrap;
+}
+.queryReplyInput {
+  margin-top: 0.5rem;
+  width: 96%;
+  height: 10vh;
+  resize: none;
+}
+.sendButton {
+  display: flex;
+  height: 2rem;
+  padding: 0rem 0.75rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.25rem;
+  background: var(--Background-Med-Grey, #ebedf0);
+  color: var(--Text-Light-Grey, #647491);
+  text-align: center;
+
+  /* Links/Btn Text */
+  font-family: Outfit;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 1.3125rem */
+}
+.queryReplyAttachSend {
+  display: flex;
+  justify-content: space-between;
+}

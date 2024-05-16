@@ -3,6 +3,8 @@ import { Box, Divider, Radio, Stack, Typography } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { useState } from 'react';
 import { iNodeListsMesaage } from '../../../../types/store/node';
+import whtsappIcon from '../../../../assets/whtsappIcon.svg';
+import whtsappMessageIcon from '../../../../assets/avatar1.svg';
 
 type Props = {
   message: any;
@@ -16,47 +18,66 @@ const NodeListMessage = ({ message }: Props) => {
   };
   return (
     <>
-      <Box
-        my={1}
-        maxWidth="70%"
-        p={1}
-        bgcolor="#d8fdd3"
-        borderRadius="7.5px 7.5px 0px 7.5px"
-      >
-        <Typography variant="caption" color="green" fontSize="small">
-          System Generated Message
-        </Typography>
-        <Stack>
-          {message.body}
-          {message.footer && (
-            <Typography variant="caption" color="GrayText">
-              {message.footer}
-            </Typography>
-          )}
-          <Box display="flex" justifyContent="flex-end">
-            <Typography variant="caption" fontSize="0.7rem" color="GrayText">
-              {dayjs(message.createdAt).format('DD MMM YYYY hh:mm A')}
-            </Typography>
-          </Box>
-        </Stack>
-        <Stack
-          spacing={0.8}
-          borderTop={0.5}
-          py={1}
-          justifyContent="center"
-          direction="row"
-          borderColor="lightgray"
-          color="primary.main"
-          onClick={handleList}
+      <Box display="flex" maxWidth="70%">
+        <Box
+          my={1}
+          p={1}
+          bgcolor="#FFF"
+          borderRadius="0.5rem"
+          marginRight={2}
+          border="1px solid #D4DBE5"
         >
-          <FormatListBulletedOutlined />
-          <Typography>{message.menuTitle}</Typography>
-        </Stack>
+          <Typography variant="caption" color="green" fontSize="small">
+            System Generated Message
+          </Typography>
+          <Stack>
+            {message.body}
+            {message.footer && (
+              <Typography variant="caption" color="GrayText">
+                {message.footer}
+              </Typography>
+            )}
+            <Box display="flex" justifyContent="space-between">
+              <Typography
+                variant="caption"
+                color="var(--Text-Light-Grey, #647491)"
+                fontFamily={'Outfit,sans-serif'}
+                fontSize={'0.625rem'}
+                fontWeight={400}
+                paddingTop={1}
+              >
+                {dayjs(message.createdAt).format('DD MMM YYYY hh:mm A')}
+              </Typography>
+              <img src={whtsappMessageIcon} style={{ height: '1.25rem', width: '1.25rem', margin: '0.3rem' }} alt='' />
+            </Box>
+          </Stack>
+          <Stack
+            spacing={0.8}
+            borderTop={0.5}
+            py={1}
+            justifyContent="center"
+            direction="row"
+            borderColor="lightgray"
+            color="primary.main"
+            onClick={handleList}
+          >
+            <FormatListBulletedOutlined />
+            <Typography>{message.menuTitle}</Typography>
+          </Stack>
+        </Box>
+        <img
+          src={whtsappIcon}
+          alt=""
+          style={{
+            height: '4.5vh',
+            marginTop: '0.5rem',
+            marginRight: '0.5rem'
+          }}
+        />
       </Box>
 
       {isListOpen && (
         <Box
-        
           zIndex={9}
           width="100%"
           right={0}

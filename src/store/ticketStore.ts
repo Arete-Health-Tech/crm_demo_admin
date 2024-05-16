@@ -57,8 +57,11 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
     set({ pharmacyOrderCompletedCount }),
   pharmacyOrderCancelledCount: '',
   setPharmacyOrderCancelledCount: (pharmacyOrderCancelledCount) =>
-    set({ pharmacyOrderCancelledCount })
+    set({ pharmacyOrderCancelledCount }),
+  whtsappExpanded: false,
+  setWhtsappExpanded: (whtsappExpanded) => set({ whtsappExpanded }),
+  smsModal: false,
+  setSmsModal: (smsModal) => set({ smsModal })
 }));
-
 
 export default useTicketStore;

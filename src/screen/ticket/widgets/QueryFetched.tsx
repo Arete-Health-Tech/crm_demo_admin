@@ -4,6 +4,8 @@ import dayjs from 'dayjs';
 import React from 'react';
 import useServiceStore from '../../../store/serviceStore';
 import { iDepartment } from '../../../types/store/service';
+import avatar1 from '../../../assets/avatar1.svg'
+import styles from './Qurey.module.css';
 
 type Props = {
   id: string;
@@ -25,35 +27,48 @@ const QueryFetched = (props: Props) => {
   };
 
   return (
-    <Stack
-      spacing={2}
-      direction="column"
-      my={1}
-      p={1}
-      bgcolor="#f1f5f7"
-      onClick={props.onClick}
-    >
-      <Stack direction="row" spacing={1}>
-        <ContactSupportOutlined />
-        <Typography fontWeight={500}>{props.subject}</Typography>
-      </Stack>
-      <Stack direction="row" spacing={2}>
-        {props.departmentId && (
-          <Chip
-            sx={{ textTransform: 'uppercase' }}
-            size="small"
-            label={departmentSetter(props.departmentId)}
-          />
-        )}
-
-        <Chip
-          size="small"
-          label={dayjs(props.createdAt.seconds * 1000).format(
-            'DD MMM YYYY hh:mm A'
+    <>
+      <Stack
+        spacing={0.5}
+        direction="column"
+        marginLeft={"1rem"}
+        p={1}
+        borderRadius={'0.5rem'}
+        width={"100%"}
+        bgcolor="#f1f5f7"
+        onClick={props.onClick}
+      >
+        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+          {/* <ContactSupportOutlined /> */}
+          <Box fontWeight={500}>{props.subject}</Box>
+          <Box className={styles.Resolve}>Resolve</Box>
+          {/* <Box className={styles.Open}>Open</Box> */}
+        </Box>
+        <Stack>
+          {/* <ContactSupportOutlined /> */}
+          <Typography className={styles.doc_dep}>DoctorName</Typography>
+        </Stack>
+        <Stack>
+          {props.departmentId && (
+            <Typography className={styles.doc_dep}>{departmentSetter(props.departmentId)}</Typography>
           )}
-        />
+        </Stack>
+        <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
+          <Typography className={styles.date}>
+            {dayjs(props.createdAt.seconds * 1000).format(
+              'DD MMM YYYY hh:mm A'
+            )}
+          </Typography>
+          <Box
+            className={styles.notesImage}
+            height={'1.25rem'}
+            width={'1.25rem'}
+          >
+            <img src={avatar1} alt="" />
+          </Box>
+        </Box>
       </Stack>
-    </Stack>
+    </>
   );
 };
 

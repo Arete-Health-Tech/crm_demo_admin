@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Add,
   Call,
@@ -15,7 +17,7 @@ import {
   Button,
   Chip,
   Fab,
-  IconButton,
+  // IconButton,
   Stack,
   Tab,
   Tabs,
@@ -27,8 +29,16 @@ import {
   DialogTitle,
   DialogContent,
   Grid,
-  DialogContentText
+  DialogContentText,
+  Paper,
+  Avatar,
+  IconButton
 } from '@mui/material';
+import styles from './SingleTicketDetails.module.css';
+import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
+import assignedDropDown from '../../assets/assignedDropDown.svg';
+import avatar1 from '../../assets/avatar1.svg';
+import avatar2 from '../../assets/avatar2.svg';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -82,12 +92,16 @@ import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTone';
 import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
 
-
 import AWS from 'aws-sdk';
 import CustomModal from './widgets/CustomModal';
 import { apiClient } from '../../api/apiClient';
 import ReschedulerAll from './widgets/ReschedulerAll';
 import RemainderAll from './widgets/RemainderAll';
+import Menu from '@mui/material/Menu';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+import Activities from './widgets/Activities/Activities';
+import SmsWidget from './widgets/SmsWidget/SmsWidget';
+import PhoneWidget from './widgets/PhoneWidget/PhoneWidget';
 
 const questions = [
   {
@@ -181,8 +195,6 @@ interface Ticket {
   // Add other fields as needed
 }
 
-
-
 dayjs.extend(relativeTime);
 
 type Props = {};
@@ -205,9 +217,10 @@ const SingleTicketDetails = (props: Props) => {
   const [isScript, setIsScript] = useState(false);
   const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
   const [singleReminder, setSingleReminder] = useState<iReminder[] | any[]>([]);
-  const [callReschedule, setCallReschedule] = useState<iCallRescheduler[] | any[]>([]);
+  const [callReschedule, setCallReschedule] = useState<
+    iCallRescheduler[] | any[]
+  >([]);
 
-  const [open, setOpen] = useState(false);
   const theme = useTheme();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [activeStep, setActiveStep] = useState(0);
@@ -220,18 +233,28 @@ const SingleTicketDetails = (props: Props) => {
     lastName: '',
     phone: 0,
     age: 0,
-    gender: '',
+    gender: ''
     // Add other fields as needed
   });
 
   const [openModal, setOpenModal] = useState(false);
   const [modalOpenRemainder, setModalOpenRemainder] = useState(false);
-  const [modalOpenRescheduler, setModalOpenRescheduler] = useState(false)
+  const [modalOpenRescheduler, setModalOpenRescheduler] = useState(false);
   const [matchedObjects, setMatchedObjects] = useState([]);
   const [callReschedulerData, setCallReschedulerData] = useState([]);
 
-
-
+  // for version2
+  const [assignees, setAssignees] = useState([
+    { id: 1, name: 'Jenny Wilson', role: 'Ticket Owner' },
+    { id: 2, name: 'Marvin McKinney', role: '' },
+    { id: 3, name: 'Courtney Henry', role: '' },
+    { id: 4, name: 'Floyd Miles', role: '' },
+    { id: 5, name: 'Dianne Russell', role: '' },
+    { id: 6, name: 'Robert Fox', role: '' }
+  ]);
+  const [filter, setFilter] = useState('');
+  const [visible, setVisible] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   // console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
   // console.log(currentTicket,"this is current ticet")
@@ -291,7 +314,6 @@ const SingleTicketDetails = (props: Props) => {
   //        currentSubStageCode < noOfChilds
   //      ) {
 
-
   //        const payload = {
   //          subStageCode: {
   //            active: true,
@@ -316,10 +338,6 @@ const SingleTicketDetails = (props: Props) => {
   //   }
   // }
 
-
-
-
-
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     setValue(newValue);
   };
@@ -337,7 +355,7 @@ const SingleTicketDetails = (props: Props) => {
   };
 
   const handleClose = () => {
-    setOpen(false);
+    setAnchorEl(null);
   };
 
   const handleResponseClick = (response) => {
@@ -434,10 +452,6 @@ const SingleTicketDetails = (props: Props) => {
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
   const estimateId = getEstimateIdByDataId(tickets, ticketID);
 
-
-
-
-
   const fetchPdfUrl = async () => {
     if (currentTicket?.location) {
       window.open(currentTicket.location, '_blank');
@@ -445,16 +459,6 @@ const SingleTicketDetails = (props: Props) => {
       alert('Please create an estimate.');
     }
   };
-
-
-
-
-
-
-
-
-
-
 
   const handleIconClickRemainder = async () => {
     try {
@@ -468,13 +472,11 @@ const SingleTicketDetails = (props: Props) => {
       setMatchedObjects(filteredData);
       setModalOpenRemainder(true);
       if (filteredData.length === 0) {
-
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-
 
   // Now you can access matchedObjects outside the function
   // For example
@@ -490,13 +492,11 @@ const SingleTicketDetails = (props: Props) => {
       setCallReschedulerData(filteredData);
       setModalOpenRescheduler(true);
       if (filteredData.length === 0) {
-
       }
     } catch (error) {
       console.error('Error fetching data:', error);
     }
   };
-
 
   const handleCloseModal = () => {
     // Close the modal
@@ -504,13 +504,40 @@ const SingleTicketDetails = (props: Props) => {
     setModalOpenRescheduler(false);
   };
 
-
   // console.log(currentTicket," thi sisi currentTicket")
 
+  // for lead assigne
+  const handleAddAssignee = (id) => {
+    const newAssignees = assignees.map((assignee) =>
+      assignee.id === id ? { ...assignee, role: 'New Role' } : assignee
+    );
+    setAssignees(newAssignees);
+  };
+
+  const handleRemoveAssignee = (id) => {
+    const newAssignees = assignees.map((assignee) =>
+      assignee.id === id ? { ...assignee, role: '' } : assignee
+    );
+    setAssignees(newAssignees);
+  };
+
+  const handleSearch = (event) => {
+    setFilter(event.target.value);
+  };
+
+  const filteredAssignees = assignees.filter((assignee) =>
+    assignee.name.toLowerCase().includes(filter.toLowerCase())
+  );
+  const opens = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
 
   return (
-    <Stack height={'100vh'} direction="row">
+    <Stack height={'100vh'} direction="row" p={1}>
       <Box width="60%">
+        {/* This box is for lead header start*/}
         <Box
           height="10vh"
           p={1}
@@ -518,97 +545,238 @@ const SingleTicketDetails = (props: Props) => {
           borderLeft={0.5}
           borderColor="#F0F0F0"
           display="flex"
+          justifyContent="space-between"
           bgcolor="white"
           alignItems="center"
         >
-          <Box width="60%">
-            <Suspense fallback="Loading...">
-              <Typography
-                textTransform="capitalize"
-                fontSize={20}
-                fontWeight={500}
+          {/* This Box is for name ,uhid,age and gender */}
+          <Box width="32%" display="flex">
+            <Box>
+              <Box display="flex" alignItems={'center'} textAlign={'center'} width="12rem">
+                <Suspense fallback="Loading...">
+                  <Typography
+                    textTransform="capitalize"
+                    fontSize={'1.125rem'}
+                    fontWeight={600}
+                    fontFamily={'Outfit, sans-serif'}
+                    color={'#000'}
+                    width="auto"
+                    overflow="hidden"
+                  >
+                    {currentTicket?.consumer[0].firstName}
+                    {currentTicket?.consumer[0].lastName}
+                  </Typography>
+                </Suspense>
+                <Box
+                  display="grid"
+                  gridTemplateColumns="repeat(2,1fr)"
+                  paddingLeft="0.5rem"
+                >
+                  {currentTicket?.consumer[0].gender === 'M' ? (
+                    <Box display="flex" alignItems="center">
+                      {/* <Male fontSize="inherit" />{' '} */}
+                      <Typography className={styles.gender}>M</Typography>{' '}
+                    </Box>
+                  ) : currentTicket?.consumer[0].gender === 'F' ? (
+                    <Box display="flex" alignItems="center">
+                      {/* <Female fontSize="inherit" />{' '} */}
+                      <Typography className={styles.gender}>F</Typography>{' '}
+                    </Box>
+                  ) : currentTicket?.consumer[0].gender === 'O' ? (
+                    <Box>
+                      {/* <Transgender /> */}
+                      <Typography className={styles.gender}>O</Typography>
+                    </Box>
+                  ) : ''}
+                </Box>
+                <Typography fontSize="small">
+                  {currentTicket?.consumer[0].dob
+                    ? ageSetter(currentTicket.consumer[0].dob)[0] +
+                    ageSetter(currentTicket.consumer[0].dob)[1]
+                    : ''}
+                </Typography>
+              </Box>
+              <Box
+                display="grid"
+                gridTemplateColumns="repeat(5, 1fr)"
+                columnGap={2}
+                color={'var(--Text-Light-Grey, #647491)'}
+                fontFamily={'Outfit, sans-serif'}
+                fontSize={'12px'}
+                fontWeight={400}
               >
-                {currentTicket?.consumer[0].firstName}{' '}
-                {currentTicket?.consumer[0].lastName}
-              </Typography>
-            </Suspense>
-
-            <Box
-              display="grid"
-              gridTemplateColumns="repeat(5, 1fr)"
-              columnGap={2}
-            >
-              {/* <Box display="grid" gridTemplateColumns="repeat(2,1fr)">
-                {currentTicket?.consumer[0].gender === 'M' ? (
-                  <Box display="flex" alignItems="center">
-                    <Male fontSize="inherit" />{' '}
-                    <Typography
-                      sx={{ fontSize: '.9rem', whiteSpace: 'nowrap' }}
-                    >
-                      Male
-                    </Typography>{' '}
-                  </Box>
-                ) : currentTicket?.consumer[0].gender === 'F' ? (
-                  <Box display="flex" alignItems="center">
-                    <Female fontSize="inherit" />{' '}
-                    <Typography
-                      sx={{ fontSize: '.9rem', whiteSpace: 'nowrap' }}
-                    >
-                      Female
-                    </Typography>{' '}
-                  </Box>
-                ) : currentTicket?.consumer[0].gender === 'O' ? (
-                  <Box>
-                    <Transgender />
-                    <Typography
-                      sx={{ fontSize: '.9rem', whiteSpace: 'nowrap' }}
-                    >
-                      Others
-                    </Typography>
-                  </Box>
-                ) : null}
-              </Box> */}
-              <Typography
-                variant="body1"
-                sx={{ fontSize: '.9rem', whiteSpace: 'nowrap' }}
-              >
-                Uhid - {currentTicket?.consumer[0]?.uid}
-              </Typography>
-              {/* <Typography fontSize="small">
-                {currentTicket?.consumer[0].dob
-                  ? ageSetter(currentTicket.consumer[0].dob)
-                  : ''}
-              </Typography> */}
+                <Typography
+                  variant="body1"
+                  sx={{ fontSize: '.9rem', whiteSpace: 'nowrap' }}
+                >
+                  #UHI{currentTicket?.consumer[0]?.uid}
+                </Typography>
+              </Box>
             </Box>
-
-            <Typography
-              variant="body1"
-              sx={{ fontSize: '.9rem', whiteSpace: 'nowrap' }}
-            >
-              Phone - {currentTicket?.consumer[0]?.phone}
-            </Typography>
+            <Box>
+              <CustomModal />
+            </Box>
           </Box>
+
+          {/* This Box is for lead assign , lead age and three dots */}
+
           <Box
-            width="40%"
+            width="35%"
             display={'flex '}
             justifyContent="space-evenly"
             alignItems="center"
           >
-            <CustomModal
-            // open={isModalOpen}
-            // onClose={() => setIsModalOpen(false)}
-            // timer={timer}
-            />
-
-            <Chip
-              sx={{ textTransform: 'capitalize' }}
-              label={dayjs(currentTicket?.createdAt).fromNow()}
-            />
+            <div>
+              <Paper elevation={4} id={styles.paper}>
+                <Stack
+                  direction="row"
+                  alignItems="center"
+                  style={{ padding: '4px 8px' }}
+                >
+                  <Avatar id={styles.avatar} src={avatar1} alt="User 1" />
+                  <Avatar id={styles.avatar} src={avatar2} alt="User 2" />
+                  <img
+                    id={styles.assignedDropdown}
+                    src={assignedDropDown}
+                    alt=""
+                    onClick={() => setVisible(!visible)}
+                  />
+                </Stack>
+              </Paper>
+              <div>
+                {visible && (
+                  <div className={styles.dropdown}>
+                    <div className={styles.dropdownHeader}>
+                      <span>Ticket Assignees</span>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Search"
+                      onChange={handleSearch}
+                    />
+                    <ul>
+                      {filteredAssignees.map((assignee) => (
+                        <li key={assignee.id}>
+                          {assignee.name} ({assignee.role || 'No Role Assigned'}
+                          )
+                          {assignee.role ? (
+                            <button
+                              onClick={() => handleRemoveAssignee(assignee.id)}
+                            >
+                              -
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleAddAssignee(assignee.id)}
+                            >
+                              +
+                            </button>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                    <button
+                      onClick={() => (
+                        setAssignees(assignees), setVisible(false)
+                      )}
+                    >
+                      Done
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className={styles.leadAge}>
+              {dayjs(currentTicket?.createdAt).fromNow()}
+            </div>
+            <div>
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  textAlign: 'center'
+                }}
+              >
+                <IconButton
+                  onClick={handleClick}
+                  size="small"
+                  sx={{ ml: 2 }}
+                  aria-controls={opens ? 'account-menu' : undefined}
+                  aria-haspopup="true"
+                  aria-expanded={opens ? 'true' : undefined}
+                >
+                  <MoreHorizIcon />
+                </IconButton>
+              </Box>
+              <Menu
+                id="demo-positioned-menu"
+                aria-labelledby="demo-positioned-button"
+                anchorEl={anchorEl}
+                open={opens}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left'
+                }}
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'left'
+                }}
+                PaperProps={{
+                  style: {
+                    width: '10vw',
+                    marginTop: '2rem'
+                  }
+                }}
+              >
+                <MenuItem className={styles.estimationHeader}>
+                  ESTIMATION
+                </MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  className={styles.estimationHeaderMenu}
+                >
+                  Create Estimation
+                </MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  className={styles.estimationHeaderMenu}
+                >
+                  Skip Estimation
+                </MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  className={styles.estimationHeaderMenu}
+                >
+                  Set Priority
+                </MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  className={styles.estimationHeaderMenu}
+                >
+                  Add Surgery
+                </MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  className={styles.estimationHeaderMenu}
+                >
+                  Initiate RFA
+                </MenuItem>
+                <MenuItem
+                  onClick={handleClose}
+                  className={styles.estimationHeaderMenuClose}
+                >
+                  Close Lead{' '}
+                </MenuItem>
+              </Menu>
+            </div>
           </Box>
         </Box>
+        {/* This box is for lead header end*/}
+
         <Stack bgcolor="#F1F5F7" height="90vh" direction="column">
-          <Box p={1} height="30%">
-            <Box bgcolor={'white'} p={1.5} borderRadius={2}>
+          <Box height="28%">
+            <Box bgcolor={'white'} p={1.5}>
               <StageCard
                 currentTicket={currentTicket}
                 setTicketUpdateFlag={setTicketUpdateFlag}
@@ -616,7 +784,6 @@ const SingleTicketDetails = (props: Props) => {
             </Box>
           </Box>
           <Box
-            p={1}
             height="100%"
             style={{ marginBottom: '20px' }}
             position="relative"
@@ -630,21 +797,85 @@ const SingleTicketDetails = (props: Props) => {
                 <TabList
                   onChange={handleChange}
                   aria-label="lab API tabs example"
+                // variant="scrollable"
+                // scrollButtons="auto"
+                // aria-label="scrollable auto tabs example"
                 >
-                  <Tab label="Whatsapp Message" value="1" />
-                  <Tab label="Notes" value="2" />
+                  <Tab
+                    label="Activities"
+                    value="1"
+                    className={
+                      value == '1' ? styles.selectedTab : styles.tabsLabel
+                    }
+                  />
+                  <Tab
+                    label="Whatsapp"
+                    value="2"
+                    className={
+                      value == '2' ? styles.selectedTab : styles.tabsLabel
+                    }
+                  />
+                  <Tab
+                    label="Email"
+                    value="3"
+                    className={
+                      value == '3' ? styles.selectedTab : styles.tabsLabel
+                    }
+                  />
+                  <Tab
+                    label="SMS"
+                    value="4"
+                    className={
+                      value == '4' ? styles.selectedTab : styles.tabsLabel
+                    }
+                  />
+                  <Tab
+                    label="Phone Calls"
+                    value="5"
+                    className={
+                      value == '5' ? styles.selectedTab : styles.tabsLabel
+                    }
+                  />
+                  <Tab
+                    label="Query Resolution"
+                    value="6"
+                    className={
+                      value == '6' ? styles.selectedTab : styles.tabsLabel
+                    }
+                  />
+                  <Tab
+                    label="Notes"
+                    value="7"
+                    className={
+                      value == '7' ? styles.selectedTab : styles.tabsLabel
+                    }
+                  />
                   {/* <Tab label="Query Resolution" value="3" /> */}
                 </TabList>
               </Box>
-              <TabPanel sx={{ p: 0, height: '100%' }} value="1">
-                <MessagingWidget />
-              </TabPanel>
-              <TabPanel sx={{ p: 0, height: '100%' }} value="2">
-                <NotesWidget setTicketUpdateFlag={setTicketUpdateFlag} />
-              </TabPanel>
-              <TabPanel sx={{ p: 0, height: '100%' }} value="3">
-                <QueryResolutionWidget />
-              </TabPanel>
+              <Box sx={{ p: 0, height: '100%', bgcolor: 'white' }}>
+                <TabPanel value="1" style={{ paddingRight: 0 }}>
+                  <Activities />
+                </TabPanel>
+                <TabPanel value="2" style={{ padding: 0 }}>
+                  <MessagingWidget />
+                </TabPanel>
+                <TabPanel value="3" style={{ padding: 0 }}>
+                  {/* <QueryResolutionWidget /> */}
+                </TabPanel>
+                <TabPanel value="4" style={{ padding: 0, height: '100%' }}>
+                  <SmsWidget />
+                </TabPanel>
+                <TabPanel value="5" style={{ padding: 0 }}>
+                  <PhoneWidget />
+                </TabPanel>
+                <TabPanel value="6" style={{ padding: 0 }}>
+                  <QueryResolutionWidget />
+                </TabPanel>
+                <TabPanel value="7" style={{ padding: 0 }}>
+                  <NotesWidget setTicketUpdateFlag={setTicketUpdateFlag} />
+                </TabPanel>
+              </Box>
             </TabContext>
           </Box>
         </Stack>

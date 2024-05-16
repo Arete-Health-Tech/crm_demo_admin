@@ -179,6 +179,10 @@ export interface iTicketStore {
   setPharmacyOrderCompletedCount: (pharmacyOrderCompletedCount: string) => void;
   pharmacyOrderCancelledCount: string;
   setPharmacyOrderCancelledCount: (pharmacyOrderCancelledCount: string) => void;
+  whtsappExpanded: boolean;
+  setWhtsappExpanded: (whtsappExpanded: boolean) => void;
+  smsModal: boolean;
+  setSmsModal: (smsModal: boolean) => void;
 }
 
 export interface iNote {

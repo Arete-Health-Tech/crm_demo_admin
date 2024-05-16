@@ -1,0 +1,169 @@
+.openedModal {
+  border-radius: var(--16px, 16px);
+  background: #fff;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  display: flex;
+  width: 40vw;
+  padding: var(--24px, 24px);
+  flex-direction: column;
+  box-shadow: 24;
+  border: '2px solid #000';
+}
+.reminder_modal_title {
+  color: #000;
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 120%;
+  border-bottom: 1px solid var(--Borders-Light-Grey, #d4dbe5);
+}
+.modal_close {
+  color: #647491;
+  display: flex;
+  width: 27px;
+  height: 27px;
+  padding: 8.25px;
+  justify-content: center;
+  align-items: center;
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  border-radius: 14px;
+  border: 1px solid var(--Background-White, #fff);
+  background: var(--Background-White, #fff);
+  box-shadow: 0px 163px 46px 0px rgba(191, 191, 191, 0),
+    0px 104px 42px 0px rgba(191, 191, 191, 0.01),
+    0px 59px 35px 0px rgba(191, 191, 191, 0.05),
+    0px 26px 26px 0px rgba(191, 191, 191, 0.09),
+    0px 7px 14px 0px rgba(191, 191, 191, 0.1);
+}
+
+.reminder_modal_title {
+  padding: 5px 0 15px 0;
+}
+.createQueryButton {
+  display: flex;
+  justify-content: center;
+  height: 2.5rem;
+  margin: 0vw 16vw;
+  padding: 1rem;
+  align-items: center;
+  background: var(--Background-Bluish, #dae8ff);
+  cursor: pointer;
+}
+.createQueryButton span {
+  gap: 0.5rem;
+  border-radius: var(--0.25rem, 0.25rem);
+  color: #0566ff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.QueryTitle {
+  resize: none;
+  display: flex;
+  height: 3rem;
+  width: 97%;
+  margin: 0 0rem 0 0.5rem;
+  padding: 0.5rem 1rem;
+  align-items: center;
+  gap: 0.5rem;
+  align-self: stretch;
+  border-radius: 0.25rem;
+  border: 1px solid #d4dbe5;
+  background: var(--Icons-White, #fff);
+}
+.Querycomment {
+  resize: none;
+  display: flex;
+  padding: 0.75rem 1rem;
+  height: 20vh;
+  width: 97%;
+  margin: 1rem 0rem 0 0.5rem;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex: 1 0 0;
+  align-self: stretch;
+  border-radius: 0.25rem;
+  border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
+  background: var(--Icons-White, #fff);
+}
+.AttachmentFooter {
+  display: flex;
+  align-items: center;
+  color: var(--Primary-Default, #0566ff);
+  text-align: center;
+  margin: 1rem 0 0 0.5rem;
+  /* Links/Underline Text */
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 1.3125rem */
+  text-decoration-line: underline;
+}
+.AttachmentText {
+  padding-left: 5px;
+}
+.queryFooter {
+  display: flex;
+  justify-content: space-between;
+}
+
+.Cancel {
+  display: flex;
+  height: 2.5rem;
+  padding: var(--Spacing-0rem, 0rem) var(--1rem, 1rem);
+  justify-content: center;
+  align-items: center;
+  gap: var(--0.5rem, 0.5rem);
+  color: var(--Primary-Default, #0566ff);
+  text-align: center;
+
+  /* Links/Btn Text */
+  font-family: Outfit;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 1.3125rem */
+  cursor: pointer;
+}
+.createQuery {
+  display: flex;
+  height: 2.5rem;
+  padding: var(--Spacing-0rem, 0rem) var(--1rem, 1rem);
+  justify-content: center;
+  align-items: center;
+  gap: var(--0.5rem, 0.5rem);
+  border-radius: 0.25rem;
+  background: var(--Primary-Default, #0566ff);
+  color: var(--White, #fff);
+  text-align: center;
+  cursor: pointer;
+  /* Links/Btn Text */
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 1.3125rem */
+}
+.QueryTitle::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+}
+.QueryTitle::-webkit-scrollbar-thumb {
+  background-color: rgb(163, 165, 167); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+}
+.Querycomment::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+}
+.Querycomment::-webkit-scrollbar-thumb {
+  background-color: rgb(163, 165, 167); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+}

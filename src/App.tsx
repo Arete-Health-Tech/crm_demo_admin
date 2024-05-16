@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import Toast from './components/Toast';
 import AppContainer from './container/AppContainer';
 import { getDesignTokens } from './styles/theme';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 

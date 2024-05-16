@@ -53,6 +53,8 @@ import { socketEventConstants } from '../../constantUtils/socketEventsConstants'
 import useUserStore from '../../store/userStore';
 import { selectedFiltersReducer, ticketFilterTypes } from '../../screen/ticket/ticketStateReducers/filter';
 import { getAllNotesWithoutTicketId } from '../../api/notes/allNote';
+import ExpandedModal from '../../screen/ticket/widgets/whatsapp/ExpandedModal';
+import ExpandedSmsModal from '../../screen/ticket/widgets/SmsWidget/ExpandedSmsModal';
 
 // .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
@@ -537,233 +539,237 @@ const Ticket = () => {
   // console.log({ page })
 
   return (
-    <Box height={'100vh'} display="flex" position="fixed" width="100%">
-      <Box width="25%" position="sticky" top={0}>
-        <Box p={1} height={'16vh'} borderBottom={0.5} borderColor="#f0f0f0">
-          <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Button
-              onClick={backToDashboard}
-              color="inherit"
-              startIcon={<ArrowBack />}
-              sx={{ mb: 1 }}
+    <>
+      <Box height={'100vh'} display="flex" position="fixed" width="100%">
+        <Box width="25%" position="sticky" top={0}>
+          <Box p={1} height={'16vh'} borderBottom={0.5} borderColor="#f0f0f0">
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
             >
-              Go Back To Dashboard
-            </Button>
-            <DownloadAllTickets />
-          </Stack>
+              <Button
+                onClick={backToDashboard}
+                color="inherit"
+                startIcon={<ArrowBack />}
+                sx={{ mb: 1 }}
+              >
+                Go Back To Dashboard
+              </Button>
+              <DownloadAllTickets />
+            </Stack>
 
-          <Stack direction="row" spacing={1}>
-            <TextField
-              sx={{ bgcolor: '#f5f7f5', p: 1, borderRadius: 1 }}
-              size="small"
-              fullWidth
-              placeholder="Search Leads"
-              id="outlined-start-adornment"
-              variant="standard"
-              helperText={searchError}
-              InputProps={{
-                // disableUnderline: true,
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon />
-                  </InputAdornment>
-                )
-              }}
-              // onChange={handleSeachName}
-              onKeyDown={handleSearchKeyPress}
+            <Stack direction="row" spacing={1}>
+              <TextField
+                sx={{ bgcolor: '#f5f7f5', p: 1, borderRadius: 1 }}
+                size="small"
+                fullWidth
+                placeholder="Search Leads"
+                id="outlined-start-adornment"
+                variant="standard"
+                helperText={searchError}
+                InputProps={{
+                  // disableUnderline: true,
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon />
+                    </InputAdornment>
+                  )
+                }}
+                // onChange={handleSeachName}
+                onKeyDown={handleSearchKeyPress}
+              />
+              <TicketFilter setPage={setPage} />
+            </Stack>
+          </Box>
+          <Box
+            position="relative"
+            p={1}
+            height={'76vh'}
+            sx={{
+              overflowY: 'scroll',
+              '&::-webkit-scrollbar ': {
+                // display: 'none'
+              }
+            }}
+          >
+            {tickets.length > 0 ? (
+              tickets.map((item: iTicket, index: number) => (
+                <TicketCard key={item._id} patientData={item} index={index} />
+              ))
+            ) : emptyDataText !== '' ? (
+              <Alert
+                sx={{
+                  marginTop: '40px',
+                  height: '25vh',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center'
+                }}
+                severity="error"
+              >
+                NO DATA FOUND
+              </Alert>
+            ) : (
+              [0, 1, 2, 3, 4, 5].map((_, index) => (
+                <Skeleton
+                  key={index}
+                  variant="rectangular"
+                  sx={{ borderRadius: 2, my: 1 }}
+                  width="100%"
+                  height="20%"
+                />
+              ))
+            )}
+          </Box>
+          <div>
+            <CustomPagination
+              handlePagination={handlePagination}
+              pageCount={pageCount}
+              page={pageNumber}
             />
-            <TicketFilter setPage={setPage} />
-          </Stack>
+          </div>
         </Box>
-        <Box
-          position="relative"
-          p={1}
-          height={'76vh'}
-          sx={{
-            overflowY: 'scroll',
-            '&::-webkit-scrollbar ': {
-              // display: 'none'
-            }
-          }}
-        >
-          {tickets.length > 0 ? (
-            tickets.map((item: iTicket, index: number) => (
-              <TicketCard key={item._id} patientData={item} index={index} />
-            ))
-          ) : emptyDataText !== '' ? (
-            <Alert
-              sx={{
-                marginTop: '40px',
-                height: '25vh',
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}
-              severity="error"
-            >
-              NO DATA FOUND
-            </Alert>
-          ) : (
-            [0, 1, 2, 3, 4, 5].map((_, index) => (
-              <Skeleton
-                key={index}
-                variant="rectangular"
-                sx={{ borderRadius: 2, my: 1 }}
-                width="100%"
-                height="20%"
-              />
-            ))
-          )}
+        <Box bgcolor="#E2ECFB" width="75%">
+          {currentRoute ? <DefaultScreen /> : <Outlet />}
         </Box>
-        <div>
-          <CustomPagination
-            handlePagination={handlePagination}
-            pageCount={pageCount}
-            page={pageNumber}
-          />
-        </div>
-      </Box>
-      <Box bgcolor="#E2ECFB" width="75%">
-        {currentRoute ? <DefaultScreen /> : <Outlet />}
-      </Box>
-      <Box>
-        <Modal
-          open={showReminderModal}
-        // onClose={() => handleCloseModal()}
-        >
-          <Box
-            sx={{
-              position: 'absolute',
-              bgcolor: 'white',
-              width: '600px',
-              height: '400px',
-              top: '50%',
-              left: '50%',
-              border: '0px solid transparent',
-              borderRadius: '8px',
-              transform: 'translate(-50%, -50%)',
-              padding: '10px'
-            }}
+        <Box>
+          <Modal
+            open={showReminderModal}
+          // onClose={() => handleCloseModal()}
           >
-            <div
-              onClick={handleCloseModal}
-              style={{
-                display: 'flex',
-                justifyContent: 'end',
-                cursor: 'pointer'
-              }}
-            >
-              <CloseIcon fontSize="large" />
-            </div>
-            <div className="buzz-animation">
-              <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
-            </div>
             <Box
               sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column'
+                position: 'absolute',
+                bgcolor: 'white',
+                width: '600px',
+                height: '400px',
+                top: '50%',
+                left: '50%',
+                border: '0px solid transparent',
+                borderRadius: '8px',
+                transform: 'translate(-50%, -50%)',
+                padding: '10px'
               }}
             >
-              {ticketReminderPatient && (
-                <Typography>{`Reminder for ${(
-                  ticketReminderPatient?.consumer[0]?.firstName || 'N/A'
-                ).toUpperCase()} `}</Typography>
-              )}{' '}
-              <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
-                {alarmReminderedList[0]?.title.toUpperCase() || 'N/A'}
-              </Typography>
-              <Typography margin={'12px'}>
-                {alarmReminderedList[0]?.description || 'N/A'}
-              </Typography>
-              <Chip
-                size="medium"
-                variant="outlined"
-                color="primary"
-                label={dayjs(alarmReminderedList[0]?.date).format(
-                  'DD/MMM/YYYY hh:mm A '
-                )}
-              />
+              <div
+                onClick={handleCloseModal}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'end',
+                  cursor: 'pointer'
+                }}
+              >
+                <CloseIcon fontSize="large" />
+              </div>
+              <div className="buzz-animation">
+                <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
+              </div>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column'
+                }}
+              >
+                {ticketReminderPatient && (
+                  <Typography>{`Reminder for ${(
+                    ticketReminderPatient?.consumer[0]?.firstName || 'N/A'
+                  ).toUpperCase()} `}</Typography>
+                )}{' '}
+                <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
+                  {alarmReminderedList[0]?.title.toUpperCase() || 'N/A'}
+                </Typography>
+                <Typography margin={'12px'}>
+                  {alarmReminderedList[0]?.description || 'N/A'}
+                </Typography>
+                <Chip
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  label={dayjs(alarmReminderedList[0]?.date).format(
+                    'DD/MMM/YYYY hh:mm A '
+                  )}
+                />
+              </Box>
             </Box>
-          </Box>
-        </Modal>
-      </Box>
-      <Box>
-        <Modal
-          open={showCallReschedulerModal}
-        // onClose={() => handleCloseModal()}
-        >
-          <Box
-            sx={{
-              position: 'absolute',
-              bgcolor: 'white',
-              width: '600px',
-              height: '400px',
-              top: '50%',
-              left: '50%',
-              border: '0px solid transparent',
-              borderRadius: '8px',
-              transform: 'translate(-50%, -50%)',
-              padding: '10px'
-            }}
+          </Modal>
+        </Box>
+        <Box>
+          <Modal
+            open={showCallReschedulerModal}
+          // onClose={() => handleCloseModal()}
           >
-            <div
-              onClick={handleCloseCallReschedulerModal}
-              style={{
-                display: 'flex',
-                justifyContent: 'end',
-                cursor: 'pointer'
-              }}
-            >
-              <CloseIcon fontSize="large" />
-            </div>
-            <div className="buzz-animation">
-              <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
-            </div>
             <Box
               sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                flexDirection: 'column'
+                position: 'absolute',
+                bgcolor: 'white',
+                width: '600px',
+                height: '400px',
+                top: '50%',
+                left: '50%',
+                border: '0px solid transparent',
+                borderRadius: '8px',
+                transform: 'translate(-50%, -50%)',
+                padding: '10px'
               }}
             >
-              {ticketCallReschedulerPatient && (
-                <Typography>{`Call Rescheduler for ${(
-                  ticketCallReschedulerPatient?.consumer[0]?.firstName || 'N/A'
-                ).toUpperCase()} `}</Typography>
-              )}{' '}
-              <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
-                {alarmCallReschedulerList[0]?.selectedLabels
-                  ? alarmCallReschedulerList[0].selectedLabels
-                    .map((label) => label.label)
-                    .join(', ')
-                    .toUpperCase()
-                  : 'N/A'}
-              </Typography>
-              <Typography margin={'12px'}>
-                {alarmCallReschedulerList[0]?.description || 'N/A'}
-              </Typography>
-              <Chip
-                size="medium"
-                variant="outlined"
-                color="primary"
-                label={dayjs(alarmCallReschedulerList[0]?.date).format(
-                  'DD/MMM/YYYY hh:mm A '
-                )}
-              />
+              <div
+                onClick={handleCloseCallReschedulerModal}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'end',
+                  cursor: 'pointer'
+                }}
+              >
+                <CloseIcon fontSize="large" />
+              </div>
+              <div className="buzz-animation">
+                <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
+              </div>
+              <Box
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  flexDirection: 'column'
+                }}
+              >
+                {ticketCallReschedulerPatient && (
+                  <Typography>{`Call Rescheduler for ${(
+                    ticketCallReschedulerPatient?.consumer[0]?.firstName || 'N/A'
+                  ).toUpperCase()} `}</Typography>
+                )}{' '}
+                <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
+                  {alarmCallReschedulerList[0]?.selectedLabels
+                    ? alarmCallReschedulerList[0].selectedLabels
+                      .map((label) => label.label)
+                      .join(', ')
+                      .toUpperCase()
+                    : 'N/A'}
+                </Typography>
+                <Typography margin={'12px'}>
+                  {alarmCallReschedulerList[0]?.description || 'N/A'}
+                </Typography>
+                <Chip
+                  size="medium"
+                  variant="outlined"
+                  color="primary"
+                  label={dayjs(alarmCallReschedulerList[0]?.date).format(
+                    'DD/MMM/YYYY hh:mm A '
+                  )}
+                />
+              </Box>
             </Box>
-          </Box>
-        </Modal>
-      </Box>
+          </Modal>
+        </Box>
 
-      {/* <CustomSpinLoader open={loaderOn} /> */}
-    </Box >
+        {/* <CustomSpinLoader open={loaderOn} /> */}
+      </Box >
+      <ExpandedModal />
+      <ExpandedSmsModal />
+    </>
   );
 };
 

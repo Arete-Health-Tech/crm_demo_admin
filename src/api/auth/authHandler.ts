@@ -4,9 +4,13 @@ import cookie from 'js-cookie';
 import { redirect } from 'react-router-dom';
 
 export const loginHandler = async (phone: string, password: string) => {
-  const { setUser } = useUserStore.getState();
-  const user = (await login(phone, password)) as any;
-  cookie.set('user', JSON.stringify(user));
-  setUser(user);
-  return redirect('/');
+  try {
+    const { setUser } = useUserStore.getState();
+    const user = (await login(phone, password)) as any;
+    cookie.set('user', JSON.stringify(user));
+    setUser(user);
+    return redirect('/');
+  } catch (error) {
+    console.error('Login failed:', error);
+  }
 };

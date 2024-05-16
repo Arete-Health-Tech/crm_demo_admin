@@ -3,9 +3,11 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 
-import { Drawer } from '@mui/material';
+import { Drawer, Stack } from '@mui/material';
 import { DownloadOutlined } from '@mui/icons-material';
 import FileSaver from 'file-saver';
+import "../singleTicket.css";
+import DocumentDownload from "../../../assets/document-download.svg"
 
 interface Props {
   image: string;
@@ -76,12 +78,6 @@ const ShowPrescription = ({ image, image1 }: Props) => {
     setIsHovering1(false);
   };
 
-
-
-
-
-
-
   // const handleWheel = (event: WheelEvent<HTMLImageElement>) => {
   //   event.preventDefault(); // Prevent the page from scrolling
   //   const newScale = scale + event.deltaY * -0.01; // Adjust scale factor here
@@ -97,14 +93,16 @@ const ShowPrescription = ({ image, image1 }: Props) => {
 
   return (
     <div>
-      <Button onClick={handleOpen}>View Prescription</Button>
+      <Stack className="prescription-link" onClick={handleOpen}>View Prescription</Stack>
       <Drawer
         sx={{
           position: 'relative',
           display: { xs: 'none', sm: 'block' },
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
-            width: drawerWidth
+            width: drawerWidth,
+            borderTopLeftRadius: "15px",
+            borderBottomLeftRadius: "15px"
           }
         }}
         anchor="right"
@@ -119,23 +117,28 @@ const ShowPrescription = ({ image, image1 }: Props) => {
           justifyContent="space-between"
           alignItems="center"
           borderBottom={1}
-          p={2}
+          p={1}
           borderColor="#f5f5f5"
         >
-          <Typography variant="h6">Prescription Captured</Typography>
-          <Button
+          <Stack className='viewprescription-heading'>View Prescription</Stack>
+          {/* <Button
             onClick={downloadPrescription}
             sx={{ textTransform: 'capitalize' }}
             color="success"
             endIcon={<DownloadOutlined />}
           >
             Download Prescription
-          </Button>
+          </Button> */}
+          <Stack className='Download-Icon'
+            onClick={downloadPrescription}
+          ><img src={DocumentDownload} /></Stack>
         </Box>
         <Box style={{
           display: 'flex',
+          borderRadius: "20px",
           justifyContent: image1 ? 'space-around' : 'end',
-          marginRight: image1 ? 0 : 10
+          marginRight: image1 ? 0 : 10,
+
         }}>
           {/* {image ? (
             <img src={image} alt="Prescription" width="600vw" height="auto"

@@ -1,12 +1,17 @@
-import { Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, MenuItem, Select, TextField } from "@mui/material";
+import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, MenuItem, Modal, Select, Stack, TextField } from "@mui/material";
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { createTimerHandler, getTicketHandler } from "../../../api/ticket/ticketHandler";
 import { useParams } from "react-router-dom";
 import { iTimer } from "../../../types/store/ticket";
 import { Call } from "@mui/icons-material";
+import CallButtonIcon from "../../../assets/Call button variations.svg"
+import ClickedCallButtonIcon from "../../../assets/Call button Clicked.svg"
+import MaximizeIcon from "../../../assets/maximize-4.svg"
+import "../singleTicket.css";
 
 import useTicketStore from "../../../store/ticketStore";
-
+import LeadDetail from "../SingleTicketSideBar/LeadDetail/LeadDetail";
+import CloseModalIcon from "../../../assets/Group 48095853.svg"
 
 
 
@@ -49,18 +54,15 @@ const CustomModal = () => {
     setDialogOpen(true);
   };
 
-
-
-
-
   const stopTimer = () => {
     if (timerRef.current !== null) {
       clearInterval(timerRef.current);
     }
     setStoppedTimer(timer);
     setShowForm(true);
-
   };
+
+
 
 
 
@@ -126,11 +128,37 @@ const CustomModal = () => {
     // console.log(`Button ${buttonName} clicked`);
   };
 
+  const handleClose = () => {
+    setChipOpen(false);
+    setShowForm(false);
+
+    if (timerRef.current !== null) {
+      clearInterval(timerRef.current);
+    }
+    setTimer(0);
+  }
+
   const isButtonClicked = (buttonName) => formData.select === buttonName;
   return (
     <div>
 
-      <IconButton
+      {chipOpen == true ? (
+        <Stack className='Clicked-call' display="flex" flexDirection="row">
+          <span className='Clicked-call-icon'><img src={ClickedCallButtonIcon} /></span>
+          <span className='Clicked-call-text'>Calling</span>
+          <span className='maximize-icon' onClick={() => { setShowForm(true); startTimer(); }}>
+            <img src={MaximizeIcon} />
+          </span>
+        </Stack>
+      ) : (
+        <Stack className='Callbutton' onClick={() => {
+          setChipOpen(true);
+        }}>
+          <img src={CallButtonIcon} />
+        </Stack>
+      )}
+
+      {/* <IconButton
         sx={{
           bgcolor: chipOpen ? 'red' : 'green',
           color: 'white'
@@ -150,9 +178,11 @@ const CustomModal = () => {
             fontSize: '.7rem' // Adjust the font size as needed
           }}
         />
-      )}
+      )} */}
+
       <Dialog
-        open={showForm}
+        // open={showForm}
+        open={false}
         onClose={() => { }}
         aria-labelledby="form-dialog-title"
         aria-describedby="form-dialog-description"
@@ -197,6 +227,100 @@ const CustomModal = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Modal
+        open={showForm}
+        onClose={() => { }}
+        aria-labelledby="modal-modal-title"
+      >
+        <Box
+          className="Calling-modal-container">
+          <Stack
+            className='modal-close'
+            onClick={handleClose}
+          >
+            <img src={CloseModalIcon} />
+          </Stack>
+          <Box width="65%" display="flex" flexDirection="column">
+
+            <Stack
+              className='reminder-modal-title'
+              direction="row"
+              spacing={1}
+              display="flex"
+              alignItems="center"
+              sx={{ borderBottom: "1px solid #D4DBE5", padding: "var(--24px, 15px) var(--24px, 15px) 0 var(--24px, 15px)" }}
+            >
+              <Stack className='reminder-modal-title' sx={{ fontSize: "18px !important" }}>
+                Reason for skipping estimation
+              </Stack>
+
+            </Stack>
+
+            <Stack p={2} >
+              <Stack className='reminder-modal-title' sx={{ fontSize: "14px !important" }}>
+                Disposition
+              </Stack>
+              <Stack className="calling-btn">
+                <button
+                  className="call-Button"
+                  style={{ backgroundColor: isButtonClicked('DNP') ? '#DAE8FF' : '#F6F7F9' }}
+                  onClick={() => handleButtonClick('DNP')}
+                >
+                  DNP
+                </button>
+                <button
+                  className="call-Button"
+                  style={{ backgroundColor: isButtonClicked('DND') ? '#DAE8FF' : '#F6F7F9' }}
+                  onClick={() => handleButtonClick('DND')}
+                >
+                  DND
+                </button>
+                <button
+                  className="call-Button"
+                  style={{ backgroundColor: isButtonClicked('Rescheduled Call') ? '#DAE8FF' : '#F6F7F9' }}
+                  onClick={() => handleButtonClick('Rescheduled Call')}
+                >
+                  Reschedule Call
+                </button>
+
+                <button
+                  style={{ backgroundColor: isButtonClicked('Call Completed') ? '#DAE8FF' : '#F6F7F9' }}
+                  onClick={() => handleButtonClick('Call Completed')}
+                  className="call-Button"
+                > Call Complete
+                </button>
+              </Stack>
+            </Stack>
+
+            <Stack className='Note-section'>
+              Add Notes
+            </Stack>
+
+            <Stack className='submit-call-response'>
+              <Stack className="Timer">
+                {timer}
+              </Stack>
+              <Stack>
+                <button
+                  className="submit-call-Btn"
+                  onClick={handleFormSubmit}
+                  disabled={!formData.select}
+                  style={{
+                    backgroundColor: !formData.select ? "#F6F7F9" : "#0566FF",
+                    color: !formData.select ? "#647491" : "#FFF",
+                  }}
+                >Submit</button>
+              </Stack>
+            </Stack>
+          </Box>
+          <Box width="35%" sx={{ borderLeft: "1px solid #D4DBE5", padding: " var(--24px, 15px) 0 var(--24px, 15px) 0" }} >
+            <LeadDetail isLeadDetail={false} />
+          </Box>
+        </Box>
+
+
+      </Modal>
     </div>
   );
 };

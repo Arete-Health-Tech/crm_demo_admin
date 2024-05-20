@@ -17,35 +17,42 @@ import NodeConnector from '../../screen/flow/widgets/NodeConnector';
 import NodeReplies from '../../screen/flow/NodeReplies';
 import NodeList from '../../screen/flow/NodeList';
 import Dump from '../../screen/script/Dump';
+import NSingleTicketDetails from '../../screen/ticket/NSingleTicketDetails';
+import Navbar from '../../screen/Navbar/Navbar';
 
 type Props = {};
 
 const Authenticated = (props: Props) => {
   return (
-    <Routes>
-      <Route path="/" element={<DashboardLayout />}>
-        <Route index element={<Dashboard />} />
-        <Route path="department" element={<DepartmentLayout />}>
-          <Route index element={<Department />} />
-          <Route path="doctors" element={<Doctor />} />
-          <Route path="wards" element={<Wards />} />
-        </Route>
-        <Route path="services" element={<Services />} />
-        <Route path="scripts" element={<Script />} />
-        <Route path="tags" element={<Tags />} />
-        <Route path="stages" element={<Stage />} />
-        <Route path="flow" element={<Flow />}>
-          <Route path="connector" element={<NodeConnector />} />
-          <Route path="node-replies" element={<NodeReplies />} />
-          <Route path="node-lists" element={<NodeList />} />
-        </Route>
-      </Route>
-      <Route path="ticket" element={<TicketLayout />}>
-        <Route path=":ticketID" element={<SingleTicketDetails />} />
-      </Route>
-      <Route path="tickets" element={<TicketLayout />} />
-      <Route path="dump" element={<Dump />} />
-    </Routes>
+    <>
+      <Navbar>
+        <Routes>
+          <Route path="/" element={<DashboardLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="department" element={<DepartmentLayout />}>
+              <Route index element={<Department />} />
+              <Route path="doctors" element={<Doctor />} />
+              <Route path="wards" element={<Wards />} />
+            </Route>
+            <Route path="services" element={<Services />} />
+            <Route path="scripts" element={<Script />} />
+            <Route path="tags" element={<Tags />} />
+            <Route path="stages" element={<Stage />} />
+            <Route path="flow" element={<Flow />}>
+              <Route path="connector" element={<NodeConnector />} />
+              <Route path="node-replies" element={<NodeReplies />} />
+              <Route path="node-lists" element={<NodeList />} />
+            </Route>
+          </Route>
+          <Route path="ticket" element={<TicketLayout />}>
+            {/* <Route path=":ticketID" element={<SingleTicketDetails />} /> */}
+            <Route path=":ticketID" element={<NSingleTicketDetails />} />
+          </Route>
+          <Route path="tickets" element={<TicketLayout />} />
+          <Route path="dump" element={<Dump />} />
+        </Routes>
+      </Navbar>
+    </>
   );
 };
 

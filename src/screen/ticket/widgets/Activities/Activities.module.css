@@ -25,7 +25,7 @@
   border-left: 1px solid #d4dbe5;
 }
 .activity {
-  height: 59vh;
+  height: 53vh;
   overflow: scroll;
 }
 .activity::-webkit-scrollbar {

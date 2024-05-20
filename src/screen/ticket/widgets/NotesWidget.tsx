@@ -102,10 +102,10 @@ const NotesWidget = (props: Props) => {
     <>
       <Box height="95%" position="relative" bgcolor="white" p={1}>
         {loading ? (
-          <Box height="45vh">Loading... </Box>
+          <Box height="36vh">Loading... </Box>
         ) : notes.length > 0 && notesClickedData === null ? (
           <Box
-            height="45vh"
+            height="36vh"
             sx={{
               overflowY: 'scroll',
               '&::-webkit-scrollbar ': {
@@ -151,7 +151,7 @@ const NotesWidget = (props: Props) => {
           </Box>
         ) : notesClickedData === null ? (
           <Stack
-            height="45vh"
+            height="36vh"
             display="flex"
             justifyContent="center"
             alignItems="center"
@@ -163,7 +163,7 @@ const NotesWidget = (props: Props) => {
           </Stack>
         ) : (
           <Box
-            height="45vh"
+            height="36vh"
             sx={{
               overflowY: 'scroll',
               '&::-webkit-scrollbar ': {

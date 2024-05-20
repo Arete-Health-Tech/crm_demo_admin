@@ -161,7 +161,7 @@ const MessagingWidget = (props: Props) => {
         )}
         <Stack
           direction="column"
-          height={whtsappExpanded ? '80vh' : '63vh'}
+          height={whtsappExpanded ? '80vh' : '53vh'}
           position="relative"
           bgcolor="white"
         >

@@ -86,7 +86,7 @@ const Logout = (props: Props) => {
         aria-expanded={open ? 'true' : undefined}
         disableElevation
         onClick={handleClick}
-        endIcon={<KeyboardArrowDownIcon />}
+        // endIcon={<KeyboardArrowDownIcon />}
       >
         <Avatar sx={{ fontSize: '1rem', bgcolor: 'orange' }}>
           {user?.firstName[0]}

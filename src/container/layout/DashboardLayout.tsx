@@ -157,7 +157,7 @@ export default function ResponsiveDrawer(props: Props) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar
+      {/* <AppBar
         position="fixed"
         sx={{
           background: 'white',
@@ -178,13 +178,13 @@ export default function ResponsiveDrawer(props: Props) {
           </Typography>
           <Logout />
         </Toolbar>
-      </AppBar>
-      <Box
+      </AppBar> */}
+      {/* <Box
         component="nav"
         sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
         aria-label="mailbox folders"
       >
-        {/* The implementation can be swapped with js to avoid SEO duplication of links. */}
+        The implementation can be swapped with js to avoid SEO duplication of links.
         <Drawer
           container={container}
           variant="temporary"
@@ -216,7 +216,7 @@ export default function ResponsiveDrawer(props: Props) {
         >
           {drawer}
         </Drawer>
-      </Box>
+      </Box> */}
       <Box
         component="main"
         sx={{

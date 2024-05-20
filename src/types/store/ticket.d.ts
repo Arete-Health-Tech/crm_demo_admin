@@ -215,6 +215,7 @@ export interface iCallRescheduler {
   ticket: string | undefined;
   creator?: string;
   selectedLabels: SelectedLabel[];
+  reason: string,
 }
 interface SelectedLabel {
   label: string;

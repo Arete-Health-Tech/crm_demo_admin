@@ -27,7 +27,9 @@ import {
   Select,
   Stack,
   TextField,
-  Typography
+  Typography,
+  TextareaAutosize,
+  withStyles
 } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useRef, useState } from 'react';
@@ -53,18 +55,18 @@ import { updateTicketSubStage, validateTicket } from '../../../api/ticket/ticket
 import axios from 'axios';
 import { apiClient } from '../../../api/apiClient';
 import { toast } from 'react-toastify';
-
+import CloseModalIcon from "../../../assets/Group 48095853.svg"
 
 
 type Props = { setTicketUpdateFlag: any };
 
-const drawerWidth = 1200;
+const drawerWidth = 1100;
 
 const Estimate = (props: Props) => {
   const { tickets } = useTicketStore();
   const { ticketID } = useParams();
   const ticket = tickets.find((element) => element._id === ticketID);
-  
+
 
   useEffect(() => {
     (async function () {
@@ -73,7 +75,7 @@ const Estimate = (props: Props) => {
   }, []);
 
   const [estimateFileds, setEstimateFields] = useState<iEstimate>({
-   
+
     type: 1,
     isEmergency: false,
     wardDays: 0,
@@ -97,7 +99,7 @@ const Estimate = (props: Props) => {
   });
 
 
-  
+
 
   type AlertType = {
     services: string;
@@ -120,19 +122,20 @@ const Estimate = (props: Props) => {
   const [servicesPack, setServicesPack] = useState<iServicePackage[]>();
 
   const [searchServiceValue, setSearchServiceValue] = useState('');
-  const { wards, doctors,allServices } = useServiceStore();
+  const { wards, doctors, allServices } = useServiceStore();
   const { filterTickets, searchByName, pageNumber } = useTicketStore();
-    const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
+  const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
 
   const [textFieldValue, setTextFieldValue] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [disableButton, setDisableButton] = useState(true);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
-const [loading, setLoading] = useState(true);
-const fileInputRef = useRef<HTMLInputElement>(null);
+  const [loading, setLoading] = useState(true);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   // D STARTS HERE__________________________
 
-  
+
 
   const [alert, setAlert] = useState<AlertType>({
     investigation: '',
@@ -151,7 +154,7 @@ const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handlePreview = () => {
     setIsPreview(!isPreview);
-  };  
+  };
 
   const handleServiceType = (e: number) => {
     setClickedIndex(e);
@@ -242,28 +245,28 @@ const fileInputRef = useRef<HTMLInputElement>(null);
       );
       setServices(services);
     })();
-     
+
   }, [searchServiceValue]);
 
 
-    useEffect(() => {
-      (async function () {
-        const servicesAll = await searchServiceAll();
-       setServicesAll(servicesAll);
-      })();
-      (async function () {
-        const servicesPack = await searchServicePck();
-        setServicesPack(servicesPack);
-      })();
-    }, []);
-// console.log(servicesAll," this is all services from db")
-// console.log(servicesPack," this is all packed services from db");
- 
+  useEffect(() => {
+    (async function () {
+      const servicesAll = await searchServiceAll();
+      setServicesAll(servicesAll);
+    })();
+    (async function () {
+      const servicesPack = await searchServicePck();
+      setServicesPack(servicesPack);
+    })();
+  }, []);
+  // console.log(servicesAll," this is all services from db")
+  // console.log(servicesPack," this is all packed services from db");
 
 
 
 
- 
+
+
 
 
 
@@ -296,16 +299,16 @@ const fileInputRef = useRef<HTMLInputElement>(null);
   const handleCreateEstimate = async () => {
     //  console.log(estimateFileds, ' this is results before ');
     const result = await createEstimateHandler({
-      ...estimateFileds,    
+      ...estimateFileds,
       ticket: ticketID
     });
-    
-   
+
+
     // console.log(estimateFileds," this is results");
-  
+
     setIsEstimateOpen(false);
     setTimeout(() => {
-      (async () => {     
+      (async () => {
         await getTicketHandler(
           searchByName,
           pageNumber,
@@ -323,12 +326,8 @@ const fileInputRef = useRef<HTMLInputElement>(null);
     if (textFieldValue.trim() === '') {
       setErrorMessage('This field is required');
     } else {
-      
-      // D STARTS HERE__________________________
-     
-// console.log(ticketID,"this is ticketysmfbjsfhjsffs")
       try {
-        
+
         const { data } = await apiClient.post(
           '/ticket/skipEstimate',
           { ticketID },
@@ -338,41 +337,33 @@ const fileInputRef = useRef<HTMLInputElement>(null);
             }
           }
         );
+        const payload = {
+          subStageCode: {
+            active: true,
+            code: 2
+          },
+          ticket: ticketID
+        };
 
-        // Handle the response from the server
-        // console.log('Server response:', data);
-      
+        const result = await updateTicketSubStage(payload);
+        setTimeout(() => {
+          (async () => {
+            await getTicketHandler(searchByName, pageNumber, 'false', filterTickets);
+            setTicketUpdateFlag(result);
+          })();
+        }, 1000);
 
-  //  console.log(estimateFileds," this is estimaste from frontend")
-      
+        handleClose();
+        setTextFieldValue('');
 
-  const payload = {
-    subStageCode: {
-      active: true,
-      code: 2
-    },
-    ticket: ticketID
-  };
-
-  const result = await updateTicketSubStage(payload);
-  setTimeout(() => {
-    (async () => {
-      await getTicketHandler(searchByName, pageNumber, 'false', filterTickets);
-      setTicketUpdateFlag(result);
-    })();
-  }, 1000);
-
-handleClose();
-setTextFieldValue('');
-
- setLoading(false);
+        setLoading(false);
 
 
 
       } catch (error) {
 
         console.error('Error sending data to server:', error);
-       
+
       }
     }
   };
@@ -381,6 +372,13 @@ setTextFieldValue('');
   const handleTextFieldChange = (event) => {
     setTextFieldValue(event.target.value);
     setErrorMessage('');
+
+    if (event.target.value.length > 0) {
+      setDisableButton(false);
+    }
+    else {
+      setDisableButton(true);
+    }
   };
 
   const style = {
@@ -400,7 +398,11 @@ setTextFieldValue('');
   };
 
   const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setOpen(false);
+    setTextFieldValue("");
+  }
+
   const handleOnClose = async () => {
     if (ticketID) {
       await validateTicket(ticketID);
@@ -414,9 +416,33 @@ setTextFieldValue('');
     toast.success('File selected successfully!'); // Clicking the file input when the button is clicked
   };
 
+  const handleEstimateDrawer = () => {
+    setIsEstimateOpen(false)
+  }
+
+  const menuItemStyles = {
+    color: "var(--Text-Black, #080F1A)",
+    fontFamily: `"Outfit", sans-serif`,
+    fontSize: "14px",
+    fontStyle: "normal",
+    fontWeight: "400",
+    lineHeight: "150%",
+  };
+
   return (
-    <div>
-      <div>
+    <>
+      <>
+        <MenuItem sx={menuItemStyles} onClick={() => setIsEstimateOpen(true)} > <Stack >Create Estimate</Stack></MenuItem>
+        <MenuItem sx={menuItemStyles} onClick={handleOpen} > Skip Estimate</MenuItem>
+        <MenuItem sx={{
+          color: " #F94839",
+          fontFamily: `"Outfit", sans-serif`,
+          fontSize: "14px",
+
+        }} onClick={handleOnClose}>Close Lead</MenuItem>
+      </>
+
+      {/* <div>
         <Button
           style={{ marginLeft: '10px' }}
           onClick={() => setIsEstimateOpen(true)}
@@ -441,7 +467,8 @@ setTextFieldValue('');
         >
           Close
         </Button>
-        {/* <div>
+
+        <div>
           <input
             type="file"
             ref={fileInputRef}
@@ -463,43 +490,48 @@ setTextFieldValue('');
           >
             Upload Estimate
           </Button>
-        </div> */}
-      </div>
+        </div>
+      </div> */}
+      {/* Modal of Skip Estimation */}
+
       <Modal
         open={open}
-        onClose={handleClose}
+        onClose={() => { }}
         aria-labelledby="modal-modal-title"
       >
-        <Box sx={style}>
-          <IconButton
-            onClick={handleClose}
-            sx={{
-              position: 'absolute',
-              top: '8px',
-              right: '8px',
-              bgcolor: '#0047ab',
-              color: 'white'
-            }}
+        <Box className="reminder-modal-container">
+          <Stack
+            className='reminder-modal-title'
+            direction="row"
+            spacing={1}
+            display="flex"
+            alignItems="center"
           >
-            <CloseIcon />
-          </IconButton>
-          <Box sx={{ top: '50%' }}>
-            <Typography id="modal-modal-title" variant="h6" component="h2">
-              Reason to Skip
-            </Typography>
-          </Box>
+            <Stack className='reminder-modal-title' sx={{ fontSize: "18px !important" }}>
+              Reason for skipping estimation
+            </Stack>
+            <Stack
+              className='modal-close'
+              onClick={handleClose}
+            >
+              <img src={CloseModalIcon} />
+            </Stack>
+          </Stack>
           <div>
             <form onSubmit={handleSubmit}>
-              <TextField
-                id="outlined-multiline-flexible"
-                margin="normal"
-                fullWidth
-                multiline
-                maxRows={10}
-                value={textFieldValue}
-                onChange={handleTextFieldChange}
-                required
-              />
+              <Stack spacing={2}>
+                <TextareaAutosize
+                  required
+                  className='textarea-autosize'
+                  id="outlined-required"
+                  aria-label="minimum height"
+                  placeholder="Add Comment"
+                  minRows={7}
+                  maxRows={7}
+                  value={textFieldValue}
+                  onChange={handleTextFieldChange}
+                />
+              </Stack>
               {errorMessage && (
                 <Typography color="alert">{errorMessage}</Typography>
               )}
@@ -511,71 +543,120 @@ setTextFieldValue('');
                   width: '100%'
                 }}
               >
-                <Button type="submit" variant="contained">
-                  Submit
-                </Button>
+                <button
+                  className='reminder-cancel-btn'
+                  onClick={handleClose}
+                >
+                  Cancel
+                </button>
+                <button
+                  className='reminder-btn'
+                  type='submit'
+                  disabled={disableButton}
+                  style={{
+                    marginLeft: "10px",
+                    backgroundColor: disableButton ? "#F6F7F9" : "#0566FF",
+                    color: disableButton ? "#647491" : "#FFF",
+
+                  }}>
+                  Skip Estimation
+                </button>
               </Box>
             </form>
           </div>
         </Box>
-      </Modal>
+      </Modal >
+
+      {/* -------------------- */}
+
+      {/* Drawer Of Create Estimation */}
       <Drawer
+        PaperProps={{ sx: { zIndex: 1000 } }}
         sx={{
           display: { xs: 'none', sm: 'block' },
+
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
-            width: drawerWidth
-          }
+            width: drawerWidth,
+            borderTopLeftRadius: "15px",
+            borderBottomLeftRadius: "15px",
+          },
         }}
         anchor="right"
         open={isEstimateOpen}
-        onClose={() => setIsEstimateOpen(false)}
+        onClose={handleEstimateDrawer}
+        aria-labelledby="modal-modal-title"
       >
         <Box
-          height="10vh"
-          p={1}
-          borderBottom={0.5}
-          bgcolor="white"
-          borderLeft={0.5}
-          borderColor="#F0F0F0"
-          display="flex"
-          alignItems="center"
-          position={'sticky'}
-          justifyContent="space-between"
-          top={0}
-          zIndex={2}
+          className="Create_estimate_Modal_Head"
         >
-          <Typography variant="h5" fontWeight="bold">
-            Create Estimate
-          </Typography>
-          <Button
-            variant="contained"
-            endIcon={!isPreview ? <RemoveRedEye /> : <ArrowBack />}
+          <Stack className='reminder-modal-title' sx={{ fontSize: "18px !important" }}>
+            Create Estimation
+          </Stack>
+
+          {/* Preview Button */}
+
+          {/* <button
+            className='reminder-btn'
             onClick={handlePreview}
           >
-            {!isPreview ? 'Preview Estimate' : 'Back To Editor'}
-          </Button>
+            {!isPreview ?
+              (<>
+                <span style={{ marginRight: "5px" }}>Preview Estimate</span> <RemoveRedEye />
+              </>
+              )
+              : (<>
+                <span style={{ marginRight: "5px" }}>Back To Editor</span><ArrowBack />
+              </>)
+            }
+          </button> */}
+
+          {/* ------ End ------ */}
+
         </Box>
-        <Stack direction="row" height={'100vh'} overflow="hidden">
-          <Box width="30%" position="static" sx={{ offsetDistance: '10vh' }}>
+        <Stack direction="row" height={'100vh'} overflow="hidden" >
+
+          {/* <Box width="30%" position="static" sx={{ offsetDistance: '10vh' }}>
             <img
               src={ticket?.prescription[0].image}
               style={{ maxHeight: '95vh' }}
               alt="prescription"
             />
+          </Box> */}
+
+          <Box className="create-estimation-prescription">
+            <Stack className='prescription-image'>
+              <img
+                src={ticket?.prescription[0].image}
+                alt="prescription"
+                style={{
+                  borderRadius: '10px'
+                }}
+              />
+            </Stack>
           </Box>
-          <Box
+
+          <Box className="create-estimation-detail"
             display={!isPreview ? 'block' : 'none'}
-            bgcolor="#f1f5f7"
-            width="70%"
-            p={1}
-            height="90vh"
-            sx={{ overflowY: 'scroll' }}
+            sx={{
+              overflowY: 'scroll',
+              '&::-webkit-scrollbar': {
+                width: 0,
+              },
+              paddingBottom: "50px"
+            }}
+
           >
-            <Box my={1} bgcolor="white" borderRadius={3} p={1}>
-              <Typography fontWeight={500} my={1}>
+
+            <Box my={2} bgcolor="white" borderRadius={3} p={3}>
+              <Stack className='Create-Estimate-title'>
                 Select Service Type
-              </Typography>
+              </Stack>
+
+              {/* <Typography fontWeight={500} my={1}>
+                Select Service Type
+              </Typography> */}
+
               <Stack direction="row" spacing={2}>
                 {[
                   { name: 'Package', value: 0 },
@@ -586,85 +667,141 @@ setTextFieldValue('');
                       key={index}
                       label={item.name}
                       color="primary"
-                      variant={
-                        clickedIndex === item.value ? 'filled' : 'outlined'
-                      }
                       onClick={() => handleServiceType(item.value)}
+                      style={{
+                        backgroundColor: clickedIndex === item.value ? '#0566FF' : '#F6F7F9',
+                        color: clickedIndex === item.value ? '#FFFFFF' : '#000000',
+                        fontFamily: `"Outfit",sans-serif`,
+                        borderColor: "none",
+                        fontSize: "14px",
+                      }}
                     />
                   );
                 })}
               </Stack>
             </Box>
 
-            <Box my={1} bgcolor="white" borderRadius={3} p={1}>
-              <Typography fontWeight={500} my={1}>
+            <Box my={2} bgcolor="white" borderRadius={3} p={2}>
+              <Stack className='Create-Estimate-title'>
                 Ward Details
-              </Typography>
-              <Stack direction="row" spacing={2}>
-                <FormControl fullWidth size="small">
-                  <InputLabel id="demo-simple-select-label">Ward</InputLabel>
-                  <Select
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    label="Ward"
-                    value={estimateFileds.ward}
-                    onChange={(e) => {
-                      setEstimateFields({
-                        ...estimateFileds,
-                        ward: e.target.value
-                      });
-                    }}
-                  >
-                    {wards
-                      .filter((ward: IWard) => ward.type === 0)
-                      .map((item: IWard, index: number) => {
-                        return (
-                          <MenuItem value={item._id}>{item.name}</MenuItem>
-                        );
-                      })}
-                  </Select>
-                </FormControl>
+              </Stack>
+
+              <Stack display="flex" spacing={1}>
+                <Box>
+                  <FormControl fullWidth size="medium">
+                    <InputLabel id="demo-simple-select-label" style={{
+
+                      fontFamily: `"Outfit",san-serif`,
+                      color: "var(--Text- Light - Grey, #647491)",
+                      fontSize: "14px"
+                    }}>Ward</InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      label="Ward"
+                      value={estimateFileds.ward}
+                      onChange={(e) => {
+                        setEstimateFields({
+                          ...estimateFileds,
+                          ward: e.target.value
+                        });
+                      }}
+
+                    >
+                      {wards
+                        .filter((ward: IWard) => ward.type === 0)
+                        .map((item: IWard, index: number) => {
+                          return (
+                            <MenuItem value={item._id}
+                              sx={{
+                                fontSize: '14px',
+                                color: '#080F1A',
+                                fontFamily: `"Outfit",sans-serif`,
+                              }}
+                            >{item.name}</MenuItem>
+                          );
+                        })}
+                    </Select>
+                  </FormControl>
+                </Box>
+
                 {estimateFileds.type === 1 && (
-                  <Box>
-                    <TextField
-                      label="Ward Days"
-                      required
-                      size="small"
-                      onChange={(e) => {
-                        setEstimateFields({
-                          ...estimateFileds,
-                          wardDays: +e.target.value
-                        });
-                      }}
-                      placeholder="5"
-                      sx={{ borderRadius: 40 }}
-                    />
-                    <TextField
-                      onChange={(e) => {
-                        setEstimateFields({
-                          ...estimateFileds,
-                          icuDays: +e.target.value
-                        });
-                      }}
-                      label="ICU Days"
-                      required
-                      size="small"
-                      placeholder="5"
-                      sx={{ borderRadius: 40 }}
-                    />
+                  <Box display="flex" justifyContent="space-between">
+                    <Stack width="49%">
+                      <TextField
+                        fullWidth
+                        label="Ward Days"
+                        required
+                        size="medium"
+                        onChange={(e) => {
+                          setEstimateFields({
+                            ...estimateFileds,
+                            wardDays: +e.target.value
+                          });
+                        }}
+                        InputLabelProps={{
+                          style: {
+                            fontFamily: `"Outfit",san-serif`,
+                            color: "var(--Text- Light - Grey, #647491)",
+                            fontSize: "14px"
+                          }
+                        }}
+                        InputProps={{
+                          style: {
+                            fontFamily: `"Outfit",san-serif`,
+                            color: "var(--Text- Light - Grey, #647491)",
+                            fontSize: "14px"
+                          }
+                        }}
+                        placeholder="5"
+                        sx={{ borderRadius: 40 }}
+                      /></Stack>
+                    <Stack width="49%">
+                      <TextField
+                        fullWidth
+                        onChange={(e) => {
+                          setEstimateFields({
+                            ...estimateFileds,
+                            icuDays: +e.target.value
+                          });
+                        }}
+                        label="ICU Days"
+                        required
+                        size="medium"
+                        placeholder="5"
+                        InputLabelProps={{
+                          style: {
+                            fontFamily: `"Outfit",san-serif`,
+                            color: "var(--Text- Light - Grey, #647491)",
+                            fontSize: "14px"
+                          }
+                        }}
+                        InputProps={{
+                          style: {
+                            fontFamily: `"Outfit",san-serif`,
+                            color: "var(--Text- Light - Grey, #647491)",
+                            fontSize: "14px"
+                          }
+                        }}
+                        sx={{ borderRadius: 40 }}
+                      />
+                    </Stack>
+
                   </Box>
                 )}
               </Stack>
-            </Box>
 
-            <Box my={1} bgcolor="white" borderRadius={3} p={1}>
-              <Typography fontWeight={500} my={1}>
-                Emergency Details
-              </Typography>
               <Stack direction="row" spacing={2} my={1}>
                 <FormControl required>
-                  <FormLabel id="demo-row-radio-buttons-group-label">
-                    Is Emergency Admission
+                  <FormLabel id="demo-row-radio-buttons-group-label"
+                    sx={{
+                      color: "#000",
+                      fontSize: '14px',
+                      fontFamily: `"Outfit", sans-serif`,
+                      marginTop: "12px"
+
+                    }}>
+                    <span style={{ color: "#000" }}>Is it a Emergency Admission?</span>
                   </FormLabel>
                   <RadioGroup
                     row
@@ -679,27 +816,64 @@ setTextFieldValue('');
                   >
                     <FormControlLabel
                       value="true"
-                      control={<Radio />}
+                      control={<Radio sx={{
+                        '&.Mui-checked': {
+                          color: "#0566ff",
+                        },
+                      }} />}
                       label="Yes"
+                      sx={{
+                        '& .MuiFormControlLabel-label': {
+                          fontFamily: '"Outfit", sans-serif',
+                          fontSize: '14px',
+                          color: '#000',
+                        },
+                      }}
                     />
                     <FormControlLabel
                       value="false"
-                      control={<Radio />}
+                      control={<Radio sx={{
+                        '&.Mui-checked': {
+                          color: "#0566ff",
+                        },
+                      }} />}
                       label="No"
+                      sx={{
+                        '& .MuiFormControlLabel-label': {
+                          fontFamily: '"Outfit", sans-serif',
+                          fontSize: '14px',
+                          color: '#000',
+                        },
+                      }}
                     />
                   </RadioGroup>
                 </FormControl>
               </Stack>
             </Box>
-            <Box my={1} bgcolor="white" borderRadius={3} p={1}>
-              <Typography fontWeight={500} my={1}>
-                Insurance Details (optional)
-              </Typography>
 
+            {/* <Box my={2} bgcolor="white" borderRadius={3} p={2}>
+           
+              <Stack className='Create-Estimate-title'>
+                Emergency Details
+              </Stack>             
+            </Box> */}
+
+            <Box my={1} bgcolor="white" borderRadius={3} p={2}>
+              <Stack className='Create-Estimate-title' display="flex" flexDirection="row">
+                Payment Mode<span style={{ textTransform: "capitalize", marginLeft: "4px" }}> (optional)</span>
+              </Stack>
               <Stack direction="row" spacing={2} my={1}>
                 <FormControl required>
-                  <FormLabel id="payment-type">
-                    Preferred Payment Type
+                  <FormLabel
+                    id="payment-type"
+                    sx={{
+                      color: "#000",
+                      fontSize: '14px',
+                      fontFamily: `"Outfit", sans-serif`,
+                      marginTop: "8px"
+
+                    }}>
+                    Select a preferred payment mode
                   </FormLabel>
                   <RadioGroup
                     row
@@ -714,127 +888,245 @@ setTextFieldValue('');
                   >
                     <FormControlLabel
                       value="0"
-                      control={<Radio />}
+                      control={<Radio sx={{
+                        '&.Mui-checked': {
+                          color: "#0566ff",
+                        },
+                      }}
+                      />}
                       label="Cash"
+                      sx={{
+                        '& .MuiFormControlLabel-label': {
+                          fontFamily: '"Outfit", sans-serif',
+                          fontSize: '14px',
+                          color: '#000',
+                        },
+                      }}
+
                     />
                     <FormControlLabel
                       value="1"
-                      control={<Radio />}
+                      control={<Radio sx={{
+                        '&.Mui-checked': {
+                          color: "#0566ff",
+                        },
+                      }} />}
                       label="Insurance"
+                      sx={{
+                        '& .MuiFormControlLabel-label': {
+                          fontFamily: '"Outfit", sans-serif',
+                          fontSize: '14px',
+                          color: '#000',
+                        },
+                      }}
                     />
                     <FormControlLabel
                       value="2"
-                      control={<Radio />}
+                      control={<Radio sx={{
+                        '&.Mui-checked': {
+                          color: "#0566ff",
+                        },
+                      }} />}
                       label="CGHS/ECHS"
+                      sx={{
+                        '& .MuiFormControlLabel-label': {
+                          fontFamily: '"Outfit", sans-serif',
+                          fontSize: '14px',
+                          color: '#000',
+                        },
+                      }}
                     />
                   </RadioGroup>
                 </FormControl>
               </Stack>
               {estimateFileds.paymentType === 1 && (
-                <Stack direction="row" spacing={2}>
-                  <TextField
-                    label="Insurance Company Name"
-                    size="small"
-                    placeholder="eg: Birla Sun Life Insurance"
-                    sx={{ borderRadius: 40 }}
-                    onChange={(e) => {
-                      setEstimateFields({
-                        ...estimateFileds,
-                        insuranceCompany: e.target.value
-                      });
-                    }}
-                  />
-                  <TextField
-                    label="Policy Number"
-                    size="small"
-                    placeholder="eg: XXX-XXXXX-XXXX"
-                    sx={{ borderRadius: 40 }}
-                    onChange={(e) => {
-                      setEstimateFields({
-                        ...estimateFileds,
-                        insurancePolicyNumber: Number(e.target.value)
-                      });
-                    }}
-                  />
-                  <TextField
-                    label="Policy Amount"
-                    size="small"
-                    placeholder="eg: 500000"
-                    sx={{ borderRadius: 40 }}
-                    onChange={(e) => {
-                      setEstimateFields({
-                        ...estimateFileds,
-                        insurancePolicyAmount: +e.target.value
-                      });
-                    }}
-                  />
-                </Stack>
+                <Box sx={{ display: 'flex', flexDirection: 'column' }} >
+                  <Stack sx={{ marginBottom: "10px" }}>
+                    <TextField
+                      label="Insurance Company Name"
+                      size="medium"
+                      placeholder="eg: Birla Sun Life Insurance"
+                      sx={{ borderRadius: 40 }}
+                      onChange={(e) => {
+                        setEstimateFields({
+                          ...estimateFileds,
+                          insuranceCompany: e.target.value
+                        });
+                      }}
+                      InputLabelProps={{
+                        style: {
+                          fontFamily: `"Outfit",sans-serif`,
+                          fontSize: "14px"
+                        }
+                      }}
+                    />
+                  </Stack>
+                  <Stack display="flex" flexDirection="row" justifyContent="space-between">
+                    <Stack width="49%">
+                      <TextField
+                        label="Policy Number"
+                        size="medium"
+                        placeholder="eg: XXX-XXXXX-XXXX"
+                        sx={{ borderRadius: 40 }}
+                        onChange={(e) => {
+                          setEstimateFields({
+                            ...estimateFileds,
+                            insurancePolicyNumber: Number(e.target.value)
+                          });
+                        }}
+                        InputLabelProps={{
+                          style: {
+                            fontFamily: `"Outfit",sans-serif`,
+                            fontSize: "14px"
+                          }
+                        }}
+                      />
+                    </Stack>
+                    <Stack width="49%">
+                      <TextField
+                        label="Policy Amount"
+                        size="medium"
+                        placeholder="eg: 500000"
+                        sx={{ borderRadius: 40 }}
+                        onChange={(e) => {
+                          setEstimateFields({
+                            ...estimateFileds,
+                            insurancePolicyAmount: +e.target.value
+                          });
+                        }}
+                        InputLabelProps={{
+                          style: {
+                            fontFamily: `"Outfit",sans-serif`,
+                            fontSize: "14px"
+                          }
+                        }}
+                      />
+                    </Stack>
+                  </Stack>
+
+
+                </Box>
               )}
             </Box>
             {estimateFileds.type === 1 ? (
-              <Box my={1} bgcolor="white" borderRadius={3} p={1}>
-                <Typography fontWeight={500} my={1}>
+              <Box my={1} bgcolor="white" borderRadius={3} p={2}>
+                {/* <Typography fontWeight={500} my={1}>
                   Services Details
-                </Typography>
-                <Stack direction="row" spacing={2}>
-                  <Autocomplete
-                    aria-required={true}
-                    options={servicesAll ? servicesAll : []}
-                    id="combo-box-demo"
-                    isOptionEqualToValue={(option, value) =>
-                      option.name === value.name
-                    }
-                    noOptionsText="No Service Available With This Name"
-                    getOptionLabel={(option: iServiceAll) => option.name}
-                    onChange={(event, value) =>
-                      setServiceObject({ ...serviceObject, id: value?._id! })
-                    }
-                    renderOption={(props, option) => (
-                      <li {...props} style={{ textTransform: 'capitalize' }}>
-                        {option.name}
-                      </li>
-                    )}
-                    sx={{ width: 400, textTransform: 'capitalize' }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        sx={{ textTransform: 'capitalize' }}
-                        label="Select Surgery"
-                        onChange={(e) => {
-                          setSearchServiceValue((prev) => e.target.value);
-                        }}
-                      />
-                    )}
-                  />
+                </Typography> */}
+                <Stack className='Create-Estimate-title'>
+                  Services Details
+                </Stack>
+                <Stack display="flex" direction="column" spacing={2}>
+                  <Stack>
+                    <Autocomplete
+                      aria-required={true}
+                      options={servicesAll ? servicesAll : []}
+                      id="combo-box-demo"
+                      isOptionEqualToValue={(option, value) =>
+                        option.name === value.name
+                      }
+                      noOptionsText="No Service Available With This Name"
+                      getOptionLabel={(option: iServiceAll) => option.name}
+                      onChange={(event, value) =>
+                        setServiceObject({ ...serviceObject, id: value?._id! })
+                      }
+                      renderOption={(props, option) => (
+                        <li {...props} style={{
+                          textTransform: 'capitalize', fontSize: '14px',
+                          color: '#080F1A',
+                          fontFamily: `"Outfit",sans-serif`,
+                        }} >
+                          {option.name}
+                        </li>
+                      )}
+                      sx={{ width: 400, textTransform: 'capitalize' }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{ textTransform: 'capitalize' }}
+                          label="Select Surgery"
+                          onChange={(e) => {
+                            setSearchServiceValue((prev) => e.target.value);
+                          }}
+                          InputLabelProps={{
+                            style: {
+                              fontFamily: `"Outfit",san-serif`,
+                              color: "var(--Text- Light - Grey, #647491)",
+                              fontSize: "14px"
+                            }
+                          }}
+                        />
+                      )}
+                    />
+                  </Stack>
+                  <Stack display="flex" flexDirection="column">
+                    <Stack>
+                      <FormControl required>
+                        <FormLabel id="payment-type"
+                          sx={{
+                            color: "#000",
+                            fontSize: '14px',
+                            fontFamily: `"Outfit", sans-serif`,
+                            marginTop: "8px"
 
-                  <FormControl required>
-                    <FormLabel id="payment-type">Is On Same Site</FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby="is-same-site"
-                      name="isSameSite"
-                      onChange={(e) => {
-                        setServiceObject({
-                          ...serviceObject,
-                          isSameSite: e.target.value === '0' ? true : false
-                        });
-                      }}
-                    >
-                      <FormControlLabel
-                        value="0"
-                        control={<Radio />}
-                        label="Yes"
-                      />
-                      <FormControlLabel
-                        value="1"
-                        control={<Radio />}
-                        label="No"
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                  <Button endIcon={<AddCircle />} onClick={addServiceToArray}>
-                    Add Service
-                  </Button>
+                          }}><span style={{ color: "#000" }}>Is On Same Site</span></FormLabel>
+                        <RadioGroup
+                          row
+                          aria-labelledby="is-same-site"
+                          name="isSameSite"
+                          onChange={(e) => {
+                            setServiceObject({
+                              ...serviceObject,
+                              isSameSite: e.target.value === '0' ? true : false
+                            });
+                          }}
+                        >
+                          <FormControlLabel
+                            value="0"
+                            control={<Radio sx={{
+                              '&.Mui-checked': {
+                                color: "#0566ff",
+                              },
+                            }} />}
+                            label="Yes"
+                            sx={{
+                              '& .MuiFormControlLabel-label': {
+                                fontFamily: '"Outfit", sans-serif',
+                                fontSize: '14px',
+                                color: '#000',
+                              },
+                            }}
+                          />
+                          <FormControlLabel
+                            value="1"
+                            control={<Radio sx={{
+                              '&.Mui-checked': {
+                                color: "#0566ff",
+                              },
+                            }} />}
+                            label="No"
+                            sx={{
+                              '& .MuiFormControlLabel-label': {
+                                fontFamily: '"Outfit", sans-serif',
+                                fontSize: '14px',
+                                color: '#000',
+                              },
+                            }}
+                          />
+                        </RadioGroup>
+                      </FormControl>
+                    </Stack>
+
+                    <Stack width="20%">
+                      <button className='Add-Service-btn'
+                        onClick={addServiceToArray}>
+                        Add Service
+                      </button>
+                    </Stack>
+                  </Stack>
+
+
+
                 </Stack>
                 {estimateFileds.service.length > 0 && (
                   <Stack
@@ -846,9 +1138,8 @@ setTextFieldValue('');
                     {estimateFileds.service.map((item, index: number) => (
                       <Chip
                         color="primary"
-                        label={`${serviceGetterAll(item.id)}/ ${
-                          item.isSameSite ? 'Same Site' : 'Different Site'
-                        }`}
+                        label={`${serviceGetterAll(item.id)}/ ${item.isSameSite ? 'Same Site' : 'Different Site'
+                          }`}
                         variant="outlined"
                         sx={{ textTransform: 'capitalize' }}
                         onDelete={() => deleteService(index)}
@@ -865,69 +1156,123 @@ setTextFieldValue('');
                 )}
               </Box>
             ) : (
-              <Box my={1} bgcolor="white" borderRadius={3} p={1}>
-                <Typography fontWeight={500} my={1}>
+              <Box my={1} bgcolor="white" borderRadius={3} p={2}>
+                {/* <Typography fontWeight={500} my={1}>
                   Services Details
-                </Typography>
-                <Stack direction="row" spacing={2}>
-                  <Autocomplete
-                    aria-required={true}
-                    options={servicesPack ? servicesPack : []}
-                    id="combo-box-demo"
-                    isOptionEqualToValue={(option, value) =>
-                      option.name === value.name
-                    }
-                    noOptionsText="No Service Available With This Name"
-                    getOptionLabel={(option: iServicePackage) => option.name}
-                    onChange={(event, value) =>
-                      setServiceObject({ ...serviceObject, id: value?._id! })
-                    }
-                    renderOption={(props, option) => (
-                      <li {...props} style={{ textTransform: 'capitalize' }}>
-                        {option.name}
-                      </li>
-                    )}
-                    sx={{ width: 400, textTransform: 'capitalize' }}
-                    renderInput={(params) => (
-                      <TextField
-                        {...params}
-                        sx={{ textTransform: 'capitalize' }}
-                        label="Select Surgery"
-                        onChange={(e) => {
-                          setSearchServiceValue((prev) => e.target.value);
-                        }}
-                      />
-                    )}
-                  />
+                  </Typography> */}
+                <Stack className='Create-Estimate-title'>
+                  Services Details
+                </Stack>
+                <Stack display="flex" direction="column" spacing={3}>
+                  <Stack>
+                    <Autocomplete
+                      aria-required={true}
+                      options={servicesPack ? servicesPack : []}
+                      id="combo-box-demo"
+                      isOptionEqualToValue={(option, value) =>
+                        option.name === value.name
+                      }
+                      noOptionsText="No Service Available With This Name"
+                      getOptionLabel={(option: iServicePackage) => option.name}
+                      onChange={(event, value) =>
+                        setServiceObject({ ...serviceObject, id: value?._id! })
+                      }
+                      renderOption={(props, option) => (
+                        <li {...props} style={{
+                          textTransform: 'capitalize', fontSize: '14px',
+                          color: '#080F1A',
+                          fontFamily: `"Outfit",sans-serif`
+                        }}>
+                          {option.name}
+                        </li>
+                      )}
+                      sx={{ width: 400, textTransform: 'capitalize' }}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          sx={{ textTransform: 'capitalize' }}
+                          label="Select Surgery"
+                          onChange={(e) => {
+                            setSearchServiceValue((prev) => e.target.value);
+                          }}
+                          InputLabelProps={{
+                            style: {
+                              fontFamily: `"Outfit",sans-serif`,
+                              fontSize: "14px"
+                            }
+                          }}
+                        />
+                      )}
+                    />
+                    <Stack display="flex" flexDirection="column" py={2}>
+                      <Stack>
+                        <FormControl required>
+                          <FormLabel id="payment-type" sx={{
+                            color: "#000",
+                            fontSize: '14px',
+                            fontFamily: `"Outfit", sans-serif`,
+                            marginTop: "8px"
 
-                  <FormControl required>
-                    <FormLabel id="payment-type">Is On Same Site</FormLabel>
-                    <RadioGroup
-                      row
-                      aria-labelledby="is-same-site"
-                      name="isSameSite"
-                      onChange={(e) => {
-                        setServiceObject({
-                          ...serviceObject,
-                          isSameSite: e.target.value === '0' ? true : false
-                        });
-                      }}
-                    >
-                      <FormControlLabel
-                        value="0"
-                        control={<Radio />}
-                        label="Yes"
-                      />
-                      <FormControlLabel
-                        value="1"
-                        control={<Radio />}
-                        label="No"
-                      />
-                    </RadioGroup>
-                  </FormControl>
-                  <Button endIcon={<AddCircle />} onClick={addServiceToArray}>
+                          }}>
+                            <span style={{ color: "#000" }}> Is On Same Site</span>
+                          </FormLabel>
+                          <RadioGroup
+                            row
+                            aria-labelledby="is-same-site"
+                            name="isSameSite"
+                            onChange={(e) => {
+                              setServiceObject({
+                                ...serviceObject,
+                                isSameSite: e.target.value === '0' ? true : false
+                              });
+                            }}
+                          >
+                            <FormControlLabel
+                              value="0"
+                              control={<Radio sx={{
+                                '&.Mui-checked': {
+                                  color: "#0566ff",
+                                },
+                              }} />}
+                              label="Yes"
+                              sx={{
+                                '& .MuiFormControlLabel-label': {
+                                  fontFamily: '"Outfit", sans-serif',
+                                  fontSize: '14px',
+                                  color: '#000',
+                                },
+                              }}
+                            />
+                            <FormControlLabel
+                              value="1"
+                              control={<Radio sx={{
+                                '&.Mui-checked': {
+                                  color: "#0566ff",
+                                },
+                              }} />}
+                              label="No"
+                              sx={{
+                                '& .MuiFormControlLabel-label': {
+                                  fontFamily: '"Outfit", sans-serif',
+                                  fontSize: '14px',
+                                  color: '#000',
+                                },
+                              }}
+                            />
+                          </RadioGroup>
+                        </FormControl>
+                        {/* <Button endIcon={<AddCircle />} onClick={addServiceToArray}>
                     Add Service
-                  </Button>
+                  </Button> */}
+                      </Stack>
+                      <Stack width="20%">
+                        <button className='Add-Service-btn'
+                          onClick={addServiceToArray}>
+                          Add Service
+                        </button>
+                      </Stack>
+                    </Stack>
+                  </Stack>
                 </Stack>
                 {estimateFileds.service.length > 0 && (
                   <Stack
@@ -939,11 +1284,15 @@ setTextFieldValue('');
                     {estimateFileds.service.map((item, index: number) => (
                       <Chip
                         color="primary"
-                        label={`${serviceGetterAllPackage(item.id)}/ ${
-                          item.isSameSite ? 'Same Site' : 'Different Site'
-                        }`}
+                        label={`${serviceGetterAllPackage(item.id)}/ ${item.isSameSite ? 'Same Site' : 'Different Site'
+                          }`}
                         variant="outlined"
-                        sx={{ textTransform: 'capitalize' }}
+                        sx={{
+                          textTransform: 'capitalize',
+                          fontFamily: '"Outfit", sans-serif',
+                          fontSize: '14px',
+                          color: '#000',
+                        }}
                         onDelete={() => deleteService(index)}
                       />
                     ))}
@@ -952,7 +1301,11 @@ setTextFieldValue('');
                 {alert?.services.length > 0 && (
                   <Stack my={1} width="50%">
                     <Alert variant="outlined" severity="warning">
-                      {alert?.services}
+                      <span style={{
+                        fontFamily: '"Outfit", sans-serif',
+                        fontSize: '14px',
+                        color: '#000',
+                      }}>{alert?.services}</span>
                     </Alert>
                   </Stack>
                 )}
@@ -1089,15 +1442,15 @@ setTextFieldValue('');
                 />
               </Stack>
             </Box> */}
-            <Box my={1} bgcolor="white" borderRadius={3} p={1}>
-              <Typography fontWeight={500} my={1}>
-                Other Charges(optional)
-              </Typography>
+            <Box my={1} bgcolor="white" borderRadius={3} p={2} >
+              <Stack className='Create-Estimate-title' display="flex" flexDirection="row">
+                Other Charges <span style={{ textTransform: "capitalize", marginLeft: "4px" }}> (optional)</span>
+              </Stack>
               <Stack direction="row" spacing={2}>
                 <TextField
                   fullWidth
                   label="Mrd Amount"
-                  size="small"
+                  size="medium"
                   onChange={(e) => {
                     setEstimateFields({
                       ...estimateFileds,
@@ -1105,11 +1458,23 @@ setTextFieldValue('');
                     });
                   }}
                   placeholder="eg: 500000"
+                  InputLabelProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
+                  }}
+                  inputProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
+                  }}
                 />
                 <TextField
                   fullWidth
                   label="Pharmacy Amount"
-                  size="small"
+                  size="medium"
                   onChange={(e) => {
                     setEstimateFields({
                       ...estimateFileds,
@@ -1117,11 +1482,23 @@ setTextFieldValue('');
                     });
                   }}
                   placeholder="eg: 500000"
+                  InputLabelProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
+                  }}
+                  inputProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
+                  }}
                 />
                 <TextField
                   fullWidth
                   label="Pathology Amount"
-                  size="small"
+                  size="medium"
                   onChange={(e) => {
                     setEstimateFields({
                       ...estimateFileds,
@@ -1129,11 +1506,23 @@ setTextFieldValue('');
                     });
                   }}
                   placeholder="eg: 500000"
+                  InputLabelProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
+                  }}
+                  inputProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
+                  }}
                 />
                 <TextField
                   fullWidth
                   label="Equipment Amount"
-                  size="small"
+                  size="medium"
                   placeholder="eg: 500000"
                   onChange={(e) => {
                     setEstimateFields({
@@ -1141,13 +1530,25 @@ setTextFieldValue('');
                       equipmentAmount: +e.target.value
                     });
                   }}
+                  InputLabelProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
+                  }}
+                  inputProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
+                  }}
                 />
               </Stack>
               <Stack my={1} direction="row" spacing={2}>
                 <TextField
                   fullWidth
                   label="Blood Amount"
-                  size="small"
+                  size="medium"
                   placeholder="eg: 500000"
                   onChange={(e) => {
                     setEstimateFields({
@@ -1155,17 +1556,41 @@ setTextFieldValue('');
                       diet: +e.target.value
                     });
                   }}
+                  InputLabelProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
+                  }}
+                  inputProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
+                  }}
                 />
                 <TextField
                   fullWidth
                   label="Miscellenous Charges"
-                  size="small"
+                  size="medium"
                   placeholder="eg: 500000"
                   onChange={(e) => {
                     setEstimateFields({
                       ...estimateFileds,
                       admission: +e.target.value
                     });
+                  }}
+                  InputLabelProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
+                  }}
+                  inputProps={{
+                    style: {
+                      fontFamily: `"Outfit",sans-serif`,
+                      fontSize: "14px"
+                    }
                   }}
                 />
               </Stack>
@@ -1275,8 +1700,8 @@ setTextFieldValue('');
                     {estimateFileds.paymentType === 0
                       ? 'Cash'
                       : estimateFileds.paymentType === 1
-                      ? 'Insurance'
-                      : 'CGHS | ECHS'}
+                        ? 'Insurance'
+                        : 'CGHS | ECHS'}
                   </Typography>
 
                   {estimateFileds.paymentType === 1 && (
@@ -1323,9 +1748,8 @@ setTextFieldValue('');
                         <Chip
                           size="small"
                           color="primary"
-                          label={`${serviceGetterAll(item.id)}/ ${
-                            item.isSameSite ? 'Same Site' : 'Different Site'
-                          }`}
+                          label={`${serviceGetterAll(item.id)}/ ${item.isSameSite ? 'Same Site' : 'Different Site'
+                            }`}
                           variant="outlined"
                           sx={{ textTransform: 'capitalize', mx: 1 }}
                         />
@@ -1400,9 +1824,8 @@ setTextFieldValue('');
                         <Chip
                           size="small"
                           color="primary"
-                          label={`${serviceGetterAllPackage(item.id)}/ ${
-                            item.isSameSite ? 'Same Site' : 'Different Site'
-                          }`}
+                          label={`${serviceGetterAllPackage(item.id)}/ ${item.isSameSite ? 'Same Site' : 'Different Site'
+                            }`}
                           variant="outlined"
                           sx={{ textTransform: 'capitalize', mx: 1 }}
                         />
@@ -1467,7 +1890,10 @@ setTextFieldValue('');
                 </Box> */}
                 </Stack>
               )}
-              <Stack my={1} p={1} borderRadius={2} bgcolor="#f1f1f1">
+              <Stack my={1} p={1} borderRadius={2} bgcolor="#f1f1f1"
+                sx={{
+                  marginBottom: "100px"
+                }}>
                 <Typography variant="body2" fontWeight={500}>
                   Other Charges
                 </Typography>
@@ -1494,9 +1920,27 @@ setTextFieldValue('');
               </Stack>
             </Stack>
           </Box>
+
         </Stack>
-      </Drawer>
-    </div>
+
+        <Box className="Create-Estimate-Button">
+          <button
+            className='reminder-cancel-btn'
+            onClick={handleEstimateDrawer}
+          >
+            Cancel
+          </button>
+          < button
+            className='reminder-btn'
+            onClick={handleCreateEstimate}
+            style={{ margin: "0px 10px 0px 10px" }}
+          >
+            Send Estimate
+          </button>
+        </Box>
+      </Drawer >
+      {/* ------------------------------- */}
+    </>
   );
 };
 

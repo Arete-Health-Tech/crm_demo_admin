@@ -1,0 +1,61 @@
+.MuiBox-root.css-4a5wlm {
+  width: calc(100% - 60px) !important;
+}
+
+.columnBox {
+  /* display: flex; */
+  /* flex-flow: column; */
+  height: 100vh;
+  /* justify-content: space-between; */
+}
+
+.endBox {
+  height: 20%;
+}
+
+.css-2dum1v-MuiDrawer-docked .MuiDrawer-paper {
+  height: 70%;
+}
+
+.css-frs8jf-MuiBadge-root {
+  padding-top: 20px;
+  margin-left: -20px;
+}
+
+.settingBox {
+  height: 40px;
+  width: 100%;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  padding-bottom: 15px;
+}
+
+.css-4x5cah-MuiButtonBase-root-MuiIconButton-root:hover {
+  background-color: #cceeff;
+  border-radius: 0;
+}
+
+.css-7vwjba-MuiButtonBase-root-MuiIconButton-root:hover {
+  background: #cceeff;
+  border-radius: 0;
+}
+
+.css-7vwjba-MuiButtonBase-root-MuiIconButton-root:active {
+  background: #cceeff;
+}
+
+.MuiButton-sizeMedium.MuiButton-containedSizeMedium.MuiButton-root.MuiButton-contained.MuiButton-containedPrimary.MuiButton-sizeMedium.MuiButton-containedSizeMedium.css-sghohy-MuiButtonBase-root-MuiButton-root {
+  text-align: center;
+  padding: 0;
+  background: #cceeff;
+}
+
+button.MuiButtonBase-root.MuiButton-root.MuiButton-text.MuiButton-textPrimary.MuiButton-sizeMedium.MuiButton-textSizeMedium.MuiButton-root.MuiButton-text.MuiButton-textPrimary.MuiButton-sizeMedium.MuiButton-textSizeMedium.css-1e6y48t-MuiButtonBase-root-MuiButton-root {
+  text-align: center;
+  padding: 0;
+}
+
+.css-2modrb-MuiTypography-root {
+  padding-left: 50px;
+}

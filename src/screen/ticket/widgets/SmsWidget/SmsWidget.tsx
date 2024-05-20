@@ -57,7 +57,7 @@ const SmsWidget = () => {
                 )}
 
                 {/* Box for showing messages */}
-                <Box height={smsModal ? '70vh' : '46vh'}>
+                <Box height={smsModal ? '70vh' : '38vh'}>
                     {/* patient reply box start */}
                     <Box display={'flex'} justifyContent={'start'} padding={2}>
                         <Box className={styles.callImageIcon}>

@@ -12,7 +12,15 @@ import {
   StepLabel,
   Stepper,
   TextField,
-  Typography
+  Typography,
+  Stack,
+  Tooltip,
+  Zoom,
+  makeStyles,
+  TooltipProps,
+  styled,
+  tooltipClasses,
+  StepIcon
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import useServiceStore from '../../../store/serviceStore';
@@ -23,8 +31,14 @@ import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import useTicketStore from '../../../store/ticketStore';
 import { apiClient } from '../../../api/apiClient';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
+import CloseModalIcon from "../../../assets/Group 48095853.svg";
+import UploadFileIcon from "../../../assets/UploadFileIcon.svg";
+import ActiveIcon from "../../../assets/CheckedActive.svg"
+import NotActiveIcon from "../../../assets/ActiveIcon.svg"
+import CheckedActiveIcon from "../../../assets/NotActive.svg"
+import RightArrowIcon from "../../../assets/arrow-right.svg"
 
 type Props = {
   currentTicket: iTicket | any;
@@ -40,12 +54,14 @@ function getTotalDaysFromDate(date: Date) {
 }
 
 const StageCard = (props: Props) => {
+  const { ticketID } = useParams();
   const { stages, subStages } = useServiceStore();
 
   const [open, setOpen] = useState(false);
   const [paymentIDValue, setPaymentIDValue] = useState('');
   const [noteTextValue, setNoteTextValue] = useState('');
   const [file, setFile] = useState(null);
+  const [fileName, setFileName] = useState("");
   const [lose, setLose] = useState('');
   const [openLose, setOpenLose] = useState(false);
 
@@ -64,7 +80,44 @@ const StageCard = (props: Props) => {
   const { filterTickets, searchByName, pageNumber } = useTicketStore();
   const navigate = useNavigate();
   const [hospitalName, setHospitalName] = useState('');
+  const [disableLostButton, setDisableLostButton] = useState(true);
+  const [disableWonButton, setDisableWonButton] = useState(true);
 
+
+  const [steps, setSteps] = useState([
+    {
+      id: 1,
+      key: "NewLead",
+      label: "New Lead",
+      isDone: true,
+    },
+    {
+      id: 2,
+      key: "Contacted",
+      label: "Contacted",
+      isDone: false,
+    },
+    {
+      id: 3,
+      key: "Working",
+      label: "Working",
+      isDone: false,
+    },
+    {
+      id: 4,
+      key: "Orientation",
+      label: "Orientation",
+      isDone: false,
+    },
+    {
+      id: 5,
+      key: "Nurturing",
+      label: "Nurturing",
+      isDone: false,
+    },
+  ]);
+
+  const [activeStep, setActiveStep] = useState(steps[0]);
 
 
   const handleHospitalNameChange = (event) => {
@@ -74,6 +127,7 @@ const StageCard = (props: Props) => {
   const redirectTicket = () => {
     navigate(NAVIGATE_TO_TICKET);
   };
+
   // const getCurrentStage = () => {
   //   const index = stages.findIndex(
   //     (stage) => stage._id === currentTicket?.stage
@@ -121,7 +175,33 @@ const StageCard = (props: Props) => {
       const stageName = stageDetail?.name || '';
       setChangeStageName(stageName);
       setCurrentStage(stageDetail);
+
       setProgressCount(stageDetail?.code * 20 || 0);
+
+      // console.log(stageDetail?.code, "code chnage");
+
+      if (stageDetail?.code > 0) {
+        const index = activeStep ? steps.findIndex((x) => x.key === activeStep.key) : -1;
+        if (index !== -1) {
+          setSteps((prevSteps) =>
+            prevSteps.map((step, i) => ({
+              ...step,
+              isDone: i < stageDetail?.code,
+            }))
+          );
+        }
+      }
+
+      console.log(activeStep, "active step");
+      console.log(progressCount, "progressCount");
+
+      if (activeStep && progressCount > 0) {
+
+        setActiveStep(steps[Math.floor(progressCount / 20) - 1]);
+      }
+
+      // .....
+
       setNextStage('');
       setLastModifiedDate(
         currentTicket?.modifiedDate
@@ -133,7 +213,7 @@ const StageCard = (props: Props) => {
         setNextStage(stages[nextStageIndex]?.name || '');
       }
     }
-  }, [currentTicket, stages, subStages, changeStageName]);
+  }, [currentTicket, stages, subStages, changeStageName, ticketID]);
 
   const handleStages = async (e: any) => {
     // console.log('selected', e.target.value);
@@ -172,11 +252,23 @@ const StageCard = (props: Props) => {
     // console.log('Open Modal');
     setOpen(true);
   };
+
   const handleClose = () => {
+    setPaymentIDValue("");
+    setFileName("");
+    setDisableWonButton(true);
+    setFile(null);
     setOpen(false);
   };
 
   const handleTextChange = (event) => {
+
+    if (event.target.value.length > 0) {
+      setDisableWonButton(false);
+    } else {
+      setDisableWonButton(true);
+    }
+
     setPaymentIDValue(event.target.value);
   };
 
@@ -184,9 +276,18 @@ const StageCard = (props: Props) => {
     setNoteTextValue(event.target.value);
   };
 
+
   const handleFileChange = (event) => {
+
+    setFileName(event.target.files[0].name);
     setFile(event.target.files[0]);
+
+    if (event.target.value !== null) {
+      setDisableWonButton(false);
+    }
+
   };
+
 
   const handleSubmit = async () => {
     // Handle form submission logic here
@@ -260,30 +361,50 @@ const StageCard = (props: Props) => {
   };
 
   const handleCloseLose = () => {
+    setLose('');
+    setDisableLostButton(true);
     setOpenLose(false);
   };
 
   const handleChangeLose = (event) => {
+    if (event.target.value.length > 0) {
+      setDisableLostButton(false);
+    }
+
     setLose(event.target.value);
   };
+
   const handleSubmitLose = () => {
     // Handle your submit logic here
-
     // Close the modal
     handleCloseLose();
     setHospitalName('');
   };
 
+  const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: '#0566FF',
+      color: '#ffffff',
+      fontSize: 12,
+      fontFamily: `"Outfit",sans-serif`,
+    },
+  }));
+
+
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       {lastModifiedDate > -1 && (
-        <Typography fontSize={'13px'} variant="body2" color="black">
+        <Stack sx={{ color: "#000", fontFamily: `"Outfit",san-serif`, fontSize: "12px" }}>
           {`Last update ${lastModifiedDate} days ago`}
-        </Typography>
+        </Stack>
       )}
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Box sx={{ width: '100%', mr: 1 }}>
-          <LinearProgress
+
+          {/* <LinearProgress
             variant="determinate"
             value={progressCount}
             sx={{
@@ -292,240 +413,396 @@ const StageCard = (props: Props) => {
                 backgroundColor: '#3949AC'
               }
             }}
-          />
+          /> */}
+
+          {/* Updated Divided Progress Bar */}
+
+          <Box className="steps">
+            <ul className="nav">
+              {steps && steps.map((step, i) => {
+                return (
+                  <li
+                    key={step.id}
+                    className={`${activeStep && activeStep.key === step.key ? "active" : ""}  ${step.isDone ? "done" : ""}`}
+                  >
+
+                    <LightTooltip title={step.label}
+                      disableInteractive
+                      placement="top"
+                      TransitionComponent={Zoom}
+                    >
+                      <Box>
+                        <br />
+                      </Box>
+                    </LightTooltip>
+                  </li>
+                );
+              })}
+            </ul>
+          </Box>
+
         </Box>
-        <Box sx={{ minWidth: 35 }}>
+
+        {/* <Box sx={{ minWidth: 35 }}>
           <Typography variant="body2" color="black">
             {progressCount}%
           </Typography>
-        </Box>
+        </Box> */}
+
       </Box>
       <Box
+        p={1}
         sx={{
           display: 'flex',
           alignItems: 'center',
           marginBottom: '7px',
-          marginTop: '20px'
+          marginTop: '12px',
+          justifyContent: "space-between"
         }}
       >
-        <Typography
-          marginRight={'12px'}
-          variant="body2"
-          color="black"
-          fontSize={15}
-          fontWeight={600}
-        >
-          Current Stage -:{' '}
-        </Typography>
+        <Box display="flex" flexDirection="row">
 
-        <FormControl variant="standard">
-          <Select
-            size="small"
-            name="stages"
-            onChange={handleStages}
-            value={changeStageName || ''}
-            sx={{ height: '16px', outline: 'none' }}
+          <Stack>
+            <Box
+              component="div"
+              display="flex"
+              flexDirection="row"
+            >
+              <span style={{
+                fontFamily: `"OutFit",sans-serif`,
+                fontSize: "14px",
+                marginRight: '6px',
+                fontWeight: "400",
+                color: "#0566FF"
+              }}>
+                Current Stage
+              </span>
+              <span style={{
+                marginTop: '2px',
+              }}>
+                <img src={RightArrowIcon} />
+              </span> {' '}
+            </Box>
+          </Stack>
+          <Stack marginRight="5px !important">
+            <FormControl variant="standard">
+              <Select
+                size="small"
+                name="stages"
+                onChange={handleStages}
+                value={changeStageName || ''}
+                sx={{
+                  height: '25px',
+                  outline: 'none',
+                  fontFamily: `"OutFit",sans-serif`,
+                  fontSize: "14px",
+                  marginRight: '12px',
+                  fontWeight: "400",
+                  color: "#0566FF"
+                }}
+              >
+                {validStageList?.map(({ name, parent, code }: iStage, index) => {
+                  return (
+                    parent === null && (
+                      <MenuItem
+                        value={name}
+                        disabled={![changeStageName, nextStage].includes(name)}
+                        sx={{
+                          fontFamily: `"OutFit",sans-serif`,
+                          fontSize: "14px",
+                          fontWeight: "400",
+                          color: "black"
+                        }}
+                      >
+                        {name}
+                      </MenuItem>
+                    )
+                  );
+                })}
+              </Select>
+            </FormControl>
+          </Stack>
+
+
+        </Box>
+
+        <Box display="flex" flexDirection="row">
+          <button
+            className='Won-Btn won'
+            onClick={handleOpen}
           >
-            {validStageList?.map(({ name, parent, code }: iStage, index) => {
-              return (
-                parent === null && (
-                  <MenuItem
-                    value={name}
-                    disabled={![changeStageName, nextStage].includes(name)}
-                  >
-                    {name}
-                  </MenuItem>
-                )
-              );
-            })}
-          </Select>
-        </FormControl>
+            WON
+          </button>
+          <button
+            className='Won-Btn lost'
+            onClick={handleOpenLose}
+          >
+            LOST
+          </button>{' '}
+        </Box>
+
       </Box>
+
+
       <Box>
-        <Button
-          variant="contained"
-          style={{
-            backgroundColor: 'green',
-            marginRight: '10px',
-            marginLeft: '550px',
-            marginTop: '-60px',
-            width: '60px',
-            height: '40px'
-          }}
-          onClick={handleOpen}
-        >
-          WON
-        </Button>
+        {/* Won Modal */}
         <Modal
           open={open}
-          onClose={handleClose}
+          onClose={() => { }}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box
-            sx={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: 700,
-              bgcolor: 'background.paper',
-              boxShadow: 24,
-              height: 400,
-              borderRadius: 10,
-              p: 4,
-              justifyContent: 'center',
-              textAlign: 'center',
-              backgroundColor: '#e8eaf6'
-            }}
-          >
-            <IconButton
-              onClick={handleClose}
-              sx={{
-                position: 'absolute',
-                top: '8px',
-                right: '8px',
-                bgcolor: '#0047ab',
-                color: 'white'
-              }}
+          <Box className="reminder-modal-container">
+            <Stack
+              className='reminder-modal-title'
+              direction="row"
+              spacing={1}
+              display="flex"
+              alignItems="center"
             >
-              <CloseIcon />
-            </IconButton>
-            <Typography id="modal-modal-title" variant="h5" component="h1">
-              Verify Payment
-            </Typography>
+              <Stack className='reminder-modal-title' sx={{ fontSize: "18px !important" }}>
+                Verify Payment
+              </Stack>
+              <Stack
+                className='modal-close'
+                onClick={handleClose}
+              >
+                <img src={CloseModalIcon} />
+              </Stack>
+            </Stack>
+
             <TextField
               label="Payment Reference ID"
               value={paymentIDValue}
               onChange={handleTextChange}
               fullWidth
               multiline
-              margin="normal"
-              style={{ backgroundColor: 'whitesmoke' }}
+              InputLabelProps={{
+                style: {
+                  fontSize: '14px',
+                  color: 'rgba(128, 128, 128, 0.744)',
+                  fontFamily: `"Outfit",sans-serif`,
+                }
+              }}
+              InputProps={{
+                style: {
+                  fontSize: '14px',
+                  color: '#080F1A',
+                  fontFamily: `"Outfit",sans-serif`,
+                }
+              }}
             />
-            <Typography id="modal-modal-title">Or</Typography>
-            <Typography id="modal-modal-title" component="h2">
-              Upload Receipt sent by hospital
-            </Typography>
-            <TextField
-              type="file"
-              onChange={handleFileChange}
-              fullWidth
-              margin="normal"
-              style={{ backgroundColor: 'whitesmoke' }}
-            />{' '}
-            <TextField
-              label="Write Notes"
-              value={noteTextValue}
-              onChange={handleNoteTextChange}
-              fullWidth
-              multiline
-              margin="normal"
-              style={{ backgroundColor: 'whitesmoke' }}
-            />
-            <Button variant="contained" onClick={handleSubmit}>
-              Submit
-            </Button>
+
+            <Stack className='Or-line'> <p className='Or'>OR</p></Stack>
+
+            <Box className="file-upload">
+              <Stack className="file-upload-title">
+                <label htmlFor="file-upload" style={{ display: "flex", flexDirection: "row" }}> <img className='img-upload' src={UploadFileIcon} /> Upload Receipt sent by hospital</label>
+                <input
+                  id="file-upload"
+                  type="file"
+                  onChange={handleFileChange}
+                />{' '}
+              </Stack>
+              <Stack className="file-upload-Sub" marginTop="12px">Upload one .txt, .doc, .pdf, .docx, .png, .jpg</Stack>
+              <Stack className="file-upload-Sub">Max file size 5mb</Stack>
+            </Box>
+
+            {fileName !== "" ? (
+              <Box className="Uploaded-file">
+                <Stack className='Uploaded-Box'></Stack>
+                <Box display="flex" flexDirection="column">
+                  <Stack className="file-upload-title">{fileName}</Stack>
+                  <Stack className="file-upload-Sub">Uploading Completing</Stack>
+                </Box>
+                <Stack p={1} sx={{ marginLeft: "250px" }}><img src={CheckedActiveIcon} /></Stack>
+              </Box>
+            ) : (
+              <>
+              </>
+            )}
+
+            <Box
+              sx={{
+                mt: 3,
+                display: 'flex',
+                justifyContent: 'flex-end',
+                width: '100%'
+              }}
+            >
+              <button
+                className='reminder-cancel-btn'
+                onClick={handleClose}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmit}
+                className='reminder-btn'
+                type='submit'
+                disabled={disableWonButton}
+                style={{
+                  marginLeft: "10px",
+                  backgroundColor: disableWonButton ? "#F6F7F9" : "#0566FF",
+                  color: disableWonButton ? "#647491" : "#FFF",
+
+                }}
+              >
+                Mark as Won
+              </button>
+            </Box>
+
           </Box>
         </Modal>
-        <Button
-          variant="contained"
-          style={{
-            backgroundColor: 'red',
-            marginTop: '-60px',
-            width: '60px',
-            height: '40px'
-          }}
-          onClick={handleOpenLose}
-        >
-          LOST
-        </Button>{' '}
+
+        {/* Lost  Modal */}
+
         <Modal
           open={openLose}
-          onClose={handleCloseLose}
+          onClose={() => { }}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
           <Box
-            sx={{
-              position: 'absolute',
-              top: '50%',
-              left: '50%',
-              transform: 'translate(-50%, -50%)',
-              width: 700,
-              bgcolor: 'background.paper',
-              boxShadow: 24,
-              height: 250,
-              borderRadius: 10,
-              p: 4,
-              backgroundColor: '#e8eaf6'
-            }}
+            className="reminder-modal-container"
           >
-            <IconButton
-              onClick={handleCloseLose}
+            <Stack
+              className='reminder-modal-title'
+              direction="row"
+              spacing={1}
+              display="flex"
+              alignItems="center"
+            >
+              <Stack className='reminder-modal-title' sx={{ fontSize: "18px !important" }}>
+                Reason for closing lead
+              </Stack>
+              <Stack
+                className='modal-close'
+                onClick={handleCloseLose}
+              >
+                <img src={CloseModalIcon} />
+              </Stack>
+            </Stack>
+
+            <Box>
+              <FormControl fullWidth>
+                <InputLabel id="demo-simple-select-label"
+                  sx={{
+                    fontSize: '14px',
+                    color: 'rgba(128, 128, 128, 0.744)',
+                    fontFamily: `"Outfit",sans-serif`,
+
+                  }}>
+                  {' '}
+                  Reason for closing lead
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-label"
+                  id="demo-simple-select"
+                  value={lose}
+                  label="Reason for closing lead"
+                  onChange={handleChangeLose}
+                  MenuProps={{
+                    disableAutoFocusItem: true
+                  }}
+                  sx={{
+                    fontSize: '14px',
+                    color: '#080F1A',
+                    fontFamily: `"Outfit",sans-serif`,
+                  }}
+                >
+                  <MenuItem sx={{
+                    fontSize: '14px',
+                    color: '#080F1A',
+                    fontFamily: `"Outfit",sans-serif`,
+                  }}
+                    value={"Too expensive / Have a better pricing"}>
+                    Too expensive / Have a better pricing
+                  </MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '14px',
+                      color: '#080F1A',
+                      fontFamily: `"Outfit",sans-serif`,
+                    }}
+                    value={"Financial Constraint"}>
+                    Financial Constraint
+                  </MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '14px',
+                      color: '#080F1A',
+                      fontFamily: `"Outfit",sans-serif`,
+                    }}
+                    value={"Chose to stay back in home city"}>
+                    Chose to stay back in home city
+                  </MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '14px',
+                      color: '#080F1A',
+                      fontFamily: `"Outfit",sans-serif`,
+                    }}
+                    value={"Adopted alternative medicines"}>
+                    Adopted alternative medicines
+                  </MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '14px',
+                      color: '#080F1A',
+                      fontFamily: `"Outfit",sans-serif`,
+                    }}
+                    value={"Chose another hospital - Which Hospital"}>
+                    Chose another hospital - Which Hospital ?
+                    <TextField
+                      id="hospitalName"
+                      value={hospitalName}
+                      onChange={handleHospitalNameChange}
+                      variant="standard"
+                      sx={{ marginLeft: 2 }}
+                    />
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
+
+            <Box
               sx={{
-                position: 'absolute',
-                top: '8px',
-                right: '8px',
-                bgcolor: '#0047ab',
-                color: 'white'
+                mt: 3,
+                display: 'flex',
+                justifyContent: 'flex-end',
+                width: '100%'
               }}
             >
-              <CloseIcon />
-            </IconButton>
-            <Typography id="modal-modal-title" variant="h5" component="h1">
-              Reason for closing lead
-            </Typography>
-            <br />
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">
-                {' '}
-                Reason for closing lead
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={lose}
-                label="Reason for closing lead"
-                onChange={handleChangeLose}
-                style={{ backgroundColor: 'whitesmoke' }}
-                MenuProps={{
-                  disableAutoFocusItem: true // Disable automatic focus
+              <button
+                className='reminder-cancel-btn'
+                onClick={handleCloseLose}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSubmit}
+                className='reminder-btn'
+                type='submit'
+                disabled={disableLostButton}
+                style={{
+                  marginLeft: "10px",
+                  backgroundColor: disableLostButton ? "#F6F7F9" : "#0566FF",
+                  color: disableLostButton ? "#647491" : "#FFF",
+
                 }}
               >
-                <MenuItem value={"Too expensive / Have a better pricing"}>
-                  Too expensive / Have a better pricing
-                </MenuItem>
-                <MenuItem value={"Financial Constraint"}>
-                  Financial Constraint
-                </MenuItem>
-                <MenuItem value={"Chose to stay back in home city"}>
-                  Chose to stay back in home city
-                </MenuItem>
-                <MenuItem value={"Adopted alternative medicines"}>
-                  Adopted alternative medicines
-                </MenuItem>
-                <MenuItem value={"Chose another hospital - Which Hospital"}>
-                  Chose another hospital - Which Hospital ?
-                  <TextField
-                    id="hospitalName"
-                    value={hospitalName}
-                    onChange={handleHospitalNameChange}
-                    variant="standard"
-                    sx={{ marginLeft: 2 }}
-                  />
-                </MenuItem>
-              </Select>
-            </FormControl>
-            <br />
-            <br />
+                Mark as Lost
+              </button>
+            </Box>
 
-            <Button variant="contained" onClick={handleSubmit}>
+            {/* <Button variant="contained" onClick={handleSubmit}>
               Submit
-            </Button>
+            </Button> */}
           </Box>
         </Modal>
       </Box>
+
       <Stepper
         activeStep={activeState}
         alternativeLabel
@@ -533,7 +810,19 @@ const StageCard = (props: Props) => {
       >
         {validSubStageList?.map((label: iSubStage, index) => (
           <Step key={label._id}>
-            <StepLabel>{label.name}</StepLabel>
+            <StepLabel
+              StepIconComponent={({ active, completed }) =>
+                completed ? (
+                  <img src={CheckedActiveIcon} alt="CheckedActiveIcon" />
+                ) : active ? (
+                  <img src={ActiveIcon} alt="ActiveIcon" />
+                ) : (
+                  <img src={NotActiveIcon} alt="NotActiveIcon" />
+                )
+              }
+
+
+            > <span className="stepper-label">{label.name}</span></StepLabel>
           </Step>
         ))}
       </Stepper>

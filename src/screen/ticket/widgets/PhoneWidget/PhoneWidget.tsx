@@ -54,7 +54,7 @@ const PhoneWidget = () => {
                 )} */}
 
                 {/* Box for showing audio */}
-                <Box height={'46vh'}>
+                <Box height={'40vh'}>
                     <Box display={'flex'} justifyContent={'start'} padding={2}>
                         <Box className={styles.callImageIcon}>
                             <img src={phoneIcon} alt="" />

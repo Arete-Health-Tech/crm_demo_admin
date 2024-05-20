@@ -31,14 +31,13 @@ import {
   Grid,
   DialogContentText,
   Paper,
-  Avatar,
   IconButton
 } from '@mui/material';
 import styles from './SingleTicketDetails.module.css';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import assignedDropDown from '../../assets/assignedDropDown.svg';
-import avatar1 from '../../assets/avatar1.svg';
-import avatar2 from '../../assets/avatar2.svg';
+import avatar1 from '../../assets/Avatar.svg';
+import avatar2 from '../../assets/Avatar2.svg';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -633,8 +632,8 @@ const SingleTicketDetails = (props: Props) => {
                   alignItems="center"
                   style={{ padding: '4px 8px' }}
                 >
-                  <Avatar id={styles.avatar} src={avatar1} alt="User 1" />
-                  <Avatar id={styles.avatar} src={avatar2} alt="User 2" />
+                  <img id={styles.avatar} src={avatar1} alt="User 1" />
+                  <img id={styles.avatar} src={avatar2} alt="User 2" />
                   <img
                     id={styles.assignedDropdown}
                     src={assignedDropDown}

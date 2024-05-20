@@ -630,7 +630,7 @@ const Ticket = () => {
             />
           </div>
         </Box>
-        <Box bgcolor="#E2ECFB" width="75%">
+        <Box bgcolor="#F6F7F9" width="75%">
           {currentRoute ? <DefaultScreen /> : <Outlet />}
         </Box>
         <Box>

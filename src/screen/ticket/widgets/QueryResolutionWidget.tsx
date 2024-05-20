@@ -73,7 +73,7 @@ const QueryResolutionWidget = (props: Props) => {
     <Box p={1} height="95%" bgcolor="white">
       {!roomId && (
         <Stack position="relative" height="100%">
-          <Box height="45vh">
+          <Box height="36vh">
             {fetchedQueries ? (
               (fetchedQueries.length > 0 && roomId == null) ? (
                 fetchedQueries?.map((item: any, index: number) => {
@@ -107,7 +107,7 @@ const QueryResolutionWidget = (props: Props) => {
                 })
               ) : (
                 <Stack
-                  height="45vh"
+                  height="36vh"
                   display="flex"
                   justifyContent="center"
                   alignItems="center"
@@ -137,7 +137,7 @@ const QueryResolutionWidget = (props: Props) => {
         // />
         <Box>
           <Box
-            height="45vh"
+            height="36vh"
             sx={{
               overflowY: 'scroll',
               '&::-webkit-scrollbar ': {

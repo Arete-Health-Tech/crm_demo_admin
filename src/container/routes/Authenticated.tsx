@@ -17,6 +17,7 @@ import NodeConnector from '../../screen/flow/widgets/NodeConnector';
 import NodeReplies from '../../screen/flow/NodeReplies';
 import NodeList from '../../screen/flow/NodeList';
 import Dump from '../../screen/script/Dump';
+import NSingleTicketDetails from '../../screen/ticket/NSingleTicketDetails';
 
 type Props = {};
 
@@ -41,7 +42,8 @@ const Authenticated = (props: Props) => {
         </Route>
       </Route>
       <Route path="ticket" element={<TicketLayout />}>
-        <Route path=":ticketID" element={<SingleTicketDetails />} />
+        {/* <Route path=":ticketID" element={<SingleTicketDetails />} /> */}
+        <Route path=":ticketID" element={<NSingleTicketDetails />} />
       </Route>
       <Route path="tickets" element={<TicketLayout />} />
       <Route path="dump" element={<Dump />} />

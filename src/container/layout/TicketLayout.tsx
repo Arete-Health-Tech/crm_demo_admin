@@ -53,6 +53,8 @@ import { socketEventConstants } from '../../constantUtils/socketEventsConstants'
 import useUserStore from '../../store/userStore';
 import { selectedFiltersReducer, ticketFilterTypes } from '../../screen/ticket/ticketStateReducers/filter';
 import { getAllNotesWithoutTicketId } from '../../api/notes/allNote';
+import '../../screen/ticket/singleTicket.css'
+import ToggleIcon from '../../../src/assets/Toggle.svg'
 
 // .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
@@ -537,10 +539,16 @@ const Ticket = () => {
   // console.log({ page })
 
   return (
-    <Box height={'100vh'} display="flex" position="fixed" width="100%">
-      <Box width="25%" position="sticky" top={0}>
-        <Box p={1} height={'16vh'} borderBottom={0.5} borderColor="#f0f0f0">
-          <Stack
+    <Box height={'100vh'} display="flex" position="fixed" width="100%" >
+      <Box bgcolor="#F6F7F9" width="23%" position="sticky" top={0} p={2}>
+        <Box
+          p={1}
+          height={'17vh'}
+          display={'flex'}
+          flexDirection={"column"}
+          justifyContent={"space-between"}
+        >
+          {/* <Stack
             direction="row"
             justifyContent="space-between"
             alignItems="center"
@@ -554,9 +562,72 @@ const Ticket = () => {
               Go Back To Dashboard
             </Button>
             <DownloadAllTickets />
-          </Stack>
+          </Stack> */}
 
-          <Stack direction="row" spacing={1}>
+          <Box
+            display={'flex'}
+            flexDirection={"row"}
+            justifyContent={"space-between"}
+          >
+            <Stack className="Ticket-Assignee-title"
+              sx={{
+                marginLeft: "3px",
+                fontSize: "24px !important",
+                fontStyle: "normal",
+                fontWeight: '500',
+              }}>
+              Tickets
+            </Stack>
+            <Stack display={'flex'}
+              flexDirection={"row"}
+            > <Stack sx={{
+              marginTop: "5px",
+              marginRight: "10px"
+            }}><img src={ToggleIcon} alt='switch View' /></Stack>
+              <Stack sx={{
+                marginTop: "5px",
+                color: "#000",
+                fontFamily: 'Outfit,sanserif',
+                fontSize: '14px',
+              }}>
+                Switch view
+              </Stack>
+            </Stack>
+          </Box>
+
+          <Box display={'flex'}
+            flexDirection={"column"}
+          >
+            <Box
+              display={'flex'}
+              flexDirection={"row"}
+              justifyContent={"space-between"}
+            >
+              <Stack width={'95%'} position={'relative'}>
+                <span className="search-icon"> <SearchIcon /></span>
+                <input type="text"
+                  className="search-input"
+                  placeholder=" Search..."
+                  onKeyDown={handleSearchKeyPress}
+                />
+
+              </Stack>
+              <Stack
+                marginRight={"-10px"}
+              ><TicketFilter setPage={setPage} /></Stack>
+            </Box>
+            <Box sx={{
+              fontFamily: `Outfit,sanserif`,
+              fontSize: "13px",
+              color: "#647491"
+            }}>{searchError && <div>{searchError}</div>}</Box>
+          </Box>
+
+
+
+
+
+          {/* <Stack direction="row" spacing={1}>
             <TextField
               sx={{ bgcolor: '#f5f7f5', p: 1, borderRadius: 1 }}
               size="small"
@@ -566,7 +637,6 @@ const Ticket = () => {
               variant="standard"
               helperText={searchError}
               InputProps={{
-                // disableUnderline: true,
                 startAdornment: (
                   <InputAdornment position="start">
                     <SearchIcon />
@@ -577,16 +647,17 @@ const Ticket = () => {
               onKeyDown={handleSearchKeyPress}
             />
             <TicketFilter setPage={setPage} />
-          </Stack>
+          </Stack> */}
         </Box>
+
         <Box
           position="relative"
           p={1}
-          height={'76vh'}
+          height={'74vh'}
           sx={{
             overflowY: 'scroll',
             '&::-webkit-scrollbar ': {
-              // display: 'none'
+              display: 'none'
             }
           }}
         >
@@ -619,15 +690,17 @@ const Ticket = () => {
             ))
           )}
         </Box>
-        <div>
+
+        <Box >
           <CustomPagination
             handlePagination={handlePagination}
             pageCount={pageCount}
             page={pageNumber}
           />
-        </div>
+        </Box>
       </Box>
-      <Box bgcolor="#E2ECFB" width="75%">
+
+      <Box bgcolor="#F6F7F9" width="77%">
         {currentRoute ? <DefaultScreen /> : <Outlet />}
       </Box>
       <Box>

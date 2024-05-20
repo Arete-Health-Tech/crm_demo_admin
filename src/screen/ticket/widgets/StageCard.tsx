@@ -39,7 +39,7 @@ import ActiveIcon from "../../../assets/CheckedActive.svg"
 import NotActiveIcon from "../../../assets/ActiveIcon.svg"
 import CheckedActiveIcon from "../../../assets/NotActive.svg"
 import RightArrowIcon from "../../../assets/arrow-right.svg"
-
+import documentIcon from "../../../assets/document-text.svg"
 type Props = {
   currentTicket: iTicket | any;
   setTicketUpdateFlag: any;
@@ -180,7 +180,7 @@ const StageCard = (props: Props) => {
 
       // console.log(stageDetail?.code, "code chnage");
 
-      if (stageDetail?.code > 1) {
+      if (stageDetail?.code > 0) {
         const index = activeStep ? steps.findIndex((x) => x.key === activeStep.key) : -1;
         if (index !== -1) {
           setSteps((prevSteps) =>
@@ -192,10 +192,10 @@ const StageCard = (props: Props) => {
         }
       }
 
-      console.log(activeStep, "active step");
-      console.log(progressCount, "progressCount");
+      // console.log(activeStep, "active step");
+      // console.log(progressCount, "progressCount");
 
-      if (activeStep && progressCount > 0) {
+      if (activeStep > steps[0] && progressCount > 0) {
 
         setActiveStep(steps[Math.floor(progressCount / 20) - 1]);
       }
@@ -610,7 +610,7 @@ const StageCard = (props: Props) => {
 
             {fileName !== "" ? (
               <Box className="Uploaded-file">
-                <Stack className='Uploaded-Box'></Stack>
+                <Stack className='Uploaded-Box'><img src={documentIcon} /></Stack>
                 <Box display="flex" flexDirection="column">
                   <Stack className="file-upload-title">{fileName}</Stack>
                   <Stack className="file-upload-Sub">Uploading Completing</Stack>

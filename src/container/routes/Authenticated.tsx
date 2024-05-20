@@ -19,7 +19,6 @@ import NodeList from '../../screen/flow/NodeList';
 import Dump from '../../screen/script/Dump';
 import NSingleTicketDetails from '../../screen/ticket/NSingleTicketDetails';
 import Navbar from '../../screen/Navbar/Navbar';
-
 type Props = {};
 
 const Authenticated = (props: Props) => {

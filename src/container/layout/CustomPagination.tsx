@@ -1,4 +1,5 @@
 import { Pagination } from '@mui/material';
+import '../../screen/ticket/singleTicket.css';
 
 interface iPageProp {
   handlePagination: (event: React.ChangeEvent<unknown>, page: number) => void;
@@ -12,11 +13,21 @@ const CustomPagination = (props: iPageProp) => {
     <div>
       <Pagination
         color="primary"
-        size="medium"
+        size="small"
         page={page}
         onChange={handlePagination}
         count={pageCount}
-        sx={{marginBottom: "20px",marginTop: '15px'}}
+        sx={{
+          fontSize: "10px",
+          padding: '10px 0 10px 25px',
+          '& .MuiPaginationItem-root': {
+            fontFamily: 'Outfit, sans-serif',
+            '&.Mui-selected': {
+              backgroundColor: '#0566FF',
+              color: '#FFFFFF',
+            },
+          },
+        }}
       />
     </div>
   );

@@ -37,6 +37,7 @@ import {
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
+import SearchIcon from '@mui/icons-material/Search';
 import { Suspense, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useTicketStore from '../../store/ticketStore';
@@ -712,7 +713,8 @@ const NSingleTicketDetails = (props: Props) => {
 
                             <Stack className='search'>
                                 <div className="search-container">
-                                    <span className="search-icon">&#128269;</span>
+                                    {/* <span className="search-icon">&#128269;</span> */}
+                                    <span className="search-icon"><SearchIcon /></span>
                                     <input type="text" className="search-input" placeholder=" Search..." />
                                 </div>
                             </Stack>

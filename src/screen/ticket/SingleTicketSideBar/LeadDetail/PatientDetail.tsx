@@ -327,7 +327,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                         autoHideDuration={4000} onClose={() => setShowAlert(false)}
                     >
                         <Alert severity="warning" >
-                            Please Create an Estimations.
+                            Please Create an Estimate.
                         </Alert>
                     </Snackbar>
                 )
@@ -447,13 +447,13 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
 
 
             {/* Diagnostics Test */}
-            {(currentTicket?.prescription?.[0]?.diagnostics?.length ?? 0) > 0 ? (
+            {currentTicket?.prescription?.[0]?.diagnostics?.length > 0 ? (
                 <>
                     <Box className="Patient-records">
                         <Box className='Patient-records-Head'>
                             <Stack className='Patient-records-Heading'>Diagnostics Test</Stack>
                         </Box>
-                        {(currentTicket?.prescription?.[0]?.diagnostics?.length ?? 0) > 0 ? (
+                        {currentTicket?.prescription?.[0]?.diagnostics.length > 0 ? (
                             currentTicket?.prescription[0]?.diagnostics.map((diagnostic, index) => (
                                 <React.Fragment key={index}>
                                     <Box className='Patient-records-Head'>
@@ -504,17 +504,22 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 <Box className='Patient-records-Head'>
                     <Stack className='Patient-records-Heading'>Pharmacy</Stack>
                 </Box>
-                <Box className='Patient-records-Head'>
+                <Box className='Patient-records-Head' display={'flex'} flexDirection={'column'}>
                     {(currentTicket?.prescription?.[0]?.medicines?.length ?? 0) > 0 ? (
-                        currentTicket?.prescription[0]?.medicines.map((med, index) => (
-                            <React.Fragment key={index}>
-                                <Stack className='dot-list'>
-                                    <span>&#8226;</span>
-                                </Stack>
-                                <Stack className='Patient-records-data'>{med}</Stack>
-                                <Box className="record-tag pharmacy-tag">{currentTicket?.prescription[0]?.isPharmacy}</Box>
-                            </React.Fragment>
-                        ))
+                        <>
+                            {currentTicket?.prescription[0]?.medicines.map((med, index) => (
+                                <React.Fragment key={index} >
+                                    <Stack display={'flex'} flexDirection={'row'}>
+                                        <Stack className='dot-list'  >
+                                            <span>&#8226;</span>
+                                        </Stack>
+                                        <Stack className='Patient-records-data'>{med}</Stack>
+                                    </Stack>
+
+                                </React.Fragment>
+                            ))}
+                            < Box className="record-tag pharmacy-tag" marginTop={"5px"}>{currentTicket?.prescription[0]?.isPharmacy}</Box>
+                        </>
                     ) : (<>
                         <Box className="record-tag pharmacy-tag" sx={{ width: currentTicket?.prescription[0]?.isPharmacy == "Not Advised" ? "102px;" : "width: 132px;" }}>{currentTicket?.prescription[0]?.isPharmacy}</Box>
                     </>

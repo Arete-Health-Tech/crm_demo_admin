@@ -8,7 +8,7 @@
     height: 96.5vh;
     display: flex;
     background-color: #F6F7F9;
-    margin: 13px;
+    margin: 13px 0px 13px 0px;
     border-radius: 25px;
 }
 
@@ -20,7 +20,7 @@
 }
 
 .sidebar-box {
-    width: 31%;
+    width: 30%;
     height: 100%;
     border-left: 1px solid var(--Borders-Light-Grey, #D4DBE5);
     display: flex;
@@ -217,6 +217,7 @@
     padding: 10px 12px;
     text-transform: capitalize;
     border-radius: 4px;
+    cursor: pointer;
 }
 
 .save-btn:hover {
@@ -366,6 +367,9 @@
     align-items: flex-start;
     width: 98%;
     text-transform: capitalize;
+    word-wrap: break-word;
+    /* Ensures words wrap to the next line */
+    word-break: break-word;
 
 }
 
@@ -720,6 +724,7 @@
     font-weight: 500;
     line-height: 150%;
     padding: var(--Spacing-10px, 10px) var(--16px, 16px);
+    cursor: pointer;
 }
 
 .reminder-cancel-btn {
@@ -733,6 +738,7 @@
     font-weight: 500;
     line-height: 150%;
     padding: var(--Spacing-0px, 0px) var(--16px, 16px);
+    cursor: pointer;
 }
 
 .reason-option {
@@ -746,14 +752,19 @@
 .document-container {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    height: 96%;
     background: #ffffff;
     overflow-y: auto;
     align-items: center;
-    justify-content: center;
+    /* justify-content: center; */
     text-align: center;
+    justify-content: space-between;
+    padding: 20px 5px 35px 5px;
 }
 
+.document-container::-webkit-scrollbar {
+    width: 0;
+}
 
 .NotFound-DocumentPage {
     display: flex;
@@ -764,7 +775,75 @@
     top: -112px
 }
 
+.Upload-document-btn {
+    display: flex;
+    flex-direction: row;
+    color: #0566FF;
+    border-radius: var(--4px, 4px);
+    border: 1px solid var(--Primary-Default, #0566FF);
+    text-align: center;
+    font-family: "Outfit", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%;
+    padding: var(--Spacing-0px, 10px) var(--16px, 16px);
+    align-items: center;
+    width: 95%;
+    justify-content: center;
+    margin-left: 10px;
+    cursor: pointer;
+}
 
+.Upload-document-btn:hover {
+    background-color: #0566FF;
+    color: #fff;
+}
+
+.Uploaded-document {
+    display: flex;
+    text-align: left;
+    flex-direction: row;
+    width: 21vw;
+    margin: 5px;
+    padding: 5px;
+    gap: 10px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.Uploaded-document:hover {
+    background-color: #F6F7F9;
+}
+
+.Uploaded-document-fileName {
+    color: #000;
+    font-family: "Outfit", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.Uploaded-document-tag {
+    color: var(--Primary-Default, #0566FF);
+    /* Body/Small */
+    font-family: "Outfit", sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.Uploaded-document-date {
+    color: var(--Text-Light-Grey, #647491);
+    /* Body/Small */
+    font-family: "Outfit", sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
 
 /* Create Estimate Modal */
 
@@ -789,6 +868,7 @@
     display: flex;
     justify-content: flex-end;
     padding: 10px;
+    cursor: pointer;
 }
 
 .create-estimation-prescription {
@@ -835,6 +915,7 @@
     font-weight: 500;
     line-height: 150%;
     padding: var(--Spacing-0px, 5px) var(--5px, 5px);
+    cursor: pointer;
 }
 
 .Add-Service-btn:hover {
@@ -859,6 +940,7 @@
     font-style: normal;
     font-weight: 500;
     line-height: 150%;
+    cursor: pointer;
 }
 
 .won {
@@ -964,7 +1046,7 @@
     width: 40px;
     height: 40px;
     border-radius: 3.333px;
-    background: var(--Background-Dark-Grey, #E1E6EE);
+    /* background: var(--Background-Dark-Grey, #E1E6EE); */
 }
 
 
@@ -1039,7 +1121,7 @@
     justify-content: center;
     align-items: center;
     margin-left: 18px;
-
+    cursor: pointer;
 }
 
 .Clicked-call {
@@ -1098,6 +1180,7 @@
     align-self: stretch;
     border-bottom: 1px solid #D4DBE5;
     padding-bottom: 16px;
+    cursor: pointer;
 }
 
 .call-Button {
@@ -1173,6 +1256,7 @@
     font-style: normal;
     font-weight: 500;
     line-height: 150%;
+    cursor: pointer;
 }
 
 /* end----- */
@@ -1194,7 +1278,8 @@
     border: 1px solid var(--Borders-Light-Grey, #D4DBE5);
     background: var(--Background-White, #FFF);
     width: 79px;
-    height: 41px
+    height: 41px;
+    cursor: pointer;
 }
 
 .avatar {
@@ -1211,6 +1296,7 @@
 }
 
 .DropDownArrow {
+    cursor: pointer;
     position: relative;
     right: 10px;
     width: var(--20px, 20px);
@@ -1240,7 +1326,7 @@
 
 .search-input {
     width: 100%;
-    padding: var(--16px, 8px);
+    padding: 8px 8px 8px 40px;
     border-radius: 20px;
     color: #000;
     outline: none;
@@ -1255,16 +1341,18 @@
     color: var(--Text-Light-Grey, #647491);
     font-size: 14px;
     font-family: "Outfit", sans-serif;
+    /* padding: 0 12px 0px 20px; */
 }
 
 .search-icon {
     position: absolute;
-    top: 50%;
-    right: 10px;
+    top: 46%;
+    left: 8px;
     transform: translateY(-50%);
-    color: #aaa;
+    color: #647491;
     pointer-events: none;
 }
+
 
 .Ticket-Assignee-title {
     display: flex;
@@ -1343,6 +1431,7 @@
 .kebabDot {
     position: absolute;
     right: 300px;
+    cursor: pointer;
 }
 
 .KebabMenu-item {
@@ -1393,7 +1482,7 @@
     position: relative;
     background: #dae8ff;
     /* width: 145px; */
-    width: 9.6vw;
+    width: 9.5vw;
 }
 
 .steps ul li {
@@ -1402,7 +1491,7 @@
 
 .steps ul li:first-child div {
     /* width: 120px; */
-    width: 7.7vw;
+    width: 8vw;
     padding-left: 15px;
 }
 
@@ -1460,4 +1549,141 @@
     font-style: normal;
     font-weight: 400;
     line-height: 150%;
+}
+
+
+/* Ticket Card Css */
+
+.ticket-card-line1 {
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.ticket-card-line1-left {
+    display: flex;
+    flex-direction: row !important;
+    justify-content: flex-start;
+    align-items: center;
+    gap: var(--8px, 8px);
+}
+
+.ticketCard-Uhid {
+    color: var(--Text-Light-Grey, #647491);
+    text-align: center;
+    font-family: Outfit, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.Priority-tag {
+    display: flex;
+    flex-direction: row !important;
+    color: var(--Text-Black, #080F1A);
+    text-align: center;
+    /* Body/Small */
+    font-family: Outfit, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.ticket-card-name {
+    overflow: hidden;
+    color: var(--Text-Black, #080F1A);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    /* Headings/H3 */
+    font-family: Outfit, sans-serif;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+    text-transform: capitalize;
+}
+
+.ticket-cardline2-right {
+    display: flex;
+    flex-direction: row !important;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--8px, 8px);
+    font-family: Outfit, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+    color: #354869;
+}
+
+.line2 {
+    margin-top: 8px;
+}
+
+.ticket-card-Gender {
+    border-radius: var(--8px, 8px);
+    display: flex;
+    padding: 0px var(--4px, 4px);
+    align-items: center;
+    gap: var(--4px, 4px);
+    background: var(--Background-Dark-Grey, #E1E6EE);
+}
+
+.docName {
+    color: var(--Text-Grey, #354869);
+    text-transform: capitalize;
+    font-family: Outfit, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.ticket-card-line3 {
+    display: flex;
+    flex-direction: row !important;
+    padding: 8px 0 8px 0;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    gap: var(--8px, 8px);
+}
+
+.ticket-card-line3-tag {
+    color: var(--Text-Black, #080F1A);
+    /* text-align: center; */
+    font-family: Outfit, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+    display: flex;
+    height: 24px;
+    padding: 3px 5px 2px 5px;
+    gap: 10px;
+    border-radius: var(--12px, 12px);
+    background: var(--Background-Dark-Grey, #E1E6EE);
+}
+
+.task-pending {
+    color: var(--Primary-Default, #0566FF);
+    text-align: center;
+    /* Body/Small */
+    font-family: Outfit, sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+    /* 18px */
+}
+
+.linear-progress {
+    width: 105%;
+    position: relative;
+    top: 16px;
+    left: -7px;
 }

@@ -31,7 +31,7 @@ function SingleTicketSideBar({ reminderLists, reschedulerList }) {
 
                     }}
                 >
-                    <Tab className='tab-label' label="Lead Details" value="1" />
+                    <Tab className='tab-label' label="Lead Details" value="1" style={{ whiteSpace: 'nowrap' }} />
                     <Tab className='tab-label' label="Tasks" value="2" />
                     <Tab className='tab-label' label="Documents" value="3" />
                 </TabList>

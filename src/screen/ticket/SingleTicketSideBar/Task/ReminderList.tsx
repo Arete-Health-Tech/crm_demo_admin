@@ -50,7 +50,6 @@ const ReminderList = ({ reminderData }) => {
                             ))
                         }
                     </>
-
                     :
                     <>
                         <Box>No Data</Box>

@@ -42,8 +42,8 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useTicketStore from '../../store/ticketStore';
 import { iCallRescheduler, iReminder, iTicket } from '../../types/store/ticket';
-import StageCard from './widgets/StageCard';
 import dayjs from 'dayjs';
+import StageCard from './widgets/StageCard';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { ageSetter } from '../../utils/ageReturn';
 import Estimate from './widgets/Estimate';
@@ -629,6 +629,8 @@ const NSingleTicketDetails = (props: Props) => {
         { id: 4, src: Avatar2, alt: "User 4", name: "Jack Andreson" },
         { id: 6, src: Avatar1, alt: "User 5", name: "Will Smith" }
     ];
+
+    console.log("console in nsingleticlet")
 
     return (
         <div className="main-layout">

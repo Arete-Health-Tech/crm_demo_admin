@@ -6,15 +6,22 @@ import {
     createTheme,
     ThemeProvider
 } from '@mui/material/styles';
+import {
+    Tooltip,
+    Zoom,
+    TooltipProps,
+    tooltipClasses,
+
+} from '@mui/material';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
+// import { Tooltip, TooltipProps, Zoom, tooltipClasses } from '@mui/material/Tooltip';
 import Badge from '@mui/material/Badge';
 import Avatar from '@mui/material/Avatar';
-import { Button } from '@mui/material';
+import { Button, Stack } from '@mui/material';
 import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import Taskscopy from '../../assets/Tasks copy.svg';
 import Tasks from '../../assets/Tasks.svg';
@@ -24,6 +31,13 @@ import pharmacy from '../../assets/Pharmacy.svg';
 import Logo from '../../assets/Logo.svg';
 import styles from './Navbar.module.css';
 import Logout from '../login/Logout';
+import ActiveDashBoard from '../../assets/DashBoardActive.svg';
+import NonActiveTicket from '../../assets/NonActiveTickets.svg';
+import ActivePharmacyIcon from '../../assets/ActivePharmacy.svg';
+import SettingActive from '../../assets/ActiveSetting.svg';
+import TaskActiveIcon from '../../assets/ActiveTask.svg';
+import { StackedBarChartSharp } from '@mui/icons-material';
+
 
 const drawerWidth = 72;
 
@@ -125,137 +139,208 @@ const Navbar = ({ children }) => {
         }
     });
 
+    const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+        <Tooltip {...props} classes={{ popper: className }} />
+    ))(({ theme }) => ({
+        [`& .${tooltipClasses.tooltip}`]: {
+            backgroundColor: '#0566FF',
+            color: '#ffffff',
+            fontSize: 12,
+            fontFamily: `"Outfit",sans-serif`,
+        },
+    }));
+
+
+
     return (
         <ThemeProvider theme={theme}>
-            <Box sx={{ display: 'flex', height: '100vh' }}>
-                <Drawer variant="permanent" open={open}>
-                    <DrawerHeader>
-                        <img src={Logo} alt="Logo" />
-                    </DrawerHeader>
-                    <Divider />
-                    <List>
-                        <Button variant="text" onClick={() => goToPage('/')}>
-                            <Tooltip title="Dashboard" placement="right">
-                                <IconButton
-                                    sx={{
-                                        justifyContent: 'center',
-                                        backgroundColor:
-                                            location.pathname === '/' ? '#e6e6ff' : 'transparent',
-                                        '&:hover': {
-                                            background: '#e6e6ff'
-                                        }
-                                    }}
-                                >
-                                    <img src={Dashboard} alt="Dashboard" />
-                                </IconButton>
-                            </Tooltip>
-                        </Button>
-                    </List>
-                    <List>
-                        <Button variant="text" onClick={() => goToPage('/ticket')}>
-                            <Tooltip title="Ticket" placement="right">
-                                <IconButton
-                                    sx={{
-                                        justifyContent: 'center',
-                                        backgroundColor: location.pathname.includes('/ticket') ? '#e6e6ff' : 'transparent',
-                                        '&:hover': {
-                                            background: '#e6e6ff'
-                                        }
-                                    }}
-                                >
-                                    <img src={ticketIcon} alt="Ticket" />
-                                </IconButton>
-                            </Tooltip>
-                        </Button>
-                    </List>
-                    <List>
-                        <Button variant="text" onClick={() => goToPage('/orderDetails')}>
-                            <Tooltip title="Pharmacy" placement="right">
-                                <IconButton
-                                    sx={{
-                                        justifyContent: 'center',
+            <Box sx={{ display: 'flex', height: '100vh', width: "10vw", }}>
+                <Drawer variant="permanent"
+                    open={open}
+                    sx={{
+                        paddingX: "34px",
+                        '& .MuiDrawer-paper': {
+                            boxSizing: 'border-box',
+                            width: "4vw",
+                        },
+                    }}>
+                    <Box bgcolor={'#F6F7F9'} sx={{ display: 'flex', flexDirection: "column", justifyContent: "space-between", height: "100%", width: "100%" }}>
 
-                                        backgroundColor:
-                                            location.pathname === '/orderDetails'
-                                                ? '#e6e6ff'
-                                                : 'transparent',
-                                        '&:hover': {
-                                            background: '#e6e6ff'
-                                        }
-                                    }}
-                                >
-                                    <img src={pharmacy} alt="Pharmacy" />
-                                </IconButton>
-                            </Tooltip>
-                        </Button>
-                    </List>
-                    <List>
-                        <Button variant="text" onClick={() => goToPage('/Tasks')}>
-                            <Tooltip title="Tasks" placement="right">
-                                <IconButton
+                        <Box display={'flex'} flexDirection={'column'} gap={"10px"}>
+                            <Stack sx={{
+                                display: "flex",
+                                height: "54px",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                gap: "24px",
+
+                            }}>
+                                <img src={Logo} alt="Logo" />
+                            </Stack>
+                            <Stack >
+                                <Stack
+                                    onClick={() => goToPage('/')}
                                     sx={{
-                                        justifyContent: 'center',
-
-                                        backgroundColor:
-                                            location.pathname === '/Tasks'
-                                                ? '#e6e6ff'
-                                                : 'transparent',
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        gap: "24px",
+                                        width: "var(--64px, 58px)",
+                                        marginLeft: "5px",
+                                        height: "var(--64px, 58px)",
+                                        borderRadius: "8px",
+                                        backgroundColor: location.pathname === '/' ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
-                                            background: '#e6e6ff'
+                                            background: '#E1E6EE'
                                         }
-                                    }}
-                                >
-                                    <img src={Tasks} alt="Tasks" />
-                                </IconButton>
-                            </Tooltip>
-                        </Button>
-                    </List>
-                    <Box sx={{ flexGrow: 1 }} />
-                    <Box>
-                        <List>
-                            <Button
-                                variant="text"
-                                onClick={() => goToPage('/Configurations')}
-                            >
-                                <Tooltip title="Configurations" placement="right">
-                                    <IconButton
-                                        sx={{
-                                            justifyContent: 'center',
-
-                                            backgroundColor:
-                                                location.pathname === '/Configurations'
-                                                    ? '#e6e6ff'
-                                                    : 'transparent',
-                                            '&:hover': {
-                                                background: '#e6e6ff'
-                                            }
-                                        }}
+                                    }}>
+                                    <LightTooltip title="Dashboard"
+                                        disableInteractive
+                                        placement="right"
+                                        TransitionComponent={Zoom}
                                     >
-                                        <img src={Taskscopy} alt="Configurations" />
-                                    </IconButton>
-                                </Tooltip>
-                            </Button>
-                        </List>
-                        <Box
-                            sx={{
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'center',
-                                pb: 2
-                            }}
-                        >
-                            {/* <StyledBadge
-                                overlap="circular"
-                                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                                variant="dot"
+                                        {location.pathname === '/' ? (<img src={ActiveDashBoard} alt="Dashboard" />) : (<img src={Dashboard} alt="Dashboard" />)}
+
+                                    </LightTooltip>
+                                </Stack>
+                            </Stack>
+                            <Stack>
+                                <Stack onClick={() => goToPage('/ticket')}
+
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        gap: "24px",
+                                        width: "var(--64px, 58px)",
+                                        marginLeft: "5px",
+                                        height: "var(--64px, 58px)",
+                                        borderRadius: "8px",
+                                        backgroundColor: location.pathname.includes('/ticket') ? '#DAE8FF' : 'transparent',
+                                        '&:hover': {
+                                            background: '#E1E6EE'
+                                        }
+                                    }}>
+                                    <LightTooltip title="Ticket"
+                                        disableInteractive
+                                        placement="right"
+                                        TransitionComponent={Zoom}
+                                    >
+
+                                        {location.pathname.includes('/ticket') ? (<img src={ticketIcon} alt="Ticket" />) : (<img src={NonActiveTicket} alt="Ticket" />)}
+
+                                    </LightTooltip>
+                                </Stack>
+                            </Stack>
+                            <Stack >
+                                <Stack onClick={() => goToPage('/orderDetails')}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        gap: "24px",
+                                        width: "var(--64px, 58px)",
+                                        marginLeft: "5px",
+                                        height: "var(--64px, 58px)",
+                                        borderRadius: "8px",
+                                        backgroundColor: location.pathname.includes('/orderDetails') ? '#DAE8FF' : 'transparent',
+                                        '&:hover': {
+                                            background: '#E1E6EE'
+                                        }
+                                    }}>
+                                    <LightTooltip title="Pharmacy"
+                                        disableInteractive
+                                        placement="right"
+                                        TransitionComponent={Zoom}
+                                    >
+
+                                        {location.pathname.includes('/orderDetails') ? (<img src={ActivePharmacyIcon} alt="Pharmacy" />) : (<img src={pharmacy} alt="Pharmacy" />)}
+
+                                    </LightTooltip>
+                                </Stack>
+                            </Stack>
+                            <Stack>
+                                <Stack onClick={() => goToPage('/Tasks')}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        gap: "24px",
+                                        width: "var(--64px, 58px)",
+                                        marginLeft: "5px",
+                                        height: "var(--64px, 58px)",
+                                        borderRadius: "8px",
+                                        backgroundColor: location.pathname.includes('/Tasks') ? '#DAE8FF' : 'transparent',
+                                        '&:hover': {
+                                            background: '#E1E6EE'
+                                        }
+                                    }}>
+                                    <LightTooltip title="Tasks"
+                                        disableInteractive
+                                        placement="right"
+                                        TransitionComponent={Zoom}
+                                    >
+                                        {location.pathname.includes('/Tasks') ? (<img src={TaskActiveIcon} alt="Tasks" />) : (<img src={Tasks} alt="Tasks" />)}
+                                    </LightTooltip>
+                                </Stack>
+                            </Stack>
+                        </Box>
+
+
+                        {/* <Box sx={{ flexGrow: 1 }} /> */}
+                        <Box display={'flex'} flexDirection={'column'}>
+                            <Stack>
+                                <Stack
+
+                                    onClick={() => goToPage('/Configurations')}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        gap: "24px",
+                                        width: "var(--64px, 58px)",
+                                        marginLeft: "5px",
+                                        height: "var(--64px, 58px)",
+                                        borderRadius: "8px",
+                                        backgroundColor: location.pathname === '/Configurations' ? '#DAE8FF' : 'transparent',
+                                        '&:hover': {
+                                            background: '#E1E6EE'
+                                        }
+                                    }}
+                                >
+                                    <LightTooltip title="Configurations"
+                                        disableInteractive
+                                        placement="right"
+                                        TransitionComponent={Zoom}
+                                    >
+                                        {location.pathname === '/Configurations' ? (<img src={SettingActive} alt="Configurations" />) : (<img src={Taskscopy} alt="Configurations" />)}
+
+                                    </LightTooltip>
+                                </Stack>
+                            </Stack>
+                            <Stack
+                                sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                    pb: 2
+                                }}
                             >
-                                <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" />
-                            </StyledBadge> */}
-                            <Logout />
+                                <LightTooltip title="Logout"
+                                    disableInteractive
+                                    placement="right"
+                                    TransitionComponent={Zoom}
+                                >
+                                    <Logout />
+                                </LightTooltip>
+                            </Stack>
                         </Box>
                     </Box>
+
                 </Drawer>
-                <Box component="main" sx={{ flexGrow: 1 }}>
+                <Box component="main"
+                // sx={{ flexGrow: 1 }}
+                >
                     {children}
                 </Box>
             </Box>

@@ -98,7 +98,7 @@ import RemainderAll from './widgets/RemainderAll';
 import SingleTicketSideBar from './SingleTicketSideBar/SingleTicketSideBar';
 import TaskBar from './SingleTicketSideBar/TaskBar';
 import Avatar1 from "../../assets/Avatar.svg"
-import Avatar2 from "../../assets/Avatar2.svg"
+import NewAvatar from "../../assets/avatar2.svg"
 import DropDownArrow from "../../assets/DropdownArror.svg"
 import KebabMenu from "../../assets/KebabMenu.svg"
 import AddAssigneeIcon from "../../assets/add.svg"
@@ -108,82 +108,6 @@ import SearchBar from '../../container/layout/SearchBar';
 import Activities from './widgets/Activities/Activities';
 import SmsWidget from './widgets/SmsWidget/SmsWidget';
 import PhoneWidget from './widgets/PhoneWidget/PhoneWidget';
-const questions = [
-    {
-        question:
-            '	Hi (Patient Name), I am (Agent Name) from Manipal Hospital. Are you comfortable in Hindi or English?',
-        responses: ['English', 'Hindi']
-    },
-
-    {
-        question:
-            '	How are you sir? I am calling regarding your admission planned under (Dr. Name) for (Surgery Name) or (Medical Management). What is your preferred date of admission? ',
-        responses: [
-            'I haven’t made up my mind/ still thinking/ will let you know',
-            'Yes, Next week'
-        ]
-    },
-    {
-        question:
-            'Very well sir, I understand that this is an important decision. From Medanta, I am here to help you in any way possible. Do you have any questions related to your surgery / admission (in case of medical management)?',
-        responses: ['Yes', 'No']
-    },
-    {
-        question: '	Tick the Surgical Concerns ',
-        responses: [
-            'Fear of Surgery',
-            'Fear of Hospitalisation',
-            'Fear of Pain',
-            'Fear of Anaesthesia',
-            'Fear of Long Recovery period',
-            'Fear of Change in Body Image',
-            'Mental Health Concerns',
-            'Success Fear ',
-            'Fear of Complications',
-            'Fear of Finances'
-        ]
-    },
-    {
-        question:
-            'Is there a preferred date sir/madam? (Mark the date in system).Sure sir, Can you please confirm your mode of payment?',
-
-        responses: ['Cash', 'Insurance', 'Panel']
-    },
-    {
-        question: '	Have you been given a Bill Estimate',
-        responses: ['Yes', 'No']
-    },
-    {
-        question:
-            'I am initiating an RFA for you. Please mark an advance deposit of 10 thousand rupees to book your bed'
-        // responses: ['Cash', 'CGHS/ECHS', 'Corporate', 'NSG', 'TPA']
-    },
-    // {
-    //   question: '	Tick the Surgical Concerns ',
-    //   responses: [
-    //     'Fear of Surgery',
-    //     'Fear of Hospitalisation',
-    //     'Fear of Pain',
-    //     'Fear of Anaesthesia',
-    //     'Fear of Long Recovery period',
-    //     'Fear of Change in Body Image',
-    //     'Mental Health Concerns',
-    //     'Success Fear ',
-    //     'Fear of Complications',
-    //     'Fear of Finances'
-    //   ]
-    // },
-    {
-        question: 'Does the patient have any Caregiver at',
-        responses: ['Yes', 'No']
-    },
-    {
-        question: 'Did you Inform the Next Follow-up date to Patient',
-        responses: ['Yes', 'No']
-    }
-
-    // Add more questions as needed
-];
 interface iConsumer {
     uid: string;
     firstName: string;
@@ -339,28 +263,13 @@ const NSingleTicketDetails = (props: Props) => {
         setValue(newValue);
     };
 
-    const handleNext = () => {
-        if (currentQuestionIndex < questions.length - 1) {
-            setActiveStep((prevActiveStep) => prevActiveStep + 1);
-            setCurrentQuestionIndex((prevIndex) => prevIndex + 1);
-        }
-    };
+  
 
-    const handleBack = () => {
-        setActiveStep((prevActiveStep) => prevActiveStep - 1);
-        setCurrentQuestionIndex((prevIndex) => prevIndex - 1);
-    };
+ 
 
-    const handleClose = () => {
-        setOpen(false);
-    };
+  
 
-    const handleResponseClick = (response) => {
-        setSelectedResponses((prevSelectedResponses) => ({
-            ...prevSelectedResponses,
-            [currentQuestionIndex]: response
-        }));
-    };
+
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
@@ -624,9 +533,9 @@ const NSingleTicketDetails = (props: Props) => {
 
     const avatars = [
         { id: 1, src: Avatar1, alt: "User 1", name: "Robert Fox" },
-        { id: 2, src: Avatar2, alt: "User 2", name: "Floyd Miles" },
+        { id: 2, src: NewAvatar, alt: "User 2", name: "Floyd Miles" },
         { id: 3, src: Avatar1, alt: "User 3", name: "Dianee Russel" },
-        { id: 4, src: Avatar2, alt: "User 4", name: "Jack Andreson" },
+        { id: 4, src: NewAvatar, alt: "User 4", name: "Jack Andreson" },
         { id: 6, src: Avatar1, alt: "User 5", name: "Will Smith" }
     ];
 
@@ -692,7 +601,7 @@ const NSingleTicketDetails = (props: Props) => {
                                 alignItems="center"
                             >
                                 <span className='avatar'> <Avatar src={Avatar1} alt="User 1" /></span>
-                                <span className='avatar2 avatar'> <Avatar src={Avatar2} alt="User 2" /></span>
+                                <span className='avatar2 avatar'> <Avatar src={NewAvatar} alt="User 2" /></span>
                                 <span className='DropDownArrow' >
                                     <img
                                         src={DropDownArrow}
@@ -725,7 +634,7 @@ const NSingleTicketDetails = (props: Props) => {
                             <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                 <Stack className="Ticket-Assignee-item" >
                                     <Stack className="Ticket-Assignee-subItem" >
-                                        <Stack className="Ticket-Assignee-avatar"><img src={Avatar2} alt="User 2" /></Stack>
+                                        <Stack className="Ticket-Assignee-avatar"><img src={NewAvatar} alt="User 2" /></Stack>
                                         <Stack className="Ticket-Assignee-Name">Jenny Wilson</Stack>
                                     </Stack>
                                     <Stack className="Ticket-Assignee-Owner">Ticket Owner</Stack>

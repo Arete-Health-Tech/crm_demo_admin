@@ -137,6 +137,9 @@ const MessagingWidget = (props: Props) => {
     }
   }, [messages]);
 
+
+  console.log(messages," tiis is whatsapp coming messages")
+
   return (
     <>
       <Box className={whtsappExpanded ? styles.openedModal : ''}>

@@ -6,6 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { iTicket } from '../../../types/store/ticket';
 import useTicketStore from '../../../store/ticketStore';
+import { Stack } from 'react-bootstrap';
 
 interface PatientData {
     patientTicket: iTicket[];
@@ -98,31 +99,40 @@ const PatientCard = (props) => {
 
 
     return (
-        <Box >
-            <Card sx={{ display: 'flex', flexDirection: 'row', padding: '12px 7px 28px 12px', borderRadius: '15px' }}>
-                <CardContent sx={{ flex: '1 0 auto', wordSpacing: '2px' }}>
-                    <Typography component="div" variant="h6">
-                        <span style={{ color: "grey", fontSize: '19px' }}>Patient Name:</span> <span style={{ color: "black", fontSize: '19px', fontWeight: "bold" }}>{patientData.patientName}</span>
-                    </Typography>
-                    <Typography variant="subtitle1" color="text.secondary" component="div">
-                        <span style={{ color: "grey", fontSize: '15px' }}>Uhid:</span> <span style={{ color: "black", fontSize: '15px' }}>{patientData.uhid}</span>
-                    </Typography>
-                    {!isGender && (
-                        <Typography variant="subtitle1" color="text.secondary" component="div">
-                            <span style={{ color: "grey", fontSize: '15px' }}>Gender:</span> <span style={{ color: "black", fontSize: '15px' }}>{patientData.gender}</span>
-                        </Typography>
-                    )}
-                    {!isAge && (
-                        <Typography variant="subtitle1" color="text.secondary" component="div">
-                            <span style={{ color: "grey", fontSize: '15px' }}>Age:</span> <span style={{ color: "black", fontSize: '15px' }}>{patientData.age}</span>
-                        </Typography>
-                    )}
-                    <Typography variant="subtitle1" color="text.secondary" component="div">
-                        <span style={{ color: "grey", fontSize: '15px' }}>Mobile Number:</span> <span style={{ color: "black", fontSize: '15px' }}>{patientData.phone}</span>
-                    </Typography>
-                </CardContent>
-            </Card>
+        <>  <Box className='patient-card-container'>
+            <Stack className='patient-card-head'>Patient Details</Stack>
+            <Stack className='patient-card-detail'>
+
+                <Stack className='patient-card-detail-left'>
+                    <Stack className='patient-card-info'>
+                        <Stack className='patient-card-info-title'>Name </Stack>
+                        <Stack className='patient-card-info-data'>{patientData.patientName} </Stack>
+                    </Stack>
+                    {!isAge && (<Stack className='patient-card-info'>
+                        <Stack className='patient-card-info-title'>Age</Stack>
+                        <Stack className='patient-card-info-data'>{patientData.age} </Stack>
+                    </Stack>)}
+                    <Stack className='patient-card-info'>
+                        <Stack className='patient-card-info-title'>Phone Number </Stack>
+                        <Stack className='patient-card-info-data'>{patientData.phone} </Stack>
+                    </Stack>
+                </Stack>
+
+                <Stack className='patient-card-detail-right'>
+                    <Stack className='patient-card-info'>
+                        <Stack className='patient-card-info-title'>UHID</Stack>
+                        <Stack className='patient-card-info-data'>#{patientData.uhid}</Stack>
+                    </Stack>
+                    {!isGender && (<Stack className='patient-card-info'>
+                        <Stack className='patient-card-info-title'>Gender</Stack>
+                        <Stack className='patient-card-info-data'>{patientData.gender} </Stack>
+                    </Stack>)}
+                </Stack>
+            </Stack>
         </Box>
+
+
+        </>
     );
 }
 

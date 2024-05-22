@@ -1646,7 +1646,7 @@
 .ticket-card-line3 {
     display: flex;
     flex-direction: row !important;
-    padding: 8px 0 8px 0;
+    padding: 8px 0 0px 0;
     flex-direction: column;
     justify-content: flex-start;
     align-items: flex-start;
@@ -1679,6 +1679,26 @@
     font-weight: 400;
     line-height: 150%;
     /* 18px */
+    padding: 4px 0 0px 0;
+}
+
+.ticket-card-notification {
+
+    display: flex;
+    width: 18px;
+    height: 18px;
+    padding: 12.5px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border-radius: 20px;
+    background: var(--Alerts-Red, #F94839);
+    color: var(--Background-White, #FFF);
+    text-align: center;
+    font-family: Outfit, sans-serif;
+    font-size: 10px;
+    font-style: normal;
+    font-weight: 500;
 }
 
 .linear-progress {

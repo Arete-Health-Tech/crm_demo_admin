@@ -155,7 +155,7 @@ export default function ResponsiveDrawer(props: Props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', height: "100%", background: "#F6F7F9" }}>
       <CssBaseline />
       {/* <AppBar
         position="fixed"
@@ -222,8 +222,9 @@ export default function ResponsiveDrawer(props: Props) {
         sx={{
           flexGrow: 1,
           p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          background: '#EFFAF5'
+          // width: { sm: `calc(100% - ${drawerWidth}px)` },
+          width: '100%',
+          background: '#F6F7F9'
         }}
       >
         <Toolbar />
@@ -236,8 +237,8 @@ export default function ResponsiveDrawer(props: Props) {
     const { icon, title, submenu, link } = item;
     const [isOpen, setIsOpen] = React.useState(false);
     const navigate = useNavigate();
-    
-   
+
+
 
     return (
       <Stack>

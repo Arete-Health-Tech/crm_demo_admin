@@ -545,7 +545,8 @@ const Ticket = () => {
       <Box height={'100vh'} display="flex" position="fixed" width="100%" >
         <Box bgcolor="#F6F7F9" width="23%" position="sticky" top={0} p={'2rem 0.5rem 2rem 0.5rem'}>
           <Box
-            p={1}
+            px={1}
+
             height={'17vh'}
             display={'flex'}
             flexDirection={"column"}
@@ -583,10 +584,11 @@ const Ticket = () => {
               </Stack>
               <Stack display={'flex'}
                 flexDirection={"row"}
-              > <Stack sx={{
-                marginTop: "5px",
-                marginRight: "10px"
-              }}><img src={ToggleIcon} alt='switch View' /></Stack>
+              >
+                <Stack sx={{
+                  marginTop: "5px",
+                  marginRight: "10px"
+                }}><img src={ToggleIcon} alt='switch View' /></Stack>
                 <Stack sx={{
                   marginTop: "5px",
                   color: "#000",
@@ -656,7 +658,7 @@ const Ticket = () => {
           <Box
             position="relative"
             p={1}
-            height={'74vh'}
+            height={'71vh'}
             sx={{
               overflowY: 'scroll',
               '&::-webkit-scrollbar ': {

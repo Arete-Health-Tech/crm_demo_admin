@@ -8,11 +8,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Button from '@mui/material/Button';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import PatientCard from './PatientCard';
-import DoctorCard from './DoctorCard';
 import { ButtonGroup, Stack } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -20,10 +16,24 @@ import useTicketStore from '../../../store/ticketStore';
 import ShowPrescription from '../../ticket/widgets/ShowPrescriptionModal';
 import { iTicket } from '../../../types/store/ticket';
 import { getPharmcyTicketHandler } from '../../../api/ticket/ticketHandler';
+import BackArrowIcon from '../../../assets/arrow-left.svg';
+import '../orderList.css';
+import useServiceStore from '../../../store/serviceStore';
+import { getDoctors } from '../../../api/doctor/doctor';
+import { getDepartments } from '../../../api/department/department';
 
 interface PatientData {
     patientTicket: iTicket[];
 }
+
+interface DoctorData {
+    admissionType: string;
+    diagonstics: string[];
+    diagonsticType: string;
+    docName: string;
+    deptName: string;
+}
+
 
 interface RowData {
     prescription: JSX.Element;
@@ -40,24 +50,20 @@ const createData = (
 };
 
 const StyledTableHead = styled(TableHead)(({ theme }) => ({
-    backgroundColor: "rgba(146, 143, 143, 0.183)",
-    borderRadius: '15px',
-    fontWeight: 'bold',
+
     '& th': {
-        padding: '20px',
-        fontSize: '16px',
-        fontWeight: 'bold',
-        textTransform: 'uppercase',
+        padding: ' 15px 20px',
+        fontSize: '14px',
     },
 }));
 
 const StyledTableRow = styled(TableRow)(({ theme }) => ({
     '& td': {
-        padding: '20px',
-        fontSize: '15px',
+        padding: '15px 20px',
+        fontSize: '14px',
     },
     '&:hover': {
-        backgroundColor: theme.palette.action.hover, // Change color on hover
+        backgroundColor: "#F6F7F9",
     },
 }));
 
@@ -67,6 +73,14 @@ const OrderDetailContainer = () => {
     const { uid } = useParams();
     const navigate = useNavigate();
     const [orderStatus, setOrderStatus] = React.useState<string | null>(null);
+    const { departments, doctors, setDoctors, setDepartments } = useServiceStore();
+    const [doctorData, setDoctorData] = React.useState<DoctorData>({
+        admissionType: localStorage.getItem('admissionType') || '',
+        diagonstics: JSON.parse(localStorage.getItem('diagonstics') || '[]') as string[], // Parse as array
+        diagonsticType: localStorage.getItem('diagnosticType') || '',
+        docName: localStorage.getItem('docName') || '',
+        deptName: localStorage.getItem('deptName') || '',
+    });
 
     React.useEffect(() => {
         async function fetchData() {
@@ -115,94 +129,198 @@ const OrderDetailContainer = () => {
         });
     }, [pharmcyTicket]);
 
+
+    React.useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const [fetchedDoctors, fetchedDepartments] = await Promise.all([getDoctors(), getDepartments()]);
+                setDoctors(fetchedDoctors);
+                setDepartments(fetchedDepartments);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, [setDoctors, setDepartments]);
+
+    React.useEffect(() => {
+        const filteredTickets = tickets.filter(item => item.consumer[0].uid === uid);
+        if (doctors && departments && filteredTickets.length > 0) {
+            const specificTicket = filteredTickets[0];
+            let diagonstics: string[] = [];
+            const admissionType = specificTicket?.prescription[0]?.admission;
+            try {
+                if (specificTicket?.prescription[0]?.diagnostics.length > 0) {
+                    for (let i = 0; i < specificTicket?.prescription[0]?.diagnostics.length; i++) {
+                        diagonstics.push(specificTicket?.prescription[0]?.diagnostics[i]);
+                    }
+                }
+
+            } catch (error) {
+                console.error('Error processing diagnostics:', error);
+            }
+
+
+            const diagonsticType = specificTicket?.prescription[0]?.diagnostics[0];
+            const docName = fetchDoctorName(specificTicket);
+            const depName = fetchDepartmentName(specificTicket);
+
+            setDoctorData({
+                admissionType: admissionType,
+                diagonstics: diagonstics,
+                diagonsticType: diagonsticType,
+                docName: docName,
+                deptName: depName,
+            });
+            localStorage.setItem('admissionType', admissionType);
+            localStorage.setItem('diagonstics', JSON.stringify(diagonstics));
+            localStorage.setItem('diagonsticType', diagonsticType);
+            localStorage.setItem('docName', docName);
+            localStorage.setItem('deptName', depName);
+        }
+    }, [uid, tickets, doctors, departments]);
+
+    const fetchDoctorName = (ticket: iTicket) => {
+        const specificDoctorId = ticket?.prescription[0]?.doctor;
+        const specificDoctor = doctors?.find(doc => doc._id === specificDoctorId);
+        return specificDoctor ? formatDoctorName(specificDoctor.name) : 'Unknown Doctor';
+    };
+
+    const fetchDepartmentName = (ticket: iTicket) => {
+        const specificDepartmentId = ticket?.prescription[0]?.departments?.[0];
+        const specificDepartment = departments?.find(dep => dep._id === specificDepartmentId);
+        return specificDepartment ? formatDepartmentName(specificDepartment.name) : 'Unknown Department';
+    };
+
+    const formatDoctorName = (name: string) => {
+        let formattedName = name.split(/\s+/)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+
+        const titleIndex = formattedName.indexOf('Dr.');
+        if (titleIndex !== -1 && titleIndex + 3 < formattedName.length) {
+            const title = formattedName.slice(0, titleIndex + 3);
+            const firstName = formattedName.slice(titleIndex + 3);
+            formattedName = `${title} ${firstName}`;
+        }
+
+        return formattedName;
+    };
+
+    const formatDepartmentName = (name: string) => {
+        return name.split(/\s+/)
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+            .join(' ');
+    };
+
     return (
         <>
-            <Box sx={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                padding: '2vh 5vw 0 5vw',
-                backgroundColor: '#ESE7EB',
-                marginTop: '11vh',
-            }}>
-                <Typography
-                    variant="h4"
-                    component="h3"
-                    mb={2}
-                    sx={{
-                        fontSize: '32px',
-                        fontWeight: 'bold'
-                    }}>
-                    Patient Order History
-                </Typography>
-                <ButtonGroup variant="contained" aria-label="Basic button group">
-                    <Button
-                        sx={{
-                            fontWeight: 'bold',
-                            // marginRight: '5px'
-                        }}
-                        onClick={() => navigate('/')}
-                    > <ArrowBackIcon /> Back
-                    </Button>
-                    {/* <Button
-                        sx={{
-                            fontWeight: 'bold'
-                        }}
-                    > {orderStatus}
-                        <KeyboardArrowDownIcon />
-                    </Button> */}
-                </ButtonGroup>
-            </Box>
-            <Box sx={{
-                padding: '5px 60px',
-            }}>
-                <Box sx={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    marginTop: '18px',
-                    marginBottom: '30px',
-                }} >
-                    <Stack sx={{ width: 750 }}><PatientCard uid={uid} /></Stack>
-                    <Stack sx={{ width: 750 }}> <DoctorCard uid={uid} /></Stack>
+            <Box className="view-history-container">
+                <Box className="view-history-head">
+                    <Stack onClick={() => navigate('/OrderList')}>
+                        <img src={BackArrowIcon} />
+                    </Stack>
+                    <Stack className="orderListBody-title">
+                        Patient Order History
+                    </Stack>
                 </Box>
-                <Box
-                    sx={{
-                        padding: '32px 40px',
-                        marginTop: '8px',
-                        backgroundColor: 'white',
-                        borderRadius: '15px',
-                    }}
-                >
-                    <Typography variant="h5" component="h2" mb={2} sx={{ fontSize: '28px' }}>
-                        Order Details
-                    </Typography>
-                    <TableContainer sx={{
-                        minWidth: 650,
-                        borderRadius: '10px',
-                        marginTop: '25px',
-                    }}>
-                        <Table aria-label="simple table">
-                            <StyledTableHead>
-                                <TableRow>
-                                    <TableCell align="center">Prescription</TableCell>
-                                    <TableCell align="center">Order DATE</TableCell>
-                                    <TableCell align="center">Order Status</TableCell>
-                                </TableRow>
-                            </StyledTableHead>
-                            <TableBody>
-                                {PatientDetail.map((row, index) => (
-                                    <StyledTableRow key={index}>
-                                        <TableCell align="center">{row.prescription}</TableCell>
-                                        <TableCell align="center">{row.orderDate}</TableCell>
-                                        <TableCell align="center">{row.orderStatus}</TableCell>
-                                    </StyledTableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </TableContainer>
+
+                <Box className="patient-history-container">
+
+                    <Box sx={{ width: 750 }}><PatientCard uid={uid} /></Box>
+                    {/* <Stack sx={{ width: 750 }}> <DoctorCard uid={uid} /></Stack> */}
+
+                    <Box>
+                        <TableContainer>
+                            <Table aria-label="simple table">
+                                <StyledTableHead>
+                                    <TableRow>
+                                        <TableCell
+                                            sx={{
+                                                fontFamily: 'Outfit,sans-serif',
+                                                fontSize: '14px',
+                                                color: '#647491',
+                                            }}
+                                            align="left">
+                                            Order date
+                                        </TableCell>
+                                        <TableCell
+                                            sx={{
+                                                fontFamily: 'Outfit,sans-serif',
+                                                fontSize: '14px',
+                                                color: '#647491',
+                                            }}
+                                            align="left">Prescription</TableCell>
+                                        <TableCell
+                                            sx={{
+                                                fontFamily: 'Outfit,sans-serif',
+                                                fontSize: '14px',
+                                                color: '#647491',
+
+                                            }}
+                                            align="left">Doctor name</TableCell>
+                                        <TableCell
+                                            sx={{
+                                                fontFamily: 'Outfit,sans-serif',
+                                                fontSize: '14px',
+                                                color: '#647491',
+
+                                            }}
+                                            align="left">Speciality</TableCell>
+                                        <TableCell
+                                            sx={{
+                                                fontFamily: 'Outfit,sans-serif',
+                                                fontSize: '14px',
+                                                color: '#647491',
+                                            }}
+                                            align="left">Order status</TableCell>
+                                    </TableRow>
+                                </StyledTableHead>
+                                <TableBody>
+                                    {PatientDetail.map((row, index) => (
+                                        <StyledTableRow key={index}>
+                                            <TableCell
+                                                sx={{
+                                                    color: "#080F1A",
+                                                    fontFamily: 'Outfit,sans-serif',
+                                                    fontSize: '14px',
+                                                }}
+                                                align="left">{row.orderDate}</TableCell>
+                                            <TableCell
+                                                align="left">{row.prescription}</TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    color: "#080F1A",
+                                                    fontFamily: 'Outfit,sans-serif',
+                                                    fontSize: '14px',
+                                                    textTransform: "capitalize"
+                                                }}
+                                                align="left">{doctorData.docName}</TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    color: "#080F1A",
+                                                    fontFamily: 'Outfit,sans-serif',
+                                                    fontSize: '14px',
+                                                    textTransform: "capitalize"
+                                                }}
+                                                align="left">{doctorData.deptName}</TableCell>
+                                            <TableCell
+                                                sx={{
+                                                    color: "#080F1A",
+                                                    fontFamily: 'Outfit,sans-serif',
+                                                    fontSize: '14px',
+                                                }} align="left">{row.orderStatus}</TableCell>
+
+                                        </StyledTableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Box>
                 </Box>
             </Box>
+
         </>
     );
 }

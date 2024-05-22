@@ -4,6 +4,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 export default function ChartThree({ dnd, pending, todaysTask, callCompleted, reschedule }) {
   return (
     <BarChart
+
       xAxis={[
         {
           id: 'barCategories',
@@ -11,7 +12,7 @@ export default function ChartThree({ dnd, pending, todaysTask, callCompleted, re
             'DND',
             'Pending',
             'Today Task',
-            'Call Completed',
+            'CallCompleted',
             'Reschedule'
           ],
           scaleType: 'band'
@@ -22,8 +23,9 @@ export default function ChartThree({ dnd, pending, todaysTask, callCompleted, re
           data: [dnd, pending, todaysTask, callCompleted, reschedule]
         }
       ]}
-      width={550}
-      height={450}
+      width={540}
+      height={400}
+      sx={{ fontSize: "12px", fontFamily: "Outfit,sans-serif" }}
     />
   );
 }

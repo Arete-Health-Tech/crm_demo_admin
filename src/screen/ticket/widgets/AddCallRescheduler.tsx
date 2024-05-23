@@ -148,7 +148,6 @@ const AddCallRescheduler = ({
   const checkIsEmpty = () => {
     if (
       callReschedulerData.title.length > 0 &&
-      callReschedulerData.description.length > 0 &&
       date.length > 0 &&
       time.length > 0
     ) {
@@ -165,7 +164,7 @@ const AddCallRescheduler = ({
       ...callReschedulerData,
       date: dayjs(date + ' ' + time).unix() * 1000
     });
-  }, [date, time, callReschedulerData.description.length, callReschedulerData.title.length]);
+  }, [date, time, callReschedulerData.title.length]);
 
   const addCAllRescheduler = async () => {
     try {

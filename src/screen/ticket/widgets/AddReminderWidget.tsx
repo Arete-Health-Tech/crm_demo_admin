@@ -123,7 +123,6 @@ const AddReminderWidget = ({
   const checkIsEmpty = () => {
     if (
       reminderData.title.length > 0 &&
-      reminderData.description.length > 0 &&
       date.length > 0 &&
       time.length > 0
     ) {
@@ -241,7 +240,6 @@ const AddReminderWidget = ({
                   ...prev,
                   description: e.target.value
                 }));
-                checkIsEmpty();
               }}
               minRows={5}
               maxRows={5}

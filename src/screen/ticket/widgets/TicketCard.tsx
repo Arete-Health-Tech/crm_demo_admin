@@ -13,7 +13,7 @@ import { iStage } from '../../../types/store/service';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import DNP from '../../../../src/assets/DNP.png'
+import DnpIcon from '../../../../src/assets/DNP-icon.svg'
 import MediumPr from '../../../../src/assets/MediumPr.svg'
 import LowPr from '../../../../src/assets/LowPr.svg'
 import HighPr from '../../../../src/assets/HighPr.svg'
@@ -236,7 +236,11 @@ const TicketCard = (props: Props) => {
             </>)
           }
 
-          {/* <Stack><img src={DNP} /></Stack> */}
+          <Stack sx={{
+            width: "18px",
+            height: "18px"
+          }}
+          ><img src={DnpIcon} /></Stack>
 
         </Stack>
 

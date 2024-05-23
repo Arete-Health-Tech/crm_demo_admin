@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Button, Menu, MenuItem, Modal, Typography } from "@mui/material";
+import { Button, Menu, MenuItem, Modal, Stack, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import AddReminderWidget from "../widgets/AddReminderWidget";
 import AddCallRescheduler from "../widgets/AddCallRescheduler";
@@ -56,7 +56,7 @@ const TaskBar = () => {
                     },
                 }}
             >
-                <p> + </p>New Task
+                <Stack display={'flex'} flexDirection={'row'} gap={'3px'}><Stack> + </Stack><Stack>New Task</Stack></Stack>
             </Button>
             <div style={{ borderRadius: '20px', overflow: 'hidden' }}>
                 <Menu

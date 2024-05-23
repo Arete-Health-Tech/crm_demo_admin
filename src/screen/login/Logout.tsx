@@ -28,7 +28,8 @@ const StyledMenu = styled((props: MenuProps) => (
 ))(({ theme }) => ({
   '& .MuiPaper-root': {
     borderRadius: 6,
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(-4),
+    marginLeft: '40px',
     minWidth: 180,
     color:
       theme.palette.mode === 'light'
@@ -43,7 +44,7 @@ const StyledMenu = styled((props: MenuProps) => (
       '& .MuiSvgIcon-root': {
         fontSize: 18,
         color: theme.palette.text.secondary,
-        marginRight: theme.spacing(1.5)
+        marginRight: theme.spacing(4)
       },
       '&:active': {
         backgroundColor: alpha(
@@ -86,7 +87,7 @@ const Logout = (props: Props) => {
         aria-expanded={open ? 'true' : undefined}
         disableElevation
         onClick={handleClick}
-        // endIcon={<KeyboardArrowDownIcon />}
+      // endIcon={<KeyboardArrowDownIcon />}
       >
         <Avatar sx={{ fontSize: '1rem', bgcolor: 'orange' }}>
           {user?.firstName[0]}
@@ -102,7 +103,7 @@ const Logout = (props: Props) => {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleLogout} disableRipple>
+        <MenuItem sx={{ margonRight: "-20px" }} onClick={handleLogout} disableRipple>
           Logout
         </MenuItem>
       </StyledMenu>

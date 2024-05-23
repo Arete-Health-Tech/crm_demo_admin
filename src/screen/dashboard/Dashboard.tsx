@@ -238,7 +238,7 @@ const Dashboard = (props: Props) => {
   ];
 
   return (
-    <div>
+    <Box width={"92vw"} height={"86vh"} sx={{ display: 'flex', flexDirection: 'column', padding: "0px 0px 0px 150px", }}>
       <Grid container spacing={1}>
         {cardsData.map((card) => (
           <Grid item key={card.id} xs={12} sm={6} md={2} lg={2} xl={2}>
@@ -259,14 +259,14 @@ const Dashboard = (props: Props) => {
           </Grid>
         ))}
       </Grid>
-      <Grid container spacing={2} sx={{ marginTop: '45px', padding: '45px 0px' }}>
+      <Grid container spacing={2} sx={{ marginTop: '45px', padding: '45px 0px', }}>
         {/* Grid item for PieChart */}
-        <Grid item xs={8} sm={2}>
-          {/* <PieChart /> */}
-        </Grid>
+        {/* <Grid item xs={8} sm={2}> */}
+        {/* <PieChart /> */}
+        {/* </Grid> */}
 
         {/* Grid item for ChartTwo */}
-        <Grid item xs={12} sm={4}>
+        <Grid item xs={12} sm={5}>
           <PieChart
             newLead={newLead}
             contacted={contacted}
@@ -289,7 +289,7 @@ const Dashboard = (props: Props) => {
         </Grid>
       </Grid>
 
-    </div>
+    </Box >
   );
 };
 

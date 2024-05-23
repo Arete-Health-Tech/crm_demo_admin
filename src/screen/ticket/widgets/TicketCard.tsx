@@ -236,7 +236,7 @@ const TicketCard = (props: Props) => {
             </>)
           }
 
-          {/* <Stack><img src={DNP} /></Stack> */}
+          <Stack><img src={DNP} /></Stack>
 
         </Stack>
 

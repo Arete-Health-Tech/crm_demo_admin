@@ -57,6 +57,7 @@ import '../../screen/ticket/singleTicket.css'
 import ToggleIcon from '../../../src/assets/Toggle.svg'
 import ExpandedModal from '../../screen/ticket/widgets/whatsapp/ExpandedModal';
 import ExpandedSmsModal from '../../screen/ticket/widgets/SmsWidget/ExpandedSmsModal';
+import ExpandedPhoneModal from '../../screen/ticket/widgets/PhoneWidget/ExpandedPhoneModal';
 
 // .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
@@ -844,6 +845,7 @@ const Ticket = () => {
       </Box >
       <ExpandedModal />
       <ExpandedSmsModal />
+      <ExpandedPhoneModal />
     </>
   );
 };

@@ -552,7 +552,7 @@ const OrderListBody = () => {
                         <>
                             <Stack className='OrderType-card' sx={{ borderLeft: card.id !== 1 ? "1px solid var(--Borders-Light-Grey, #D4DBE5)" : "none" }}>
                                 <Stack className='OrderType-card-title'>{card.title}</Stack>
-                                <Stack className='OrderType-card-value'>{card.content}</Stack>
+                                <Stack className='OrderType-card-value'>{card.content ? card.content : 0}</Stack>
                             </Stack>
                         </>
 

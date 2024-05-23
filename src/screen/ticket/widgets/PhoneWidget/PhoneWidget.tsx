@@ -7,8 +7,11 @@ import expandIcon from '../../../../assets/expandIcon.svg';
 import collapseIcon from '../../../../assets/collapseIcon.svg';
 import { Button } from 'react-bootstrap';
 import useTicketStore from '../../../../store/ticketStore';
+import CloseModalIcon from '../../../../assets/CloseModalIcon.svg';
+
 
 const PhoneWidget = () => {
+    const { setPhoneModal, phoneModal } = useTicketStore();
     const [sendMessage, setSendMessage] = useState('');
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
@@ -31,10 +34,10 @@ const PhoneWidget = () => {
 
     return (
         <>
-            <Box>
+            <Box className={phoneModal ? styles.openedModal : ''}>
                 {/* this is the modal close icon  */}
 
-                {/* {smsModal && (
+                {phoneModal && (
                     <Stack
                         className={styles.reminder_modal_title}
                         direction="row"
@@ -42,16 +45,16 @@ const PhoneWidget = () => {
                         display="flex"
                         alignItems="center"
                     >
-                        <Stack>SMS</Stack>
+                        <Stack>Phone Call</Stack>
 
                         <Stack
                             className={styles.modal_close}
-                            onClick={() => setSmsModal(false)}
+                            onClick={() => setPhoneModal(false)}
                         >
                             <img src={CloseModalIcon} alt="" />
                         </Stack>
                     </Stack>
-                )} */}
+                )}
 
                 {/* Box for showing audio */}
                 <Box height={'40vh'}>
@@ -91,8 +94,22 @@ const PhoneWidget = () => {
                     bgcolor="white"
                     height={'25%'}
                 >
-                    <Box display={'flex'} justifyContent={'end'} marginTop={1} paddingRight={2}>
-                        <img src={expandIcon} alt='' />
+                    <Box display={'flex'} justifyContent={'end'} marginTop={4} paddingRight={2}>
+                        {phoneModal ? (
+                            <img
+                                src={collapseIcon}
+                                alt=""
+                                style={{ marginTop: -35, cursor: 'pointer' }}
+                                onClick={() => setPhoneModal(false)}
+                            />
+                        ) : (
+                            <img
+                                src={expandIcon}
+                                alt=""
+                                style={{ marginTop: -35, cursor: 'pointer' }}
+                                onClick={() => setPhoneModal(true)}
+                            />
+                        )}
                     </Box>
                     <Box display={'flex'} justifyContent={'center'} color={'#647491'} fontFamily={'Outfit, sans-serif'} fontSize={'1rem'} fontWeight={400}>
                         This a guided text will be added

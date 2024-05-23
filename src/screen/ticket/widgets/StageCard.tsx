@@ -484,7 +484,7 @@ const StageCard = (props: Props) => {
               </span> {' '}
             </Box>
           </Stack>
-          <Stack marginRight="5px !important">
+          {/* <Stack marginRight="5px !important">
             <FormControl variant="standard">
               <Select
                 size="small"
@@ -521,7 +521,41 @@ const StageCard = (props: Props) => {
                 })}
               </Select>
             </FormControl>
-          </Stack>
+          </Stack> */}
+          <Box>
+            {validStageList?.map(({ name, parent, code }: iStage, index) => {
+              if ([changeStageName, nextStage].includes(name)) {
+                return (
+                  <Box
+                    color={'#0566FF'}
+                    fontSize={'0.875rem'}
+                    fontWeight={400}
+                    fontFamily={'OutFit,san-serif'}
+                    lineHeight={'150%'}
+                    paddingLeft={'0.5rem'}
+                  >
+                    {name}
+                  </Box>
+                )
+              }
+              // return (
+              //   parent === null && (
+              //     <MenuItem
+              //       value={name}
+              //       disabled={![changeStageName, nextStage].includes(name)}
+              //       sx={{
+              //         fontFamily: `"OutFit",sans-serif`,
+              //         fontSize: "14px",
+              //         fontWeight: "400",
+              //         color: "black"
+              //       }}
+              //     >
+              //       {name}
+              //     </MenuItem>
+              //   )
+              // );
+            })}
+          </Box>
 
 
         </Box>

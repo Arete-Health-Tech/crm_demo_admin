@@ -99,7 +99,7 @@ import RemainderAll from './widgets/RemainderAll';
 import SingleTicketSideBar from './SingleTicketSideBar/SingleTicketSideBar';
 import TaskBar from './SingleTicketSideBar/TaskBar';
 import Avatar1 from "../../assets/Avatar.svg"
-import Avatar2 from "../../assets/Avatar2.svg"
+import Avatar2 from "../../assets/avatar2.svg"
 import DropDownArrow from "../../assets/DropdownArror.svg"
 import KebabMenu from "../../assets/KebabMenu.svg"
 import AddAssigneeIcon from "../../assets/add.svg"
@@ -850,7 +850,8 @@ const NSingleTicketDetails = (props: Props) => {
                                 borderBottom: 1,
                                 borderColor: 'divider',
                                 display: 'flex',
-                                justifyContent: 'space-around'
+                                justifyContent: 'space-around',
+                                
                             }}
                             bgcolor="white"
                         >
@@ -874,7 +875,9 @@ const NSingleTicketDetails = (props: Props) => {
                                     label={<Badge badgeContent={4} sx={{
                                         "& .MuiBadge-badge": {
                                             color: "#FFF",
-                                            backgroundColor: "#F94839"
+                                            backgroundColor: "#F94839",
+                                            margin:'-3px',
+                                            fontSize: '10px',
                                         }
                                     }}>
                                         Whatsapp
@@ -892,10 +895,15 @@ const NSingleTicketDetails = (props: Props) => {
                                     }
                                 /> */}
                                 <Tab
-                                    label={<Badge badgeContent={4} sx={{
+                                    label={<Badge badgeContent={8} sx={{
                                         "& .MuiBadge-badge": {
                                             color: "#FFF",
-                                            backgroundColor: "#F94839"
+                                            backgroundColor: "#F94839",
+                                            margin:'-6px',
+                                            marginRight:'-8px',
+                                            marginTop:'1px',
+                                            fontSize: '10px',
+                                            
                                         }
                                     }}>
                                         SMS
@@ -909,7 +917,9 @@ const NSingleTicketDetails = (props: Props) => {
                                     label={<Badge badgeContent={4} sx={{
                                         "& .MuiBadge-badge": {
                                             color: "#FFF",
-                                            backgroundColor: "#F94839"
+                                            backgroundColor: "#F94839",
+                                            margin:'-3px',
+                                            fontSize: '10px',
                                         }
                                     }}>
                                         Phone Calls

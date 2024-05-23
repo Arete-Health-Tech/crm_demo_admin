@@ -432,7 +432,7 @@ const Estimate = (props: Props) => {
   return (
     <>
       <>
-        <MenuItem sx={menuItemStyles} onClick={() => setIsEstimateOpen(true)} > <Stack >Create Estimate</Stack></MenuItem>
+        <MenuItem sx={menuItemStyles} onClick={() => setIsEstimateOpen(true)} > <Stack >Create Estimation</Stack></MenuItem>
         <MenuItem sx={menuItemStyles} onClick={handleOpen} > Skip Estimate</MenuItem>
         <MenuItem sx={{
           color: " #F94839",

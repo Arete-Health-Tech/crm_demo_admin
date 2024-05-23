@@ -283,7 +283,7 @@ const NotesWidget = (props: Props) => {
             display="flex"
             alignItems="center"
           >
-            <Stack>SMS</Stack>
+            <Stack>Notes</Stack>
             <Stack
               className={styles.modal_close}
               onClick={() => (setNotesModal(false), setNote(''))}

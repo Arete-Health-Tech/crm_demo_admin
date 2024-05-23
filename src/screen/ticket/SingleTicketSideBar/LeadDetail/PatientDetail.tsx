@@ -318,7 +318,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                         <Box p={1} className='Payment-value'>No Estimate Available</Box>
                     </Box>
                 )}
-                <Stack className='View-Estimation' onClick={fetchPdfUrl}>View Estimations</Stack>
+                <Stack className='View-Estimation' onClick={fetchPdfUrl}>View Estimate</Stack>
                 {showAlert && (
 
                     <Snackbar

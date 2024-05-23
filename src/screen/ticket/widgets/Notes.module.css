@@ -156,6 +156,7 @@
   font-weight: 500;
   line-height: 150%; /* 1.3125rem */
   cursor: pointer;
+  
 }
 .createNoteActive {
   display: flex;
@@ -175,6 +176,7 @@
   font-style: normal;
   font-weight: 500;
   line-height: 150%; /* 1.3125rem */
+  
 }
 .notestextArea {
   display: flex;
@@ -186,6 +188,7 @@
   border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
   background: var(--Icons-White, #fff);
   margin: 0 0 0.5rem 0.5rem;
+  
 }
 .notestext {
   display: flex;
@@ -195,15 +198,17 @@
   color: var(--Text-Black, #080f1a);
   text-overflow: ellipsis;
   white-space: nowrap;
-
+  margin-left: 10px;
   /* Body/Medium */
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
   line-height: 150%; /* 1.3125rem */
+  
 }
 .notestext span {
   width: 95%;
+  
 }
 .notestext img {
   display: flex;
@@ -211,6 +216,7 @@
   width: 5%;
   height: 1rem;
   cursor: pointer;
+  margin-left: 10px;
 }
 .notesDate {
   color: var(--Text-Light-Grey, #647491);
@@ -219,6 +225,7 @@
   font-style: normal;
   font-weight: 400;
   line-height: 150%; /* 0.9375rem */
+  
 }
 .noteIcon {
   width: 1.7rem;
@@ -242,6 +249,7 @@
   margin-top: 0.5rem;
   padding-top: 0.5rem;
   border-top: 1px solid #d4dbe5;
+  margin-left: 20px;
 }
 .deleteNoteText {
   color: var(--Text-Grey, #354869);

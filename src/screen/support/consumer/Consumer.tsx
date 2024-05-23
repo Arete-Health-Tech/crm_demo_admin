@@ -161,7 +161,7 @@ const Consumer = () => {
                           to={`/consumer/${history.consumer}/estimate/${history.prescription._id}`}
                         >
                           <Button size="small" variant="contained">
-                            Create Estimate
+                          Create Estimation
                           </Button>
                         </Link>
                         <UploadComp id={history._id} />

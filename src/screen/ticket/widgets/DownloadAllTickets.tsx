@@ -45,7 +45,7 @@ const DownloadAllTickets = (props: Props) => {
       case 1:
         return "Send Engagement";
       case 2:
-        return "Create Estimate";
+        return "Create Estimation";
       case 3:
         return "Call Patient";
       case 4:

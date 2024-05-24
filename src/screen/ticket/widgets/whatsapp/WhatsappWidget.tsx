@@ -152,7 +152,7 @@ const MessagingWidget = (props: Props) => {
             alignItems="center"
           >
             {/* <NotificationAddOutlined /> */}
-            <Stack>Whtsapp</Stack>
+            <Stack>WhatsApp</Stack>
 
             <Stack
               className={styles.modal_close}

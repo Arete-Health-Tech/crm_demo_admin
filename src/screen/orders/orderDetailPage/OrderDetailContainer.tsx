@@ -218,7 +218,7 @@ const OrderDetailContainer = () => {
         <>
             <Box className="view-history-container">
                 <Box className="view-history-head">
-                    <Stack onClick={() => navigate('/OrderList')}>
+                    <Stack marginTop={'3px'} onClick={() => navigate('/OrderList')}>
                         <img src={BackArrowIcon} />
                     </Stack>
                     <Stack className="orderListBody-title">

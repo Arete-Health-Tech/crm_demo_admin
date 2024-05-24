@@ -4,6 +4,7 @@ import PatientDetail from './PatientDetail'
 import useTicketStore from '../../../../store/ticketStore'
 import { iTicket } from '../../../../types/store/ticket'
 import { useParams } from 'react-router-dom'
+import PatientRecord from './PatientRecord'
 
 interface MyComponentProps {
     isLeadDetail: boolean;
@@ -49,6 +50,12 @@ const LeadDetail: React.FC<MyComponentProps> = ({ isLeadDetail }) => {
     return (
         <Box className="leadDetail-Container">
             <PatientDetail isPatient={isLeadDetail} />
+
+            <Stack className="gray-border">
+                {/* Borders */}
+            </Stack>
+
+            <PatientRecord isPatient={isLeadDetail} />
 
             <Stack className="gray-border">
                 {/* Borders */}

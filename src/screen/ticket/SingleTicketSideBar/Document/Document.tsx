@@ -1,5 +1,5 @@
 import { Box, FormControl, InputLabel, MenuItem, Modal, Select, Stack, TextField } from '@mui/material'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import NotFoundIcon from "../../../../assets/NotFoundDocument.svg"
 import "../../singleTicket.css"
 import UploadDocumentIcon from '../../../../assets/UploadDocument.svg'
@@ -25,11 +25,24 @@ const Document = () => {
     const [disableButton, setDisableButton] = useState(true);
     const [uploadFile, setUploadFile] = useState<FileObject[]>([]);
 
+    const checkIsEmpty = () => {
+        if (
+            file !== null &&
+            fileName !== ""
+        ) {
+            setDisableButton((_) => false);
+        } else {
+            setDisableButton((_) => true);
+        }
+    };
+
     const handleOpen = () => {
         setOpen(true);
     };
 
-
+    useEffect(() => {
+        checkIsEmpty();
+    }, [file, fileName])
 
     const handleClose = () => {
         setFile(null);
@@ -40,15 +53,11 @@ const Document = () => {
 
     const handleFileChange = (event) => {
         setFile(event.target.files[0]);
-
-        if (event.target.value !== null) {
-            setDisableButton(false);
-        }
-
     };
 
     const handleFileNameChange = (event) => {
         setFileName(event.target.value);
+
     }
 
     const handleSectedOptionChange = (event) => {
@@ -89,7 +98,7 @@ const Document = () => {
                             <Stack>
                                 {uploadFile.map((doc, index) => (
                                     <Box key={index} className="Uploaded-document">
-                                        <Stack className='Uploaded-Box'><img src={documentIcon} /></Stack>
+                                        <Stack className='Uploaded-document-icon'><img width="16px" height={'16px'} src={documentIcon} /></Stack>
                                         <Box display="flex" flexDirection="column">
                                             <Stack className="Uploaded-document-fileName">{doc.fileName}</Stack>
                                             <Stack display={'flex'} flexDirection={'row'} gap={"5px"}>
@@ -147,15 +156,12 @@ const Document = () => {
                             <Stack className="file-upload-Sub">Max file size 5mb</Stack>
                         </Box>
 
-                        {file || fileName !== "" ? (
+                        {file ? (
                             <Box className="Uploaded-file">
-                                <Stack className='Uploaded-Box'><img src={documentIcon} /></Stack>
-                                <Box display="flex" flexDirection="column">
-                                    <Stack className="file-upload-title">
-                                        {fileName}
-                                    </Stack>
-                                    <Stack className="file-upload-Sub">Uploading Completing</Stack>
-                                </Box>
+                                <Stack display={"flex"} flexDirection={'row'} justifyContent={"flex-start"}>
+                                    <Stack className='Uploaded-Box'><img src={documentIcon} /></Stack>
+                                    <Stack p={'3px'} className="file-upload-Sub">File Uploaded Successfully</Stack>
+                                </Stack>
                                 <Stack p={1} sx={{ marginLeft: "250px" }}><img src={CheckedActiveIcon} /></Stack>
                             </Box>
                         ) : (
@@ -165,11 +171,11 @@ const Document = () => {
 
                         <TextField
                             required
+                            id="outlined-required"
                             label="Document Name"
                             value={fileName}
                             onChange={handleFileNameChange}
                             fullWidth
-                            multiline
                             InputLabelProps={{
                                 style: {
                                     fontSize: '14px',
@@ -218,6 +224,41 @@ const Document = () => {
                                     color: '#080F1A',
                                     fontFamily: `"Outfit",sans-serif`,
                                 }}> Estimate</MenuItem>
+                                <MenuItem className="reason-option" value="Radiology Report" sx={{
+                                    fontSize: '14px',
+                                    color: '#080F1A',
+                                    fontFamily: `"Outfit",sans-serif`,
+                                }}> Radiology Report</MenuItem>
+                                <MenuItem className="reason-option" value="TPA Report" sx={{
+                                    fontSize: '14px',
+                                    color: '#080F1A',
+                                    fontFamily: `"Outfit",sans-serif`,
+                                }}> TPA Report</MenuItem>
+                                <MenuItem className="reason-option" value="PPA Report" sx={{
+                                    fontSize: '14px',
+                                    color: '#080F1A',
+                                    fontFamily: `"Outfit",sans-serif`,
+                                }}> PPA Report</MenuItem>
+                                <MenuItem className="reason-option" value="RFA Report" sx={{
+                                    fontSize: '14px',
+                                    color: '#080F1A',
+                                    fontFamily: `"Outfit",sans-serif`,
+                                }}> RFA Report</MenuItem>
+                                <MenuItem className="reason-option" value="Payment Slip" sx={{
+                                    fontSize: '14px',
+                                    color: '#080F1A',
+                                    fontFamily: `"Outfit",sans-serif`,
+                                }}> Payment Slip</MenuItem>
+                                <MenuItem className="reason-option" value="ID Card" sx={{
+                                    fontSize: '14px',
+                                    color: '#080F1A',
+                                    fontFamily: `"Outfit",sans-serif`,
+                                }}>ID Card</MenuItem>
+                                <MenuItem className="reason-option" value="Others" sx={{
+                                    fontSize: '14px',
+                                    color: '#080F1A',
+                                    fontFamily: `"Outfit",sans-serif`,
+                                }}>Others</MenuItem>
 
                             </Select>
                         </FormControl>
@@ -240,11 +281,11 @@ const Document = () => {
                                 onClick={handleSubmit}
                                 className='reminder-btn'
                                 type='submit'
-                                // disabled={disableWonButton}
+                                disabled={disableButton}
                                 style={{
                                     marginLeft: "10px",
-                                    // backgroundColor: disableWonButton ? "#F6F7F9" : "#0566FF",
-                                    // color: disableWonButton ? "#647491" : "#FFF",
+                                    backgroundColor: disableButton ? "#F6F7F9" : "#0566FF",
+                                    color: disableButton ? "#647491" : "#FFF",
 
                                 }}
                             >

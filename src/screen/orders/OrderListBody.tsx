@@ -188,14 +188,24 @@ const OrderListBody = () => {
     let rows: Data[] = [];
 
     const columns: Column[] = [
-        { id: 'uhid', label: 'UHID', minWidth: 50 },
         {
-            id: 'date', label: 'Lead Age', minWidth: 110,
+            id: 'uhid', label: 'UHID', minWidth: 50
         },
-        { id: 'name', label: 'Name', minWidth: 100 },
-        { id: 'number', label: 'Phone Number', minWidth: 130 },
-        { id: 'doctor', label: 'Doctor', minWidth: 130 },
-        { id: 'specialty', label: 'Specialty', minWidth: 130 },
+        {
+            id: 'date', label: 'Lead Age', minWidth: 110
+        },
+        {
+            id: 'name', label: 'Name', minWidth: 100
+        },
+        {
+            id: 'number', label: 'Phone Number', minWidth: 130
+        },
+        {
+            id: 'doctor', label: 'Doctor', minWidth: 130
+        },
+        {
+            id: 'specialty', label: 'Specialty', minWidth: 130
+        },
         {
             id: 'prescription',
             label: 'Prescription',
@@ -641,10 +651,10 @@ const OrderListBody = () => {
                                                                 fontSize: "14px",
                                                                 fontStyle: "normal",
                                                                 fontWeight: "400",
-                                                                cursor: 'pointer',
+                                                                cursor: column.id === 'prescription' || column.id === 'orderStatus' ? 'default' : 'pointer',
                                                                 padding: '16px 20px 16px 20px'
                                                             }}
-                                                            onClick={() => { onClickDetail(row.uhid, row._id) }}
+                                                            onClick={column.id === 'prescription' || column.id === 'orderStatus' ? undefined : () => onClickDetail(row.uhid, row._id)}
                                                         >
                                                             {column.format ? column.format(value, handleStatusChange, onClickDetail, handleViewPrescription, row) : value}
                                                         </TableCell>

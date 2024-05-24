@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Chip, Input, Snackbar, Stack, TextField } from '@mui/material';
+import { Alert, Autocomplete, Box, Button, Chip, FormControl, Input, InputLabel, MenuItem, Select, Snackbar, Stack, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react'
 import { Form, useParams } from 'react-router-dom'
 import '../../singleTicket.css';
@@ -43,6 +43,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         tickets,
     } = useTicketStore();
 
+    console.log(doctors[0].departments[0], 'doctors');
     const initialPatientData: patientData = {
         uhid: '',
         name: '',
@@ -56,12 +57,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     const [isEditing, setIsEditing] = React.useState(false);
     const [showAlert, setShowAlert] = useState(false);
 
-    const uhid = "UHI3278631232";
-    const [name, setName] = React.useState('John Miller');
-    const [age, setAge] = React.useState("24");
-    const [gender, setGender] = React.useState('Male');
-    const [department, setDepartment] = React.useState('Oncology');
-    const [doctor, setDoctor] = React.useState('Dr. Sipos Veronika');
+    const [name, setName] = React.useState('');
 
 
     const patientName = (ticket) => {
@@ -94,20 +90,18 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     };
 
     const patientData = [
-        { id: 'uhid', label: 'UHID', value: `#${currentTicket?.consumer?.[0]?.uid}` },
-        { id: 'name', label: 'Name', value: `${patientName(currentTicket)}`, setValue: setName },
-        { id: 'age', label: 'Age', value: currentTicket?.consumer?.[0]?.age, setValue: setAge },
+        { id: 'uhid', label: 'UHID', value: `#${PatientData.uhid}` },
+        { id: 'name', label: 'Name', value: `${PatientData.name}`, setValue: setPatientData },
+        { id: 'age', label: 'Age', value: PatientData.age, setValue: setPatientData },
         {
             id: 'gender',
             label: 'Gender',
-            value: (currentTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (currentTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
-            setValue: setGender
+            value: PatientData.gender,
+            setValue: setPatientData
         }, {
-            id: 'department', label: 'Department', value: `${departmentSetter(
-                currentTicket?.prescription[0]?.departments[0]!
-            )}`, setValue: setDepartment
+            id: 'department', label: 'Department', value: PatientData.department, setValue: setPatientData
         },
-        { id: 'doctor', label: 'Doctor', value: `${doctorSetter(currentTicket?.prescription?.[0]?.doctor!)}`, setValue: setDoctor }
+        { id: 'doctor', label: 'Doctor', value: PatientData.doctor, setValue: setPatientData }
     ];
 
 
@@ -157,14 +151,16 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                     onClick={handleSubmit}>
                                     Save
                                 </button>
-                            </Stack>) : (<></>)}
+                            </Stack>) : (<>
+                                <Stack component='div'
+                                    className='edit-icon'
+                                    sx={{ marginLeft: isEditing ? "10px" : "0" }}
+                                    onClick={() => setIsEditing(true)}>
+                                    <EditIcon />
+                                </Stack>
+                            </>)}
 
-                            <Stack component='div'
-                                className='edit-icon'
-                                sx={{ marginLeft: isEditing ? "10px" : "0" }}
-                                onClick={() => setIsEditing(true)}>
-                                <EditIcon />
-                            </Stack>
+
                         </Stack>
                     </>)
                         : (
@@ -190,7 +186,17 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                             size="small"
                                             inputProps={{ style: { fontSize: '14px' } }}
                                             value={PatientData.name}
-                                            onChange={(e) => setName(e.target.value)}
+                                            onChange={(e) => setPatientData(prev => ({
+                                                ...prev,
+                                                name: e.target.value,
+                                            }))}
+                                            InputProps={{
+                                                style: {
+                                                    textTransform: 'capitalize',
+                                                    fontSize: '14px',
+                                                    fontFamily: 'Outfit,sans-serif'
+                                                },
+                                            }}
                                         />
                                     </Stack>
                                 </Box>
@@ -205,54 +211,123 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                             size="small"
                                             inputProps={{ style: { fontSize: '14px' } }}
                                             value={PatientData.age}
-                                            onChange={(e) => setAge(e.target.value)}
+                                            onChange={(e) => setPatientData(prev => ({
+                                                ...prev,
+                                                age: e.target.value,
+                                            }))}
+                                            InputProps={{
+                                                style: {
+                                                    textTransform: 'capitalize',
+                                                    fontSize: '14px',
+                                                    fontFamily: 'Outfit,sans-serif'
+                                                },
+                                            }}
                                         />
                                     </Stack>
                                 </Box>
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Gender</Stack>
                                     <Stack component='div' className='Patient-detail-data'>
-                                        <TextField
-                                            id="gender"
-                                            type="text"
-                                            label="Gender"
-                                            variant="outlined"
-                                            size="small"
-                                            inputProps={{ style: { fontSize: '14px' } }}
-                                            value={PatientData.gender}
-                                            onChange={(e) => setGender(e.target.value)}
-                                        />
+
+                                        <FormControl variant="outlined" size="small" fullWidth>
+                                            <InputLabel id="gender-label">Gender</InputLabel>
+                                            <Select
+                                                labelId="gender-label"
+                                                id="gender"
+                                                value={PatientData.gender}
+                                                onChange={(e) => setPatientData(prev => ({
+                                                    ...prev,
+                                                    gender: e.target.value,
+                                                }))}
+                                                label="Gender"
+                                                style={{ textTransform: 'capitalize', fontSize: '14px', fontFamily: 'Outfit,sans-serif' }}
+                                                inputProps={{ style: { fontSize: '14px' } }}
+                                            >
+                                                <MenuItem value="Male" sx={{
+                                                    fontSize: '14px',
+                                                    fontFamily: 'Outfit,sans-serif'
+                                                }}>
+                                                    Male
+                                                </MenuItem>
+                                                <MenuItem value="Female" sx={{
+                                                    fontSize: '14px',
+                                                    fontFamily: 'Outfit,sans-serif'
+                                                }}>
+                                                    Female
+                                                </MenuItem>
+                                            </Select>
+                                        </FormControl>
                                     </Stack>
                                 </Box>
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Department</Stack>
                                     <Stack component='div' className='Patient-detail-data'>
 
-                                        <TextField
-                                            id="department"
-                                            type="text"
-                                            label="Department"
-                                            variant="outlined"
+                                        <Autocomplete
                                             size="small"
-                                            inputProps={{ style: { fontSize: '14px' } }}
-                                            value={PatientData.department}
-                                            onChange={(e) => setDepartment(e.target.value)}
+                                            fullWidth
+                                            value={departments.find((dept) => dept.name === PatientData.department) || null}
+                                            onChange={(e, value) => setPatientData((prev) => ({
+                                                ...prev,
+                                                department: value ? value.name : '',
+                                            }))}
+                                            renderOption={(props, option) => (
+                                                <li {...props} style={{ textTransform: 'capitalize', fontFamily: "sans-serif", fontSize: "12px" }}>
+                                                    {option.name}
+                                                </li>
+                                            )}
+                                            getOptionLabel={(option) => option.name}
+                                            options={departments.filter((item) => item.parent === null)}
+                                            renderInput={(params) => (
+                                                <TextField {...params} label="Department"
+                                                    InputProps={{
+                                                        ...params.InputProps,
+                                                        style: {
+                                                            textTransform: 'capitalize',
+                                                            fontSize: '14px',
+                                                            fontFamily: 'Outfit,sans-serif'
+                                                        },
+                                                    }}
+                                                />
+                                            )}
                                         />
+
                                     </Stack>
                                 </Box>
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Doctor</Stack>
                                     <Stack component='div' className='Patient-detail-data'>
-                                        <TextField
-                                            id="doctor"
-                                            type="text"
-                                            label="Doctor"
-                                            variant="outlined"
+                                        <Autocomplete
                                             size="small"
-                                            inputProps={{ style: { fontSize: '14px' } }}
-                                            InputLabelProps={{ style: { fontSize: '14px' } }}
-                                            value={PatientData.doctor}
-                                            onChange={(e) => setDoctor(e.target.value)}
+                                            disablePortal
+                                            renderOption={(props, option) => (
+                                                <li {...props} style={{ textTransform: 'capitalize', fontFamily: "sans-serif", fontSize: "12px" }}>
+                                                    {option.name}
+                                                </li>
+                                            )}
+                                            fullWidth
+                                            value={doctors.find((dept) => dept.name === PatientData.doctor) || null}
+                                            onChange={(e, value) => setPatientData((prev) => ({
+                                                ...prev,
+                                                doctor: value ? value.name : '',
+                                            }))}
+                                            options={doctors.filter((item) => PatientData.department)}
+                                            // options={doctors.filter((item) =>
+                                            //     item.departments.includes(PatientData.department)
+                                            // )}
+
+                                            getOptionLabel={(option) => option.name}
+                                            renderInput={(params) => <TextField {...params}
+                                                label="Doctor"
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    style: {
+                                                        textTransform: 'capitalize',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Outfit,sans-serif'
+                                                    },
+                                                }}
+                                            />}
                                         />
                                     </Stack>
                                 </Box>
@@ -318,7 +393,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                         <Box p={1} className='Payment-value'>No Estimate Available</Box>
                     </Box>
                 )}
-                <Stack className='View-Estimation' onClick={fetchPdfUrl}>View Estimations</Stack>
+                <Stack className='View-Estimation' onClick={fetchPdfUrl}>View Estimate</Stack>
                 {showAlert && (
 
                     <Snackbar
@@ -333,199 +408,6 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 )
                 }
             </Box >
-
-            <Stack className="gray-border">
-                {/* Borders */}
-            </Stack>
-
-            {/* Diagnosis */}
-            <Box className="Patient-records">
-                <Box className='Patient-records-Head'>
-                    <Stack className='Patient-records-Heading'>Diagnosis</Stack>
-                </Box>
-                <Box className='Patient-records-Head'>
-                    <Stack className='dot-list'>
-                        <span>&#8226;</span>
-                    </Stack>
-                    <Stack className='Patient-records-data'>Suspected renal impairment or monitoring of known kidney disease</Stack>
-                </Box>
-            </Box>
-
-            <Stack className="gray-border">
-                {/* Borders */}
-            </Stack>
-
-
-            {/* Admission Details */}
-            {currentTicket?.prescription[0]?.admission ? (
-                <>
-
-                    {currentTicket?.prescription?.[0]?.service && currentTicket?.prescription?.[0]?.service?.name ? (
-                        <><Box className="Patient-records">
-                            <Box className='Patient-records-Head'>
-                                <Stack className='Patient-records-Heading'>Admission Details</Stack>
-                            </Box>
-                            <Box className='Patient-records-Head'>
-                                <Stack className='dot-list'>
-                                    <span>&#8226;</span>
-                                </Stack>
-                                {isEditing ? (<>
-                                    <Stack className='Patient-records-data'>
-                                        <TextField
-                                            id="Service Name"
-                                            type="text"
-                                            label="Service Name"
-                                            variant="outlined"
-                                            size="small"
-                                            inputProps={{ style: { fontSize: '14px' } }}
-                                            value={currentTicket.prescription[0].service.name}
-                                            onChange={(e) => setName(e.target.value)}
-                                        />
-                                    </Stack>
-                                </>) : (<>
-                                    <Stack className='Patient-records-data'>{currentTicket.prescription[0].service.name}</Stack>
-                                </>)}
-
-                            </Box>
-
-                            {isEditing ? (<>
-                                <Stack className='Patient-records-data'>
-                                    <TextField
-                                        id="AdmissionType"
-                                        type="text"
-                                        label="AdmissionType"
-                                        variant="outlined"
-                                        size="small"
-                                        inputProps={{ style: { fontSize: '14px' } }}
-                                        value={currentTicket?.prescription[0]?.admission}
-                                        onChange={(e) => setName(e.target.value)}
-                                    />
-                                </Stack>
-                            </>) : (<>
-                                <Box className="record-tag pharmacy-tag">{currentTicket?.prescription[0]?.admission} </Box>
-                            </>)}
-
-                        </Box>
-                        </>
-                    ) : (
-                        <>
-                            <Box className="Patient-records">
-                                <Box className='Patient-records-Head'>
-                                    <Stack className='Patient-records-Heading'>Admission Details</Stack>
-                                </Box>
-                                {isEditing ? (<>
-                                    <Stack className='Patient-records-data'>
-                                        <TextField
-                                            id="AdmissionType"
-                                            type="text"
-                                            label="AdmissionType"
-                                            variant="outlined"
-                                            size="small"
-                                            inputProps={{ style: { fontSize: '14px' } }}
-                                            value={currentTicket?.prescription[0]?.admission}
-                                            onChange={(e) => setName(e.target.value)}
-                                        />
-                                    </Stack>
-                                </>) : (<>
-                                    <Box className="record-tag" sx={{ marginTop: "6px", }}>{currentTicket?.prescription[0]?.admission}</Box>
-                                </>)}
-                            </Box>
-                        </>
-
-                    )}
-
-
-                    <Stack className="gray-border">
-                        {/* Borders */}
-                    </Stack>
-                </>
-            ) : (
-                <>
-                    {/* Empty */}
-                </>
-            )}
-
-
-            {/* Diagnostics Test */}
-            {currentTicket?.prescription?.[0]?.diagnostics?.length > 0 ? (
-                <>
-                    <Box className="Patient-records">
-                        <Box className='Patient-records-Head'>
-                            <Stack className='Patient-records-Heading'>Diagnostics Test</Stack>
-                        </Box>
-                        {currentTicket?.prescription?.[0]?.diagnostics.length > 0 ? (
-                            currentTicket?.prescription[0]?.diagnostics.map((diagnostic, index) => (
-                                <React.Fragment key={index}>
-                                    <Box className='Patient-records-Head'>
-
-                                        {isEditing ? (<>
-                                            <Stack className='Patient-records-data'>
-                                                <TextField
-                                                    id="Diagnostics Test"
-                                                    type="text"
-                                                    label="Diagnostics Test"
-                                                    variant="outlined"
-                                                    size="small"
-                                                    inputProps={{ style: { fontSize: '14px' } }}
-                                                    value={diagnostic}
-                                                    onChange={(e) => setName(e.target.value)}
-                                                />
-                                            </Stack>
-                                        </>) :
-                                            (<>
-                                                <Stack className='dot-list'>
-                                                    <span>&#8226;</span>
-                                                </Stack>
-                                                <Stack className='Patient-records-data'>{diagnostic}</Stack>
-                                            </>)}
-
-                                    </Box>
-                                </React.Fragment>
-                            ))
-                        ) : (
-                            <></>
-                        )}
-
-                    </Box>
-
-                    <Stack className="gray-border">
-                        {/* Borders */}
-                    </Stack>
-
-                </>
-            ) : (
-                <>
-                    {/* Empty */}
-                </>
-            )}
-
-            {/* Pharmacy */}
-            <Box className="Patient-records Pharmacy">
-                <Box className='Patient-records-Head'>
-                    <Stack className='Patient-records-Heading'>Pharmacy</Stack>
-                </Box>
-                <Box className='Patient-records-Head' display={'flex'} flexDirection={'column'}>
-                    {(currentTicket?.prescription?.[0]?.medicines?.length ?? 0) > 0 ? (
-                        <>
-                            {currentTicket?.prescription[0]?.medicines.map((med, index) => (
-                                <React.Fragment key={index} >
-                                    <Stack display={'flex'} flexDirection={'row'}>
-                                        <Stack className='dot-list'  >
-                                            <span>&#8226;</span>
-                                        </Stack>
-                                        <Stack className='Patient-records-data'>{med}</Stack>
-                                    </Stack>
-
-                                </React.Fragment>
-                            ))}
-                            < Box className="record-tag pharmacy-tag" marginTop={"5px"}>{currentTicket?.prescription[0]?.isPharmacy}</Box>
-                        </>
-                    ) : (<>
-                        <Box className="record-tag pharmacy-tag" sx={{ width: currentTicket?.prescription[0]?.isPharmacy == "Not Advised" ? "102px;" : "width: 132px;" }}>{currentTicket?.prescription[0]?.isPharmacy}</Box>
-                    </>
-                    )}
-                </Box>
-            </Box>
         </>
 
     )

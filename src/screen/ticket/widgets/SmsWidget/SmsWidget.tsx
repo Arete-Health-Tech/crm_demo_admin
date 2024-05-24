@@ -2,18 +2,19 @@ import React, { useRef, useState } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import styles from './SmsWidget.module.css';
 import smsIcon from '../../../../assets/smsIcon.svg';
-import avatar1 from '../../../../assets/avatar1.svg';
+// import avatar1 from '../../../../assets/avatar1.svg';
 import expandIcon from '../../../../assets/expandIcon.svg';
 import collapseIcon from '../../../../assets/collapseIcon.svg';
 import CloseModalIcon from '../../../../assets/CloseModalIcon.svg';
 import { Button } from 'react-bootstrap';
 import useTicketStore from '../../../../store/ticketStore';
-
+import { Avatar } from '@mui/material';
+import useUserStore from '../../../../store/userStore';
 const SmsWidget = () => {
     const [sendMessage, setSendMessage] = useState('');
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { setSmsModal, smsModal } = useTicketStore();
-
+    const { user, setUser } = useUserStore();
     const handleFileSelect = async (event) => {
         const selectedFile = event.target.files[0];
         //  console.log(selectedFile,"thisi s selected file")
@@ -86,7 +87,16 @@ const SmsWidget = () => {
                                     12 April 2024 09:30AM
                                 </Box>
                                 <Box width="1.25rem" height="1.25rem">
-                                    <img src={avatar1} alt="" />
+                                <Avatar sx={{ fontSize: '8px', bgcolor: 'orange' ,
+                              height: '1rem',
+                              width: '1rem',
+                              margin: '0.3rem',
+                              marginTop:'8px'
+                            }}>
+                                {user?.firstName[0]?.toUpperCase()}
+                                {user?.lastName[0]?.toUpperCase()}
+                              </Avatar>
+                                    {/* <img src={avatar1} alt="" /> */}
                                 </Box>
                             </Box>
                         </Box>

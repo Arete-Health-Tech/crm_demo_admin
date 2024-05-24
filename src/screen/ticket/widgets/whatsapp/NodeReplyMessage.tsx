@@ -4,12 +4,14 @@ import dayjs from 'dayjs';
 import React from 'react';
 import whtsappIcon from '../../../../assets/whtsappIcon.svg';
 import whtsappMessageIcon from '../../../../assets/avatar1.svg';
-
+import { Avatar } from '@mui/material';
+import useUserStore from '../../../../store/userStore';
 type Props = {
   message: any;
 };
 
 const NodeReplyMessage = ({ message }: Props) => {
+  const { user, setUser } = useUserStore();
   return (
     <>
       <Box display="flex" maxWidth="70%">
@@ -80,15 +82,15 @@ const NodeReplyMessage = ({ message }: Props) => {
               >
                 {dayjs(message.createdAt).format('DD MMM YYYY hh:mm A')}
               </Typography>
-              <img
-                src={whtsappMessageIcon}
-                style={{
-                  height: '1.25rem',
-                  width: '1.25rem',
-                  margin: '0.3rem'
-                }}
-                alt=""
-              />
+              <Avatar sx={{ fontSize: '8px', bgcolor: 'orange' ,
+                              height: '1rem',
+                              width: '1rem',
+                              margin: '0.3rem',
+                              marginTop:'8px'
+                            }}>
+                                {user?.firstName[0]?.toUpperCase()}
+                                {user?.lastName[0]?.toUpperCase()}
+               </Avatar>
             </Box>
           </Stack>
         </Box>

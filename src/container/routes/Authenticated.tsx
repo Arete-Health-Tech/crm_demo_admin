@@ -21,6 +21,7 @@ import NSingleTicketDetails from '../../screen/ticket/NSingleTicketDetails';
 import Navbar from '../../screen/Navbar/Navbar';
 import OrderListBody from '../../screen/orders/OrderListBody';
 import OrderDetailContainer from '../../screen/orders/orderDetailPage/OrderDetailContainer';
+import SwitchViewTable from '../../screen/switchView/SwitchViewTable';
 
 type Props = {};
 
@@ -52,13 +53,17 @@ const Authenticated = (props: Props) => {
           </Route>
           <Route path="tickets" element={<TicketLayout />} />
           <Route path="dump" element={<Dump />} />
-          <Route path="/OrderList" element={<OrderListBody />} /> 
+          <Route path="/OrderList" element={<OrderListBody />} />
           <Route
             index
             path="OrderList/orderDetails/:uid"
             element={<OrderDetailContainer />}
           />
-        
+          <Route
+            index
+            path="/switchView"
+            element={<SwitchViewTable />}
+          />
         </Routes>
       </Navbar>
     </>

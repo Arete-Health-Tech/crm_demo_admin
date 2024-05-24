@@ -80,6 +80,8 @@ const Ticket = () => {
     loaderOn,
     pageNumber,
     setPageNumber,
+    isSwitchView,
+    setIsSwitchView,
   } = useTicketStore();
 
 
@@ -543,15 +545,20 @@ const Ticket = () => {
 
   return (
     <>
-      <Box height={'100vh'} display="flex" position="fixed" width="100%" >
-        <Box bgcolor="#F6F7F9" width="23%" position="sticky" top={0} p={'2rem 0.5rem 2rem 0.5rem'}>
+      <Box height={'100vh'} display="flex" position="fixed" width="100%">
+        <Box
+          bgcolor="#F6F7F9"
+          width="23%"
+          position="sticky"
+          top={0}
+          p={'2rem 0.5rem 2rem 0.5rem'}
+        >
           <Box
             px={1}
-
             height={'17vh'}
             display={'flex'}
-            flexDirection={"column"}
-            justifyContent={"space-between"}
+            flexDirection={'column'}
+            justifyContent={'space-between'}
           >
             {/* <Stack
             direction="row"
@@ -571,67 +578,86 @@ const Ticket = () => {
 
             <Box
               display={'flex'}
-              flexDirection={"row"}
-              justifyContent={"space-between"}
+              flexDirection={'row'}
+              justifyContent={'space-between'}
             >
-              <Stack className="Ticket-Assignee-title"
+              <Stack
+                className="Ticket-Assignee-title"
                 sx={{
-                  marginLeft: "3px",
-                  fontSize: "24px !important",
-                  fontStyle: "normal",
-                  fontWeight: '500',
-                }}>
+                  marginLeft: '3px',
+                  fontSize: '24px !important',
+                  fontStyle: 'normal',
+                  fontWeight: '500'
+                }}
+              >
                 Tickets
               </Stack>
-              <Stack display={'flex'}
-                flexDirection={"row"}
-              >
-                <Stack sx={{
-                  marginTop: "5px",
-                  marginRight: "10px"
-                }}><img src={ToggleIcon} alt='switch View' /></Stack>
-                <Stack sx={{
-                  marginTop: "5px",
-                  color: "#000",
-                  fontFamily: 'Outfit,sanserif',
-                  fontSize: '14px',
-                }}>
+              <Stack display={'flex'} flexDirection={'row'}>
+                <Stack
+                  sx={{
+                    marginTop: '5px',
+                    marginRight: '10px',
+                    cursor: 'pointer',
+                   
+                  }}
+                  onClick={() => {
+                    setIsSwitchView(!isSwitchView);
+                    navigate('/switchView');
+                  }}
+                >
+                  <img
+                    src={ToggleIcon}
+                    alt="switch View"
+                    style={{
+                      fill: "blue"
+                    }}
+                  />
+                </Stack>
+                <Stack
+                  sx={{
+                    marginTop: '5px',
+                    color: '#000',
+                    fontFamily: 'Outfit,sanserif',
+                    fontSize: '14px'
+                  }}
+                >
                   Switch view
                 </Stack>
               </Stack>
             </Box>
 
-            <Box display={'flex'}
-              flexDirection={"column"}
-            >
+            <Box display={'flex'} flexDirection={'column'}>
               <Box
                 display={'flex'}
-                flexDirection={"row"}
-                justifyContent={"space-between"}
+                flexDirection={'row'}
+                justifyContent={'space-between'}
               >
                 <Stack width={'95%'} position={'relative'}>
-                  <span className="search-icon"> <SearchIcon /></span>
-                  <input type="text"
+                  <span className="search-icon">
+                    {' '}
+                    <SearchIcon />
+                  </span>
+                  <input
+                    type="text"
                     className="search-input"
                     placeholder=" Search..."
                     onKeyDown={handleSearchKeyPress}
                   />
-
                 </Stack>
-                <Stack
-                  marginRight={"-10px"}
-                ><TicketFilter setPage={setPage} /></Stack>
+                <Stack marginRight={'-10px'}>
+                  <TicketFilter setPage={setPage} />
+                </Stack>
               </Box>
-              <Box sx={{
-                fontFamily: `Outfit,sanserif`,
-                fontSize: "13px",
-                color: "#647491"
-              }}>{searchError && <div>{searchError}</div>}</Box>
+              <Box
+                sx={{
+                  fontFamily: `Outfit,sanserif`,
+                  fontSize: '13px',
+                  color: '#647491'
+                }}
+              >
+                {searchError && <div>{searchError}</div>}
+              </Box>
             </Box>
-
-
-
-
 
             {/* <Stack direction="row" spacing={1}>
             <TextField
@@ -697,7 +723,7 @@ const Ticket = () => {
             )}
           </Box>
 
-          <Box >
+          <Box>
             <CustomPagination
               handlePagination={handlePagination}
               pageCount={pageCount}
@@ -712,7 +738,7 @@ const Ticket = () => {
         <Box>
           <Modal
             open={showReminderModal}
-          // onClose={() => handleCloseModal()}
+            // onClose={() => handleCloseModal()}
           >
             <Box
               sx={{
@@ -754,7 +780,11 @@ const Ticket = () => {
                     ticketReminderPatient?.consumer[0]?.firstName || 'N/A'
                   ).toUpperCase()} `}</Typography>
                 )}{' '}
-                <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
+                <Typography
+                  fontSize={'18px'}
+                  fontWeight={'600'}
+                  margin={'10px'}
+                >
                   {alarmReminderedList[0]?.title.toUpperCase() || 'N/A'}
                 </Typography>
                 <Typography margin={'12px'}>
@@ -775,7 +805,7 @@ const Ticket = () => {
         <Box>
           <Modal
             open={showCallReschedulerModal}
-          // onClose={() => handleCloseModal()}
+            // onClose={() => handleCloseModal()}
           >
             <Box
               sx={{
@@ -814,15 +844,20 @@ const Ticket = () => {
               >
                 {ticketCallReschedulerPatient && (
                   <Typography>{`Call Rescheduler for ${(
-                    ticketCallReschedulerPatient?.consumer[0]?.firstName || 'N/A'
+                    ticketCallReschedulerPatient?.consumer[0]?.firstName ||
+                    'N/A'
                   ).toUpperCase()} `}</Typography>
                 )}{' '}
-                <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
+                <Typography
+                  fontSize={'18px'}
+                  fontWeight={'600'}
+                  margin={'10px'}
+                >
                   {alarmCallReschedulerList[0]?.selectedLabels
                     ? alarmCallReschedulerList[0].selectedLabels
-                      .map((label) => label.label)
-                      .join(', ')
-                      .toUpperCase()
+                        .map((label) => label.label)
+                        .join(', ')
+                        .toUpperCase()
                     : 'N/A'}
                 </Typography>
                 <Typography margin={'12px'}>
@@ -842,7 +877,7 @@ const Ticket = () => {
         </Box>
 
         {/* <CustomSpinLoader open={loaderOn} /> */}
-      </Box >
+      </Box>
       <ExpandedModal />
       <ExpandedSmsModal />
       <ExpandedPhoneModal />

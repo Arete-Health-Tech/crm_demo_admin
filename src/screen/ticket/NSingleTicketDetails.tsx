@@ -99,7 +99,7 @@ import RemainderAll from './widgets/RemainderAll';
 import SingleTicketSideBar from './SingleTicketSideBar/SingleTicketSideBar';
 import TaskBar from './SingleTicketSideBar/TaskBar';
 import Avatar1 from "../../assets/Avatar.svg"
-import NewAvatar from "../../assets/Avatar2.svg"
+import NewAvatar from "../../assets/avatar2.svg"
 import DropDownArrow from "../../assets/DropdownArror.svg"
 import KebabMenu from "../../assets/KebabMenu.svg"
 import AddAssigneeIcon from "../../assets/add.svg"

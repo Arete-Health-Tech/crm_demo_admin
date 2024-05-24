@@ -238,10 +238,10 @@ const Dashboard = (props: Props) => {
   ];
 
   return (
-    <Box width={"92vw"} height={"86vh"} sx={{ display: 'flex', flexDirection: 'column', padding: "0px 0px 0px 150px", }}>
+    <Box bgcolor="#F6F7F9" width={"92.5vw"} height={"93%"} sx={{ display: 'flex', flexDirection: 'column', padding: "0px 0px 0px 150px", }}>
       <Grid container spacing={1}>
         {cardsData.map((card) => (
-          <Grid item key={card.id} xs={12} sm={6} md={2} lg={2} xl={2}>
+          <Grid item key={card.id} xs={12} sm={2} md={2} lg={2} xl={2}>
             <Card>
               <CardContent
                 style={{
@@ -250,16 +250,16 @@ const Dashboard = (props: Props) => {
                   padding: '8px'
                 }}
               >
-                <h3 style={{ fontSize: '20px', fontWeight: 'bold' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: 'bold', fontFamily: "Outfit,sans-serif" }}>
                   {card.title}
                 </h3>
-                <p style={{ fontSize: '20px' }}>{card.content}</p>
+                <p style={{ fontSize: '16px', fontFamily: "Outfit,sans-serif" }}>{card.content}</p>
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
-      <Grid container spacing={2} sx={{ marginTop: '45px', padding: '45px 0px', }}>
+      <Grid container spacing={2} sx={{ marginTop: '20px', padding: '30px 50px', }}>
         {/* Grid item for PieChart */}
         {/* <Grid item xs={8} sm={2}> */}
         {/* <PieChart /> */}

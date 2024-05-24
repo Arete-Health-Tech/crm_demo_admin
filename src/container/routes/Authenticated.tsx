@@ -19,6 +19,9 @@ import NodeList from '../../screen/flow/NodeList';
 import Dump from '../../screen/script/Dump';
 import NSingleTicketDetails from '../../screen/ticket/NSingleTicketDetails';
 import Navbar from '../../screen/Navbar/Navbar';
+import OrderListBody from '../../screen/orders/OrderListBody';
+import OrderDetailContainer from '../../screen/orders/orderDetailPage/OrderDetailContainer';
+
 type Props = {};
 
 const Authenticated = (props: Props) => {
@@ -49,6 +52,13 @@ const Authenticated = (props: Props) => {
           </Route>
           <Route path="tickets" element={<TicketLayout />} />
           <Route path="dump" element={<Dump />} />
+          <Route path="/OrderList" element={<OrderListBody />} /> 
+          <Route
+            index
+            path="OrderList/orderDetails/:uid"
+            element={<OrderDetailContainer />}
+          />
+        
         </Routes>
       </Navbar>
     </>

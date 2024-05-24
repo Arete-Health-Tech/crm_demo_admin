@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
@@ -32,7 +33,8 @@ import {
     DialogContentText,
     Paper,
     Avatar,
-    Menu
+    Menu,
+    Badge
 } from '@mui/material';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
@@ -66,7 +68,7 @@ import {
     getTicketHandler
 } from '../../api/ticket/ticketHandler';
 import MessagingWidget from './widgets/whatsapp/WhatsappWidget';
-import styles from './SingleTicketDetails.module.css'
+import styles from './SingleTicketDetails.module.css';
 import ShowPrescription from './widgets/ShowPrescriptionModal';
 import { updateTicketSubStage } from '../../api/ticket/ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
@@ -88,7 +90,6 @@ import { Document, Page } from 'react-pdf';
 import CloseIcon from '@mui/icons-material/Close';
 import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTone';
 import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
-
 
 import AWS from 'aws-sdk';
 import CustomModal from './widgets/CustomModal';
@@ -124,8 +125,6 @@ interface Ticket {
     // Add other fields as needed
 }
 
-
-
 dayjs.extend(relativeTime);
 
 type Props = {};
@@ -148,7 +147,9 @@ const NSingleTicketDetails = (props: Props) => {
     const [isScript, setIsScript] = useState(false);
     const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
     const [singleReminder, setSingleReminder] = useState<iReminder[] | any[]>([]);
-    const [callReschedule, setCallReschedule] = useState<iCallRescheduler[] | any[]>([]);
+    const [callReschedule, setCallReschedule] = useState<
+        iCallRescheduler[] | any[]
+    >([]);
 
     const [open, setOpen] = useState(false);
     const theme = useTheme();
@@ -163,17 +164,15 @@ const NSingleTicketDetails = (props: Props) => {
         lastName: '',
         phone: 0,
         age: 0,
-        gender: '',
+        gender: ''
         // Add other fields as needed
     });
 
     const [openModal, setOpenModal] = useState(false);
     const [modalOpenRemainder, setModalOpenRemainder] = useState(false);
-    const [modalOpenRescheduler, setModalOpenRescheduler] = useState(false)
+    const [modalOpenRescheduler, setModalOpenRescheduler] = useState(false);
     const [matchedObjects, setMatchedObjects] = useState([]);
     const [callReschedulerData, setCallReschedulerData] = useState([]);
-
-
 
 
     // console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
@@ -233,7 +232,6 @@ const NSingleTicketDetails = (props: Props) => {
     //          currentSubStageCode > noOfChilds - 3) &&
     //        currentSubStageCode < noOfChilds
     //      ) {
-
 
     //        const payload = {
     //          subStageCode: {
@@ -339,7 +337,6 @@ const NSingleTicketDetails = (props: Props) => {
             setMatchedObjects(filteredData);
             setModalOpenRemainder(true);
             if (filteredData.length === 0) {
-
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -360,7 +357,6 @@ const NSingleTicketDetails = (props: Props) => {
             setCallReschedulerData(filteredData);
             setModalOpenRescheduler(true);
             if (filteredData.length === 0) {
-
             }
         } catch (error) {
             console.error('Error fetching data:', error);
@@ -418,7 +414,6 @@ const NSingleTicketDetails = (props: Props) => {
                 setMatchedObjects(sortedData);
                 setModalOpenRemainder(true);
                 if (filteredData.length === 0) {
-
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -438,7 +433,6 @@ const NSingleTicketDetails = (props: Props) => {
                 setCallReschedulerData(sortedData);
                 setModalOpenRescheduler(true);
                 if (filteredData.length === 0) {
-
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -466,7 +460,6 @@ const NSingleTicketDetails = (props: Props) => {
     const handleClick = () => {
         if (op == true) {
             setOp(false);
-
         } else {
             setOp(true);
             setVisible(false);
@@ -479,12 +472,12 @@ const NSingleTicketDetails = (props: Props) => {
     };
 
     const menuItemStyles = {
-        color: "var(--Text-Black, #080F1A)",
+        color: 'var(--Text-Black, #080F1A)',
         fontFamily: `"Outfit", sans-serif`,
-        fontSize: "14px",
-        fontStyle: "normal",
-        fontWeight: "400",
-        lineHeight: "150%",
+        fontSize: '14px',
+        fontStyle: 'normal',
+        fontWeight: '400',
+        lineHeight: '150%'
     };
 
     const calculatedDate = (date: any) => {
@@ -502,14 +495,18 @@ const NSingleTicketDetails = (props: Props) => {
         if (dayDifference < 1) {
             // Calculate the difference in hours
             const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
-            const minuteDifference = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-            const formattedTimeDifference = `${hourDifference.toString().padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
+            const minuteDifference = Math.floor(
+                (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+            );
+            const formattedTimeDifference = `${hourDifference
+                .toString()
+                .padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
             // console.log(formattedTimeDifference)
-            return `${formattedTimeDifference} hrs ago`
+            return `${formattedTimeDifference} hrs ago`;
         } else {
-            return `${dayDifference} days ago`
+            return `${dayDifference} days ago`;
         }
-    }
+    };
 
     const patientName = (ticket) => {
         if (!ticket || !ticket.consumer || ticket.consumer.length === 0) {
@@ -521,11 +518,14 @@ const NSingleTicketDetails = (props: Props) => {
 
         let patientName = '';
         if (firstName && lastName) {
-            const capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-            const capitalizedLastName = lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
+            const capitalizedFirstName =
+                firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+            const capitalizedLastName =
+                lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
             patientName = capitalizedFirstName + ' ' + capitalizedLastName;
         } else if (firstName) {
-            patientName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
+            patientName =
+                firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
         }
 
         return patientName;
@@ -539,44 +539,65 @@ const NSingleTicketDetails = (props: Props) => {
         { id: 6, src: Avatar1, alt: "User 5", name: "Will Smith" }
     ];
 
-    console.log("console in nsingleticlet")
+    console.log('console in nsingleticlet');
+
+
+    const stackRef = useRef<HTMLDivElement | null>(null);
+
+    const handleClickOutside = (event: MouseEvent) => {
+        if (stackRef.current && !stackRef.current.contains(event.target as Node)) {
+            setOp(false);
+        }
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+
 
     return (
         <div className="main-layout">
-
             {/* Right Section of Single Ticket Detail Page */}
 
             <div className="stack-box">
-                <Box className="Ticket-detail-card" p={2}
+                <Box
+                    className="Ticket-detail-card"
+                    p={2}
                 // position="sticky"
                 >
                     {/* Left Side */}
-                    <Stack className="Ticket-detail-card-left" display="flex" flexDirection="row" >
-
-                        <Stack display="flex" flexDirection="column" >
+                    <Stack
+                        className="Ticket-detail-card-left"
+                        display="flex"
+                        flexDirection="row"
+                    >
+                        <Stack display="flex" flexDirection="column">
                             <Stack display="flex" flexDirection="row">
                                 <Stack className="Ticket-detail-card-left-name">
                                     {patientName(currentTicket)}
                                 </Stack>
                                 <Stack className="Ticket-detail-card-left-Gen-Age">
                                     {currentTicket?.consumer[0]?.gender ? (
-                                        <Stack className='Gen-Age'>
+                                        <Stack className="Gen-Age">
                                             {currentTicket?.consumer[0]?.gender}
                                         </Stack>
                                     ) : (
                                         <></>
                                     )}
                                     {currentTicket?.consumer[0]?.age ? (
-                                        <Stack className='Gen-Age'>
+                                        <Stack className="Gen-Age">
                                             {currentTicket?.consumer[0]?.age}
                                         </Stack>
                                     ) : (
                                         <></>
                                     )}
                                 </Stack>
-
-                            </Stack >
-                            <Stack className="Ticket-detail-card-left-uhid" >
+                            </Stack>
+                            <Stack className="Ticket-detail-card-left-uhid">
                                 <span>#{currentTicket?.consumer[0]?.uid}</span>
                             </Stack>
                         </Stack>
@@ -586,12 +607,10 @@ const NSingleTicketDetails = (props: Props) => {
                         <CustomModal />
 
                         {/* End---- */}
-
                     </Stack>
 
                     {/* Right Side */}
-                    <Stack className='Ticket-detail-card-right'>
-
+                    <Stack className="Ticket-detail-card-right">
                         {/* Lead Assignee */}
 
 
@@ -611,25 +630,38 @@ const NSingleTicketDetails = (props: Props) => {
                             </Stack>
                         </Box>
 
-                        <Stack display={visible ? "block" : "none"}
-                            className='KebabMenu-item ticket-assigneemenu' bgcolor="white">
-                            <Stack className="Ticket-Assignee-title" sx={{ marginLeft: "15px" }}>Ticket Assignees</Stack>
+                        <Stack
+                            display={visible ? 'block' : 'none'}
+                            className="KebabMenu-item ticket-assigneemenu"
+                            bgcolor="white"
+                        >
                             <Stack
-                                className='modal-close'
+                                className="Ticket-Assignee-title"
+                                sx={{ marginLeft: '15px' }}
+                            >
+                                Ticket Assignees
+                            </Stack>
+                            <Stack
+                                className="modal-close"
                                 onClick={handleKebabClose}
-                                sx={{ border: "1px solid #EBEDF0" }}
+                                sx={{ border: '1px solid #EBEDF0' }}
                             >
                                 <img src={CloseModalIcon} />
                             </Stack>
 
-                            <Stack className='search'>
+                            <Stack className="search">
                                 <div className="search-container">
                                     {/* <span className="search-icon">&#128269;</span> */}
-                                    <span className="search-icon"><SearchIcon /></span>
-                                    <input type="text" className="search-input" placeholder=" Search..." />
+                                    <span className="search-icon">
+                                        <SearchIcon />
+                                    </span>
+                                    <input
+                                        type="text"
+                                        className="search-input"
+                                        placeholder=" Search..."
+                                    />
                                 </div>
                             </Stack>
-
 
                             <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                 <Stack className="Ticket-Assignee-item" >
@@ -642,13 +674,19 @@ const NSingleTicketDetails = (props: Props) => {
                             </MenuItem>
 
                             {avatars.map((avatar) => (
-                                <MenuItem key={avatar.id} sx={menuItemStyles} onClick={handleKebabClose}>
+                                <MenuItem
+                                    key={avatar.id}
+                                    sx={menuItemStyles}
+                                    onClick={handleKebabClose}
+                                >
                                     <Stack className="Ticket-Assignee-item">
                                         <Stack className="Ticket-Assignee-subItem">
                                             <Stack className="Ticket-Assignee-avatar">
                                                 <img src={avatar.src} alt={avatar.alt} />
                                             </Stack>
-                                            <Stack className="Ticket-Assignee-Name">{avatar.name}</Stack>
+                                            <Stack className="Ticket-Assignee-Name">
+                                                {avatar.name}
+                                            </Stack>
                                         </Stack>
                                         <Stack className="Ticket-Assignee-Operation">
                                             <img src={AddAssigneeIcon} alt="Add Assignee" />
@@ -656,46 +694,50 @@ const NSingleTicketDetails = (props: Props) => {
                                     </Stack>
                                 </MenuItem>
                             ))}
-
                         </Stack>
-
 
                         {/* end Lead Assignee */}
 
-
-                        <Stack className='Ticket-LeadAge'>
+                        <Stack className="Ticket-LeadAge">
                             {calculatedDate(currentTicket?.date)}
                         </Stack>
 
                         {/* Kebab Menu */}
-                        <Stack component="div" >
+                        <Stack component="div">
                             <span onClick={handleClick}>
-                                <img src={KebabMenu} alt='Kebab Menu' />
+                                <img src={KebabMenu} alt="Kebab Menu" style={{ cursor: 'pointer' }} />
                             </span>
                         </Stack>
 
-                        <Stack display={op ? "block" : "none"}
-                            className='KebabMenu-item' bgcolor="white">
-                            <Stack className="Kebabmenu-title" sx={{ marginLeft: "15px" }}>Estimation</Stack>
-                            <Estimate setTicketUpdateFlag={setTicketUpdateFlag} />
-                            <Stack className="gray-border">
-                                {/* Borders */}
+                        <Stack
+                            ref={stackRef}
+                            display={op ? 'block' : 'none'}
+                            className="KebabMenu-item"
+                            bgcolor="white"
+                        >
+                            <Stack className="Kebabmenu-title" sx={{ marginLeft: '15px' }}>
+                                Estimation
                             </Stack>
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>Set Priority</MenuItem>
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>Add Surgery</MenuItem>
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>Initate RFA</MenuItem>
+                            <Estimate setTicketUpdateFlag={setTicketUpdateFlag} />
+                            <Stack className="gray-border">{/* Borders */}</Stack>
+                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                Set Priority
+                            </MenuItem>
+                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                Add Surgery
+                            </MenuItem>
+                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                Initate RFA
+                            </MenuItem>
                         </Stack>
 
                         {/* end kebab Menu */}
-
                     </Stack>
-
                 </Box>
 
                 {/* Stage Card Start Here */}
 
-                <Box p={1} height="27%"
-                >
+                <Box p={1} height="27vh">
                     <Box bgcolor={'white'} p={1.5} borderRadius={2}>
                         <StageCard
                             currentTicket={currentTicket}
@@ -703,32 +745,42 @@ const NSingleTicketDetails = (props: Props) => {
                         />
                     </Box>
                 </Box>
-                <Box
-                    height="0"
-                    position="relative"
-                    bgcolor="#F1F5F7"
-                >
+                <Box height="0" position="relative" bgcolor="#F1F5F7">
                     <TabContext value={value}>
                         <Box
-                            sx={{ borderBottom: 1, borderColor: 'divider', display: 'flex', justifyContent: 'space-around' }}
+                            sx={{
+                                borderBottom: 1,
+                                borderColor: 'divider',
+                                display: 'flex',
+                                justifyContent: 'space-around'
+                            }}
                             bgcolor="white"
                         >
                             <TabList
                                 onChange={handleChange}
                                 aria-label="lab API tabs example"
+                                style={{ width: '95%' }}
                             // variant="scrollable"
                             // scrollButtons="auto"
                             // aria-label="scrollable auto tabs example"
                             >
                                 <Tab
-                                    label="Activities"
+                                    label='Activities'
                                     value="1"
                                     className={
                                         value == '1' ? styles.selectedTab : styles.tabsLabel
                                     }
                                 />
                                 <Tab
-                                    label="Whatsapp"
+
+                                    label={<Badge badgeContent={4} sx={{
+                                        "& .MuiBadge-badge": {
+                                            color: "#FFF",
+                                            backgroundColor: "#F94839"
+                                        }
+                                    }}>
+                                        Whatsapp
+                                    </Badge>}
                                     value="2"
                                     className={
                                         value == '2' ? styles.selectedTab : styles.tabsLabel
@@ -742,14 +794,28 @@ const NSingleTicketDetails = (props: Props) => {
                                     }
                                 /> */}
                                 <Tab
-                                    label="SMS"
+                                    label={<Badge badgeContent={4} sx={{
+                                        "& .MuiBadge-badge": {
+                                            color: "#FFF",
+                                            backgroundColor: "#F94839"
+                                        }
+                                    }}>
+                                        SMS
+                                    </Badge>}
                                     value="4"
                                     className={
                                         value == '4' ? styles.selectedTab : styles.tabsLabel
                                     }
                                 />
                                 <Tab
-                                    label="Phone Calls"
+                                    label={<Badge badgeContent={4} sx={{
+                                        "& .MuiBadge-badge": {
+                                            color: "#FFF",
+                                            backgroundColor: "#F94839"
+                                        }
+                                    }}>
+                                        Phone Calls
+                                    </Badge>}
                                     value="5"
                                     className={
                                         value == '5' ? styles.selectedTab : styles.tabsLabel
@@ -799,23 +865,22 @@ const NSingleTicketDetails = (props: Props) => {
                 </Box>
 
                 {/* End ----- */}
-
-
-
-            </div >
+            </div>
 
             {/* Left Section of Single Ticket Detail Page */}
 
             <div className="sidebar-box">
-                <div className='side-bar'>
-                    <SingleTicketSideBar reminderLists={matchedObjects} reschedulerList={callReschedulerData} />
+                <div className="side-bar">
+                    <SingleTicketSideBar
+                        reminderLists={matchedObjects}
+                        reschedulerList={callReschedulerData}
+                    />
                 </div>
                 <div className="task-bar">
                     <TaskBar />
                 </div>
             </div>
-        </div >
-
+        </div>
     );
 };
 

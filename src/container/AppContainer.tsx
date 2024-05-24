@@ -12,6 +12,9 @@ import RepresentativeThree from './routes/RepresentativeThree';
 import RepresentativeFour from './routes/RepresentativeFour';
 import RepresentativeFive from './routes/RepresentativeFive';
 import OrderList from '../screen/orders/OrderList';
+import Auditor from './routes/Auditor';
+
+
 
 const AppContainer = () => {
   const { user, setUser } = useUserStore();
@@ -52,6 +55,8 @@ const AppContainer = () => {
     return <RepresentativeFive />;
   } else if (user !== null && user.role === Roles.PHARMACY) {
     return <OrderList />;
+  } else if(user!==null && user.role === Roles.AUDIT){
+    return <Auditor />;
   } else {
     return <UnAuthenticated />;
   }

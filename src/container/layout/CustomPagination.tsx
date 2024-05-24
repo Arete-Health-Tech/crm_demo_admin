@@ -18,7 +18,7 @@ const CustomPagination = (props: iPageProp) => {
         onChange={handlePagination}
         count={pageCount}
         sx={{
-          fontSize: "10px",
+          fontSize: "12px",
           padding: '10px 0 10px 25px',
           '& .MuiPaginationItem-root': {
             fontFamily: 'Outfit, sans-serif',

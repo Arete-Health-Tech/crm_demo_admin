@@ -21,7 +21,7 @@ const PatientReply = ({ message }: Props) => {
   return (
     <>
       <Box display={'flex'}>
-        <img src={whtsappIcon} alt="" style={{ marginLeft: 10 }} />
+        <img src={whtsappIcon} alt="" style={{ marginLeft: 10, marginTop: '-1.5rem' }} />
         <Box
           border={'1px solid #25D366'}
           boxShadow=" 0 1px .5px rgba(11,20,26,.13)"

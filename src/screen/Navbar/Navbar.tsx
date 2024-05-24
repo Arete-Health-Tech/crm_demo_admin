@@ -153,20 +153,32 @@ const Navbar = ({ children }) => {
 
 
     return (
-        <ThemeProvider theme={theme}>
-            <Box sx={{ display: 'flex', height: '100vh', width: "10vw", }}>
-                <Drawer variant="permanent"
+        <>
+            <Box sx={{ display: 'flex', height: '100vh', }}>
+                {/* <Drawer variant="permanent"
                     open={open}
                     sx={{
-                        paddingX: "34px",
+                        width: "15vw",
+
                         '& .MuiDrawer-paper': {
                             boxSizing: 'border-box',
-                            width: "4vw",
+                            width: "3%",
+                            backgroundColor: '#F6F7F9'
                         },
-                    }}>
-                    <Box bgcolor={'#F6F7F9'} sx={{ display: 'flex', flexDirection: "column", justifyContent: "space-between", height: "100%", width: "100%" }}>
+                    }}> */}
+                <Box sx={{
 
-                        <Box display={'flex'} flexDirection={'column'} gap={"10px"}>
+                    boxSizing: 'border-box',
+                    width: "4.4%",
+                    backgroundColor: '#F6F7F9',
+                    borderRight: '1px solid #D4DBE5'
+
+                }}>
+                    <Box
+                        // bgcolor={'#F6F7F9'}
+                        sx={{ display: 'flex', flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
+
+                        <Box display={'flex'} flexDirection={'column'} gap={"10px"} justifyContent={"center"} sx={{ alignItems: "center" }} >
                             <Stack sx={{
                                 display: "flex",
                                 height: "54px",
@@ -185,9 +197,8 @@ const Navbar = ({ children }) => {
                                         justifyContent: "center",
                                         alignItems: "center",
                                         gap: "24px",
-                                        width: "var(--64px, 58px)",
-                                        marginLeft: "5px",
-                                        height: "var(--64px, 58px)",
+                                        width: "3.5vw",
+                                        height: "7vh",
                                         borderRadius: "8px",
                                         backgroundColor: location.pathname === '/' ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
@@ -212,9 +223,8 @@ const Navbar = ({ children }) => {
                                         justifyContent: "center",
                                         alignItems: "center",
                                         gap: "24px",
-                                        width: "var(--64px, 58px)",
-                                        marginLeft: "5px",
-                                        height: "var(--64px, 58px)",
+                                        width: "3.5vw",
+                                        height: "7vh",
                                         borderRadius: "8px",
                                         backgroundColor: location.pathname.includes('/ticket') ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
@@ -233,17 +243,16 @@ const Navbar = ({ children }) => {
                                 </Stack>
                             </Stack>
                             <Stack >
-                                <Stack onClick={() => goToPage('/orderDetails')}
+                                <Stack onClick={() => goToPage('/OrderList')}
                                     sx={{
                                         display: "flex",
                                         justifyContent: "center",
                                         alignItems: "center",
                                         gap: "24px",
-                                        width: "var(--64px, 58px)",
-                                        marginLeft: "5px",
-                                        height: "var(--64px, 58px)",
+                                        width: "3.5vw",
+                                        height: "7vh",
                                         borderRadius: "8px",
-                                        backgroundColor: location.pathname.includes('/orderDetails') ? '#DAE8FF' : 'transparent',
+                                        backgroundColor: location.pathname.includes('/OrderList') ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
                                             background: '#E1E6EE'
                                         }
@@ -254,7 +263,7 @@ const Navbar = ({ children }) => {
                                         TransitionComponent={Zoom}
                                     >
 
-                                        {location.pathname.includes('/orderDetails') ? (<img src={ActivePharmacyIcon} alt="Pharmacy" />) : (<img src={pharmacy} alt="Pharmacy" />)}
+                                        {location.pathname.includes('/OrderList') ? (<img src={ActivePharmacyIcon} alt="Pharmacy" />) : (<img src={pharmacy} alt="Pharmacy" />)}
 
                                     </LightTooltip>
                                 </Stack>
@@ -266,9 +275,8 @@ const Navbar = ({ children }) => {
                                         justifyContent: "center",
                                         alignItems: "center",
                                         gap: "24px",
-                                        width: "var(--64px, 58px)",
-                                        marginLeft: "5px",
-                                        height: "var(--64px, 58px)",
+                                        width: "3.5vw",
+                                        height: "7vh",
                                         borderRadius: "8px",
                                         backgroundColor: location.pathname.includes('/Tasks') ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
@@ -288,7 +296,7 @@ const Navbar = ({ children }) => {
 
 
                         {/* <Box sx={{ flexGrow: 1 }} /> */}
-                        <Box display={'flex'} flexDirection={'column'}>
+                        <Box display={'flex'} flexDirection={'column'} justifyContent={"center"} sx={{ alignItems: "center" }}>
                             <Stack>
                                 <Stack
 
@@ -298,9 +306,8 @@ const Navbar = ({ children }) => {
                                         justifyContent: "center",
                                         alignItems: "center",
                                         gap: "24px",
-                                        width: "var(--64px, 58px)",
-                                        marginLeft: "5px",
-                                        height: "var(--64px, 58px)",
+                                        width: "3.5vw",
+                                        height: "7vh",
                                         borderRadius: "8px",
                                         backgroundColor: location.pathname === '/Configurations' ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
@@ -336,15 +343,15 @@ const Navbar = ({ children }) => {
                             </Stack>
                         </Box>
                     </Box>
-
-                </Drawer>
+                </Box>
+                {/* </Drawer> */}
                 <Box component="main"
                 // sx={{ flexGrow: 1 }}
                 >
                     {children}
                 </Box>
-            </Box>
-        </ThemeProvider>
+            </Box >
+        </>
     );
 };
 

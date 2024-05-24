@@ -1,0 +1,304 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
+.orderListBody-container {
+    width: 95.5vw;
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    padding: 25px 20px;
+    /*  border: 1px solid black; */
+    background-color: #F6F7F9;
+    gap: 24px;
+}
+
+/* .orderListBody2-container {
+    height: 100%;
+    flex-direction: column;
+    gap: 24px;
+} */
+
+.Filters-container-Left {
+    display: flex;
+    flex-direction: row !important;
+    height: 15px;
+    gap: 12px;
+}
+
+.Filters-container-Left {
+    position: relative;
+    margin-top: 7px;
+}
+
+.orderListBody-title {
+    color: #000;
+    /* Headings/H2 */
+    font-family: Outfit, sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 100%;
+}
+
+/* Filters Css  */
+
+.Filters-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    min-height: 40px;
+}
+
+.Ordertype-filter {
+    display: flex;
+    flex-direction: row !important;
+    min-width: 160px;
+    min-height: 36px;
+    padding: var(--Spacing-4px, 4px) var(--Spacing-12px, 12px);
+    align-items: center;
+    gap: var(--Spacing-8px, 8px);
+    border-radius: var(--Spacing-16px, 16px);
+    background: var(--Background-Dark-Grey, #E1E6EE);
+    justify-content: space-between;
+    cursor: pointer;
+
+}
+
+
+
+.Ordertype-filter-title {
+    color: var(--Text-Black, #080F1A);
+
+    /* Body/Medium */
+    font-family: Outfit, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.Ordertype-filter-options {
+    /* display: flex; */
+    width: 200px;
+    padding: var(--Spacing-16px, 16px) var(--Spacing-0px, 0px) var(--8px, 10px) var(--Spacing-0px, 0px);
+    flex-direction: column;
+    align-items: left;
+    position: absolute;
+    top: 40px;
+    Right: 30%;
+    border: 1px solid #EBEDF0;
+    border-radius: 20px;
+    box-shadow: 2px 2px 5px #e2e4e7;
+    z-index: 1600;
+
+}
+
+.Filters-container-Clearbtn {
+    display: flex;
+    flex-direction: row !important;
+    min-width: 160px;
+    min-height: 36px;
+    padding: var(--Spacing-4px, 4px) var(--Spacing-12px, 12px);
+    align-items: center;
+    gap: var(--Spacing-8px, 8px);
+    border-radius: var(--Spacing-16px, 16px);
+    background: var(--Background-Dark-Grey, #E1E6EE);
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.Clearbtn {
+    color: var(--Text-Black, #F94839);
+
+    /* Body/Medium */
+    font-family: Outfit, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+
+.search-container {
+    position: relative;
+    width: 105%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 8px 8px 8px 40px;
+    border-radius: 20px;
+    color: #000;
+    outline: none;
+    background-color: #EBEDF0;
+    font-size: 14px;
+    font-family: "Outfit", sans-serif;
+    margin-right: 15px;
+}
+
+.search-input::placeholder {
+
+    color: var(--Text-Light-Grey, #647491);
+    font-size: 14px;
+    font-family: "Outfit", sans-serif;
+    /* padding: 0 12px 0px 20px; */
+}
+
+.search-icon {
+    position: absolute;
+    top: 46%;
+    left: 8px;
+    transform: translateY(-50%);
+    color: #647491;
+    pointer-events: none;
+}
+
+
+
+/* OrderType Css */
+
+.OrderType-container {
+    display: flex;
+    padding: var(--16px, 16px) 32px;
+    align-items: flex-start;
+    gap: 7%;
+    align-self: stretch;
+    border-radius: 12px;
+    border: 1px solid var(--Borders-Light-Grey, #D4DBE5);
+    background: var(--Background-White, #FFF);
+
+}
+
+.OrderType-card {
+    display: flex;
+    padding: 5px 32px 5px 32px;
+    align-items: flex-start;
+    gap: 8px;
+    align-self: stretch;
+
+}
+
+.OrderType-card-title {
+    color: var(--Text-Black, #080F1A);
+    /* Body/Medium */
+    font-family: Outfit, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.OrderType-card-value {
+    color: var(--Text-Black, #080F1A);
+    /* Headings/H2 */
+    font-family: Outfit, sans-serif;
+    font-size: 24px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 120%;
+}
+
+
+/* Patient Order History Page */
+
+.view-history-container {
+    display: flex;
+    flex-direction: column;
+    padding: 20px var(--20px, 20px);
+    gap: var(--16px, 16px);
+    background-color: #F6F7F9;
+    width: 95.5vw;
+    height: 100%;
+
+}
+
+.view-history-head {
+    display: flex;
+    flex-direction: row !important;
+    justify-content: flex-start;
+    gap: 16px;
+}
+
+
+
+/* Patient Card Container */
+
+.patient-history-container {
+    margin-top: 20px;
+    border-radius: 16px;
+    background-color: #FFF;
+    height: 90%;
+}
+
+.patient-card-container {
+    display: flex;
+    padding: var(--24px, 24px) var(--24px, 24px) var(--32px, 32px) var(--24px, 24px);
+    flex-direction: column;
+    align-items: center;
+    gap: var(--24px, 24px);
+    width: 92.5vw;
+    border-bottom: 1px solid #D4DBE5;
+
+}
+
+.patient-card-head {
+    color: var(--Text-Light-Grey, #647491);
+    /* Body/Medium */
+    font-family: Outfit, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.patient-card-detail {
+    width: 80.5vw;
+    display: flex;
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    /* gap: 12px; */
+    /* align-self: stretch; */
+
+}
+
+.patient-card-detail-left {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-self: stretch;
+}
+
+.patient-card-detail-right {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+}
+
+.patient-card-info {
+    display: flex;
+    flex-direction: row !important;
+    flex: 1 0 0;
+    width: 100%;
+}
+
+.patient-card-info-title {
+    color: var(--Text-Grey, #354869);
+    /* Body/Medium */
+    font-family: Outfit, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+    width: 20%;
+}
+
+.patient-card-info-data {
+    width: 80%;
+    color: var(--Text-Grey, #080F1A);
+    /* Body/Medium */
+    font-family: Outfit, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}

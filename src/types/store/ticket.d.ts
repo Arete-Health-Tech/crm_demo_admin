@@ -183,6 +183,12 @@ export interface iTicketStore {
   setWhtsappExpanded: (whtsappExpanded: boolean) => void;
   smsModal: boolean;
   setSmsModal: (smsModal: boolean) => void;
+  phoneModal: boolean;
+  setPhoneModal: (phoneModal: boolean) => void;
+  noteModal: boolean;
+  setNoteModal: (noteModal: boolean) => void;
+  ticketUpdateFlag: object;
+  setTicketUpdateFlag: (noteModal: object) => void;
 }
 
 export interface iNote {
@@ -215,7 +221,7 @@ export interface iCallRescheduler {
   ticket: string | undefined;
   creator?: string;
   selectedLabels: SelectedLabel[];
-  reason: string,
+  reason: string;
 }
 interface SelectedLabel {
   label: string;

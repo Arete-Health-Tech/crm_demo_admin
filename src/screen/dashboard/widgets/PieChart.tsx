@@ -77,9 +77,11 @@ const PieChart: React.FC<PieChartProps> = ({
   };
 
   return <canvas
-    width={450}
-    height={470}
-    ref={setChartRef} />;
+    width={410}
+    height={430}
+    ref={setChartRef}
+    style={{ fontSize: "12px", fontFamily: "Outfit,sans-serif" }}
+  />;
 };
 
 export default PieChart;

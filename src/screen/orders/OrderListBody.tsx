@@ -14,7 +14,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
-import { Button, Card, CardContent, Grid, Input, TextField } from '@mui/material';
+import { Button, Card, CardContent, Grid, Input, Stack, TextField } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { useNavigate } from 'react-router-dom';
@@ -26,24 +26,25 @@ import { apiClient, socket } from '../../api/apiClient';
 import axios from 'axios';
 import { getDoctors } from '../../api/doctor/doctor';
 import { getPharmcyTicketHandler } from '../../api/ticket/ticketHandler';
-import { UNDEFINED } from '../../constantUtils/constant';
 import { iDepartment, iDoctor } from '../../types/store/service';
 import { getDepartments } from '../../api/department/department';
-import { DatePicker } from '@mui/lab';
-import { MenuOpen } from '@mui/icons-material';
 import ShowPrescription from '../ticket/widgets/ShowPrescriptionModal';
 import { socketEventConstants } from '../../constantUtils/socketEventsConstants';
+import SearchIcon from '@mui/icons-material/Search';
+import ArrowDownIcon from '../../../src/assets/ArrowDown.svg'
+import SortArrowIcon from '../../../src/assets/SortArrow.svg'
+import './orderList.css';
 
 const getColorForOption = (optionValue: string): string => {
     switch (optionValue) {
         case 'Completed':
-            return '#41a179';
+            return '#08A742';
         case 'Ready':
-            return '#FFCE56';
+            return '#FFB200';
         case 'Cancelled':
-            return '#ea574a';
+            return '#F94839';
         case 'Pending':
-            return '#043999';
+            return '#0566FF';
         default:
             return '';
     }
@@ -51,13 +52,13 @@ const getColorForOption = (optionValue: string): string => {
 const getBgColor = (optionValue: string): string => {
     switch (optionValue) {
         case 'Completed':
-            return '#dbf0e7';
+            return '#DAF2E3';
         case 'Ready':
-            return ' #fff1cc';
+            return ' #FFF3D9';
         case 'Cancelled':
-            return ' #f7c0bb';
+            return ' #FEE4E1';
         case 'Pending':
-            return '#cddefe';
+            return '#DAE8FF';
         default:
             return '';
     }
@@ -165,6 +166,7 @@ const OrderListBody = () => {
 
     }
 
+
     const handleDateFilter = (event: SelectChangeEvent) => {
         setPharmacyDateFilter(event.target.value);
     }
@@ -186,25 +188,18 @@ const OrderListBody = () => {
     let rows: Data[] = [];
 
     const columns: Column[] = [
-        { id: 'uhid', label: 'UHID', minWidth: 60 },
+        { id: 'uhid', label: 'UHID', minWidth: 50 },
         {
-            id: 'date', label: 'Laed Age', minWidth: 60,
-            format: (value: any) => (
-                <Box component="a"
-                    sx={{ fontSize: '14px' }}
-                >
-                    {value}
-                </Box>
-            ),
+            id: 'date', label: 'Lead Age', minWidth: 110,
         },
-        { id: 'name', label: 'Name', minWidth: 120 },
-        { id: 'number', label: 'Number', minWidth: 80 },
+        { id: 'name', label: 'Name', minWidth: 100 },
+        { id: 'number', label: 'Phone Number', minWidth: 130 },
         { id: 'doctor', label: 'Doctor', minWidth: 130 },
-        { id: 'specialty', label: 'Specialty', minWidth: 160 },
+        { id: 'specialty', label: 'Specialty', minWidth: 130 },
         {
             id: 'prescription',
             label: 'Prescription',
-            minWidth: 150,
+            minWidth: 160,
             format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (uid: string, ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
                 <Box component="a"
                     sx={{ color: '#4990bd', fontSize: '14px' }}
@@ -221,53 +216,46 @@ const OrderListBody = () => {
         {
             id: 'orderStatus',
             label: 'Order Status',
-            minWidth: 150,
+            minWidth: 160,
             format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (uid: string, ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
                 <Select
                     value={orderStatuses[row._id] || value}
                     onChange={(e) => handleStatusChange(row._id, e.target.value as string)}
                     sx={{
                         fontSize: '14px',
-                        fontWeight: 500,
-                        padding: '0px',
+                        fontWeight: 400,
+                        // paddingX: '5px',
                         color: getColorForOption(value),
                         backgroundColor: getBgColor(value),
-                        border: 'none',
+                        borderRadius: "20px",
+                        fontFamily: "Outfit,sans-serif",
+
                         '& .MuiSelect-select': {
-                            padding: '5px',
+                            padding: '3px 10px',
+                            borderRadius: "20px",
+                            // border: `1px solid ${getBgColor(value)}`,
+                            border: 'none',
                         },
                         '& .MuiListItem-root': {
-                            padding: '5px 16px',
+                            padding: '10px 16px',
                             color: (theme) => getColorForOption(orderStatuses[row._id] || value),
+                            borderRadius: "20px"
                         },
                     }}
                 >
-                    <MenuItem value="Pending" sx={{ color: getColorForOption('Processing'), backgroundColor: getBgColor('Processing') }}>
+                    <MenuItem value="Pending" sx={{ fontSize: "14px", fontFamily: "Outfit,sans-serif", color: getColorForOption('Processing'), backgroundColor: getBgColor('Processing') }}>
                         Processing
                     </MenuItem>
-                    <MenuItem value="Ready" sx={{ color: getColorForOption('Ready'), backgroundColor: getBgColor('Ready') }}>
+                    <MenuItem value="Ready" sx={{ fontSize: "14px", fontFamily: "Outfit,sans-serif", color: getColorForOption('Ready'), backgroundColor: getBgColor('Ready') }}>
                         Ready
                     </MenuItem>
-                    <MenuItem value="Completed" sx={{ color: getColorForOption('Completed'), backgroundColor: getBgColor('Completed') }}>
+                    <MenuItem value="Completed" sx={{ fontSize: "14px", fontFamily: "Outfit,sans-serif", color: getColorForOption('Completed'), backgroundColor: getBgColor('Completed') }}>
                         Completed
                     </MenuItem>
-                    <MenuItem value="Cancelled" sx={{ color: getColorForOption('Cancelled'), backgroundColor: getBgColor('Cancelled') }}>
+                    <MenuItem value="Cancelled" sx={{ fontSize: "14px", fontFamily: "Outfit,sans-serif", color: getColorForOption('Cancelled'), backgroundColor: getBgColor('Cancelled') }}>
                         Cancelled
                     </MenuItem>
                 </Select>
-            ),
-        },
-        {
-            id: 'action',
-            label: ' ',
-            minWidth: 50,
-            format: (value: string, handleStatusChange: (ticketId: string, newValue: string) => void, onClickDetail: (uid: string, ticketId: string) => void, handleViewPrescription: (prescription: iPrescrition[]) => void, row: Data) => (
-                <Button
-                    sx={{ color: '#4990bd', backgroundColor: '#1976D214', fontSize: '11px' }}
-                    onClick={() => onClickDetail(row.uhid, row._id)}
-                >
-                    {value}
-                </Button>
             ),
         },
     ];
@@ -363,9 +351,9 @@ const OrderListBody = () => {
             const minuteDifference = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
             const formattedTimeDifference = `${hourDifference.toString().padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
             console.log(formattedTimeDifference)
-            return `${formattedTimeDifference}Hrs`
+            return `${formattedTimeDifference}h ago`
         } else {
-            return `${dayDifference}Days`
+            return `${dayDifference}d ago`
         }
     }
 
@@ -415,24 +403,29 @@ const OrderListBody = () => {
     const cardsData = [
         {
             id: 1,
+            title: 'All Orders',
+            content: pharmacyOrderPendingCount + pharmacyOrderReadyCount + pharmacyOrderCompletedCount + pharmacyOrderCancelledCount,
+            color: '#cddefe'
+        }, {
+            id: 2,
             title: 'Processing',
             content: pharmacyOrderPendingCount,
             color: '#cddefe'
         },
         {
-            id: 2,
+            id: 3,
             title: 'Ready',
             content: pharmacyOrderReadyCount,
             color: '#fff1cc'
         },
         {
-            id: 3,
+            id: 4,
             title: 'Completed',
             content: pharmacyOrderCompletedCount,
             color: '#dbf0e7'
         },
         {
-            id: 4,
+            id: 5,
             title: 'Cancelled',
             content: pharmacyOrderCancelledCount,
             color: '#f7c0bb'
@@ -440,82 +433,48 @@ const OrderListBody = () => {
     ];
 
 
+    const menuItemStyles = {
+        color: "var(--Text-Black, #080F1A)",
+        fontFamily: `"Outfit", sans-serif`,
+        fontSize: "14px",
+        fontStyle: "normal",
+        fontWeight: "400",
+        lineHeight: "150%",
+    };
+
+    const [openOrderType, setOpenOrderType] = useState(false);
+
+    const handleOrderTypeFilter = () => {
+        setOpenOrderType(!openOrderType);
+    }
+
+    const handleOrderTypeStatusFilter = (orderStatus: string) => {
+        setPage(0); //page changed in this component
+        setPageNumber(1);
+        setPharmacyOrderStatusFilter(orderStatus);
+        setOpenOrderType(!openOrderType)
+    }
+
     return (
         <>
-            <Box
-                sx={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    padding: '32px 40px',
-                    marginTop: '9vh',
-                }}
-            >
-                <Typography variant="h4" component="h2" mb={2} sx={{ fontSize: '36px', fontWeight: 'bold' }}>
-                    Order Details
-                </Typography>
+            <Box className="orderListBody-container">
 
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        flexDirection: 'row',
-                        marginTop: '5px',
-                        color: 'black',
-                    }}
-                >
-                    <Box>
-                        <FormControl>
-                            <span style={{
-                                backgroundColor: 'white',
-                                width: '44px',
-                                padding: '12px 5px',
-                                position: 'relative',
-                                border: '1px solid #ccc',
-                                top: '8px',
-                                fontSize: '20px',
-                                borderTopLeftRadius: '15px',
-                                borderBottomLeftRadius: '15px',
 
-                            }}><FilterListIcon sx={{ fontSize: '28px' }} /></span>
-                        </FormControl>
+                <Stack className="orderListBody-title">
+                    Pharmacy
+                </Stack>
 
-                        <FormControl
-                            sx={{ my: 1 }}
-                        >
-                            <Input
 
-                                type='text'
-                                placeholder='Search ...'
-                                sx={{
-                                    backgroundColor: 'white',
-                                    width: '145px',
-                                    height: '56px',
-                                    border: '1px solid #ccc',
-                                    borderBottom: 'none',
-                                    paddingLeft: '10px',
-                                    paddingRight: '10px',
-                                    '&::placeholder': {
-                                        textAlign: 'center',
-                                        marginLeft: '20px',
-                                    }
 
-                                }}
-                                value={pharmacySearchFilter}
-                                onChange={(event) => setPharmacySearchFilter(event.target?.value)}
-                                onKeyPress={handleSearchKeyPress}
-                            />
-                        </FormControl>
-                        <FormControl
-                            sx={{
-                                backgroundColor: 'white',
-                                border: '1px solid #ccc',
-                                my: 1
-                            }}
+                {/* Filters Elements */}
 
-                        // onClick={(event) => {
-                        //     event.stopPropagation();
-                        // }}
-                        >
+                <Box className="Filters-container">
+
+
+                    <Stack className='Filters-container-Left'>
+
+                        {/* Date Filter */}
+                        <Stack className='Ordertype-filter'>
                             <input
                                 type='date'
                                 value={pharmacyDateFilter}
@@ -523,103 +482,130 @@ const OrderListBody = () => {
                                 id='your_unique_id'
                                 placeholder="DD-MM-YY"
                                 style={{
-                                    width: '127px',
-                                    height: '54px',
+                                    fontFamily: `Outfit,sans-serif`,
+                                    backgroundColor: "#E1E6EE",
                                     border: 0,
                                     outline: 'none',
                                     cursor: 'pointer',
                                     margin: '0px 10px 0px 10px'
                                 }}
                             />
-                        </FormControl>
+                        </Stack>
+                        {/* --------End------ */}
 
-                        <FormControl sx={{ my: 1 }}>
-                            {/* <InputLabel id="demo-simple-select-label" sx={{ color: 'black', fontWeight: 'bold', display: 'flex' }}>Order Status </InputLabel> */}
-                            <Select
-                                // labelId="demo-simple-select-label"
-                                // id="demo-simple-select"
-                                value={pharmacyOrderStatusFilter}
-                                inputProps={{ 'aria-label': 'Select' }}
-                                // label="order status ^"
-                                displayEmpty
-                                onChange={handleOrderStatusFilter}
-                                // IconComponent={() => null}
-                                sx={{
-                                    width: '145px',
-                                    borderRadius: '0',
-                                    border: 0,
-                                    backgroundColor: 'white',
-                                    '&:focus': {
-                                        border: 'none',
-                                        outline: 'none',
-                                    },
-                                }}
-                            >
-                                <MenuItem value="" disabled>
-                                    Select Status
-                                </MenuItem>
-                                <MenuItem value={"Pending"}>Processing</MenuItem>
-                                <MenuItem value={"Ready"}>Ready</MenuItem>
-                                <MenuItem value={"Completed"}>Completed</MenuItem>
-                                <MenuItem value={"Cancelled"}>Cancelled</MenuItem>
-                            </Select>
-                        </FormControl>
+                        {/* Order Type Filter */}
+                        <Stack className='Ordertype-filter' onClick={handleOrderTypeFilter}>
+                            <span className='Ordertype-filter-title'>
+                                {pharmacyOrderStatusFilter ? pharmacyOrderStatusFilter === "Pending" ? "Processing" : pharmacyOrderStatusFilter : "All Orders"}
+                                {/* All Orders */}
+                            </span>
+                            <span className='Ordertype-filter-icon'><img src={ArrowDownIcon} alt="Arrow-Down" /></span>
+                        </Stack>
+                        <Stack display={openOrderType ? "block" : "none"}
+                            className='Ordertype-filter-options' bgcolor="white"
+                        // onClose={() => { setOpenOrderType(!openOrderType) }}
+                        >
+                            <MenuItem sx={menuItemStyles} onClick={() => handleOrderTypeStatusFilter("Pending")} >Processing</MenuItem>
+                            <MenuItem sx={menuItemStyles} onClick={() => handleOrderTypeStatusFilter("Ready")}>Ready</MenuItem>
+                            <MenuItem sx={menuItemStyles} onClick={() => handleOrderTypeStatusFilter("Completed")}>Completed</MenuItem>
+                            <MenuItem sx={menuItemStyles} onClick={() => handleOrderTypeStatusFilter("Cancelled")}>Cancelled</MenuItem>
+                        </Stack>
+                        {/* End Here */}
 
-                        <FormControl sx={{ my: 1 }}>
-                            <button style={{
-                                backgroundColor: 'white',
-                                padding: '15px 15px',
-                                border: '1px solid #ccc',
-                                width: '150px',
-                                borderTopRightRadius: '15px',
-                                borderBottomRightRadius: '15px',
-                                color: 'red',
-                                fontWeight: 'bold', display: 'flex',
-                                cursor: 'pointer'
+                        {/* Reset Filter */}
+                        <Stack className="Ordertype-filter"
+                            onClick={() => {
+                                setPharmacyDateFilter("");
+                                setPharmacyOrderStatusFilter("");
+                                setPharmacySearchFilter("")
                             }}
-                                onClick={() => { setPharmacyDateFilter(""); setPharmacyOrderStatusFilter(""); setPharmacySearchFilter("") }}
-                            ><RefreshIcon sx={{ marginRight: '5px' }} />Reset Filter</button>
-                        </FormControl>
-                    </Box>
-                    <Box sx={{ width: '35vw', display: 'flex', justifyContent: 'space-around' }}>
-                        {cardsData.map((card) => (
-                            <Grid container spacing={1} justifyContent="center" alignItems="center">
-                                <Grid item>
-                                    <Card sx={{
-                                        width: '8vw', borderRadius: "7px ",
-                                    }}>
-                                        <CardContent
-                                            style={{
-                                                borderTop: `4px solid ${card.color}`,
-                                                borderRadius: 10,
-                                                padding: '6px 15px 6px 15px'
-                                            }}>
-                                            <h3 style={{ fontSize: '16px', fontWeight: 600 }}>
-                                                {card.title}
-                                            </h3>
-                                            <p style={{ fontSize: '14px', fontWeight: 500 }}>{card.content}</p>
-                                        </CardContent>
-                                    </Card>
-                                </Grid>
-                            </Grid>
-                        ))}
-                    </Box>
+                        >
+                            <span className='Clearbtn'>Reset Filter</span>
+                            <span className='Clearbtn'><RefreshIcon /></span>
+                        </Stack>
+                        {/* End Here */}
+
+                    </Stack>
+
+
+
+                    <Stack className='search'>
+                        <div className="search-container">
+                            {/* <span className="search-icon">&#128269;</span> */}
+                            <span className="search-icon"><SearchIcon /></span>
+                            <input type="text"
+                                className="search-input"
+                                placeholder=" Search..."
+                                value={pharmacySearchFilter}
+                                onChange={(event) => setPharmacySearchFilter(event.target?.value)}
+                                onKeyPress={handleSearchKeyPress}
+                            />
+                        </div>
+                    </Stack>
                 </Box>
 
-                <Box sx={{ marginTop: '18px' }}>
-                    <Paper sx={{ width: '100%', overflow: 'hidden', borderRadius: '15px' }}>
-                        <TableContainer sx={{ maxHeight: '100%', overflow: 'auto' }}>
+                {/* -----------------------End here------------ */}
+                {/* Count Of Order Type */}
+
+                <Box className="OrderType-container">
+                    {cardsData.map((card) => (
+                        <>
+                            <Stack className='OrderType-card' sx={{ borderLeft: card.id !== 1 ? "1px solid var(--Borders-Light-Grey, #D4DBE5)" : "none" }}>
+                                <Stack className='OrderType-card-title'>{card.title}</Stack>
+                                <Stack className='OrderType-card-value'>{card.content ? card.content : 0}</Stack>
+                            </Stack>
+                        </>
+
+                    ))}
+                </Box>
+
+                {/* ---------End here---- */}
+
+                <Box sx={{ backgroundColor: 'white', borderRadius: '15px', height: '62%', border: '1px solid #D4DBE5' }}>
+                    <Box sx={{ width: '100%', borderRadius: '15px', height: '88%', overflow: 'hidden' }} >
+                        <TableContainer sx={{
+                            maxHeight: '100%', overflowY: 'auto',
+                            '&::-webkit-scrollbar': { width: '4px', marginTop: "100px" },
+                            '&::-webkit-scrollbar-thumb': { backgroundColor: '#DAE8FF', borderRadius: '4px' },
+                            '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#555' }
+                        }}>
                             <Table stickyHeader aria-label="sticky table">
                                 <TableHead>
-                                    <TableRow>
+                                    <TableRow sx={{
+                                        padding: "var(--8px, 8px) var(--16px, 16px)",
+                                        gap: "var(--12px, 12px)",
+
+                                    }}>
                                         {columns.map((column) => (
                                             <TableCell
-                                                sx={{ fontWeight: 'bold', backgroundColor: 'white', fontSize: '14px', textAlign: 'center', textTransform: 'uppercase' }}
+                                                sx={{
+                                                    backgroundColor: 'white',
+                                                    textTransform: 'capitalize',
+                                                    color: "var(--Text-Light-Grey, #647491)",
+                                                    /* Body/Medium */
+                                                    fontFamily: "Outfit,sans-serif",
+                                                    fontSize: "14px",
+                                                    fontStyle: "normal",
+                                                    fontWeight: "400",
+                                                    lineHeight: "150%",
+                                                    padding: '32px 20px 16px 20px'
+
+                                                }}
                                                 key={column.id}
-                                                align={column.align || 'left'}
-                                                style={{ minWidth: column.minWidth }}
+                                                style={{ minWidth: column.minWidth, }}
                                             >
-                                                {column.label}
+                                                {column.label === "Name" ? (
+                                                    <Stack display={"flex"} flexDirection={"row"}>
+                                                        <Stack>{column.label}</Stack>
+                                                        <Stack sx={{ marginLeft: "5px", marginTop: "2px" }}>
+                                                            <img src={SortArrowIcon} alt="sortArrow" />
+                                                        </Stack>
+                                                    </Stack>
+
+                                                ) : (
+                                                    <>{column.label}</>
+                                                )}
+
                                             </TableCell>
                                         ))}
                                     </TableRow>
@@ -628,11 +614,38 @@ const OrderListBody = () => {
                                     {rows
                                         // .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                                         .map((row) => (
-                                            <TableRow key={row._id} hover role="checkbox" tabIndex={-1}>
+                                            <TableRow key={row._id}
+                                                // hover
+                                                role="checkbox"
+                                                tabIndex={-1}
+                                                sx={{
+                                                    height: '14px',
+                                                    '&:hover': {
+                                                        backgroundColor: '#F6F7F9',
+                                                    },
+                                                }}
+                                            >
                                                 {columns.map((column) => {
                                                     const value = row[column.id];
                                                     return (
-                                                        <TableCell key={column.id} align={column.align || 'center'}>
+                                                        <TableCell
+                                                            key={column.id}
+                                                            align={column.align || 'left'}
+
+                                                            sx={{
+                                                                minHeight: "1vh",
+                                                                textTransform: 'capitalize',
+                                                                color: "var(--Text-Black, #080F1A)",
+                                                                /* Body/Medium */
+                                                                fontFamily: "Outfit,sans-serif",
+                                                                fontSize: "14px",
+                                                                fontStyle: "normal",
+                                                                fontWeight: "400",
+                                                                cursor: 'pointer',
+                                                                padding: '16px 20px 16px 20px'
+                                                            }}
+                                                            onClick={() => { onClickDetail(row.uhid, row._id) }}
+                                                        >
                                                             {column.format ? column.format(value, handleStatusChange, onClickDetail, handleViewPrescription, row) : value}
                                                         </TableCell>
                                                     );
@@ -642,6 +655,9 @@ const OrderListBody = () => {
                                 </TableBody>
                             </Table>
                         </TableContainer>
+
+                    </Box>
+                    <Box sx={{ borderTop: '1px solid #D4DBE5', height: '12%', }}>
                         <TablePagination
                             component="div"
                             count={ticketCount}
@@ -651,9 +667,11 @@ const OrderListBody = () => {
                             onRowsPerPageChange={handleChangeRowsPerPage}
                             rowsPerPageOptions={[]}
                         />
-                    </Paper>
+                    </Box>
+
                 </Box>
-            </Box>
+
+            </Box >
         </>
     );
 };

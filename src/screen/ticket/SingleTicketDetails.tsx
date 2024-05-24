@@ -56,6 +56,7 @@ import {
   getStagesHandler,
   getSubStagesHandler
 } from '../../api/stages/stagesHandler';
+
 import Rx from '../../assets/Rx.svg';
 import Bulb from '../../assets/Vector.svg';
 import NotesWidget from './widgets/NotesWidget';

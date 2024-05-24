@@ -61,7 +61,13 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   whtsappExpanded: false,
   setWhtsappExpanded: (whtsappExpanded) => set({ whtsappExpanded }),
   smsModal: false,
-  setSmsModal: (smsModal) => set({ smsModal })
+  setSmsModal: (smsModal) => set({ smsModal }),
+  phoneModal: false,
+  setPhoneModal: (phoneModal) => set({ phoneModal }),
+  noteModal: false,
+  setNoteModal: (noteModal) => set({ noteModal }),
+  ticketUpdateFlag: {},
+  setTicketUpdateFlag: (ticketUpdateFlag) => set({ ticketUpdateFlag })
 }));
 
 export default useTicketStore;

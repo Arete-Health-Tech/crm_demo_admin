@@ -27,13 +27,15 @@ import expandIcon from '../../../assets/expandIcon.svg';
 import CloseModalIcon from '../../../assets/CloseModalIcon.svg';
 import notesAttachmentIcon from '../../../assets/notesAttachmentIcon.svg';
 import NotesIcon from '../../../assets/NotesIcon.svg';
-import avatar1 from '../../../assets/avatar1.svg';
+// import avatar1 from '../../../assets/avatar1.svg';
 import arrowright from '../../../assets/arrowright.svg';
 import arrowLeft from '../../../assets/arrowLeft.svg';
 import styles from './Notes.module.css';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import ReactHtmlParser from 'html-react-parser';
+import { Avatar } from '@mui/material';
+import useUserStore from '../../../store/userStore';
 
 type Props = { setTicketUpdateFlag: any };
 
@@ -48,7 +50,7 @@ const NotesWidget = (props: Props) => {
   const [isNoteEdited, setIsNoteEdited] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const { ticketID } = useParams();
-
+  const { user, setUser } = useUserStore();
   const handleAddNewNote = async () => {
     if (note !== '<p><br></p>') {
       const data: iNote = {
@@ -141,7 +143,16 @@ const NotesWidget = (props: Props) => {
                         height={'1.25rem'}
                         width={'1.25rem'}
                       >
-                        <img src={avatar1} alt="" />
+                        <Avatar sx={{ fontSize: '8px', bgcolor: 'orange' ,
+                              height: '1rem',
+                              width: '1rem',
+                              margin: '0.3rem',
+                              marginTop:'8px'
+                            }}>
+                                {user?.firstName[0]?.toUpperCase()}
+                                {user?.lastName[0]?.toUpperCase()}
+                              </Avatar>
+                        {/* <img src={avatar1} alt="" /> */}
                       </Box>
                     </Box>
                   </Box>

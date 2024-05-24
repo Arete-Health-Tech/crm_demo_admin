@@ -28,20 +28,20 @@ import Attachment from '../../../../assets/Attachment.svg';
 import expandIcon from '../../../../assets/expandIcon.svg';
 import collapseIcon from '../../../../assets/collapseIcon.svg';
 import CloseModalIcon from '../../../../assets/CloseModalIcon.svg';
-
+import { Avatar } from '@mui/material';
 type Props = {};
 
 const MessagingWidget = (props: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ticketID } = useParams();
-  const { user } = useUserStore();
+   const { user } = useUserStore();
   const { tickets, filterTickets, setWhtsappExpanded, whtsappExpanded } =
     useTicketStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState(null);
   const [id, setId] = useState('');
   const containerRef = useRef<HTMLDivElement | null>(null);
-
+  // const { user, setUser } = useUserStore();
   function getConsumerIdByDataId(dataArray, dataIdToMatch) {
     for (const obj of dataArray) {
       if (obj._id === dataIdToMatch) {
@@ -262,15 +262,15 @@ const MessagingWidget = (props: Props) => {
                               'DD MMM YYYY hh:mm A'
                             )}
                           </Typography>
-                          <img
-                            src={whtsappMessageIcon}
-                            style={{
-                              height: '1.25rem',
-                              width: '1.25rem',
-                              margin: '0.3rem'
-                            }}
-                            alt=""
-                          />
+                          <Avatar sx={{ fontSize: '8px', bgcolor: 'orange' ,
+                              height: '1rem',
+                              width: '1rem',
+                              margin: '0.3rem',
+                              marginTop:'8px'
+                            }}>
+                                {user?.firstName[0]?.toUpperCase()}
+                                {user?.lastName[0]?.toUpperCase()}
+                             </Avatar>
                         </Box>
                       </Box>
                     )}

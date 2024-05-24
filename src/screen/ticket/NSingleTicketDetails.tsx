@@ -99,7 +99,7 @@ import RemainderAll from './widgets/RemainderAll';
 import SingleTicketSideBar from './SingleTicketSideBar/SingleTicketSideBar';
 import TaskBar from './SingleTicketSideBar/TaskBar';
 import Avatar1 from "../../assets/Avatar.svg"
-import NewAvatar from '../../assets/avatar2.svg';
+import NewAvatar from "../../assets/Avatar2.svg"
 import DropDownArrow from "../../assets/DropdownArror.svg"
 import KebabMenu from "../../assets/KebabMenu.svg"
 import AddAssigneeIcon from "../../assets/add.svg"
@@ -454,6 +454,8 @@ const NSingleTicketDetails = (props: Props) => {
     ]);
 
     const [visible, setVisible] = useState(false);
+    const [probability, setProbability] = useState(0);
+    const [probabilityModal, setProbabilityModal] = useState(false);
     const [isKebabMenu, setIsKebabMenu] = useState(false);
     const [op, setOp] = useState(false);
 
@@ -471,13 +473,27 @@ const NSingleTicketDetails = (props: Props) => {
         setVisible(false);
     };
 
+    const probabilityItemStyles = {
+        display: 'flex',
+        flexDirection: 'column',
+        color: 'var(--Text-Black, #080F1A)',
+        fontFamily: `"Outfit", sans-serif`,
+        fontSize: '14px',
+        fontStyle: 'normal',
+        fontWeight: '400',
+        lineHeight: '150%',
+        '&:hover': {
+            backgroundColor: 'inherit', // Prevent background change on hover
+        },
+    };
+
     const menuItemStyles = {
         color: 'var(--Text-Black, #080F1A)',
         fontFamily: `"Outfit", sans-serif`,
         fontSize: '14px',
         fontStyle: 'normal',
         fontWeight: '400',
-        lineHeight: '150%'
+        lineHeight: '150%',
     };
 
     const calculatedDate = (date: any) => {
@@ -610,7 +626,70 @@ const NSingleTicketDetails = (props: Props) => {
                     </Stack>
 
                     {/* Right Side */}
+
+
+
+
                     <Stack className="Ticket-detail-card-right">
+                        {/* probability start */}
+                        <Box
+                            className={probability === 0
+                                ? 'Ticket-probability0'
+                                : probability === 25
+                                    ? 'Ticket-probability25'
+                                    : probability === 50
+                                        ? 'Ticket-probability50'
+                                        : probability === 75
+                                            ? 'Ticket-probability75'
+                                            : 'Ticket-probability100'}
+                            // className="Box-assignee"
+                            onClick={() => {
+                                setProbability(probability);
+                                setProbabilityModal(true);
+                            }}
+                        >
+                            {probability}%
+                            <span>
+                                <img src={DropDownArrow} alt='' />
+                            </span>
+                        </Box>
+
+                        <Stack
+                            display={probabilityModal ? 'block' : 'none'}
+                            className="KebabMenu-item ticket-assigneemenu"
+                            bgcolor="white"
+                        >
+                            <Stack
+                                className="modal-close"
+                                onClick={() => setProbabilityModal(false)}
+                                sx={{ border: '1px solid #EBEDF0' }}
+                            >
+                                <img src={CloseModalIcon} />
+                            </Stack>
+                            <MenuItem sx={probabilityItemStyles}>
+                                <Stack className={"Ticket-probability"}>
+                                    Select Probability
+                                </Stack>
+                                <Stack display={'flex'} flexDirection={'row'} width={'100%'} justifyContent={'space-between'}>
+                                    <Stack className="Ticket-probability-0" onClick={() => { setProbability(0); setProbabilityModal(false) }}>
+                                        0%
+                                    </Stack>
+                                    <Stack className="Ticket-probability-25" onClick={() => { setProbability(25); setProbabilityModal(false) }}>
+                                        25%
+                                    </Stack>
+                                    <Stack className="Ticket-probability-50" onClick={() => { setProbability(50); setProbabilityModal(false) }}>
+                                        50%
+                                    </Stack>
+                                    <Stack className="Ticket-probability-75" onClick={() => { setProbability(75); setProbabilityModal(false) }}>
+                                        75%
+                                    </Stack>
+                                    <Stack className="Ticket-probability-100" onClick={() => { setProbability(100); setProbabilityModal(false) }}>
+                                        100%
+                                    </Stack>
+                                </Stack>
+                            </MenuItem>
+                        </Stack>
+                        {/* probability end */}
                         {/* Lead Assignee */}
 
 
@@ -620,7 +699,7 @@ const NSingleTicketDetails = (props: Props) => {
                                 alignItems="center"
                             >
                                 <span className='avatar'> <Avatar src={Avatar1} alt="User 1" /></span>
-                                <span className='avatar2 avatar'> <Avatar src={NewAvatar} alt="User 2" /></span>
+                                <span className='NewAvatar avatar'> <Avatar src={NewAvatar} alt="User 2" /></span>
                                 <span className='DropDownArrow' >
                                     <img
                                         src={DropDownArrow}
@@ -728,6 +807,9 @@ const NSingleTicketDetails = (props: Props) => {
                             </MenuItem>
                             <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                 Initate RFA
+                            </MenuItem>
+                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                Delete Lead
                             </MenuItem>
                         </Stack>
 
@@ -875,11 +957,11 @@ const NSingleTicketDetails = (props: Props) => {
                 </Box>
 
                 {/* End ----- */}
-            </div>
+            </div >
 
             {/* Left Section of Single Ticket Detail Page */}
 
-            <div className="sidebar-box">
+            < div className="sidebar-box" >
                 <div className="side-bar">
                     <SingleTicketSideBar
                         reminderLists={matchedObjects}
@@ -889,8 +971,8 @@ const NSingleTicketDetails = (props: Props) => {
                 <div className="task-bar">
                     <TaskBar />
                 </div>
-            </div>
-        </div>
+            </div >
+        </div >
     );
 };
 

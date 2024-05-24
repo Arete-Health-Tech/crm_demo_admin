@@ -32,6 +32,7 @@ import CloseModalIcon from '../../../../assets/CloseModalIcon.svg';
 type Props = {};
 
 const MessagingWidget = (props: Props) => {
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ticketID } = useParams();
   const { user } = useUserStore();
   const { tickets, filterTickets, setWhtsappExpanded, whtsappExpanded } =
@@ -137,9 +138,16 @@ const MessagingWidget = (props: Props) => {
     }
   }, [messages]);
 
-
-  console.log(messages," tiis is whatsapp coming messages")
-
+  useEffect(() => {
+    // Adjust the height on initial render
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = `${Math.min(
+        textareaRef.current.scrollHeight,
+        window.innerHeight * 0.1
+      )}px`;
+    }
+  }, []);
   return (
     <>
       <Box className={whtsappExpanded ? styles.openedModal : ''}>
@@ -162,9 +170,10 @@ const MessagingWidget = (props: Props) => {
             </Stack>
           </Stack>
         )}
+
         <Stack
           direction="column"
-          height={whtsappExpanded ? '80vh' : '53vh'}
+          height={whtsappExpanded ? '80vh' : '55vh'}
           position="relative"
           bgcolor="white"
         >
@@ -175,155 +184,117 @@ const MessagingWidget = (props: Props) => {
               overflowY: 'auto'
             }}
             className={styles.whtsappMessageBox}
-            height={whtsappExpanded ? '85%' : '75%'}
           >
             {messages
               ? messages.length > 0
-                ? messages.map((message, index) =>
-                  message.type === 'sent' ? (
-                    <Stack
-                      direction="column"
-                      display="flex"
-                      alignItems="flex-end"
-                    >
-                      {message.listId0 ? (
-                        <NodeListMessage message={message} />
-                      ) : message.replyButton1 ? (
-                        <NodeReplyMessage message={message} />
-                      ) : message.imageURL ? (
-                        <div
-                          style={{
-                            height: '10%',
-                            width: '50%'
-                          }}
-                        >
-                          {message.messageType === 'image' ? (
-                            <img
-                              src={message.imageURL}
-                              alt="Image"
-                              style={{
-                                boxShadow: '0 1px .5px rgba(11,20,26,.13)',
-                                margin: '10px 0',
-                                padding: '5px',
-                                backgroundColor: '#d8fdd3',
-                                borderRadius: '7.5px 7.5px 7.5px 0px'
-                              }}
-                            />
-                          ) : message.messageType === 'pdf' ? (
-                            <a
-                              href={message.imageURL}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <embed
-                                src={message.imageURL}
-                                type="application/pdf"
-                                width="100%"
-                                height="100%"
-                              />
-                            </a>
-                          ) : null}
-                        </div>
-                      ) : (
-                        <Box
-                          boxShadow=" 0 1px .5px rgba(11,20,26,.13)"
-                          my={1}
-                          maxWidth="70%"
-                          p={1}
-                          bgcolor="#d8fdd3"
-                          borderRadius="7.5px 7.5px 7.5px 0px"
-                        >
-                          <Typography
-                            color="var(--Text-Black, #080F1A)"
-                            fontFamily={'Outfit,sans-serif'}
-                            fontSize={'0.875rem'}
-                            fontWeight={400}
+                ? messages.map((message, index) => (
+                  <Stack
+                    key={index}
+                    direction="column"
+                    alignItems={
+                      message.type === 'sent' ? 'flex-end' : 'flex-start'
+                    }
+                  >
+                    {message.listId0 ? (
+                      <NodeListMessage message={message} />
+                    ) : message.replyButton1 ? (
+                      <NodeReplyMessage message={message} />
+                    ) : message.imageURL ? (
+                      <Box sx={{ height: '10%', width: '50%' }}>
+                        {message.messageType === 'image' ? (
+                          <img
+                            src={message.imageURL}
+                            alt="Image"
+                            style={{
+                              boxShadow: '0 1px .5px rgba(11,20,26,.13)',
+                              margin: '10px 0',
+                              padding: '5px',
+                              backgroundColor: '#d8fdd3',
+                              borderRadius: '7.5px 7.5px 7.5px 0px'
+                            }}
+                          />
+                        ) : message.messageType === 'pdf' ? (
+                          <a
+                            href={message.imageURL}
+                            target="_blank"
+                            rel="noopener noreferrer"
                           >
-                            {' '}
-                            {message.text}
-                          </Typography>
-                          <Box display="flex" justifyContent="space-between">
-                            <Typography
-                              variant="caption"
-                              color="var(--Text-Light-Grey, #647491)"
-                              fontFamily={'Outfit,sans-serif'}
-                              fontSize={'0.625rem'}
-                              fontWeight={400}
-                              paddingTop={1}
-                            >
-                              {dayjs(message.createdAt).format(
-                                'DD MMM YYYY hh:mm A'
-                              )}
-                            </Typography>
-                            <img
-                              src={whtsappMessageIcon}
-                              style={{
-                                height: '1.25rem',
-                                width: '1.25rem',
-                                margin: '0.3rem'
-                              }}
-                              alt=""
+                            <embed
+                              src={message.imageURL}
+                              type="application/pdf"
+                              width="100%"
+                              height="100%"
                             />
-                          </Box>
+                          </a>
+                        ) : null}
+                      </Box>
+                    ) : (
+                      <Box
+                        boxShadow="0 1px .5px rgba(11,20,26,.13)"
+                        my={1}
+                        maxWidth="70%"
+                        p={1}
+                        bgcolor="#d8fdd3"
+                        sx={{
+                          borderRadius: '7.5px 7.5px 7.5px 0px',
+                          borderBottomLeftRadius:
+                            message.type === 'sent' ? '7.5px' : '0px'
+                        }}
+                      >
+                        <Typography
+                          color="var(--Text-Black, #080F1A)"
+                          fontFamily="Outfit, sans-serif"
+                          fontSize="0.875rem"
+                          fontWeight={400}
+                        >
+                          {message.text}
+                        </Typography>
+                        <Box display="flex" justifyContent="space-between">
+                          <Typography
+                            variant="caption"
+                            color="var(--Text-Light-Grey, #647491)"
+                            fontFamily="Outfit, sans-serif"
+                            fontSize="0.625rem"
+                            fontWeight={400}
+                            pt={1}
+                          >
+                            {dayjs(message.createdAt).format(
+                              'DD MMM YYYY hh:mm A'
+                            )}
+                          </Typography>
+                          <img
+                            src={whtsappMessageIcon}
+                            style={{
+                              height: '1.25rem',
+                              width: '1.25rem',
+                              margin: '0.3rem'
+                            }}
+                            alt=""
+                          />
                         </Box>
-                      )}
-                    </Stack>
-                  ) : (
-                    <Stack direction="column" justifyContent="flex-start">
-                      <PatientReply message={message} />
-                    </Stack>
-                  )
-                )
+                      </Box>
+                    )}
+                  </Stack>
+                ))
                 : 'No Messages Available'
-              : 'Loading ....'}
+              : 'Loading ...'}
           </Box>
 
-          <Box
-            borderTop={2.5}
-            borderColor="#317AE2"
-            bottom={0}
-            bgcolor="white"
-            height={whtsappExpanded ? '15%' : '25%'}
-          >
-            <Stack p={1} spacing={2}>
-              <Box display="flex">
-                <textarea
-                  value={sendMessage}
-                  onChange={(e) => setSendMessage(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Enter a Message"
-                  style={{
-                    border: 0,
-                    width: '100%',
-                    height: '10vh',
-                    resize: 'none'
-                  }}
-                />
-                {whtsappExpanded ? (
-                  <img
-                    src={collapseIcon}
-                    alt=""
-                    style={{ marginTop: -35, cursor: 'pointer' }}
-                    onClick={() => setWhtsappExpanded(false)}
-                  />
-                ) : (
-                  <img
-                    src={expandIcon}
-                    alt=""
-                    style={{ marginTop: -35, cursor: 'pointer' }}
-                    onClick={() => setWhtsappExpanded(true)}
-                  />
-                )}
-              </Box>
+          <Box borderTop={2.5} borderColor="#317AE2" bottom={0} bgcolor="white">
+            <Stack p={"0px 8px 0px 8px"} spacing={2}>
               <Box
                 display="flex"
                 justifyContent="space-between"
-                style={{ marginTop: -2 }}
+                alignItems="center"
               >
-                <Box>
+                <Box style={{
+                  cursor: 'pointer',
+                  marginLeft: -20,
+                  height: '100%',
+                  alignSelf: 'flex-end'
+                }}>
                   <Button
                     onClick={handleImageUpload}
-                    style={{ cursor: 'pointer', marginLeft: -20 }}
                   >
                     <img src={Attachment} alt="" />
                   </Button>
@@ -335,17 +306,39 @@ const MessagingWidget = (props: Props) => {
                     ref={fileInputRef}
                   />
                 </Box>
-                <Box
-                  display="flex"
-                  onClick={handleSendMessage}
-                  style={{
-                    cursor: sendMessage ? 'pointer' : 'not-allowed'
+                <textarea
+                  ref={textareaRef}
+                  value={sendMessage}
+                  className={styles.replytextArea}
+                  onChange={(e) => {
+                    setSendMessage(e.target.value);
+                    if (textareaRef.current) {
+                      textareaRef.current.style.height = 'auto';
+                      textareaRef.current.style.height = `${Math.min(
+                        textareaRef.current.scrollHeight,
+                        window.innerHeight * 0.1
+                      )}px`;
+                    }
                   }}
+                  onKeyPress={handleKeyPress}
+                  placeholder="Enter a Message"
+                />
+                <Box
+                  className={sendMessage ? styles.sendButtonActive : styles.sendButton}
+                  onClick={handleSendMessage}
                 >
-                  <Typography color={sendMessage ? 'blue' : 'gray'}>
+                  <Typography className={sendMessage ? styles.sendButtonTextActive : styles.sendButtonText}>
                     Send
                   </Typography>
                 </Box>
+                {!whtsappExpanded && (
+                  <img
+                    src={expandIcon}
+                    alt=""
+                    style={{ width: '1rem', marginLeft: 10, cursor: 'pointer', alignSelf: 'flex-end', marginBottom: '0.5rem' }}
+                    onClick={() => setWhtsappExpanded(true)}
+                  />
+                )}
               </Box>
             </Stack>
           </Box>

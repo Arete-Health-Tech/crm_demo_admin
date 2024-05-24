@@ -43,7 +43,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         tickets,
     } = useTicketStore();
 
-    console.log(doctors[0].departments[0], 'doctors');
+    // console.log(doctors[0].departments[0], 'doctors');
     const initialPatientData: patientData = {
         uhid: '',
         name: '',

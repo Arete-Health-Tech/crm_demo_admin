@@ -67,7 +67,9 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   noteModal: false,
   setNoteModal: (noteModal) => set({ noteModal }),
   ticketUpdateFlag: {},
-  setTicketUpdateFlag: (ticketUpdateFlag) => set({ ticketUpdateFlag })
+  setTicketUpdateFlag: (ticketUpdateFlag) => set({ ticketUpdateFlag }),
+  isModalOpenCall: false,
+  setIsModalOpenCall: (isModalOpenCall) => set({ isModalOpenCall })
 }));
 
 export default useTicketStore;

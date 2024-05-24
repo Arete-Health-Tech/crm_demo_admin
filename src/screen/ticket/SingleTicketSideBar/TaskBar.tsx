@@ -4,11 +4,13 @@ import AddIcon from '@mui/icons-material/Add';
 import AddReminderWidget from "../widgets/AddReminderWidget";
 import AddCallRescheduler from "../widgets/AddCallRescheduler";
 import "../singleTicket.css";
+import useTicketStore from "../../../store/ticketStore";
 const TaskBar = () => {
+    const { isModalOpenCall, setIsModalOpenCall } = useTicketStore();
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedOption, setSelectedOption] = useState(null);
     const [reminderModalOpen, setReminderModalOpen] = useState(false);
-    const [reschedulerModalOpen, setReschedulerModalOpen] = useState(false);
+    // const [reschedulerModalOpen, setReschedulerModalOpen] = useState(false);
 
     const handleButtonClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -24,7 +26,7 @@ const TaskBar = () => {
         if (option === "Reminder") {
             setReminderModalOpen(true);
         } else if (option === "Rescheduler") {
-            setReschedulerModalOpen(true);
+            setIsModalOpenCall(true);
         }
     };
 
@@ -115,7 +117,7 @@ const TaskBar = () => {
                 </Menu>
             </div>
             <AddReminderWidget isModalOpen={reminderModalOpen} setIsModalOpen={setReminderModalOpen} />
-            <AddCallRescheduler setIsModalOpenCall={setReschedulerModalOpen} isModalOpenCall={reschedulerModalOpen} />
+            <AddCallRescheduler/>
         </div >
     );
 };

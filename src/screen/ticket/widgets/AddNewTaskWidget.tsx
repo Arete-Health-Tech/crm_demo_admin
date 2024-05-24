@@ -17,32 +17,34 @@ import {
 import React, { useState } from 'react';
 import AddReminderWidget from './AddReminderWidget';
 import AddCallRescheduler from './AddCallRescheduler';
+import useTicketStore from '../../../store/ticketStore';
 
 
 type Props = {};
 
 const AddNewTaskWidget = (props: Props) => {
+  const { isModalOpenCall, setIsModalOpenCall } = useTicketStore();
   const [isTaskOpen, setIsTaskOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isModalOpenCall,setIsModalOpenCall]= useState(false);
+  // const [isModalOpenCall, setIsModalOpenCall] = useState(false);
 
 
-   const handleButtonClick = () => {
-     setIsModalOpen(true);
-   
-   };
+  const handleButtonClick = () => {
+    setIsModalOpen(true);
 
-   const handleButtonClickRescheduler = () => {
-   
-     setIsModalOpenCall(true);
-   };
-   const handleModalClose = () => {
-     // Comment or remove the following line to prevent closing the modal
-     setIsModalOpen(false);
-      setIsModalOpenCall(false);
-    
-   };
-  
+  };
+
+  const handleButtonClickRescheduler = () => {
+
+    setIsModalOpenCall(true);
+  };
+  const handleModalClose = () => {
+    // Comment or remove the following line to prevent closing the modal
+    setIsModalOpen(false);
+    setIsModalOpenCall(false);
+
+  };
+
 
   return (
     <Box position="relative">
@@ -63,10 +65,7 @@ const AddNewTaskWidget = (props: Props) => {
       >
         Call Rescheduler
       </Button>
-      <AddCallRescheduler
-        isModalOpenCall={isModalOpenCall}
-        setIsModalOpenCall={handleModalClose}
-      />
+      <AddCallRescheduler />
     </Box>
   );
 };

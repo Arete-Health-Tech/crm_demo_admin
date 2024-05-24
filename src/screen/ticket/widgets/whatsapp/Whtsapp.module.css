@@ -39,7 +39,7 @@
   font-style: normal;
   font-weight: 500;
   line-height: 120%;
-  border-bottom: 1px solid var(--Borders-Light-Grey, #D4DBE5);
+  border-bottom: 1px solid var(--Borders-Light-Grey, #d4dbe5);
 }
 
 .modal_close {
@@ -65,4 +65,64 @@
 
 .reminder_modal_title {
   padding: 5px 0 15px 0;
+}
+.replytextArea {
+  /* top: 5; */
+  width: 100%;
+  /* margin: 1rem 1rem 1rem 0rem; */
+  box-sizing: border-box;
+  overflow: hidden;
+  resize: none;
+  max-height: 25vh;
+  min-height: 2em;
+  border: none;
+  align-self: flex-end;
+}
+.replytextArea:focus {
+  outline: none;
+  border: none;
+}
+.sendButton {
+  display: flex;
+  height: 2rem;
+  padding: 0.75rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.25rem;
+  background: #ebedf0;
+  align-self: flex-end;
+}
+.sendButtonText {
+  color: var(--Text-Light-Grey, #647491);
+  text-align: center;
+
+  /* Links/Btn Text */
+  font-family: Outfit, sans-serif;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 1.3125rem */
+}
+.sendButtonActive {
+  display: flex;
+  height: 2rem;
+  padding: 0.75rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.25rem;
+  background: #0566ff;
+  align-self: flex-end;
+}
+.sendButtonTextActive {
+  color: var(--Text-Light-Grey, #fff);
+  text-align: center;
+
+  /* Links/Btn Text */
+  font-family: Outfit, sans-serif;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 1.3125rem */
 }

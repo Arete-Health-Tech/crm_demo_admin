@@ -189,6 +189,8 @@ export interface iTicketStore {
   setNoteModal: (noteModal: boolean) => void;
   ticketUpdateFlag: object;
   setTicketUpdateFlag: (noteModal: object) => void;
+  isModalOpenCall: boolean;
+  setIsModalOpenCall: (isModalOpenCall: boolean) => void;
 }
 
 export interface iNote {

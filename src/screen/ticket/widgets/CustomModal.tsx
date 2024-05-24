@@ -48,8 +48,7 @@ const CustomModal = () => {
     reminders,
     pageNumber,
     searchByName,
-    callRescheduler,
-    estimates
+    setIsModalOpenCall
   } = useTicketStore();
   const [timer, setTimer] = useState(0);
 
@@ -95,6 +94,9 @@ const CustomModal = () => {
       // console.log("this is next one")
       const sachin: any = ticketID;
       const result = await createTimerHandler(formData, sachin);
+      if (formData.select === "Rescheduled Call") {
+        setIsModalOpenCall(true)
+      }
       setTimeout(() => {
         (async () => {
           await getTicketHandler(

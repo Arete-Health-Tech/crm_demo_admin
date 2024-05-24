@@ -33,6 +33,7 @@ import { createTheme, ThemeProvider, Theme, useTheme } from '@mui/material/style
 import { outlinedInputClasses } from '@mui/material/OutlinedInput';
 import NotifyToggle from '../../../assets/NotifyToggle.svg';
 import NotNotifyToggle from '../../../assets/NotNotifyToggle.svg';
+import useTicketStore from '../../../store/ticketStore';
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -106,17 +107,8 @@ const customTheme = (outerTheme: Theme) =>
     },
   });
 
-type Props = {
-
-  setIsModalOpenCall: any;
-  isModalOpenCall: boolean;
-};
-
-const AddCallRescheduler = ({
-
-  setIsModalOpenCall,
-  isModalOpenCall
-}: Props) => {
+const AddCallRescheduler = () => {
+  const { setIsModalOpenCall, isModalOpenCall } = useTicketStore()
   const style = {
     position: 'absolute' as 'absolute',
     top: '50%',

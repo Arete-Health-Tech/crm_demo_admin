@@ -50,6 +50,7 @@ const MessagingWidget = (props: Props) => {
     }
     return null; // Return null if no matching dataId found in the data array
   }
+  console.log(getConsumerIdByDataId ,"getConsumerIdByDataId")
 
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
 

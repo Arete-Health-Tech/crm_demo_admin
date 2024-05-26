@@ -29,6 +29,7 @@ import expandIcon from '../../../../assets/expandIcon.svg';
 import collapseIcon from '../../../../assets/collapseIcon.svg';
 import CloseModalIcon from '../../../../assets/CloseModalIcon.svg';
 import { Avatar } from '@mui/material';
+import { io } from 'socket.io-client';
 type Props = {};
 
 const MessagingWidget = (props: Props) => {
@@ -138,6 +139,14 @@ const MessagingWidget = (props: Props) => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [messages]);
+
+
+    const socket = io();
+
+    socket.on('newMessage', (data) => {
+      const notification = document.getElementById('notification');
+       console.log(notification ,"notificationnotification")
+      });
 
   useEffect(() => {
     // Adjust the height on initial render

@@ -61,15 +61,17 @@ const MessagingWidget = (props: Props) => {
   }
 
   useEffect(() => {
-    console.log("sachin from front end")
-
+    console.log("Initializing socket connection...");
+  
+    // Listen for the 'newMessage' event
     socket.on('newMessage', (data) => {
       console.log('Received new message:', data);
-      // Update your state or perform any action with the data received
+      setMessages((prevMessages) => [...prevMessages, data.message]);
     });
-
+  
     // Clean up the socket connection on component unmount
     return () => {
+      socket.off('newMessage'); // Remove the event listener
       socket.disconnect();
     };
   }, []);

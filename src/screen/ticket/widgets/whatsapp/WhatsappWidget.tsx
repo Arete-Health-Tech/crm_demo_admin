@@ -21,7 +21,7 @@ import useTicketStore from '../../../../store/ticketStore';
 import AgentReply from './AgentReply';
 import dayjs from 'dayjs';
 import styles from './Whtsapp.module.css';
-import { apiClient } from '../../../../api/apiClient';
+import { apiClient, socket } from '../../../../api/apiClient';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import whtsappMessageIcon from '../../../../assets/avatar1.svg';
 import Attachment from '../../../../assets/Attachment.svg';
@@ -61,7 +61,7 @@ const MessagingWidget = (props: Props) => {
   }
 
   useEffect(() => {
-    const socket = io('BACKEND_URL'); // Replace with your server URL
+    console.log("sachin from front end")
 
     socket.on('newMessage', (data) => {
       console.log('Received new message:', data);
@@ -155,12 +155,6 @@ const MessagingWidget = (props: Props) => {
   }, [messages]);
 
 
-      const socket = io();
-
-      socket.on('newMessage', (data) => {
-        const notification = document.getElementById('notification');
-        console.log(notification ,"notificationnotification")
-        });
 
   useEffect(() => {
     // Adjust the height on initial render

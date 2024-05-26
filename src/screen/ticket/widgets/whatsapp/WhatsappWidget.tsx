@@ -61,6 +61,20 @@ const MessagingWidget = (props: Props) => {
   }
 
   useEffect(() => {
+    const socket = io('BACKEND_URL'); // Replace with your server URL
+
+    socket.on('newMessage', (data) => {
+      console.log('Received new message:', data);
+      // Update your state or perform any action with the data received
+    });
+
+    // Clean up the socket connection on component unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
     if (ticketID) {
       const collectionRef = collection(
         database,
@@ -141,12 +155,12 @@ const MessagingWidget = (props: Props) => {
   }, [messages]);
 
 
-    const socket = io();
+      const socket = io();
 
-    socket.on('newMessage', (data) => {
-      const notification = document.getElementById('notification');
-       console.log(notification ,"notificationnotification")
-      });
+      socket.on('newMessage', (data) => {
+        const notification = document.getElementById('notification');
+        console.log(notification ,"notificationnotification")
+        });
 
   useEffect(() => {
     // Adjust the height on initial render

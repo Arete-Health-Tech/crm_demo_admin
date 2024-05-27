@@ -21,7 +21,7 @@ import useTicketStore from '../../../../store/ticketStore';
 import AgentReply from './AgentReply';
 import dayjs from 'dayjs';
 import styles from './Whtsapp.module.css';
-import { apiClient } from '../../../../api/apiClient';
+import { apiClient, socket } from '../../../../api/apiClient';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import whtsappMessageIcon from '../../../../assets/avatar1.svg';
 import Attachment from '../../../../assets/Attachment.svg';
@@ -29,6 +29,7 @@ import expandIcon from '../../../../assets/expandIcon.svg';
 import collapseIcon from '../../../../assets/collapseIcon.svg';
 import CloseModalIcon from '../../../../assets/CloseModalIcon.svg';
 import { Avatar } from '@mui/material';
+import { io } from 'socket.io-client';
 type Props = {};
 
 const MessagingWidget = (props: Props) => {
@@ -50,6 +51,7 @@ const MessagingWidget = (props: Props) => {
     }
     return null; // Return null if no matching dataId found in the data array
   }
+  console.log(getConsumerIdByDataId ,"getConsumerIdByDataId")
 
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
 
@@ -57,6 +59,22 @@ const MessagingWidget = (props: Props) => {
   } else {
     console.log('Consumer ID not found for the given dataId.');
   }
+
+  useEffect(() => {
+    console.log("Initializing socket connection...");
+  
+    // Listen for the 'newMessage' event
+    socket.on('newMessage', (data) => {
+      console.log('Received new message:', data);
+      setMessages((prevMessages) => [...prevMessages, data.message]);
+    });
+  
+    // Clean up the socket connection on component unmount
+    return () => {
+      socket.off('newMessage'); // Remove the event listener
+      socket.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     if (ticketID) {
@@ -137,6 +155,8 @@ const MessagingWidget = (props: Props) => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [messages]);
+
+
 
   useEffect(() => {
     // Adjust the height on initial render

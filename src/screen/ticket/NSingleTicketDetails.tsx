@@ -99,7 +99,7 @@ import RemainderAll from './widgets/RemainderAll';
 import SingleTicketSideBar from './SingleTicketSideBar/SingleTicketSideBar';
 import TaskBar from './SingleTicketSideBar/TaskBar';
 import Avatar1 from "../../assets/Avatar.svg"
-import NewAvatar from "../../assets/avatar2.svg"
+import NewAvatar from "../../assets/Avatar2.svg"
 import DropDownArrow from "../../assets/DropdownArror.svg"
 import KebabMenu from "../../assets/KebabMenu.svg"
 import AddAssigneeIcon from "../../assets/add.svg"
@@ -261,11 +261,11 @@ const NSingleTicketDetails = (props: Props) => {
         setValue(newValue);
     };
 
-  
 
- 
 
-  
+
+
+
 
 
 
@@ -835,7 +835,7 @@ const NSingleTicketDetails = (props: Props) => {
                                 borderColor: 'divider',
                                 display: 'flex',
                                 justifyContent: 'space-around',
-                                
+
                             }}
                             bgcolor="white"
                         >
@@ -860,9 +860,9 @@ const NSingleTicketDetails = (props: Props) => {
                                         "& .MuiBadge-badge": {
                                             color: "#FFF",
                                             backgroundColor: "#F94839",
-                                            margin:'-3px',
+                                            margin: '-3px',
                                             fontSize: '9px',
-                                            
+
                                             height: '20px',
                                             // borderRadius: '80%', 
                                             padding: -8,
@@ -887,9 +887,9 @@ const NSingleTicketDetails = (props: Props) => {
                                         "& .MuiBadge-badge": {
                                             color: "#FFF",
                                             backgroundColor: "#F94839",
-                                            margin:'-3px',
+                                            margin: '-3px',
                                             fontSize: '9px',
-                                            
+
                                             height: '20px',
                                             // borderRadius: '80%', 
                                             padding: -8,
@@ -907,9 +907,9 @@ const NSingleTicketDetails = (props: Props) => {
                                         "& .MuiBadge-badge": {
                                             color: "#FFF",
                                             backgroundColor: "#F94839",
-                                            margin:'-3px',
+                                            margin: '-3px',
                                             fontSize: '9px',
-                                            
+
                                             height: '20px',
                                             // borderRadius: '80%', 
                                             padding: -8,

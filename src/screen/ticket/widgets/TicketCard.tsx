@@ -200,9 +200,9 @@ const TicketCard = (props: Props) => {
         width: '100%',
         gap: "12px",
         // 1px solid #0566FF
-        borderTop: isSelected ? "1px solid #ACB8CB" : '1px solid #0566FF',
-        borderRight: isSelected ? "1px solid #ACB8CB" : '1px solid #0566FF',
-        borderLeft: isSelected ? "1px solid #ACB8CB" : '1px solid #0566FF',
+        borderTop: isSelected ? "1px solid #ACB8CB" : 'none',
+        borderRight: isSelected ? "1px solid #ACB8CB" : 'none',
+        borderLeft: isSelected ? "1px solid #ACB8CB" : 'none',
         '&:hover': {
           bgcolor: '#EBEDF0',
           cursor: 'pointer',

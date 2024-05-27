@@ -37,6 +37,7 @@ import ActivePharmacyIcon from '../../assets/ActivePharmacy.svg';
 import SettingActive from '../../assets/ActiveSetting.svg';
 import TaskActiveIcon from '../../assets/ActiveTask.svg';
 import { StackedBarChartSharp } from '@mui/icons-material';
+import useTicketStore from '../../store/ticketStore';
 
 
 const drawerWidth = 72;
@@ -116,39 +117,54 @@ const StyledBadge = styled(Badge)(({ theme }) => ({
     }
 }));
 
+const theme = createTheme({
+    components: {
+        MuiTooltip: {
+            styleOverrides: {
+                tooltip: {
+                    backgroundColor: '#0066CC',
+                    color: 'white',
+                    fontSize: '0.5rem'
+                }
+            }
+        }
+    }
+});
+
+const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} classes={{ popper: className }} />
+))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+        backgroundColor: '#0566FF',
+        color: '#ffffff',
+        fontSize: 12,
+        fontFamily: `"Outfit",sans-serif`,
+    },
+}));
+
+
+
 const Navbar = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [open, setOpen] = React.useState(false);
+    const {
+        isSwitchView,
+        setIsSwitchView,
+    } = useTicketStore();
 
     const goToPage = (path) => {
         navigate(path);
     };
 
-    const theme = createTheme({
-        components: {
-            MuiTooltip: {
-                styleOverrides: {
-                    tooltip: {
-                        backgroundColor: '#0066CC',
-                        color: 'white',
-                        fontSize: '0.5rem'
-                    }
-                }
-            }
+    const handleGoToTicket = () => {
+        if (isSwitchView) {
+            goToPage('/switchView');
+        } else {
+            goToPage('/ticket');
         }
-    });
+    }
 
-    const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
-        <Tooltip {...props} classes={{ popper: className }} />
-    ))(({ theme }) => ({
-        [`& .${tooltipClasses.tooltip}`]: {
-            backgroundColor: '#0566FF',
-            color: '#ffffff',
-            fontSize: 12,
-            fontFamily: `"Outfit",sans-serif`,
-        },
-    }));
 
 
 
@@ -216,7 +232,10 @@ const Navbar = ({ children }) => {
                                 </Stack>
                             </Stack>
                             <Stack>
-                                <Stack onClick={() => goToPage('/ticket')}
+                                <Stack
+                                    // onClick={() => goToPage('/ticket')}
+                                    onClick={() => { handleGoToTicket() }}
+
 
                                     sx={{
                                         display: "flex",
@@ -226,7 +245,7 @@ const Navbar = ({ children }) => {
                                         width: "3.5vw",
                                         height: "7vh",
                                         borderRadius: "8px",
-                                        backgroundColor: location.pathname.includes('/ticket') ? '#DAE8FF' : 'transparent',
+                                        backgroundColor: location.pathname.includes('/ticket') || location.pathname.includes('/switchView') ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
                                             background: '#E1E6EE'
                                         }
@@ -237,7 +256,7 @@ const Navbar = ({ children }) => {
                                         TransitionComponent={Zoom}
                                     >
 
-                                        {location.pathname.includes('/ticket') ? (<img src={ticketIcon} alt="Ticket" />) : (<img src={NonActiveTicket} alt="Ticket" />)}
+                                        {location.pathname.includes('/ticket') || location.pathname.includes('/switchView') ? (<img src={ticketIcon} alt="Ticket" />) : (<img src={NonActiveTicket} alt="Ticket" />)}
 
                                     </LightTooltip>
                                 </Stack>

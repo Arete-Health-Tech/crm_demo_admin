@@ -21,7 +21,7 @@ import NSingleTicketDetails from '../../screen/ticket/NSingleTicketDetails';
 import Navbar from '../../screen/Navbar/Navbar';
 import OrderListBody from '../../screen/orders/OrderListBody';
 import OrderDetailContainer from '../../screen/orders/orderDetailPage/OrderDetailContainer';
-import SwitchViewTable from '../../screen/switchView/SwitchViewTable';
+import SwitchViewTable from '../../screen/ticket/switchView/SwitchViewTable';
 
 type Props = {};
 

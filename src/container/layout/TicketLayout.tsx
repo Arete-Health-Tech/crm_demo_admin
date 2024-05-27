@@ -598,7 +598,7 @@ const Ticket = () => {
                     marginTop: '5px',
                     marginRight: '10px',
                     cursor: 'pointer',
-                   
+
                   }}
                   onClick={() => {
                     setIsSwitchView(!isSwitchView);
@@ -738,7 +738,7 @@ const Ticket = () => {
         <Box>
           <Modal
             open={showReminderModal}
-            // onClose={() => handleCloseModal()}
+          // onClose={() => handleCloseModal()}
           >
             <Box
               sx={{
@@ -805,7 +805,7 @@ const Ticket = () => {
         <Box>
           <Modal
             open={showCallReschedulerModal}
-            // onClose={() => handleCloseModal()}
+          // onClose={() => handleCloseModal()}
           >
             <Box
               sx={{
@@ -855,9 +855,9 @@ const Ticket = () => {
                 >
                   {alarmCallReschedulerList[0]?.selectedLabels
                     ? alarmCallReschedulerList[0].selectedLabels
-                        .map((label) => label.label)
-                        .join(', ')
-                        .toUpperCase()
+                      .map((label) => label.label)
+                      .join(', ')
+                      .toUpperCase()
                     : 'N/A'}
                 </Typography>
                 <Typography margin={'12px'}>

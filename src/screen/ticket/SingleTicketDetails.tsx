@@ -533,7 +533,6 @@ const SingleTicketDetails = (props: Props) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  console.log("dsjbfkjbfhbsdhf")
 
   return (
     <Stack height={'100vh'} direction="row" p={1}>

@@ -36,8 +36,8 @@ import {
 import styles from './SingleTicketDetails.module.css';
 import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import assignedDropDown from '../../assets/assignedDropDown.svg';
-import avatar1 from '../../assets/Avatar.svg';
-import avatar2 from '../../assets/Avatar2.svg';
+import avatar1 from '../../assets/avatar1.svg';
+import avatar2 from '../../assets/avatar2.svg';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -533,6 +533,7 @@ const SingleTicketDetails = (props: Props) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  console.log("dsjbfkjbfhbsdhf")
 
   return (
     <Stack height={'100vh'} direction="row" p={1}>

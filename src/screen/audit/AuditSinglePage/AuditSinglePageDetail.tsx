@@ -69,7 +69,7 @@ import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTo
 import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
 
 import AWS from 'aws-sdk';
-import Avatar1 from '../../../assets/Avatar.svg';
+import Avatar1 from '../../../assets/avatar1.svg';
 import back_arrow from '../../../assets/back_arrow.svg';
 import NewAvatar from '../../../assets/avatar2.svg';
 import DropDownArrow from '../../../assets/DropdownArror.svg';

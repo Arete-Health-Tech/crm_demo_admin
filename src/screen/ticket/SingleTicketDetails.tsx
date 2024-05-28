@@ -103,7 +103,6 @@ import Activities from './widgets/Activities/Activities';
 import SmsWidget from './widgets/SmsWidget/SmsWidget';
 import PhoneWidget from './widgets/PhoneWidget/PhoneWidget';
 
-
 const questions = [
   {
     question:
@@ -534,6 +533,7 @@ const SingleTicketDetails = (props: Props) => {
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  console.log("dsjbfkjbfhbsdhf")
 
   return (
     <Stack height={'100vh'} direction="row" p={1}>

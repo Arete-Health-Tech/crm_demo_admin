@@ -164,7 +164,6 @@ const AuditSinglePageDetail = (props: Props) => {
         isAuditor,
         setIsAuditor
     } = useTicketStore();
-    console.log(ticketID, tickets);
     const { doctors, departments, stages } = useServiceStore();
     const [currentTicket, setCurrentTicket] = useState<iTicket>();
     const [value, setValue] = useState('1');

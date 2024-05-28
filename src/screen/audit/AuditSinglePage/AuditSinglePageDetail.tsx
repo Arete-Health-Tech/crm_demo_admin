@@ -71,7 +71,7 @@ import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
 import AWS from 'aws-sdk';
 import Avatar1 from '../../../assets/Avatar.svg';
 import back_arrow from '../../../assets/back_arrow.svg';
-import NewAvatar from '../../../assets/Avatar2.svg';
+import NewAvatar from '../../../assets/avatar2.svg';
 import DropDownArrow from '../../../assets/DropdownArror.svg';
 import KebabMenu from '../../../assets/KebabMenu.svg';
 import AddAssigneeIcon from '../../../assets/add.svg';

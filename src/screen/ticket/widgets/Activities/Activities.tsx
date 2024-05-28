@@ -3,6 +3,7 @@ import styles from './Activities.module.css';
 import ArrowUp from '../../../../assets/ArrowUp.svg';
 import ArrowDown from '../../../../assets/ArrowDown.svg';
 import smsIcon from "../../../../assets/smsIcon.svg";
+import useTicketStore from '../../../../store/ticketStore';
 
 type Message = {
     id: number;
@@ -11,6 +12,7 @@ type Message = {
 };
 
 const Activities = () => {
+    const { isAuditor } = useTicketStore();
     const messages: Message[] = [
         {
             id: 1,
@@ -68,7 +70,7 @@ const Activities = () => {
     };
 
     return (
-        <div className={styles.activity}>
+        <div className={!isAuditor ? styles.activity : styles.auditActivity}>
             {messages.map((item, index) => (
                 <div key={item.id}>
                     <div

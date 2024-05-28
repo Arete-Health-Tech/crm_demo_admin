@@ -4,6 +4,7 @@ import DashboardLayout from '../layout/DashboardLayout';
 import NavAudit from '../../screen/audit/NavAudit';
 import Audit from '../../screen/audit/Audit';
 import AuditDashboard from '../../screen/audit/AuditDashboard';
+import AuditSinglePageDetail from '../../screen/audit/AuditSinglePage/AuditSinglePageDetail';
 
 
 function Auditor() {
@@ -12,7 +13,8 @@ function Auditor() {
       <NavAudit>
         <Routes>
           <Route path="/" element={<AuditDashboard />}></Route>
-             <Route path="/auditDetails" element={<Audit />}></Route>
+          <Route path="/auditDetails" element={<Audit />}></Route>
+          <Route path="/auditSingleTicketDetail/:ticketID" element={<AuditSinglePageDetail />} />
         </Routes>
       </NavAudit>
     </>

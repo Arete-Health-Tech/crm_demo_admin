@@ -35,8 +35,8 @@ type Props = {};
 const MessagingWidget = (props: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ticketID } = useParams();
-   const { user } = useUserStore();
-  const { tickets, filterTickets, setWhtsappExpanded, whtsappExpanded } =
+  const { user } = useUserStore();
+  const { tickets, filterTickets, setWhtsappExpanded, whtsappExpanded, isAuditor } =
     useTicketStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState(null);
@@ -209,7 +209,7 @@ const MessagingWidget = (props: Props) => {
 
         <Stack
           direction="column"
-          height={whtsappExpanded ? '80vh' : '55vh'}
+          height={whtsappExpanded ? '80vh' : isAuditor ? '40vh' : '55vh'}
           position="relative"
           bgcolor="white"
         >
@@ -268,6 +268,7 @@ const MessagingWidget = (props: Props) => {
                       <Box
                         boxShadow="0 1px .5px rgba(11,20,26,.13)"
                         my={1}
+                        mx={1}
                         maxWidth="70%"
                         p={1}
                         bgcolor="#d8fdd3"
@@ -283,7 +284,7 @@ const MessagingWidget = (props: Props) => {
                           fontSize="0.875rem"
                           fontWeight={400}
                         >
-                          {message.text}
+                          {message.text}dghfghfs
                         </Typography>
                         <Box display="flex" justifyContent="space-between">
                           <Typography
@@ -296,27 +297,30 @@ const MessagingWidget = (props: Props) => {
                           >
                             {dayjs(message.createdAt).format(
                               'DD MMM YYYY hh:mm A'
-                            )}
+                                  )}
+                                  
                           </Typography>
-                          <Avatar sx={{ fontSize: '8px', bgcolor: 'orange' ,
-                              height: '1rem',
-                              width: '1rem',
-                              margin: '0.3rem',
-                              marginTop:'8px'
-                            }}>
-                                {user?.firstName[0]?.toUpperCase()}
-                                {user?.lastName[0]?.toUpperCase()}
-                             </Avatar>
+                          <Avatar sx={{
+                            fontSize: '8px', bgcolor: 'orange',
+                            height: '1rem',
+                            width: '1rem',
+                            margin: '0.3rem',
+                            marginTop: '8px'
+                          }}>
+                            {user?.firstName[0]?.toUpperCase()}
+                            {user?.lastName[0]?.toUpperCase()}
+                          </Avatar>
                         </Box>
                       </Box>
                     )}
                   </Stack>
                 ))
                 : 'No Messages Available'
-              : 'Loading ...'}
+              : 'Loading ...'
+            }
           </Box>
 
-          <Box borderTop={2.5} borderColor="#317AE2" bottom={0} bgcolor="white">
+          {!isAuditor && <Box borderTop={2.5} borderColor="#317AE2" bottom={0} bgcolor="white">
             <Stack p={"0px 8px 0px 8px"} spacing={2}>
               <Box
                 display="flex"
@@ -377,7 +381,7 @@ const MessagingWidget = (props: Props) => {
                 )}
               </Box>
             </Stack>
-          </Box>
+          </Box>}
         </Stack>
       </Box>
     </>

@@ -26,11 +26,13 @@ import MoreHorizIcon from '@mui/icons-material/MoreHoriz';
 import dayjs from 'dayjs';
 import useServiceStore from '../../../store/serviceStore';
 import { iDepartment } from '../../../types/store/service';
+import useTicketStore from '../../../store/ticketStore';
 
 
 type Props = {};
 
 const QueryResolutionWidget = (props: Props) => {
+  const { isAuditor } = useTicketStore();
   const [fetchedQueries, setFetchedQueries] = useState<DocumentData[]>();
   const [roomId, setRoomId] = useState(null);
   const [roomName, setRoomName] = useState('');
@@ -123,7 +125,7 @@ const QueryResolutionWidget = (props: Props) => {
             )}
           </Box>
           {/* <CreateQueryModal /> */}
-          <CreateQueryModalV2 />
+          {!isAuditor && <CreateQueryModalV2 />}
         </Stack>
       )}
       {roomId && (
@@ -248,7 +250,7 @@ const QueryResolutionWidget = (props: Props) => {
             bgcolor="white"
           >
             <Box display={'flex'} width="100%">
-              <textarea className={styles.queryReplyInput} placeholder='write a message'/>
+              <textarea className={styles.queryReplyInput} placeholder='write a message' />
               <Box
                 marginTop={1}
                 paddingRight={2}

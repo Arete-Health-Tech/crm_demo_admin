@@ -74,7 +74,8 @@ const TicketFilter = (props: {
       right: -3,
       top: 13,
       border: `2px solid ${theme.palette.background.paper}`,
-      padding: '0 4px'
+      padding: '0 4px',
+      color: "#0566FF"
     }
   }));
 
@@ -87,8 +88,7 @@ const TicketFilter = (props: {
     dateRange: []
   };
 
-  const { setFilterTickets, setPageNumber } = useTicketStore();
-
+  const { setFilterTickets, setPageNumber, isSwitchView, } = useTicketStore();
 
   // const [ticketFilters, setTicketFilters] = useState<iTicketFilter>({
   //   stageList: [],
@@ -379,6 +379,7 @@ const TicketFilter = (props: {
       <Drawer
         open={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
+        anchor={isSwitchView == false ? "left" : "right"}
         sx={{
           display: { xs: 'none', sm: 'block' },
           '& .MuiDrawer-paper': {
@@ -528,7 +529,7 @@ const TicketFilter = (props: {
                   onChange={handleStartDateChange}
                   value={dateRange[0]}
                   type="date"
-                   InputLabelProps={{ shrink: true }}
+                  InputLabelProps={{ shrink: true }}
                   inputProps={{ max: new Date().toISOString().split('T')[0] }}
                 />
               </Box>
@@ -539,7 +540,7 @@ const TicketFilter = (props: {
                   onChange={handleEndDateChange}
                   value={dateRange[1]}
                   type="date"
-                   InputLabelProps={{ shrink: true }}
+                  InputLabelProps={{ shrink: true }}
                   inputProps={{ max: new Date().toISOString().split('T')[0], min: new Date(dateRange[0]).toDateString().split('T')[0] }}
                 />
               </Box>

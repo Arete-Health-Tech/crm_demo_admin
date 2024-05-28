@@ -45,7 +45,7 @@ const TicketCard = (props: Props) => {
     child: []
   });
 
-  const { tickets, filterTickets } = useTicketStore();
+  const { tickets, filterTickets, setIsAuditor } = useTicketStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -99,6 +99,7 @@ const TicketCard = (props: Props) => {
 
     setIsNewTicket(false);
     navigate(`/ticket/${props.patientData._id}`);
+
   }
 
   // const updateIsNewTicket = (ticketId: any, newValue: boolean) => {
@@ -200,9 +201,9 @@ const TicketCard = (props: Props) => {
         width: '100%',
         gap: "12px",
         // 1px solid #0566FF
-        borderTop: isSelected ? "1px solid #ACB8CB" : '1px solid #0566FF',
-        borderRight: isSelected ? "1px solid #ACB8CB" : '1px solid #0566FF',
-        borderLeft: isSelected ? "1px solid #ACB8CB" : '1px solid #0566FF',
+        borderTop: isSelected ? "1px solid #ACB8CB" : 'none',
+        borderRight: isSelected ? "1px solid #ACB8CB" : 'none',
+        borderLeft: isSelected ? "1px solid #ACB8CB" : 'none',
         '&:hover': {
           bgcolor: '#EBEDF0',
           cursor: 'pointer',
@@ -227,10 +228,10 @@ const TicketCard = (props: Props) => {
           </>) : (
             <>
               <Stack className="Priority-tag">{220 > 15000 ?
-                (<><img src={HighPr} />High</>)
+                (<><img src={HighPr} alt="" />High</>)
                 : 220 < 4500 && 450 < 2220 ?
-                  (<><img src={MediumPr} />Medium</>)
-                  : (<><img src={LowPr} />Low</>)}
+                  (<><img src={MediumPr} alt="" />Medium</>)
+                  : (<><img src={LowPr} alt="" />Low</>)}
               </Stack>
 
             </>)

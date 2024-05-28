@@ -12,7 +12,7 @@ import { Avatar } from '@mui/material';
 import useUserStore from '../../../../store/userStore';
 
 const PhoneWidget = () => {
-    const { setPhoneModal, phoneModal } = useTicketStore();
+    const { setPhoneModal, phoneModal, isAuditor } = useTicketStore();
     const [sendMessage, setSendMessage] = useState('');
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { user, setUser } = useUserStore();
@@ -80,15 +80,16 @@ const PhoneWidget = () => {
                                     12 April 2024 09:30AM
                                 </Box>
                                 <Box width="1.25rem" height="1.25rem">
-                                <Avatar sx={{ fontSize: '8px', bgcolor: 'orange' ,
-                              height: '1rem',
-                              width: '1rem',
-                              margin: '0.3rem',
-                              marginTop:'8px'
-                            }}>
-                                {user?.firstName[0]?.toUpperCase()}
-                                {user?.lastName[0]?.toUpperCase()}
-                              </Avatar>
+                                    <Avatar sx={{
+                                        fontSize: '8px', bgcolor: 'orange',
+                                        height: '1rem',
+                                        width: '1rem',
+                                        margin: '0.3rem',
+                                        marginTop: '8px'
+                                    }}>
+                                        {user?.firstName[0]?.toUpperCase()}
+                                        {user?.lastName[0]?.toUpperCase()}
+                                    </Avatar>
                                     {/* <img src={avatar1} alt="" /> */}
                                 </Box>
                             </Box>
@@ -97,7 +98,7 @@ const PhoneWidget = () => {
                 </Box>
 
                 {/* For chat box  */}
-                <Box
+                {!isAuditor && <Box
                     borderTop={2.5}
                     borderColor="#317AE2"
                     bottom={0}
@@ -129,7 +130,7 @@ const PhoneWidget = () => {
                             Initiate a Phone Call
                         </span>
                     </Box>
-                </Box>
+                </Box>}
             </Box >
         </>
     );

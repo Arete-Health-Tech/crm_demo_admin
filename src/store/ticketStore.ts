@@ -71,7 +71,9 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   isModalOpenCall: false,
   setIsModalOpenCall: (isModalOpenCall) => set({ isModalOpenCall }),
   isSwitchView: false,
-  setIsSwitchView: (isSwitchView) => set({ isSwitchView })
+  setIsSwitchView: (isSwitchView) => set({ isSwitchView }),
+  isAuditor: false,
+  setIsAuditor: (isAuditor) => set({ isAuditor })
 }));
 
 export default useTicketStore;

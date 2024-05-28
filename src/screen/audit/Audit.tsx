@@ -13,11 +13,12 @@ import AuditCallIcon from '../../assets/CallAudit.svg'
 import CommentIcon from '../../assets/message-search.svg'
 import LikeIcon from '../../assets/like.svg'
 import DislikeIcon from '../../assets/dislike.svg'
-import Avatar1 from '../../assets/Avatar.svg'
-import Avatar2 from '../../assets/Avatar2.svg'
+import Avatar1 from '../../assets/avatar1.svg'
+import Avatar2 from '../../assets/avatar2.svg'
 import { Style } from '@mui/icons-material';
 import { DatePicker } from 'antd';
 import { useNavigate } from 'react-router-dom';
+
 import useTicketStore from '../../store/ticketStore';
 
 

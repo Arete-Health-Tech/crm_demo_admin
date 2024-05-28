@@ -103,6 +103,7 @@ import Activities from './widgets/Activities/Activities';
 import SmsWidget from './widgets/SmsWidget/SmsWidget';
 import PhoneWidget from './widgets/PhoneWidget/PhoneWidget';
 
+
 const questions = [
   {
     question:

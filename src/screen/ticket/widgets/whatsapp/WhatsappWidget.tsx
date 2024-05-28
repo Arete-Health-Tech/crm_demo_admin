@@ -281,7 +281,8 @@ const MessagingWidget = (props: Props) => {
                           >
                             {dayjs(message.createdAt).format(
                               'DD MMM YYYY hh:mm A'
-                            )}
+                                  )}
+                                  
                           </Typography>
                           <Avatar sx={{
                             fontSize: '8px', bgcolor: 'orange',

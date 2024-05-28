@@ -60,22 +60,6 @@ const MessagingWidget = (props: Props) => {
     console.log('Consumer ID not found for the given dataId.');
   }
 
-  useEffect(() => {
-    console.log("Initializing socket connection...");
-  
-    // Listen for the 'newMessage' event
-    socket.on('newMessage', (data) => {
-      console.log('Received new message:', data);
-      setMessages((prevMessages) => [...prevMessages, data.message]);
-    });
-  
-    // Clean up the socket connection on component unmount
-    return () => {
-      socket.off('newMessage'); // Remove the event listener
-      socket.disconnect();
-    };
-  }, []);
-
 
   useEffect(() => {
     console.log("Initializing socket reminder connection...");

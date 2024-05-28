@@ -1,0 +1,367 @@
+.main_layout {
+  height: 100%;
+  display: flex;
+  background-color: #f6f7f9;
+  padding: 13px 0px 13px 13px;
+}
+
+.sidebar_box {
+  width: 25%;
+  height: 100%;
+  border-left: 1px solid var(--Borders-Light-Grey, #d4dbe5);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border-top-right-radius: 25px;
+}
+.stack_box {
+  width: 74%;
+  background-color: #ffffff;
+  border-top-left-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+.side_bar {
+  border-top-right-radius: 25px;
+  height: 100%;
+}
+.auditorComment {
+  padding: 0 2;
+  border-top: 2px solid #0566ff;
+}
+.auditorCommentButtons {
+  display: flex;
+  justify-content: space-between;
+  margin: 0 1vw;
+}
+
+.Box_assignee {
+  display: flex;
+  align-items: center;
+  gap: var(--0PX, 0px);
+  border-radius: var(--36px, 36px);
+  border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
+  background: var(--Background-White, #fff);
+  min-width: 6.5vw;
+  height: 6vh;
+  padding: 3px;
+  cursor: pointer;
+}
+
+#paper {
+  border-radius: var(--36px, 36px);
+  overflow: hidden;
+  display: inline-flex;
+  box-shadow: none;
+  border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
+}
+#avatar {
+  margin: 0px -7px;
+}
+#avatar1 {
+  margin: 0px -7px;
+}
+#assignedDropdown {
+  border-radius: 50%;
+  min-width: 4;
+  padding: 0rem 1rem 0rem 0.5rem;
+  cursor: pointer;
+}
+.dropdown {
+  position: absolute;
+  background-color: white;
+  box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2);
+  z-index: 1;
+  width: 18.75rem; /* Adjust width as necessary */
+  border-radius: 0.4rem;
+}
+
+.dropdown ul {
+  list-style: none;
+  padding: 0;
+  overflow-y: auto;
+  max-height: 15rem;
+}
+
+.dropdown li {
+  padding: 0.625rem;
+  cursor: pointer;
+}
+
+.dropdown input {
+  display: flex;
+  height: 2.4rem;
+  padding: var(--1rem, 1rem);
+  align-items: center;
+  gap: var(--0.5rem, 0.5rem);
+  align-self: stretch;
+  border-radius: var(--1.5rem, 1.5rem);
+  background: var(--Background-Med-Grey, #ebedf0);
+}
+
+.dropdown button {
+  margin: 5px;
+}
+.dropdownHeader {
+  color: #000;
+
+  /* Headings/H3 */
+  font-family: Outfit, sans-serif;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 120%;
+}
+.leadAge {
+  white-space: nowrap;
+  padding-left: 0.5rem;
+  color: var(--Text-Light-Grey, #647491);
+  text-align: center;
+  font-family: Outfit, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+}
+.gender {
+  color: var(--Text-Grey, #354869);
+  text-align: center;
+  /* Body/Medium */
+  font-family: Outfit, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 21px */
+  padding: 0px var(--4px, 4px);
+  align-items: center;
+  gap: var(--4px, 4px);
+  border-radius: var(--8px, 8px);
+  background: var(--Background-Greyish, #f6f7f9);
+}
+.estimationHeader {
+  color: var(--Text-Light-Grey, #647491);
+  /* Body/Small */
+  font-family: Outfit, sans-serif;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+}
+.estimationHeaderMenu {
+  color: var(--Text-Black, #080f1a);
+  /* Body/Medium */
+  font-family: Outfit, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+}
+.estimationHeaderMenuClose {
+  color: var(--Alerts-Red, #f94839);
+  /* Body/Medium */
+  font-family: Outfit, sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+}
+.tabsLabel {
+  color: var(--Text-Light-Grey, #647491) !important;
+  text-align: center !important;
+  font-family: Outfit, sans-serif !important;
+  font-size: 0.875rem !important;
+  font-style: normal !important;
+  font-weight: 400 !important;
+  line-height: 150% !important; /* 1.3125rem */
+  text-transform: none !important;
+}
+.selectedTab {
+  color: var(--Text-Black, #080f1a) !important;
+  text-align: center !important;
+  font-family: Outfit, sans-serif !important;
+  font-size: 0.875rem !important;
+  font-style: normal !important;
+  font-weight: 500 !important;
+  line-height: 150% !important;
+  text-transform: none !important;
+}
+.problem {
+  display: flex;
+  height: 1.5rem;
+  padding: 0.5rem 0.75rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  background: #fee4e1;
+  color: var(--Alerts-Red, #f94839);
+
+  /* Body/Small */
+  font-family: Outfit, sans-serif;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.125rem */
+}
+.solution {
+  display: flex;
+  height: 1.5rem;
+  padding: 0.5rem 0.75rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  color: #647491;
+
+  /* Body/Small */
+  font-family: Outfit, sans-serif;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.125rem */
+}
+.add_comment {
+  display: flex;
+  height: 2rem;
+  padding: 0rem 0.75rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.25rem;
+  background: #ebedf0;
+  color: #647491;
+  text-align: center;
+
+  /* Links/Btn Text */
+  font-family: Outfit, sans-serif;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 1.3125rem */
+}
+.auditorCommenttextArea {
+  margin: 0.3rem 1rem;
+}
+.auditorCommenttextArea textarea {
+  width: 100%;
+  resize: none;
+  overflow: hidden;
+}
+.auditorCommenttextArea textarea:focus {
+  outline: none;
+  border: none;
+}
+.auditorCommenttextArea textarea::placeholder {
+  color: var(--Text-Light-Grey, #647491);
+  /* Body/Large */
+  font-family: Outfit;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+}
+.showCommentHeader {
+  display: flex;
+  height: 3rem;
+  padding: 0rem 1.25rem;
+  align-items: center;
+  gap: 0.75rem;
+  flex-shrink: 0;
+  align-self: stretch;
+  border-bottom: 1px solid #d4dbe5;
+}
+.showCommentHeaderText {
+  color: var(--Text-Black, #080f1a);
+
+  /* Headings/H4 */
+  font-family: Outfit, sans-serif;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%; /* 1.3125rem */
+}
+.commentsBox {
+  height: 68.5vh;
+  overflow-y: scroll;
+}
+.commentsBox::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+}
+.commentsBox::-webkit-scrollbar-thumb {
+  background-color: rgb(163, 165, 167); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+}
+.problemBox {
+  display: flex;
+  margin: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  align-self: stretch;
+  border-radius: 0.75rem;
+  background: #f6f7f9;
+}
+.problemText {
+  align-self: stretch;
+  color: #080f1a;
+
+  /* Body/Medium */
+  font-family: Outfit, sans-serif;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.3125rem */
+}
+.problemBottomBox {
+  display: flex !important;
+  justify-content: space-between;
+  align-self: stretch;
+  border-radius: 0.75rem;
+  background: #f6f7f9;
+}
+.problemBottomDate {
+  display: flex;
+  align-items: center;
+  color: #647491;
+  font-family: Outfit, sans-serif;
+  font-size: 0.625rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 0.9375rem */
+}
+.problemBottomChip {
+  display: flex;
+  height: 1.5rem;
+  padding: 0.5rem 0.75rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  background: #fee4e1;
+  color: #f94839;
+
+  /* Body/Small */
+  font-family: Outfit, sans-serif;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.125rem */
+}
+.solutionBottomChip {
+  display: flex;
+  height: 1.5rem;
+  padding: 0.5rem 0.75rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 1rem;
+  background: #daf2e3;
+  color: #08a742;
+
+  /* Body/Small */
+  font-family: Outfit, sans-serif;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%; /* 1.125rem */
+}

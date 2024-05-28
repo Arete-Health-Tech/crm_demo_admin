@@ -17,6 +17,8 @@ import Avatar1 from '../../assets/Avatar.svg'
 import Avatar2 from '../../assets/Avatar2.svg'
 import { Style } from '@mui/icons-material';
 import { DatePicker } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import useTicketStore from '../../store/ticketStore';
 
 
 const datePickerStyle = {
@@ -300,7 +302,8 @@ const sampleAuditData: AuditData[] = [
 ];
 
 const Audit: React.FC = () => {
-
+  const navigate = useNavigate();
+  const { setIsAuditor } = useTicketStore();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(10);
   const [openStageFilter, setOpenStageFilter] = useState(false);
@@ -494,7 +497,11 @@ const Audit: React.FC = () => {
             }}>
               <tbody>
                 {currentPageData.map(item => (
-                  <tr key={item.id} className={styles.Audit_table_body}>
+                  <tr key={item.id} className={styles.Audit_table_body}
+                    onClick={() => {
+                      setIsAuditor(true);
+                      navigate(`/auditSingleTicketDetail/${"6652bf7accee77aaeaf8afb2"}`);
+                    }}>
                     <td className={styles.Audit_table_body_item1}>
                       <img src={CheckBoxIcon} />
                     </td>

@@ -1,7 +1,9 @@
 /* .MuiBox-root.css-4a5wlm {
   width: calc(100% - 60px) !important;
 } */
-
+.main {
+  width: 100%;
+}
 .columnBox {
   /* display: flex; */
   /* flex-flow: column; */

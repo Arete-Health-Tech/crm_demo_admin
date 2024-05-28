@@ -106,6 +106,7 @@ function SwitchViewTable() {
     setPageNumber,
     isSwitchView,
     setIsSwitchView,
+    setIsAuditor
   } = useTicketStore();
 
 
@@ -745,7 +746,8 @@ function SwitchViewTable() {
             }}>
               <tbody>
                 {tickets.map(item => (
-                  <tr key={item._id} className={styles.Audit_table_body}>
+                  <tr key={item._id} className={styles.Audit_table_body}
+                    onClick={() => navigate(`${item._id}`)}>
 
                     {/* Lead */}
                     <td className={`${styles.SwitchView_table_body_item}`}>
@@ -818,10 +820,10 @@ function SwitchViewTable() {
                       </>) : (
                         <>
                           <Stack className="Priority-tag">{220 > 15000 ?
-                            (<><img src={HighPr} />High</>)
+                            (<><img src={HighPr} alt="" />High</>)
                             : 220 < 4500 && 450 < 2220 ?
-                              (<><img src={MediumPr} />Medium</>)
-                              : (<><img src={LowPr} />Low</>)}
+                              (<><img src={MediumPr} alt="" />Medium</>)
+                              : (<><img src={LowPr} alt="" />Low</>)}
                           </Stack>
 
                         </>)

@@ -191,8 +191,10 @@ export interface iTicketStore {
   setTicketUpdateFlag: (noteModal: object) => void;
   isModalOpenCall: boolean;
   setIsModalOpenCall: (isModalOpenCall: boolean) => void;
-    isSwitchView: boolean;
-  setIsSwitchView: (isSwitchView:boolean) => void;
+  isAuditor: boolean;
+  setIsAuditor: (isAuditor: boolean) => void;
+  isSwitchView: boolean;
+  setIsSwitchView: (isSwitchView: boolean) => void;
 }
 
 export interface iNote {

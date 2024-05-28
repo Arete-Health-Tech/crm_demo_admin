@@ -82,6 +82,7 @@ const Ticket = () => {
     setPageNumber,
     isSwitchView,
     setIsSwitchView,
+    setIsAuditor,
   } = useTicketStore();
 
 
@@ -284,6 +285,7 @@ const Ticket = () => {
       await getAllCallReschedulerHandler();
     })();
     setPageNumber(1)
+    setIsAuditor(false)
   }, []);
 
   // const isAlamredReminderExist = (reminder: iReminder) => {

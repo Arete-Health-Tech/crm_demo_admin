@@ -364,12 +364,12 @@ const Navbar = ({ children }) => {
                     </Box>
                 </Box>
                 {/* </Drawer> */}
-                <Box component="main"
+                <Box component="main" className={styles.main}
                 // sx={{ flexGrow: 1 }}
                 >
                     {children}
                 </Box>
-            </Box >
+            </Box>
         </>
     );
 };

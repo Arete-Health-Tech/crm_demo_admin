@@ -21,6 +21,7 @@ import NSingleTicketDetails from '../../screen/ticket/NSingleTicketDetails';
 import Navbar from '../../screen/Navbar/Navbar';
 import OrderListBody from '../../screen/orders/OrderListBody';
 import OrderDetailContainer from '../../screen/orders/orderDetailPage/OrderDetailContainer';
+import AuditSinglePageDetail from '../../screen/audit/AuditSinglePage/AuditSinglePageDetail';
 import SwitchViewTable from '../../screen/ticket/switchView/SwitchViewTable';
 
 type Props = {};
@@ -63,6 +64,11 @@ const Authenticated = (props: Props) => {
             index
             path="/switchView"
             element={<SwitchViewTable />}
+          />
+          <Route
+            index
+            path="/switchView/:ticketID"
+            element={<NSingleTicketDetails />}
           />
         </Routes>
       </Navbar>

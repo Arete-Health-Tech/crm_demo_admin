@@ -40,7 +40,7 @@ import useUserStore from '../../../store/userStore';
 type Props = { setTicketUpdateFlag: any };
 
 const NotesWidget = (props: Props) => {
-  const { filterTickets, searchByName, pageNumber } = useTicketStore();
+  const { filterTickets, searchByName, pageNumber, isAuditor } = useTicketStore();
   const [notesModal, setNotesModal] = useState(false);
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(true);
@@ -143,15 +143,16 @@ const NotesWidget = (props: Props) => {
                         height={'1.25rem'}
                         width={'1.25rem'}
                       >
-                        <Avatar sx={{ fontSize: '8px', bgcolor: 'orange' ,
-                              height: '1rem',
-                              width: '1rem',
-                              margin: '0.3rem',
-                              marginTop:'8px'
-                            }}>
-                                {user?.firstName[0]?.toUpperCase()}
-                                {user?.lastName[0]?.toUpperCase()}
-                              </Avatar>
+                        <Avatar sx={{
+                          fontSize: '8px', bgcolor: 'orange',
+                          height: '1rem',
+                          width: '1rem',
+                          margin: '0.3rem',
+                          marginTop: '8px'
+                        }}>
+                          {user?.firstName[0]?.toUpperCase()}
+                          {user?.lastName[0]?.toUpperCase()}
+                        </Avatar>
                         {/* <img src={avatar1} alt="" /> */}
                       </Box>
                     </Box>
@@ -188,7 +189,7 @@ const NotesWidget = (props: Props) => {
                 alt=""
                 onClick={() => setNotesClickedData(null)}
               />
-              <div>
+              {!isAuditor && <div>
                 <IconButton
                   aria-label="more"
                   aria-controls="simple-menu"
@@ -232,7 +233,7 @@ const NotesWidget = (props: Props) => {
                     Delete
                   </MenuItem>
                 </Menu>
-              </div>
+              </div>}
             </Box>
             <Box className={styles.ClickedNoteText}>
               <Box>{ReactHtmlParser(notesClickedData.text)}</Box>
@@ -245,7 +246,7 @@ const NotesWidget = (props: Props) => {
           </Box>
         )}
 
-        <Box
+        {!isAuditor && <Box
           height="15vh"
           bottom={2}
           borderTop={2.5}
@@ -276,7 +277,7 @@ const NotesWidget = (props: Props) => {
           >
             <span>Create a note</span>
           </Box>
-        </Box>
+        </Box>}
       </Box>
 
       {/* MODAL for create note and edit note */}

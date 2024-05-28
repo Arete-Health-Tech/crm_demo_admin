@@ -2,42 +2,6 @@
 
 /* Single Ticket Detail Component CSS */
 
-.switch-main-layout {
-  height: 100vh;
-  display: flex;
-  background-color: #f6f7f9;
-  padding: 0.6rem;
-}
-
-.main-layout {
-  height: 96.5vh;
-  display: flex;
-  background-color: #f6f7f9;
-  margin: 13px 0px 13px 0px;
-  border-radius: 25px;
-}
-
-.stack-box {
-  width: 69%;
-  background-color: #ffffff;
-  border-top-left-radius: 25px;
-  border-bottom-left-radius: 25px;
-}
-
-.sidebar-box {
-  width: 30%;
-  height: 100%;
-  border-left: 1px solid var(--Borders-Light-Grey, #d4dbe5);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  border-top-right-radius: 25px;
-}
-
-.side-bar {
-  border-top-right-radius: 25px;
-  height: 90%;
-}
 
 .task-bar {
   background-color: #ffffff;
@@ -541,6 +505,7 @@
   flex-direction: column;
   transition: background-color 0.6s ease;
   padding: 10px 10px;
+
 }
 
 .accordion__section:hover {
@@ -556,6 +521,7 @@
   justify-content: space-between;
   border: none;
   outline: none;
+
 }
 
 .accordion__title {
@@ -791,7 +757,7 @@
   justify-content: center;
   align-items: center;
   border-radius: 6.4px;
-  background: var(--Background-Bluish, #dae8ff);
+  background: var(--Background-Bluish, #DAE8FF);
 }
 
 .Uploaded-document {
@@ -1281,19 +1247,6 @@
   gap: var(--Spacing-16px, 16px);
 }
 
-.Box-assignee {
-  display: flex;
-  align-items: center;
-  gap: var(--0PX, 0px);
-  border-radius: var(--36px, 36px);
-  border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
-  background: var(--Background-White, #fff);
-  min-width: 5.5vw;
-  height: 6vh;
-  padding: 3px;
-  cursor: pointer;
-}
-
 .avatar {
   position: relative;
   top: -4px;
@@ -1310,7 +1263,7 @@
 .DropDownArrow {
   cursor: pointer;
   position: relative;
-  right: 4px;
+  left: 8px;
   width: var(--20px, 20px);
   height: var(--20px, 20px);
 }
@@ -1444,8 +1397,7 @@
 .KebabMenu-item {
   display: flex;
   width: 200px;
-  padding: var(--Spacing-16px, 16px) var(--Spacing-0px, 0px) var(--8px, 10px)
-    var(--Spacing-0px, 0px);
+  padding: var(--Spacing-16px, 16px) var(--Spacing-0px, 0px) var(--8px, 10px) var(--Spacing-0px, 0px);
   flex-direction: column;
   align-items: left;
   position: absolute;
@@ -1546,85 +1498,6 @@
 .steps ul li.active div::after {
   border-left: 30px solid #0566ff;
 }
-
-/* Switch view css */
-.switchViewSteps {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.switchViewSteps ul {
-  width: 100%;
-  overflow: hidden;
-  display: flex;
-}
-
-.switchViewSteps ul li div {
-  color: #999;
-  padding: 0px 0 0px 45px;
-  position: relative;
-  background: #dae8ff;
-  /* width: 145px; */
-  width: 12.5vw;
-}
-
-.switchViewSteps ul li {
-  font-size: 11px;
-}
-
-.switchViewSteps ul li:first-child div {
-  /* width: 120px; */
-  width: 10.5vw;
-  padding-left: 15px;
-}
-
-.switchViewSteps ul li div::before {
-  content: ' ';
-  border-top: 50px solid transparent;
-  border-bottom: 50px solid transparent;
-  border-left: 32px solid #fff;
-  position: absolute;
-  top: 50%;
-  margin-top: -50px;
-  left: 100%;
-  z-index: 1;
-  margin-left: 1px;
-}
-
-.switchViewSteps ul li div::after {
-  content: ' ';
-  border-top: 50px solid transparent;
-  border-bottom: 50px solid transparent;
-  border-left: 30px solid #dae8ff;
-  position: absolute;
-  top: 50%;
-  margin-top: -50px;
-  left: 100%;
-  z-index: 2;
-}
-
-.switchViewSteps ul li.done div {
-  border-color: #0566ff !important;
-  color: #fff !important;
-  background: #0566ff !important;
-}
-
-.switchViewSteps ul li.done div::after {
-  border-left: 30px solid #0566ff;
-}
-
-.switchViewSteps ul li.active div {
-  border-color: #0566ff !important;
-  color: #fff !important;
-  background: #0566ff !important;
-}
-
-.switchViewSteps ul li.active div::after {
-  border-left: 30px solid #0566ff;
-}
-
-/* Switch view css end */
 
 .stepper-label {
   color: var(--Text-Light-Grey, #647491);
@@ -1753,7 +1626,7 @@
 }
 
 .task-pending {
-  color: var(--Primary-Default, #0566ff);
+  color: var(--Primary-Default, #0566FF);
   text-align: center;
   /* Body/Small */
   font-family: Outfit, sans-serif;
@@ -1766,6 +1639,7 @@
 }
 
 .ticket-card-notification {
+
   display: flex;
   width: 18px;
   height: 18px;
@@ -1774,8 +1648,8 @@
   justify-content: center;
   align-items: center;
   border-radius: 20px;
-  background: var(--Alerts-Red, #f94839);
-  color: var(--Background-White, #fff);
+  background: var(--Alerts-Red, #F94839);
+  color: var(--Background-White, #FFF);
   text-align: center;
   font-family: Outfit, sans-serif;
   font-size: 10px;
@@ -1947,90 +1821,4 @@
   font-weight: 400;
   line-height: 150%; /* 1.3125rem */
   cursor: pointer;
-}
-.problemBox {
-  display: flex;
-  margin: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 0.5rem;
-  align-self: stretch;
-  border-radius: 0.75rem;
-  background: #f6f7f9;
-}
-.problemText {
-  align-self: stretch;
-  color: #080f1a;
-
-  /* Body/Medium */
-  font-family: Outfit, sans-serif;
-  font-size: 0.875rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%; /* 1.3125rem */
-}
-.problemBottomBox {
-  display: flex !important;
-  justify-content: space-between;
-  align-self: stretch;
-  border-radius: 0.75rem;
-  background: #f6f7f9;
-}
-.problemBottomDate {
-  display: flex;
-  align-items: center;
-  color: #647491;
-  font-family: Outfit, sans-serif;
-  font-size: 0.625rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%; /* 0.9375rem */
-}
-.problemBottomChip {
-  display: flex;
-  height: 1.5rem;
-  padding: 0.5rem 0.75rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 1rem;
-  background: #fee4e1;
-  color: #f94839;
-
-  /* Body/Small */
-  font-family: Outfit, sans-serif;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%; /* 1.125rem */
-}
-.solutionBottomChip {
-  display: flex;
-  height: 1.5rem;
-  padding: 0.5rem 0.75rem;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-  border-radius: 1rem;
-  background: #daf2e3;
-  color: #08a742;
-
-  /* Body/Small */
-  font-family: Outfit, sans-serif;
-  font-size: 0.75rem;
-  font-style: normal;
-  font-weight: 400;
-  line-height: 150%; /* 1.125rem */
-}
-.commentsBox {
-  height: 54vh;
-  overflow-y: scroll;
-}
-.commentsBox::-webkit-scrollbar {
-  width: 5px; /* width of the entire scrollbar */
-}
-.commentsBox::-webkit-scrollbar-thumb {
-  background-color: rgb(163, 165, 167); /* color of the scroll thumb */
-  border-radius: 20px; /* roundness of the scroll thumb */
 }

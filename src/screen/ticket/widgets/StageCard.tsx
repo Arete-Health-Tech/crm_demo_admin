@@ -56,6 +56,7 @@ function getTotalDaysFromDate(date: Date) {
 const StageCard = (props: Props) => {
   const { ticketID } = useParams();
   const { stages, subStages } = useServiceStore();
+  const { isSwitchView } = useTicketStore();
 
   const [open, setOpen] = useState(false);
   const [paymentIDValue, setPaymentIDValue] = useState('');
@@ -417,7 +418,7 @@ const StageCard = (props: Props) => {
 
           {/* Updated Divided Progress Bar */}
 
-          <Box className="steps">
+          <Box className={isSwitchView ? "switchViewSteps" : "steps"}>
             <ul className="nav">
               {steps && steps.map((step, i) => {
                 return (

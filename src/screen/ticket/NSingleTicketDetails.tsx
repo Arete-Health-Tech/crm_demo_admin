@@ -41,7 +41,7 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import SearchIcon from '@mui/icons-material/Search';
 import { Suspense, useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useTicketStore from '../../store/ticketStore';
 import { iCallRescheduler, iReminder, iTicket } from '../../types/store/ticket';
 import dayjs from 'dayjs';
@@ -100,6 +100,7 @@ import SingleTicketSideBar from './SingleTicketSideBar/SingleTicketSideBar';
 import TaskBar from './SingleTicketSideBar/TaskBar';
 import Avatar1 from "../../assets/Avatar.svg"
 import NewAvatar from "../../assets/Avatar2.svg"
+import back_arrow from "../../assets/back_arrow.svg"
 import DropDownArrow from "../../assets/DropdownArror.svg"
 import KebabMenu from "../../assets/KebabMenu.svg"
 import AddAssigneeIcon from "../../assets/add.svg"
@@ -109,6 +110,9 @@ import SearchBar from '../../container/layout/SearchBar';
 import Activities from './widgets/Activities/Activities';
 import SmsWidget from './widgets/SmsWidget/SmsWidget';
 import PhoneWidget from './widgets/PhoneWidget/PhoneWidget';
+import ExpandedModal from './widgets/whatsapp/ExpandedModal';
+import ExpandedSmsModal from './widgets/SmsWidget/ExpandedSmsModal';
+import ExpandedPhoneModal from './widgets/PhoneWidget/ExpandedPhoneModal';
 interface iConsumer {
     uid: string;
     firstName: string;
@@ -130,6 +134,8 @@ dayjs.extend(relativeTime);
 type Props = {};
 
 const NSingleTicketDetails = (props: Props) => {
+    const navigate = useNavigate();
+    const location = useLocation();
     const { ticketID } = useParams();
     const {
         tickets,
@@ -138,7 +144,9 @@ const NSingleTicketDetails = (props: Props) => {
         pageNumber,
         searchByName,
         callRescheduler,
-        estimates
+        estimates,
+        isSwitchView,
+        setIsSwitchView
     } = useTicketStore();
     const { doctors, departments, stages } = useServiceStore();
     const [currentTicket, setCurrentTicket] = useState<iTicket>();
@@ -165,7 +173,6 @@ const NSingleTicketDetails = (props: Props) => {
         phone: 0,
         age: 0,
         gender: ''
-        // Add other fields as needed
     });
 
     const [openModal, setOpenModal] = useState(false);
@@ -441,6 +448,10 @@ const NSingleTicketDetails = (props: Props) => {
 
         showAllReminderData();
         showAllCallRescheduler();
+        if (location.pathname.includes('switchView')) {
+            setIsSwitchView(true);
+        }
+
     }, [
         ticketID,
         tickets,
@@ -576,412 +587,424 @@ const NSingleTicketDetails = (props: Props) => {
 
 
     return (
-        <div className="main-layout">
-            {/* Right Section of Single Ticket Detail Page */}
+        <>
+            <div className={isSwitchView ? "switch-main-layout" : "main-layout"}>
+                {/* Right Section of Single Ticket Detail Page */}
 
-            <div className="stack-box">
-                <Box
-                    className="Ticket-detail-card"
-                    p={2}
-                // position="sticky"
-                >
-                    {/* Left Side */}
-                    <Stack
-                        className="Ticket-detail-card-left"
-                        display="flex"
-                        flexDirection="row"
+                <div className="stack-box">
+                    <Box
+                        className="Ticket-detail-card"
+                        p={2}
+                    // position="sticky"
                     >
-                        <Stack display="flex" flexDirection="column">
-                            <Stack display="flex" flexDirection="row">
-                                <Stack className="Ticket-detail-card-left-name">
-                                    {patientName(currentTicket)}
-                                </Stack>
-                                <Stack className="Ticket-detail-card-left-Gen-Age">
-                                    {currentTicket?.consumer[0]?.gender ? (
-                                        <Stack className="Gen-Age">
-                                            {currentTicket?.consumer[0]?.gender}
-                                        </Stack>
-                                    ) : (
-                                        <></>
-                                    )}
-                                    {currentTicket?.consumer[0]?.age ? (
-                                        <Stack className="Gen-Age">
-                                            {currentTicket?.consumer[0]?.age}
-                                        </Stack>
-                                    ) : (
-                                        <></>
-                                    )}
-                                </Stack>
-                            </Stack>
-                            <Stack className="Ticket-detail-card-left-uhid">
-                                <span>#{currentTicket?.consumer[0]?.uid}</span>
-                            </Stack>
-                        </Stack>
-
-                        {/* Calling */}
-
-                        <CustomModal />
-
-                        {/* End---- */}
-                    </Stack>
-
-                    {/* Right Side */}
-
-
-
-
-                    <Stack className="Ticket-detail-card-right">
-                        {/* probability start */}
-                        <Box
-                            className={probability === 0
-                                ? 'Ticket-probability0'
-                                : probability === 25
-                                    ? 'Ticket-probability25'
-                                    : probability === 50
-                                        ? 'Ticket-probability50'
-                                        : probability === 75
-                                            ? 'Ticket-probability75'
-                                            : 'Ticket-probability100'}
-                            // className="Box-assignee"
-                            onClick={() => {
-                                setProbability(probability);
-                                setProbabilityModal(true);
-                            }}
-                        >
-                            {probability}%
-                            <span>
-                                <img src={DropDownArrow} alt='' />
-                            </span>
-                        </Box>
-
+                        {/* Left Side */}
                         <Stack
-                            display={probabilityModal ? 'block' : 'none'}
-                            className="KebabMenu-item ticket-assigneemenu"
-                            bgcolor="white"
+                            className="Ticket-detail-card-left"
+                            display="flex"
+                            flexDirection="row"
                         >
-                            <Stack
-                                className="modal-close"
-                                onClick={() => setProbabilityModal(false)}
-                                sx={{ border: '1px solid #EBEDF0' }}
-                            >
-                                <img src={CloseModalIcon} />
+                            {isSwitchView && <Stack sx={{ cursor: 'pointer' }} display={'flex'} justifyContent={'center'} marginRight={2} onClick={() => navigate(-1)}>
+                                <img src={back_arrow} alt="" />
+                            </Stack>}
+                            <Stack display="flex" flexDirection="column">
+                                <Stack display="flex" flexDirection="row">
+                                    <Stack className="Ticket-detail-card-left-name">
+                                        {patientName(currentTicket)}
+                                    </Stack>
+                                    <Stack className="Ticket-detail-card-left-Gen-Age">
+                                        {currentTicket?.consumer[0]?.gender ? (
+                                            <Stack className="Gen-Age">
+                                                {currentTicket?.consumer[0]?.gender}
+                                            </Stack>
+                                        ) : (
+                                            <></>
+                                        )}
+                                        {currentTicket?.consumer[0]?.age ? (
+                                            <Stack className="Gen-Age">
+                                                {currentTicket?.consumer[0]?.age}
+                                            </Stack>
+                                        ) : (
+                                            <></>
+                                        )}
+                                    </Stack>
+                                </Stack>
+                                <Stack className="Ticket-detail-card-left-uhid">
+                                    <span>#{currentTicket?.consumer[0]?.uid}</span>
+                                </Stack>
                             </Stack>
-                            <MenuItem sx={probabilityItemStyles}>
-                                <Stack className={"Ticket-probability"}>
-                                    Select Probability
-                                </Stack>
-                                <Stack display={'flex'} flexDirection={'row'} width={'100%'} justifyContent={'space-between'}>
-                                    <Stack className="Ticket-probability-0" onClick={() => { setProbability(0); setProbabilityModal(false) }}>
-                                        0%
-                                    </Stack>
-                                    <Stack className="Ticket-probability-25" onClick={() => { setProbability(25); setProbabilityModal(false) }}>
-                                        25%
-                                    </Stack>
-                                    <Stack className="Ticket-probability-50" onClick={() => { setProbability(50); setProbabilityModal(false) }}>
-                                        50%
-                                    </Stack>
-                                    <Stack className="Ticket-probability-75" onClick={() => { setProbability(75); setProbabilityModal(false) }}>
-                                        75%
-                                    </Stack>
-                                    <Stack className="Ticket-probability-100" onClick={() => { setProbability(100); setProbabilityModal(false) }}>
-                                        100%
-                                    </Stack>
-                                </Stack>
-                            </MenuItem>
+
+                            {/* Calling */}
+
+                            <CustomModal />
+
+                            {/* End---- */}
                         </Stack>
-                        {/* probability end */}
-                        {/* Lead Assignee */}
+
+                        {/* Right Side */}
 
 
-                        <Box className='Box-assignee' onClick={() => { setVisible(!visible); setOp(false); }}>
-                            <Stack
-                                direction="row"
-                                alignItems="center"
+
+
+                        <Stack className="Ticket-detail-card-right">
+                            {/* probability start */}
+                            <Box
+                                className={probability === 0
+                                    ? 'Ticket-probability0'
+                                    : probability === 25
+                                        ? 'Ticket-probability25'
+                                        : probability === 50
+                                            ? 'Ticket-probability50'
+                                            : probability === 75
+                                                ? 'Ticket-probability75'
+                                                : 'Ticket-probability100'}
+                                // className="Box-assignee"
+                                onClick={() => {
+                                    setProbability(probability);
+                                    setProbabilityModal(true);
+                                }}
                             >
-                                <span className='avatar'> <Avatar src={Avatar1} alt="User 1" /></span>
-                                <span className='NewAvatar avatar'> <Avatar src={NewAvatar} alt="User 2" /></span>
-                                <span className='DropDownArrow' >
-                                    <img
-                                        src={DropDownArrow}
-                                        alt=""
-                                    />
+                                {probability}%
+                                <span>
+                                    <img src={DropDownArrow} alt='' />
                                 </span>
-                            </Stack>
-                        </Box>
+                            </Box>
 
-                        <Stack
-                            display={visible ? 'block' : 'none'}
-                            className="KebabMenu-item ticket-assigneemenu"
-                            bgcolor="white"
-                        >
                             <Stack
-                                className="Ticket-Assignee-title"
-                                sx={{ marginLeft: '15px' }}
+                                display={probabilityModal ? 'block' : 'none'}
+                                className="KebabMenu-item ticket-assigneemenu"
+                                bgcolor="white"
                             >
-                                Ticket Assignees
-                            </Stack>
-                            <Stack
-                                className="modal-close"
-                                onClick={handleKebabClose}
-                                sx={{ border: '1px solid #EBEDF0' }}
-                            >
-                                <img src={CloseModalIcon} />
-                            </Stack>
-
-                            <Stack className="search">
-                                <div className="search-container">
-                                    {/* <span className="search-icon">&#128269;</span> */}
-                                    <span className="search-icon">
-                                        <SearchIcon />
-                                    </span>
-                                    <input
-                                        type="text"
-                                        className="search-input"
-                                        placeholder=" Search..."
-                                    />
-                                </div>
-                            </Stack>
-
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
-                                <Stack className="Ticket-Assignee-item" >
-                                    <Stack className="Ticket-Assignee-subItem" >
-                                        <Stack className="Ticket-Assignee-avatar"><img src={NewAvatar} alt="User 2" /></Stack>
-                                        <Stack className="Ticket-Assignee-Name">Jenny Wilson</Stack>
-                                    </Stack>
-                                    <Stack className="Ticket-Assignee-Owner">Ticket Owner</Stack>
-                                </Stack>
-                            </MenuItem>
-
-                            {avatars.map((avatar) => (
-                                <MenuItem
-                                    key={avatar.id}
-                                    sx={menuItemStyles}
-                                    onClick={handleKebabClose}
+                                <Stack
+                                    className="modal-close"
+                                    onClick={() => setProbabilityModal(false)}
+                                    sx={{ border: '1px solid #EBEDF0' }}
                                 >
-                                    <Stack className="Ticket-Assignee-item">
-                                        <Stack className="Ticket-Assignee-subItem">
-                                            <Stack className="Ticket-Assignee-avatar">
-                                                <img src={avatar.src} alt={avatar.alt} />
-                                            </Stack>
-                                            <Stack className="Ticket-Assignee-Name">
-                                                {avatar.name}
-                                            </Stack>
+                                    <img src={CloseModalIcon} />
+                                </Stack>
+                                <MenuItem sx={probabilityItemStyles}>
+                                    <Stack className={"Ticket-probability"}>
+                                        Select Probability
+                                    </Stack>
+                                    <Stack display={'flex'} flexDirection={'row'} width={'100%'} justifyContent={'space-between'}>
+                                        <Stack className="Ticket-probability-0" onClick={() => { setProbability(0); setProbabilityModal(false) }}>
+                                            0%
                                         </Stack>
-                                        <Stack className="Ticket-Assignee-Operation">
-                                            <img src={AddAssigneeIcon} alt="Add Assignee" />
+                                        <Stack className="Ticket-probability-25" onClick={() => { setProbability(25); setProbabilityModal(false) }}>
+                                            25%
+                                        </Stack>
+                                        <Stack className="Ticket-probability-50" onClick={() => { setProbability(50); setProbabilityModal(false) }}>
+                                            50%
+                                        </Stack>
+                                        <Stack className="Ticket-probability-75" onClick={() => { setProbability(75); setProbabilityModal(false) }}>
+                                            75%
+                                        </Stack>
+                                        <Stack className="Ticket-probability-100" onClick={() => { setProbability(100); setProbabilityModal(false) }}>
+                                            100%
                                         </Stack>
                                     </Stack>
                                 </MenuItem>
-                            ))}
-                        </Stack>
-
-                        {/* end Lead Assignee */}
-
-                        <Stack className="Ticket-LeadAge">
-                            {calculatedDate(currentTicket?.date)}
-                        </Stack>
-
-                        {/* Kebab Menu */}
-                        <Stack component="div">
-                            <span onClick={handleClick}>
-                                <img src={KebabMenu} alt="Kebab Menu" style={{ cursor: 'pointer' }} />
-                            </span>
-                        </Stack>
-
-                        <Stack
-                            ref={stackRef}
-                            display={op ? 'block' : 'none'}
-                            className="KebabMenu-item"
-                            bgcolor="white"
-                        >
-                            <Stack className="Kebabmenu-title" sx={{ marginLeft: '15px' }}>
-                                Estimation
                             </Stack>
-                            <Estimate setTicketUpdateFlag={setTicketUpdateFlag} />
-                            <Stack className="gray-border">{/* Borders */}</Stack>
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
-                                Set Priority
-                            </MenuItem>
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
-                                Add Surgery
-                            </MenuItem>
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
-                                Initate RFA
-                            </MenuItem>
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
-                                Delete Lead
-                            </MenuItem>
-                        </Stack>
+                            {/* probability end */}
+                            {/* Lead Assignee */}
 
-                        {/* end kebab Menu */}
-                    </Stack>
-                </Box>
 
-                {/* Stage Card Start Here */}
+                            <Box className='Box-assignee' onClick={() => { setVisible(!visible); setOp(false); }}>
+                                <Stack
+                                    direction="row"
+                                    alignItems="center"
+                                >
+                                    <span className='avatar'> <Avatar src={Avatar1} alt="User 1" /></span>
+                                    <span className='NewAvatar avatar'> <Avatar src={NewAvatar} alt="User 2" /></span>
+                                    <span className='DropDownArrow' >
+                                        <img
+                                            src={DropDownArrow}
+                                            alt=""
+                                        />
+                                    </span>
+                                </Stack>
+                            </Box>
 
-                <Box p={1} height="27vh">
-                    <Box bgcolor={'white'} p={1.5} borderRadius={2}>
-                        <StageCard
-                            currentTicket={currentTicket}
-                            setTicketUpdateFlag={setTicketUpdateFlag}
-                        />
-                    </Box>
-                </Box>
-                <Box height="0" position="relative" bgcolor="#F1F5F7">
-                    <TabContext value={value}>
-                        <Box
-                            sx={{
-                                borderBottom: 1,
-                                borderColor: 'divider',
-                                display: 'flex',
-                                justifyContent: 'space-around',
-
-                            }}
-                            bgcolor="white"
-                        >
-                            <TabList
-                                onChange={handleChange}
-                                aria-label="lab API tabs example"
-                                style={{ width: '95%' }}
-                            // variant="scrollable"
-                            // scrollButtons="auto"
-                            // aria-label="scrollable auto tabs example"
+                            <Stack
+                                display={visible ? 'block' : 'none'}
+                                className="KebabMenu-item ticket-assigneemenu"
+                                bgcolor="white"
                             >
-                                <Tab
-                                    label='Activities'
-                                    value="1"
-                                    className={
-                                        value == '1' ? styles.selectedTab : styles.tabsLabel
-                                    }
-                                />
-                                <Tab
+                                <Stack
+                                    className="Ticket-Assignee-title"
+                                    sx={{ marginLeft: '15px' }}
+                                >
+                                    Ticket Assignees
+                                </Stack>
+                                <Stack
+                                    className="modal-close"
+                                    onClick={handleKebabClose}
+                                    sx={{ border: '1px solid #EBEDF0' }}
+                                >
+                                    <img src={CloseModalIcon} />
+                                </Stack>
 
-                                    label={<Badge badgeContent={2} sx={{
-                                        "& .MuiBadge-badge": {
-                                            color: "#FFF",
-                                            backgroundColor: "#F94839",
-                                            margin: '-3px',
-                                            fontSize: '9px',
+                                <Stack className="search">
+                                    <div className="search-container">
+                                        {/* <span className="search-icon">&#128269;</span> */}
+                                        <span className="search-icon">
+                                            <SearchIcon />
+                                        </span>
+                                        <input
+                                            type="text"
+                                            className="search-input"
+                                            placeholder=" Search..."
+                                        />
+                                    </div>
+                                </Stack>
 
-                                            height: '20px',
-                                            // borderRadius: '80%', 
-                                            padding: -8,
+                                <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                    <Stack className="Ticket-Assignee-item" >
+                                        <Stack className="Ticket-Assignee-subItem" >
+                                            <Stack className="Ticket-Assignee-avatar"><img src={NewAvatar} alt="User 2" /></Stack>
+                                            <Stack className="Ticket-Assignee-Name">Jenny Wilson</Stack>
+                                        </Stack>
+                                        <Stack className="Ticket-Assignee-Owner">Ticket Owner</Stack>
+                                    </Stack>
+                                </MenuItem>
+
+                                {avatars.map((avatar) => (
+                                    <MenuItem
+                                        key={avatar.id}
+                                        sx={menuItemStyles}
+                                        onClick={handleKebabClose}
+                                    >
+                                        <Stack className="Ticket-Assignee-item">
+                                            <Stack className="Ticket-Assignee-subItem">
+                                                <Stack className="Ticket-Assignee-avatar">
+                                                    <img src={avatar.src} alt={avatar.alt} />
+                                                </Stack>
+                                                <Stack className="Ticket-Assignee-Name">
+                                                    {avatar.name}
+                                                </Stack>
+                                            </Stack>
+                                            <Stack className="Ticket-Assignee-Operation">
+                                                <img src={AddAssigneeIcon} alt="Add Assignee" />
+                                            </Stack>
+                                        </Stack>
+                                    </MenuItem>
+                                ))}
+                            </Stack>
+
+                            {/* end Lead Assignee */}
+
+                            <Stack className="Ticket-LeadAge">
+                                {calculatedDate(currentTicket?.date)}
+                            </Stack>
+
+                            {/* Kebab Menu */}
+                            <Stack component="div">
+                                <span onClick={handleClick}>
+                                    <img src={KebabMenu} alt="Kebab Menu" style={{ cursor: 'pointer' }} />
+                                </span>
+                            </Stack>
+
+                            <Stack
+                                ref={stackRef}
+                                display={op ? 'block' : 'none'}
+                                className="KebabMenu-item"
+                                bgcolor="white"
+                            >
+                                <Stack className="Kebabmenu-title" sx={{ marginLeft: '15px' }}>
+                                    Estimation
+                                </Stack>
+                                <Estimate setTicketUpdateFlag={setTicketUpdateFlag} />
+                                <Stack className="gray-border">{/* Borders */}</Stack>
+                                <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                    Set Priority
+                                </MenuItem>
+                                <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                    Add Surgery
+                                </MenuItem>
+                                <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                    Initate RFA
+                                </MenuItem>
+                                <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                    Delete Lead
+                                </MenuItem>
+                            </Stack>
+
+                            {/* end kebab Menu */}
+                        </Stack>
+                    </Box>
+
+                    {/* Stage Card Start Here */}
+
+                    <Box p={1} height="27vh">
+                        <Box bgcolor={'white'} p={1.5} borderRadius={2}>
+                            <StageCard
+                                currentTicket={currentTicket}
+                                setTicketUpdateFlag={setTicketUpdateFlag}
+                            />
+                        </Box>
+                    </Box>
+                    <Box height="0" position="relative" bgcolor="#F1F5F7">
+                        <TabContext value={value}>
+                            <Box
+                                sx={{
+                                    borderBottom: 1,
+                                    borderColor: 'divider',
+                                    display: 'flex',
+                                    justifyContent: 'space-around',
+
+                                }}
+                                bgcolor="white"
+                            >
+                                <TabList
+                                    onChange={handleChange}
+                                    aria-label="lab API tabs example"
+                                    style={{ width: '95%' }}
+                                // variant="scrollable"
+                                // scrollButtons="auto"
+                                // aria-label="scrollable auto tabs example"
+                                >
+                                    <Tab
+                                        label='Activities'
+                                        value="1"
+                                        className={
+                                            value == '1' ? styles.selectedTab : styles.tabsLabel
                                         }
-                                    }}>
-                                        Whatsapp
-                                    </Badge>}
-                                    value="2"
-                                    className={
-                                        value == '2' ? styles.selectedTab : styles.tabsLabel
-                                    }
-                                />
-                                {/* <Tab
+                                    />
+                                    <Tab
+
+                                        label={<Badge badgeContent={2} sx={{
+                                            "& .MuiBadge-badge": {
+                                                color: "#FFF",
+                                                backgroundColor: "#F94839",
+                                                margin: '-3px',
+                                                fontSize: '9px',
+
+                                                height: '20px',
+                                                // borderRadius: '80%', 
+                                                padding: -8,
+                                            }
+                                        }}>
+                                            Whatsapp
+                                        </Badge>}
+                                        value="2"
+                                        className={
+                                            value == '2' ? styles.selectedTab : styles.tabsLabel
+                                        }
+                                    />
+                                    {/* <Tab
                                     label="Email"
                                     value="3"
                                     className={
                                         value == '3' ? styles.selectedTab : styles.tabsLabel
                                     }
                                 /> */}
-                                <Tab
-                                    label={<Badge badgeContent={8} sx={{
-                                        "& .MuiBadge-badge": {
-                                            color: "#FFF",
-                                            backgroundColor: "#F94839",
-                                            margin: '-3px',
-                                            fontSize: '9px',
+                                    <Tab
+                                        label={<Badge badgeContent={8} sx={{
+                                            "& .MuiBadge-badge": {
+                                                color: "#FFF",
+                                                backgroundColor: "#F94839",
+                                                margin: '-3px',
+                                                fontSize: '9px',
 
-                                            height: '20px',
-                                            // borderRadius: '80%', 
-                                            padding: -8,
+                                                height: '20px',
+                                                // borderRadius: '80%', 
+                                                padding: -8,
+                                            }
+                                        }}>
+                                            SMS
+                                        </Badge>}
+                                        value="4"
+                                        className={
+                                            value == '4' ? styles.selectedTab : styles.tabsLabel
                                         }
-                                    }}>
-                                        SMS
-                                    </Badge>}
-                                    value="4"
-                                    className={
-                                        value == '4' ? styles.selectedTab : styles.tabsLabel
-                                    }
-                                />
-                                <Tab
-                                    label={<Badge badgeContent={4} sx={{
-                                        "& .MuiBadge-badge": {
-                                            color: "#FFF",
-                                            backgroundColor: "#F94839",
-                                            margin: '-3px',
-                                            fontSize: '9px',
+                                    />
+                                    <Tab
+                                        label={<Badge badgeContent={4} sx={{
+                                            "& .MuiBadge-badge": {
+                                                color: "#FFF",
+                                                backgroundColor: "#F94839",
+                                                margin: '-3px',
+                                                fontSize: '9px',
 
-                                            height: '20px',
-                                            // borderRadius: '80%', 
-                                            padding: -8,
+                                                height: '20px',
+                                                // borderRadius: '80%', 
+                                                padding: -8,
+                                            }
+                                        }}>
+                                            Phone Calls
+                                        </Badge>}
+                                        value="5"
+                                        className={
+                                            value == '5' ? styles.selectedTab : styles.tabsLabel
                                         }
-                                    }}>
-                                        Phone Calls
-                                    </Badge>}
-                                    value="5"
-                                    className={
-                                        value == '5' ? styles.selectedTab : styles.tabsLabel
-                                    }
-                                />
-                                <Tab
-                                    label="Query Resolution"
-                                    value="6"
-                                    className={
-                                        value == '6' ? styles.selectedTab : styles.tabsLabel
-                                    }
-                                />
-                                <Tab
-                                    label="Notes"
-                                    value="7"
-                                    className={
-                                        value == '7' ? styles.selectedTab : styles.tabsLabel
-                                    }
-                                />
-                                {/* <Tab label="Query Resolution" value="3" /> */}
-                            </TabList>
-                        </Box>
-                        <Box sx={{ p: 0, height: '100%', bgcolor: 'white' }}>
-                            <TabPanel value="1" style={{ paddingRight: 0 }}>
-                                <Activities />
-                            </TabPanel>
-                            <TabPanel value="2" style={{ padding: 0 }}>
-                                <MessagingWidget />
-                            </TabPanel>
-                            {/* <TabPanel value="3" style={{ padding: 0 }}>
+                                    />
+                                    <Tab
+                                        label="Query Resolution"
+                                        value="6"
+                                        className={
+                                            value == '6' ? styles.selectedTab : styles.tabsLabel
+                                        }
+                                    />
+                                    <Tab
+                                        label="Notes"
+                                        value="7"
+                                        className={
+                                            value == '7' ? styles.selectedTab : styles.tabsLabel
+                                        }
+                                    />
+                                    {/* <Tab label="Query Resolution" value="3" /> */}
+                                </TabList>
+                            </Box>
+                            <Box sx={{ p: 0, height: '100%', bgcolor: 'white' }}>
+                                <TabPanel value="1" style={{ paddingRight: 0 }}>
+                                    <Activities />
+                                </TabPanel>
+                                <TabPanel value="2" style={{ padding: 0 }}>
+                                    <MessagingWidget />
+                                </TabPanel>
+                                {/* <TabPanel value="3" style={{ padding: 0 }}>
                                 <QueryResolutionWidget />
                             </TabPanel> */}
-                            <TabPanel value="4" style={{ padding: 0, height: '100%' }}>
-                                <SmsWidget />
-                            </TabPanel>
-                            <TabPanel value="5" style={{ padding: 0 }}>
-                                <PhoneWidget />
-                            </TabPanel>
-                            <TabPanel value="6" style={{ padding: 0 }}>
-                                <QueryResolutionWidget />
-                            </TabPanel>
-                            <TabPanel value="7" style={{ padding: 0 }}>
-                                <NotesWidget setTicketUpdateFlag={setTicketUpdateFlag} />
-                            </TabPanel>
-                        </Box>
-                    </TabContext>
-                </Box>
+                                <TabPanel value="4" style={{ padding: 0, height: '100%' }}>
+                                    <SmsWidget />
+                                </TabPanel>
+                                <TabPanel value="5" style={{ padding: 0 }}>
+                                    <PhoneWidget />
+                                </TabPanel>
+                                <TabPanel value="6" style={{ padding: 0 }}>
+                                    <QueryResolutionWidget />
+                                </TabPanel>
+                                <TabPanel value="7" style={{ padding: 0 }}>
+                                    <NotesWidget setTicketUpdateFlag={setTicketUpdateFlag} />
+                                </TabPanel>
+                            </Box>
+                        </TabContext>
+                    </Box>
 
-                {/* End ----- */}
+                    {/* End ----- */}
+                </div >
+
+                {/* Left Section of Single Ticket Detail Page */}
+
+                < div className="sidebar-box" >
+                    <div className="side-bar">
+                        <SingleTicketSideBar
+                            reminderLists={matchedObjects}
+                            reschedulerList={callReschedulerData}
+                        />
+                    </div>
+                    <div className="task-bar">
+                        <TaskBar />
+                    </div>
+                </div >
             </div >
-
-            {/* Left Section of Single Ticket Detail Page */}
-
-            < div className="sidebar-box" >
-                <div className="side-bar">
-                    <SingleTicketSideBar
-                        reminderLists={matchedObjects}
-                        reschedulerList={callReschedulerData}
-                    />
-                </div>
-                <div className="task-bar">
-                    <TaskBar />
-                </div>
-            </div >
-        </div >
+            {isSwitchView &&
+                <>
+                    <ExpandedModal />
+                    <ExpandedSmsModal />
+                    <ExpandedPhoneModal />
+                </>
+            }
+        </>
     );
 };
 

@@ -72,10 +72,11 @@ const TicketFilter = (props: {
   const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
     '& .MuiBadge-badge': {
       right: -3,
-      top: 13,
-      border: `2px solid ${theme.palette.background.paper}`,
+      top: 7,
+      // border: `2px solid ${theme.palette.background.paper}`,
       padding: '0 4px',
-      color: "#0566FF"
+      color: "#FFFFFF",
+      backgroundColor: "#0566FF"
     }
   }));
 
@@ -370,9 +371,9 @@ const TicketFilter = (props: {
         <StyledBadge
           invisible={filterCount <= 0}
           badgeContent={filterCount}
-          color="primary"
+        // color="primary"
         >
-          <FilterList />
+          <FilterList sx={{ color: "#080F1A" }} />
         </StyledBadge>
       </IconButton>
 

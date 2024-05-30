@@ -654,8 +654,7 @@ const AuditSinglePageDetail = (props: Props) => {
 
                         {/* Calling */}
 
-                        <CustomModal />
-
+                        {!isAuditor && <CustomModal />}
                         {/* End---- */}
                     </Stack>
 
@@ -677,8 +676,10 @@ const AuditSinglePageDetail = (props: Props) => {
                             }
                             // className="Box-assignee"
                             onClick={() => {
-                                setProbability(probability);
-                                setProbabilityModal(true);
+                                if (!isAuditor) {
+                                    setProbability(probability);
+                                    setProbabilityModal(true);
+                                }
                             }}
                         >
                             {probability}%
@@ -763,8 +764,10 @@ const AuditSinglePageDetail = (props: Props) => {
                         <Box
                             className={styles.Box_assignee}
                             onClick={() => {
-                                setVisible(!visible);
-                                setOp(false);
+                                if (!isAuditor) {
+                                    setVisible(!visible);
+                                    setOp(false);
+                                }
                             }}
                         >
                             <Stack direction="row" alignItems="center">
@@ -857,7 +860,7 @@ const AuditSinglePageDetail = (props: Props) => {
                         </Stack>
 
                         {/* Kebab Menu */}
-                        <Stack component="div">
+                        {!isAuditor && <Stack component="div">
                             <span onClick={handleClick}>
                                 <img
                                     src={KebabMenu}
@@ -865,7 +868,7 @@ const AuditSinglePageDetail = (props: Props) => {
                                     style={{ cursor: 'pointer' }}
                                 />
                             </span>
-                        </Stack>
+                        </Stack>}
 
                         <Stack
                             ref={stackRef}

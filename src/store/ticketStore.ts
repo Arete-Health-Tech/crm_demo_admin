@@ -73,7 +73,10 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   isSwitchView: false,
   setIsSwitchView: (isSwitchView) => set({ isSwitchView }),
   isAuditor: false,
-  setIsAuditor: (isAuditor) => set({ isAuditor })
+  setIsAuditor: (isAuditor) => set({ isAuditor }),
+  whatsappMessageCount:0,
+  setWhatsappMessageCount:(whatsappMessageCount)=>set({whatsappMessageCount}),
+ 
 }));
 
 export default useTicketStore;

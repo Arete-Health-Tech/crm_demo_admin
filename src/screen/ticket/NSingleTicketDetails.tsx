@@ -113,6 +113,8 @@ import PhoneWidget from './widgets/PhoneWidget/PhoneWidget';
 import ExpandedModal from './widgets/whatsapp/ExpandedModal';
 import ExpandedSmsModal from './widgets/SmsWidget/ExpandedSmsModal';
 import ExpandedPhoneModal from './widgets/PhoneWidget/ExpandedPhoneModal';
+
+
 interface iConsumer {
     uid: string;
     firstName: string;
@@ -146,7 +148,7 @@ const NSingleTicketDetails = (props: Props) => {
         callRescheduler,
         estimates,
         isSwitchView,
-        setIsSwitchView
+        setIsSwitchView,
     } = useTicketStore();
     const { doctors, departments, stages } = useServiceStore();
     const [currentTicket, setCurrentTicket] = useState<iTicket>();
@@ -160,6 +162,8 @@ const NSingleTicketDetails = (props: Props) => {
     >([]);
 
     const [open, setOpen] = useState(false);
+
+
     const theme = useTheme();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [activeStep, setActiveStep] = useState(0);
@@ -180,7 +184,9 @@ const NSingleTicketDetails = (props: Props) => {
     const [modalOpenRescheduler, setModalOpenRescheduler] = useState(false);
     const [matchedObjects, setMatchedObjects] = useState([]);
     const [callReschedulerData, setCallReschedulerData] = useState([]);
-
+    
+    
+  
 
     // console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
     // console.log(currentTicket,"this is current ticet")
@@ -266,8 +272,8 @@ const NSingleTicketDetails = (props: Props) => {
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
+       
     };
-
 
 
 
@@ -566,7 +572,6 @@ const NSingleTicketDetails = (props: Props) => {
         { id: 6, src: Avatar1, alt: "User 5", name: "Will Smith" }
     ];
 
-    console.log('console in nsingleticlet');
 
 
     const stackRef = useRef<HTMLDivElement | null>(null);
@@ -585,6 +590,9 @@ const NSingleTicketDetails = (props: Props) => {
     }, []);
 
 
+    
+    
+ 
 
     return (
         <>
@@ -869,9 +877,7 @@ const NSingleTicketDetails = (props: Props) => {
                                             value == '1' ? styles.selectedTab : styles.tabsLabel
                                         }
                                     />
-                                    <Tab
-
-                                        label={<Badge badgeContent={2} sx={{
+                                    <Tab label={<Badge badgeContent={2} sx={{
                                             "& .MuiBadge-badge": {
                                                 color: "#FFF",
                                                 backgroundColor: "#F94839",
@@ -889,6 +895,7 @@ const NSingleTicketDetails = (props: Props) => {
                                         className={
                                             value == '2' ? styles.selectedTab : styles.tabsLabel
                                         }
+                                       
                                     />
                                     {/* <Tab
                                     label="Email"

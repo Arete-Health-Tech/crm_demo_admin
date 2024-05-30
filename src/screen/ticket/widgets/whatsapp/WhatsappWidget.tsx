@@ -51,7 +51,7 @@ const MessagingWidget = (props: Props) => {
     }
     return null; // Return null if no matching dataId found in the data array
   }
-  console.log(getConsumerIdByDataId ,"getConsumerIdByDataId")
+  // console.log(getConsumerIdByDataId ,"getConsumerIdByDataId")
 
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
 
@@ -107,7 +107,7 @@ const MessagingWidget = (props: Props) => {
       handleSendMessage();
     }
   };
-
+console.log(messages.length,"this is message for whatsapp")
   const handleSendMessage = async () => {
     await sendTextMessage(sendMessage, consumerId, ticketID as string);
     setSendMessage('');
@@ -116,6 +116,12 @@ const MessagingWidget = (props: Props) => {
   const handleImageUpload = () => {
     fileInputRef.current?.click();
   };
+
+ 
+
+
+
+
 
   const handleFileSelect = async (event) => {
     const selectedFile = event.target.files[0];

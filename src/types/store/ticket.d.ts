@@ -195,6 +195,9 @@ export interface iTicketStore {
   setIsAuditor: (isAuditor: boolean) => void;
   isSwitchView: boolean;
   setIsSwitchView: (isSwitchView: boolean) => void;
+  whatsappMessageCount: number;
+  setWhatsappMessageCount: (whatsappMessageCount: number) => void;
+  
 }
 
 export interface iNote {

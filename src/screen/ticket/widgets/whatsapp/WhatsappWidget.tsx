@@ -76,22 +76,6 @@ const MessagingWidget = (props: Props) => {
     };
   }, []);
 
-
-  useEffect(() => {
-    console.log("Initializing socket reminder connection...");
-  
-    // Listen for the 'newMessage' event
-    socket.on('taskCountUpdate', (data) => {
-      console.log('Received new message from the count reminder :', data);
-      setMessages((prevMessages) => [...prevMessages, data.message]);
-    });
-  
-    // Clean up the socket connection on component unmount
-    return () => {
-      socket.off('taskCountUpdate'); // Remove the event listener
-      socket.disconnect();
-    };
-  }, []);
   useEffect(() => {
     if (ticketID) {
       const collectionRef = collection(

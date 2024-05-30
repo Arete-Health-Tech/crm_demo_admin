@@ -58,6 +58,7 @@ import ToggleIcon from '../../../src/assets/Toggle.svg'
 import ExpandedModal from '../../screen/ticket/widgets/whatsapp/ExpandedModal';
 import ExpandedSmsModal from '../../screen/ticket/widgets/SmsWidget/ExpandedSmsModal';
 import ExpandedPhoneModal from '../../screen/ticket/widgets/PhoneWidget/ExpandedPhoneModal';
+import AuditFilterIcon from '../../../src/assets/commentHeader.svg'
 
 // .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
@@ -562,21 +563,6 @@ const Ticket = () => {
             flexDirection={'column'}
             justifyContent={'space-between'}
           >
-            {/* <Stack
-            direction="row"
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Button
-              onClick={backToDashboard}
-              color="inherit"
-              startIcon={<ArrowBack />}
-              sx={{ mb: 1 }}
-            >
-              Go Back To Dashboard
-            </Button>
-            <DownloadAllTickets />
-          </Stack> */}
 
             <Box
               display={'flex'}
@@ -595,6 +581,7 @@ const Ticket = () => {
                 Tickets
               </Stack>
               <Stack display={'flex'} flexDirection={'row'}>
+                <Stack><DownloadAllTickets /></Stack>
                 <Stack
                   sx={{
                     marginTop: '5px',
@@ -633,6 +620,7 @@ const Ticket = () => {
                 display={'flex'}
                 flexDirection={'row'}
                 justifyContent={'space-between'}
+                gap={'10px'}
               >
                 <Stack width={'95%'} position={'relative'}>
                   <span className="search-icon">
@@ -645,6 +633,14 @@ const Ticket = () => {
                     placeholder=" Search..."
                     onKeyDown={handleSearchKeyPress}
                   />
+                </Stack>
+                <Stack sx={{
+                  marginTop: "10px",
+                  marginRight: '-10px',
+                  width: "24px",
+                  height: "24px"
+                }}>
+                  <img src={AuditFilterIcon} alt="Audit Filter" />
                 </Stack>
                 <Stack marginRight={'-10px'}>
                   <TicketFilter setPage={setPage} />

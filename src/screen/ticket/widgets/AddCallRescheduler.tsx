@@ -22,7 +22,8 @@ import { useParams } from 'react-router-dom';
 import {
   createNewCallReschedulerHandler,
   createNewReminderHandler,
-  getAllReminderHandler
+  getAllReminderHandler,
+  getAllTaskCountHandler
 } from '../../../api/ticket/ticketHandler';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -176,6 +177,7 @@ const AddCallRescheduler = () => {
       setTime('');
       setIsModalOpenCall(false);
       await getAllCallReschedulerHandler();
+      await getAllTaskCountHandler();
     } catch (error) {
       console.error('Error creating reminder:', error);
     }

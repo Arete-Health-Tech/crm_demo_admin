@@ -65,7 +65,7 @@ const MessagingWidget = (props: Props) => {
   
     // Listen for the 'newMessage' event
     socket.on('newMessage', (data) => {
-      console.log('Received new message:', data);
+      // console.log('Received new message:', data);
       setMessages((prevMessages) => [...prevMessages, data.message]);
     });
   
@@ -268,7 +268,7 @@ const MessagingWidget = (props: Props) => {
                           fontSize="0.875rem"
                           fontWeight={400}
                         >
-                          {message.text}dghfghfs
+                          {message.text}
                         </Typography>
                         <Box display="flex" justifyContent="space-between">
                           <Typography

@@ -103,6 +103,11 @@ export const getAllCallReschedulerHandler = async () => {
   return data;
 };
 
+export const getAllTaskCount = async () => {
+  const { data } = await apiClient.get(`task/taskCount/`);
+  return data;
+};
+
 export const createNewCallRescheduler = async (
   callReschedulerData: iCallRescheduler
 ) => {

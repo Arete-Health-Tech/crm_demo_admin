@@ -93,7 +93,7 @@ import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
 
 import AWS from 'aws-sdk';
 import CustomModal from './widgets/CustomModal';
-import { apiClient } from '../../api/apiClient';
+import { apiClient, socket } from '../../api/apiClient';
 import ReschedulerAll from './widgets/ReschedulerAll';
 import RemainderAll from './widgets/RemainderAll';
 import SingleTicketSideBar from './SingleTicketSideBar/SingleTicketSideBar';
@@ -113,6 +113,8 @@ import PhoneWidget from './widgets/PhoneWidget/PhoneWidget';
 import ExpandedModal from './widgets/whatsapp/ExpandedModal';
 import ExpandedSmsModal from './widgets/SmsWidget/ExpandedSmsModal';
 import ExpandedPhoneModal from './widgets/PhoneWidget/ExpandedPhoneModal';
+import { collection, DocumentData, onSnapshot, orderBy, query } from 'firebase/firestore';
+import { database } from '../../utils/firebase';
 interface iConsumer {
     uid: string;
     firstName: string;
@@ -267,14 +269,6 @@ const NSingleTicketDetails = (props: Props) => {
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
     };
-
-
-
-
-
-
-
-
 
     const ITEM_HEIGHT = 48;
     const ITEM_PADDING_TOP = 8;
@@ -584,7 +578,23 @@ const NSingleTicketDetails = (props: Props) => {
         };
     }, []);
 
+    const [messages, setMessages] = useState<DocumentData[]>([]);
 
+    useEffect(() => {
+        console.log("Initializing socket connection...");
+
+        // Listen for the 'newMessage' event
+        socket.on('newMessage', (data) => {
+            console.log('Received new message:', data);
+            setMessages((prevMessages) => [...prevMessages, data.message]);
+        });
+
+        // Clean up the socket connection on component unmount
+        return () => {
+            socket.off('newMessage'); // Remove the event listener
+            socket.disconnect();
+        };
+    }, []);
 
     return (
         <>

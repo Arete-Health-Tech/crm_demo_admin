@@ -41,6 +41,8 @@ const MessagingWidget = (props: Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState(null);
   const [id, setId] = useState('');
+  const [messages, setMessages] = useState<DocumentData[]>([]);
+  const [sendMessage, setSendMessage] = useState('');
   const containerRef = useRef<HTMLDivElement | null>(null);
   // const { user, setUser } = useUserStore();
   function getConsumerIdByDataId(dataArray, dataIdToMatch) {
@@ -98,8 +100,6 @@ const MessagingWidget = (props: Props) => {
     }
   }, [ticketID]);
 
-  const [messages, setMessages] = useState<DocumentData[]>([]);
-  const [sendMessage, setSendMessage] = useState('');
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && sendMessage.trim() !== '') {

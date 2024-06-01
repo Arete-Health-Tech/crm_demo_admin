@@ -596,6 +596,8 @@ const NSingleTicketDetails = (props: Props) => {
         };
     }, []);
 
+    console.log({ messages })
+
     return (
         <>
             <div className={isSwitchView ? "switch-main-layout" : "main-layout"}>

@@ -585,7 +585,7 @@ const NSingleTicketDetails = (props: Props) => {
 
         // Listen for the 'newMessage' event
         socket.on('newMessage', (data) => {
-            console.log('Received new message:', data);
+            console.log('Received new message ', data);
             setMessages((prevMessages) => [...prevMessages, data.message]);
         });
 

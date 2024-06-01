@@ -12,8 +12,8 @@ import { socketEventConstants } from "../../../constantUtils/socketEventsConstan
 import { socket } from "../../../api/apiClient";
 import { getTicket } from "../../../api/ticket/ticket";
 import { getAllStageCountHandler } from "../../../api/dashboard/dashboardHandler";
-import { Box, Stack } from "@mui/material";
-import styles from "../../audit/audit.module.css";
+import { Box, Chip, Modal, Stack, Typography } from "@mui/material";
+import styles from "./switchView.module.css";
 import "../../orders/orderList.css"
 import { DatePicker } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
@@ -21,12 +21,17 @@ import CheckBoxIcon from '../../../assets/AuditCheckBox.svg';
 import MediumPr from '../../../assets/MediumPr.svg'
 import LowPr from '../../../assets/LowPr.svg'
 import HighPr from '../../../assets/HighPr.svg'
+import DefaultPr from '../../../assets/DefaultPr.svg'
+import AuditFilterIcon from '../../../assets/commentHeader.svg'
 import SortArrowIcon from '../../../assets/SortArrow.svg'
 import ActiveToggleIcon from '../../../assets/ActiveToggle.svg'
 import TicketFilter from "../widgets/TicketFilter";
 import CustomPagination from "../../../container/layout/CustomPagination";
 import useServiceStore from "../../../store/serviceStore";
 import { iStage } from "../../../types/store/service";
+import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import CloseIcon from '@mui/icons-material/Close';
+import dayjs from "dayjs";
 
 
 const datePickerStyle = {
@@ -81,6 +86,24 @@ const stageStyles = {
     backgroundColor: '#E9E3F6',
     color: '#6F42C1',
   },
+};
+
+const getColor = (probability) => {
+  if (probability === 100) return '#08A742';
+  if (probability === 75) return '#0566FF';
+  if (probability === 50) return '#FFB200';
+  if (probability === 25) return '#F94839';
+  if (probability === 0) return '#546E7A';
+  return 'grey';
+};
+
+const getBackgroundColor = (probability) => {
+  if (probability === 100) return '#DAF2E3';
+  if (probability === 75) return '#DAE8FF';
+  if (probability === 50) return '#FFF3D9';
+  if (probability === 25) return '#FEE4E1';
+  if (probability === 0) return '#E5E9EB';
+  return 'grey';
 };
 
 let AllIntervals: any[] = [];
@@ -597,12 +620,19 @@ function SwitchViewTable() {
     return stageDetail.name;
   }
 
+  const [dates, setDates] = useState([null, null]);
+
+  const handleDateRange = (dates, dateStrings) => {
+    setDates(dateStrings);
+  }
+
+
   return (<>
-    <Box className={styles.Audit_container}>
+    <Box className={styles.SwitchView_container}>
 
       {/* Switch View Head */}
-      <Box className={styles.Audit_filters_container}>
-        <Stack className={styles.Audit_container_title} >
+      <Box className={styles.SwitchView_filters_container}>
+        <Stack className={styles.SwitchView_container_title} >
           Tickets
         </Stack>
 
@@ -641,14 +671,15 @@ function SwitchViewTable() {
       </Box>
 
       {/* Switch View Filters */}
-      <Box className={styles.Audit_filters_container}>
+      <Box className={styles.SwitchView_filters_container}>
 
         {/* Date Filter */}
-        <Box className={styles.Audit_filters_left}>
+        <Box className={styles.SwitchView_filters_left}>
           {/* Date Filters */}
           <Stack>
             <DatePicker.RangePicker
               style={datePickerStyle}
+              onChange={handleDateRange}
             />
             <style>{`
                     .ant-picker-range .ant-picker-input input::placeholder {
@@ -660,7 +691,7 @@ function SwitchViewTable() {
         </Box>
 
         {/* Search Filter And Filters Component */}
-        <Box display={'flex'} flexDirection={'row'} gap={'3px'}>
+        <Box display={'flex'} flexDirection={'row'} gap={'9px'}>
           {/* Search Filters */}
           <Stack gap={'2px'}>
             <Stack className={styles.search}>
@@ -689,13 +720,18 @@ function SwitchViewTable() {
 
 
           {/* Filter Component */}
-
+          <Stack sx={{
+            marginTop: "10px",
+            marginRight: '-10px',
+            width: "24px",
+            height: "24px"
+          }}>
+            <img src={AuditFilterIcon} alt="Audit Filter" />
+          </Stack>
           <Stack marginRight={'-10px'}>
             <TicketFilter setPage={setPage} />
           </Stack>
         </Box>
-
-
       </Box>
 
       {/* Stages Data  */}
@@ -712,27 +748,23 @@ function SwitchViewTable() {
       </Box>
 
       {/* Tickets Tables */}
-      <Box sx={{ height: "55% !important" }} className={styles.Audit_table_container}>
+      <Box sx={{ height: "55% !important" }} className={styles.SwitchView_table_container}>
 
         <Box height={'100%'}>
-          <table className={styles.Audit_table} style={{
+          <table className={styles.SwitchView_table} style={{
             height: '95%'
           }}>
             <Box sx={{ position: "sticky" }}>
               <thead>
-                <tr className={styles.Audit_table_head}>
+                <tr className={styles.SwitchView_table_head}>
 
-                  <th className={`${styles.SwitchView_table_head_item}`} >
-                    Lead
-                    <Stack sx={{ marginLeft: "5px", marginTop: "2px" }}>
-                      <img src={SortArrowIcon} alt="sortArrow" />
-                    </Stack>
-                  </th>
+                  <th className={`${styles.SwitchView_table_head_item}`} >Lead</th>
                   <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item2}`} >Lead Age</th>
                   <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item3}`} >Doctor</th>
                   <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item4}`} >Specialty</th>
-                  <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item5}`} >Services</th>
                   <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item6}`} >Lead status</th>
+                  <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item5}`} >Services</th>
+                  <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item7}`} >Probability</th>
                   <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item7}`} >Priority</th>
 
                 </tr>
@@ -746,44 +778,50 @@ function SwitchViewTable() {
             }}>
               <tbody>
                 {tickets.map(item => (
-                  <tr key={item._id} className={styles.Audit_table_body}
+                  <tr key={item._id} className={styles.SwitchView_table_body}
                     onClick={() => navigate(`${item._id}`)}>
 
                     {/* Lead */}
                     <td className={`${styles.SwitchView_table_body_item}`}>
                       <Stack display={'flex'} flexDirection={'row'} gap={'8px'}>
-                        <Stack className={styles.Audit_name} sx={{ textTransform: "capitalize" }}>
+                        <Stack className={styles.SwitchView_name} sx={{ textTransform: "capitalize" }}>
                           {patientName(item)}
                         </Stack>
-                        <Stack className={styles.Audit_GenAge}>
-                          {item.consumer[0]?.gender && <Stack className={styles.Audit_Gen}>{item.consumer[0]?.gender}</Stack>}
-                          {item.consumer[0]?.age && <Stack className={styles.Audit_Age}> {item.consumer[0]?.age}</Stack>}
+                        <Stack className={styles.SwitchView_GenAge}>
+                          {item.consumer[0]?.gender && <Stack className={styles.SwitchView_Gen}>{item.consumer[0]?.gender}</Stack>}
+                          {item.consumer[0]?.age && <Stack className={styles.SwitchView_Age}> {item.consumer[0]?.age}</Stack>}
                         </Stack>
                       </Stack>
-                      <Stack className={styles.Audit_uhid}>
+                      <Stack className={styles.SwitchView_uhid}>
                         #{item.consumer[0]?.uid}
                       </Stack>
                     </td>
 
                     {/* Lead Age */}
                     <td className={`${styles.SwitchView_table_body_item}  ${styles.Switch_body_item2}`}  >
-                      <Stack className={styles.Audit_last_date}>
+                      <Stack className={styles.SwitchView_last_date}>
                         {calculatedDate(item.date)}
                       </Stack>
                     </td>
 
                     {/* Doctor Name */}
                     <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item3}`} >
-                      <Stack className={styles.Audit_last_date} sx={{ textTransform: "capitalize !important" }}>
+                      <Stack className={styles.SwitchView_last_date} sx={{ textTransform: "capitalize !important" }}>
                         {doctorSetter(item?.prescription[0]?.doctor)}
                       </Stack>
                     </td>
 
                     {/* Department */}
                     <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item4}`} >
-                      <Stack className={styles.Audit_last_date} sx={{ textTransform: "capitalize !important" }}>
+                      <Stack className={styles.SwitchView_last_date} sx={{ textTransform: "capitalize !important" }}>
                         {departmentSetter(item.prescription[0].departments[0])}
                       </Stack>
+                    </td>
+
+
+                    {/* LeadStatus */}
+                    <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item6}`} >
+                      <Stack sx={stageStyles[getStageName(item)]}> {getStageName(item)}</Stack>
                     </td>
 
                     {/* Services */}
@@ -808,15 +846,21 @@ function SwitchViewTable() {
 
                     </td>
 
-                    {/* LeadStatus */}
-                    <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item6}`} >
-                      <Stack sx={stageStyles[getStageName(item)]}> {getStageName(item)}</Stack>
+
+                    {/* Probabilty */}
+                    <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`} >
+                      <Stack className={styles.SwitchView_Prob}
+                        sx={{
+                          color: getColor(50),
+                          backgroundColor: getBackgroundColor(50),
+                        }}
+                      >50%</Stack>
                     </td>
 
                     {/* Priority */}
                     <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`} >
                       {item.estimate.length === 0 ? (<>
-                        <Stack sx={{ color: "gray" }}> -</Stack>
+                        <Stack className="Priority-tag"> <img src={DefaultPr} alt="DefaultPr" /><span style={{ fontSize: "12px" }}>N/A</span></Stack>
                       </>) : (
                         <>
                           <Stack className="Priority-tag">{220 > 15000 ?
@@ -836,7 +880,7 @@ function SwitchViewTable() {
               </tbody>
             </Box>
 
-            <Box className={styles.Audit_pagination}>
+            <Box className={styles.SwitchView_pagination}>
               <CustomPagination
                 handlePagination={handlePagination}
                 pageCount={pageCount}
@@ -844,13 +888,152 @@ function SwitchViewTable() {
               />
             </Box>
           </table>
-
-
         </Box>
-
-
-
       </Box>
+    </Box>
+
+    {/* Modal For Reminder  */}
+    <Box>
+      <Modal
+        open={showReminderModal}
+      // onClose={() => handleCloseModal()}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            bgcolor: 'white',
+            width: '600px',
+            height: '400px',
+            top: '50%',
+            left: '50%',
+            border: '0px solid transparent',
+            borderRadius: '8px',
+            transform: 'translate(-50%, -50%)',
+            padding: '10px'
+          }}
+        >
+          <div
+            onClick={handleCloseModal}
+            style={{
+              display: 'flex',
+              justifyContent: 'end',
+              cursor: 'pointer'
+            }}
+          >
+            <CloseIcon fontSize="large" />
+          </div>
+          <div className="buzz-animation">
+            <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
+          </div>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column'
+            }}
+          >
+            {ticketReminderPatient && (
+              <Typography>{`Reminder for ${(
+                ticketReminderPatient?.consumer[0]?.firstName || 'N/A'
+              ).toUpperCase()} `}</Typography>
+            )}{' '}
+            <Typography
+              fontSize={'18px'}
+              fontWeight={'600'}
+              margin={'10px'}
+            >
+              {alarmReminderedList[0]?.title.toUpperCase() || 'N/A'}
+            </Typography>
+            <Typography margin={'12px'}>
+              {alarmReminderedList[0]?.description || 'N/A'}
+            </Typography>
+            <Chip
+              size="medium"
+              variant="outlined"
+              color="primary"
+              label={dayjs(alarmReminderedList[0]?.date).format(
+                'DD/MMM/YYYY hh:mm A '
+              )}
+            />
+          </Box>
+        </Box>
+      </Modal>
+    </Box>
+
+    {/* Modal For Rescheduler */}
+    <Box>
+      <Modal
+        open={showCallReschedulerModal}
+      // onClose={() => handleCloseModal()}
+      >
+        <Box
+          sx={{
+            position: 'absolute',
+            bgcolor: 'white',
+            width: '600px',
+            height: '400px',
+            top: '50%',
+            left: '50%',
+            border: '0px solid transparent',
+            borderRadius: '8px',
+            transform: 'translate(-50%, -50%)',
+            padding: '10px'
+          }}
+        >
+          <div
+            onClick={handleCloseCallReschedulerModal}
+            style={{
+              display: 'flex',
+              justifyContent: 'end',
+              cursor: 'pointer'
+            }}
+          >
+            <CloseIcon fontSize="large" />
+          </div>
+          <div className="buzz-animation">
+            <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
+          </div>
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              flexDirection: 'column'
+            }}
+          >
+            {ticketCallReschedulerPatient && (
+              <Typography>{`Call Rescheduler for ${(
+                ticketCallReschedulerPatient?.consumer[0]?.firstName ||
+                'N/A'
+              ).toUpperCase()} `}</Typography>
+            )}{' '}
+            <Typography
+              fontSize={'18px'}
+              fontWeight={'600'}
+              margin={'10px'}
+            >
+              {alarmCallReschedulerList[0]?.selectedLabels
+                ? alarmCallReschedulerList[0].selectedLabels
+                  .map((label) => label.label)
+                  .join(', ')
+                  .toUpperCase()
+                : 'N/A'}
+            </Typography>
+            <Typography margin={'12px'}>
+              {alarmCallReschedulerList[0]?.description || 'N/A'}
+            </Typography>
+            <Chip
+              size="medium"
+              variant="outlined"
+              color="primary"
+              label={dayjs(alarmCallReschedulerList[0]?.date).format(
+                'DD/MMM/YYYY hh:mm A '
+              )}
+            />
+          </Box>
+        </Box>
+      </Modal>
     </Box>
   </>
 

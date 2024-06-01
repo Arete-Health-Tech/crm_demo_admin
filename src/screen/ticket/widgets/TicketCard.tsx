@@ -17,6 +17,7 @@ import DnpIcon from '../../../../src/assets/DNP-icon.svg'
 import MediumPr from '../../../../src/assets/MediumPr.svg'
 import LowPr from '../../../../src/assets/LowPr.svg'
 import HighPr from '../../../../src/assets/HighPr.svg'
+import NotifyAudit from '../../../../src/assets/NotifyAudit.svg'
 import '../singleTicket.css'
 
 // import { updateIsNewTicket } from '../../../api/ticket/ticket';
@@ -390,7 +391,8 @@ const TicketCard = (props: Props) => {
         <Stack className='Ticket-LeadAge' sx={{ fontSize: "12px !important", padding: "4px 0 0px 0" }}>
           {calculatedDate(props.patientData?.date)}
         </Stack>
-        <Stack sx={{ display: "flex", flexDirection: "row !important", gap: "3px" }}>
+        <Stack sx={{ display: "flex", flexDirection: "row !important", gap: "5px" }}>
+          <Stack className='task-pending'><img src={NotifyAudit} /></Stack>
           <Stack className='task-pending'>5 Tasks Pending </Stack>
           <Stack className='ticket-card-notification'>2</Stack>
         </Stack>

@@ -1,5 +1,5 @@
 import { DownloadForOfflineOutlined } from '@mui/icons-material';
-import { Box, IconButton, Tooltip } from '@mui/material';
+import { Box, IconButton, Stack, Tooltip, TooltipProps, styled, tooltipClasses } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { getDepartmentsHandler } from '../../../api/department/departmentHandler';
@@ -12,8 +12,23 @@ import FileSaver from 'file-saver';
 import { ageSetter } from '../../../utils/ageReturn';
 import { UNDEFINED } from '../../../constantUtils/constant';
 import useReprentativeStore from '../../../store/representative';
+import DownloadAllFileIcon from '../../../../src/assets/DownloadAllFiles.svg';
 
 type Props = {};
+
+const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} arrow classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: '#0566FF',
+    color: '#ffffff',
+    fontSize: 10,
+    fontFamily: `"Outfit",sans-serif`
+  },
+  [`& .${tooltipClasses.arrow}`]: {
+    color: '#0566FF',
+  }
+}));
 
 const DownloadAllTickets = (props: Props) => {
   const { doctors, departments, stages, allNotes } = useServiceStore();
@@ -127,12 +142,17 @@ const DownloadAllTickets = (props: Props) => {
 
 
   return (
-    <Box>
-      <Tooltip title="Download All Data">
-        <IconButton disabled={disable} onClick={downloadData}>
-          <DownloadForOfflineOutlined />
-        </IconButton>
-      </Tooltip>
+    <Box p={1} px={2}>
+      <LightTooltip title="Download All Data">
+        <Stack style={{
+          width: "16.667px",
+          height: "15.397px"
+        }}>
+          <button disabled={disable} onClick={downloadData}
+          >
+            <img src={DownloadAllFileIcon} alt='Download All Data' /></button>
+        </Stack>
+      </LightTooltip>
     </Box>
   );
 };

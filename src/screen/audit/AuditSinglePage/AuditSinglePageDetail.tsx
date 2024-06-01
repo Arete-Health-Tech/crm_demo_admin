@@ -69,9 +69,9 @@ import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTo
 import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
 
 import AWS from 'aws-sdk';
-import Avatar1 from '../../../assets/Avatar.svg';
+import Avatar1 from '../../../assets/avatar1.svg';
 import back_arrow from '../../../assets/back_arrow.svg';
-import NewAvatar from '../../../assets/Avatar2.svg';
+import NewAvatar from '../../../assets/avatar2.svg';
 import DropDownArrow from '../../../assets/DropdownArror.svg';
 import KebabMenu from '../../../assets/KebabMenu.svg';
 import AddAssigneeIcon from '../../../assets/add.svg';
@@ -654,8 +654,7 @@ const AuditSinglePageDetail = (props: Props) => {
 
                         {/* Calling */}
 
-                        <CustomModal />
-
+                        {!isAuditor && <CustomModal />}
                         {/* End---- */}
                     </Stack>
 
@@ -677,8 +676,10 @@ const AuditSinglePageDetail = (props: Props) => {
                             }
                             // className="Box-assignee"
                             onClick={() => {
-                                setProbability(probability);
-                                setProbabilityModal(true);
+                                if (!isAuditor) {
+                                    setProbability(probability);
+                                    setProbabilityModal(true);
+                                }
                             }}
                         >
                             {probability}%
@@ -763,8 +764,10 @@ const AuditSinglePageDetail = (props: Props) => {
                         <Box
                             className={styles.Box_assignee}
                             onClick={() => {
-                                setVisible(!visible);
-                                setOp(false);
+                                if (!isAuditor) {
+                                    setVisible(!visible);
+                                    setOp(false);
+                                }
                             }}
                         >
                             <Stack direction="row" alignItems="center">
@@ -857,7 +860,7 @@ const AuditSinglePageDetail = (props: Props) => {
                         </Stack>
 
                         {/* Kebab Menu */}
-                        <Stack component="div">
+                        {!isAuditor && <Stack component="div">
                             <span onClick={handleClick}>
                                 <img
                                     src={KebabMenu}
@@ -865,7 +868,7 @@ const AuditSinglePageDetail = (props: Props) => {
                                     style={{ cursor: 'pointer' }}
                                 />
                             </span>
-                        </Stack>
+                        </Stack>}
 
                         <Stack
                             ref={stackRef}

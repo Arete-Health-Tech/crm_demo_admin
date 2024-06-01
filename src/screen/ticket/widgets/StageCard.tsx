@@ -56,7 +56,7 @@ function getTotalDaysFromDate(date: Date) {
 const StageCard = (props: Props) => {
   const { ticketID } = useParams();
   const { stages, subStages } = useServiceStore();
-  const { isSwitchView } = useTicketStore();
+  const { isSwitchView, isAuditor } = useTicketStore();
 
   const [open, setOpen] = useState(false);
   const [paymentIDValue, setPaymentIDValue] = useState('');
@@ -561,7 +561,7 @@ const StageCard = (props: Props) => {
 
         </Box>
 
-        <Box display="flex" flexDirection="row">
+        {!isAuditor && <Box display="flex" flexDirection="row">
           <button
             className='Won-Btn won'
             onClick={handleOpen}
@@ -573,11 +573,11 @@ const StageCard = (props: Props) => {
             onClick={handleOpenLose}
           >
             LOST
-          </button>{' '}
+          </button>
         </Box>
 
+        }
       </Box>
-
 
       <Box>
         {/* Won Modal */}

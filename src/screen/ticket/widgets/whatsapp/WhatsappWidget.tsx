@@ -51,7 +51,7 @@ const MessagingWidget = (props: Props) => {
     }
     return null; // Return null if no matching dataId found in the data array
   }
-  // console.log(getConsumerIdByDataId ,"getConsumerIdByDataId")
+  console.log(getConsumerIdByDataId, "getConsumerIdByDataId")
 
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
 
@@ -62,13 +62,13 @@ const MessagingWidget = (props: Props) => {
 
   useEffect(() => {
     console.log("Initializing socket connection...");
-  
+
     // Listen for the 'newMessage' event
     socket.on('newMessage', (data) => {
-      console.log('Received new message:', data);
+      // console.log('Received new message:', data);
       setMessages((prevMessages) => [...prevMessages, data.message]);
     });
-  
+
     // Clean up the socket connection on component unmount
     return () => {
       socket.off('newMessage'); // Remove the event listener
@@ -199,7 +199,7 @@ console.log(messages.length,"this is message for whatsapp")
 
         <Stack
           direction="column"
-          height={whtsappExpanded ? '80vh' : isAuditor ? '40vh' : '55vh'}
+          height={whtsappExpanded ? '80vh' : isAuditor ? '58vh' : '55vh'}
           position="relative"
           bgcolor="white"
         >
@@ -274,7 +274,7 @@ console.log(messages.length,"this is message for whatsapp")
                           fontSize="0.875rem"
                           fontWeight={400}
                         >
-                          {message.text}dghfghfs
+                          {message.text}
                         </Typography>
                         <Box display="flex" justifyContent="space-between">
                           <Typography
@@ -287,8 +287,8 @@ console.log(messages.length,"this is message for whatsapp")
                           >
                             {dayjs(message.createdAt).format(
                               'DD MMM YYYY hh:mm A'
-                                  )}
-                                  
+                            )}
+
                           </Typography>
                           <Avatar sx={{
                             fontSize: '8px', bgcolor: 'orange',

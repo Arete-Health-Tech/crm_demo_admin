@@ -14,24 +14,28 @@
   justify-content: space-between;
   border-top-right-radius: 25px;
 }
+
 .stack_box {
   width: 74%;
   background-color: #ffffff;
   border-top-left-radius: 25px;
   border-bottom-left-radius: 25px;
 }
+
 .side_bar {
   border-top-right-radius: 25px;
   height: 100%;
 }
+
 .auditorComment {
   padding: 0 2;
   border-top: 2px solid #0566ff;
 }
+
 .auditorCommentButtons {
   display: flex;
   justify-content: space-between;
-  margin: 0 1vw;
+  margin: -1.4vh 0.9vw;
 }
 
 .Box_assignee {
@@ -41,7 +45,7 @@
   border-radius: var(--36px, 36px);
   border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
   background: var(--Background-White, #fff);
-  min-width: 6.5vw;
+  min-width: 4.4vw;
   height: 6vh;
   padding: 3px;
   cursor: pointer;
@@ -54,24 +58,29 @@
   box-shadow: none;
   border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
 }
+
 #avatar {
   margin: 0px -7px;
 }
+
 #avatar1 {
   margin: 0px -7px;
 }
+
 #assignedDropdown {
   border-radius: 50%;
   min-width: 4;
   padding: 0rem 1rem 0rem 0.5rem;
   cursor: pointer;
 }
+
 .dropdown {
   position: absolute;
   background-color: white;
   box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2);
   z-index: 1;
-  width: 18.75rem; /* Adjust width as necessary */
+  width: 18.75rem;
+  /* Adjust width as necessary */
   border-radius: 0.4rem;
 }
 
@@ -101,6 +110,7 @@
 .dropdown button {
   margin: 5px;
 }
+
 .dropdownHeader {
   color: #000;
 
@@ -111,6 +121,7 @@
   font-weight: 500;
   line-height: 120%;
 }
+
 .leadAge {
   white-space: nowrap;
   padding-left: 0.5rem;
@@ -122,6 +133,7 @@
   font-weight: 400;
   line-height: 150%;
 }
+
 .gender {
   color: var(--Text-Grey, #354869);
   text-align: center;
@@ -130,13 +142,15 @@
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 21px */
+  line-height: 150%;
+  /* 21px */
   padding: 0px var(--4px, 4px);
   align-items: center;
   gap: var(--4px, 4px);
   border-radius: var(--8px, 8px);
   background: var(--Background-Greyish, #f6f7f9);
 }
+
 .estimationHeader {
   color: var(--Text-Light-Grey, #647491);
   /* Body/Small */
@@ -146,6 +160,7 @@
   font-weight: 400;
   line-height: 150%;
 }
+
 .estimationHeaderMenu {
   color: var(--Text-Black, #080f1a);
   /* Body/Medium */
@@ -155,6 +170,7 @@
   font-weight: 400;
   line-height: 150%;
 }
+
 .estimationHeaderMenuClose {
   color: var(--Alerts-Red, #f94839);
   /* Body/Medium */
@@ -164,6 +180,7 @@
   font-weight: 400;
   line-height: 150%;
 }
+
 .tabsLabel {
   color: var(--Text-Light-Grey, #647491) !important;
   text-align: center !important;
@@ -171,9 +188,11 @@
   font-size: 0.875rem !important;
   font-style: normal !important;
   font-weight: 400 !important;
-  line-height: 150% !important; /* 1.3125rem */
+  line-height: 150% !important;
+  /* 1.3125rem */
   text-transform: none !important;
 }
+
 .selectedTab {
   color: var(--Text-Black, #080f1a) !important;
   text-align: center !important;
@@ -184,6 +203,7 @@
   line-height: 150% !important;
   text-transform: none !important;
 }
+
 .problem {
   display: flex;
   height: 1.5rem;
@@ -200,8 +220,10 @@
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.125rem */
+  line-height: 150%;
+  /* 1.125rem */
 }
+
 .solution {
   display: flex;
   height: 1.5rem;
@@ -217,8 +239,10 @@
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.125rem */
+  line-height: 150%;
+  /* 1.125rem */
 }
+
 .add_comment {
   display: flex;
   height: 2rem;
@@ -236,20 +260,25 @@
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 500;
-  line-height: 150%; /* 1.3125rem */
+  line-height: 150%;
+  /* 1.3125rem */
 }
+
 .auditorCommenttextArea {
   margin: 0.3rem 1rem;
 }
+
 .auditorCommenttextArea textarea {
   width: 100%;
   resize: none;
   overflow: hidden;
 }
+
 .auditorCommenttextArea textarea:focus {
   outline: none;
   border: none;
 }
+
 .auditorCommenttextArea textarea::placeholder {
   color: var(--Text-Light-Grey, #647491);
   /* Body/Large */
@@ -259,6 +288,7 @@
   font-weight: 400;
   line-height: 150%;
 }
+
 .showCommentHeader {
   display: flex;
   height: 3rem;
@@ -269,6 +299,7 @@
   align-self: stretch;
   border-bottom: 1px solid #d4dbe5;
 }
+
 .showCommentHeaderText {
   color: var(--Text-Black, #080f1a);
 
@@ -277,19 +308,29 @@
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 500;
-  line-height: 150%; /* 1.3125rem */
+  line-height: 150%;
+  /* 1.3125rem */
 }
+
 .commentsBox {
   height: 68.5vh;
   overflow-y: scroll;
 }
+
 .commentsBox::-webkit-scrollbar {
-  width: 5px; /* width of the entire scrollbar */
+  width: 3.5px;
+  /* width of the entire scrollbar */
 }
+
 .commentsBox::-webkit-scrollbar-thumb {
-  background-color: rgb(163, 165, 167); /* color of the scroll thumb */
-  border-radius: 20px; /* roundness of the scroll thumb */
+  background-color: rgba(163, 165, 167, 0.459);
+  /* color of the scroll thumb */
+  border-radius: 20px;
+  /* background-color: #0565ff4e; */
+  /* height: 20px; */
+  /* roundness of the scroll thumb */
 }
+
 .problemBox {
   display: flex;
   margin: 0.5rem;
@@ -301,6 +342,7 @@
   border-radius: 0.75rem;
   background: #f6f7f9;
 }
+
 .problemText {
   align-self: stretch;
   color: #080f1a;
@@ -310,8 +352,10 @@
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.3125rem */
+  line-height: 150%;
+  /* 1.3125rem */
 }
+
 .problemBottomBox {
   display: flex !important;
   justify-content: space-between;
@@ -319,6 +363,7 @@
   border-radius: 0.75rem;
   background: #f6f7f9;
 }
+
 .problemBottomDate {
   display: flex;
   align-items: center;
@@ -327,8 +372,10 @@
   font-size: 0.625rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 0.9375rem */
+  line-height: 150%;
+  /* 0.9375rem */
 }
+
 .problemBottomChip {
   display: flex;
   height: 1.5rem;
@@ -345,8 +392,10 @@
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.125rem */
+  line-height: 150%;
+  /* 1.125rem */
 }
+
 .solutionBottomChip {
   display: flex;
   height: 1.5rem;
@@ -363,5 +412,28 @@
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.125rem */
+  line-height: 150%;
+  /* 1.125rem */
+}
+
+.Audit_stage {
+  color: var(--Primary-Default, #0566FF);
+  /* Body/Medium */
+  font-family: Outfit, sans-serif;
+  font-size: 14px;
+}
+
+.Audit_connectorIcon {
+  width: 12px;
+  height: 12px;
+}
+
+.Audit_substage {
+  color: var(--Text-Grey, #354869);
+  /* Body/Medium */
+  font-family: Outfit, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
 }

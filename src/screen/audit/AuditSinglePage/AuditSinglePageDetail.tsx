@@ -46,32 +46,13 @@ import { Suspense, useEffect, useRef, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import Rx from '../../assets/Rx.svg';
-import Bulb from '../../assets/Vector.svg';
 import styles from './AuditSingleDetail.module.css';
-import Modal from '@mui/material/Modal';
-import Checkbox from '@mui/material/Checkbox';
-import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
-import Select from '@mui/material/Select';
-import OutlinedInput from '@mui/material/OutlinedInput';
-import InputLabel from '@mui/material/InputLabel';
-import ListItemText from '@mui/material/ListItemText';
 import { styled, useTheme } from '@mui/material/styles';
-import MobileStepper from '@mui/material/MobileStepper';
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import PDFDocument from '@react-pdf/pdfkit';
-import { Document, Page } from 'react-pdf';
-import CloseIcon from '@mui/icons-material/Close';
-import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTone';
-import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
-
 import AWS from 'aws-sdk';
 import Avatar1 from '../../../assets/avatar1.svg';
 import back_arrow from '../../../assets/back_arrow.svg';
-import NewAvatar from '../../../assets/avatar2.svg';
+import NewAvatar from '../../../assets/Avatar2.svg';
 import DropDownArrow from '../../../assets/DropdownArror.svg';
 import KebabMenu from '../../../assets/KebabMenu.svg';
 import AddAssigneeIcon from '../../../assets/add.svg';
@@ -99,6 +80,7 @@ import QueryResolutionWidget from '../../ticket/widgets/QueryResolutionWidget';
 import NotesWidget from '../../ticket/widgets/NotesWidget';
 import SingleTicketSideBar from '../../ticket/SingleTicketSideBar/SingleTicketSideBar';
 import TaskBar from '../../ticket/SingleTicketSideBar/TaskBar';
+import ConnectorIcon from '../../../assets/hierarchy.svg'
 interface iConsumer {
     uid: string;
     firstName: string;
@@ -683,9 +665,9 @@ const AuditSinglePageDetail = (props: Props) => {
                             }}
                         >
                             {probability}%
-                            <span>
+                            {/* <span>
                                 <img src={DropDownArrow} alt="" />
-                            </span>
+                            </span> */}
                         </Box>
 
                         <Stack
@@ -775,13 +757,13 @@ const AuditSinglePageDetail = (props: Props) => {
                                     {' '}
                                     <Avatar src={Avatar1} alt="User 1" />
                                 </span>
-                                <span className="NewAvatar avatar">
+                                <span className="avatar2 avatar">
                                     {' '}
                                     <Avatar src={NewAvatar} alt="User 2" />
                                 </span>
-                                <span className="DropDownArrow">
+                                {!isAuditor && <span className="DropDownArrow">
                                     <img src={DropDownArrow} alt="" />
-                                </span>
+                                </span>}
                             </Stack>
                         </Box>
 
@@ -900,21 +882,47 @@ const AuditSinglePageDetail = (props: Props) => {
                 </Box>
 
                 {/* Stage Card Start Here */}
+
                 <Box>
-                    <Box display={'flex'}>
+
+                    <Box display={'flex'} >
                         <Box>
-                            <Box p={1} height="27vh">
-                                <Box bgcolor={'white'} p={1.5} borderRadius={2}>
-                                    <StageCard
-                                        currentTicket={currentTicket}
-                                        setTicketUpdateFlag={setTicketUpdateFlag}
-                                    />
+                            {!isAuditor &&
+                                <Box p={1} height="27vh">
+                                    <Box bgcolor={'white'} p={1.5} borderRadius={2}>
+                                        <StageCard
+                                            currentTicket={currentTicket}
+                                            setTicketUpdateFlag={setTicketUpdateFlag}
+                                        />
+                                    </Box>
                                 </Box>
+                            }
+                            <Box p={2} px={4}>
+                                <Stack className={styles.Audit_stage}>
+                                    New Lead
+                                </Stack>
+                                <Stack sx={{
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    gap: '4px'
+                                }}
+                                >
+                                    <Stack className={styles.Audit_connectorIcon}>
+                                        <img src={ConnectorIcon} />
+                                    </Stack>
+                                    <Stack className={styles.Audit_substage}>
+                                        Call Completed By Patient
+                                    </Stack>
+                                </Stack>
                             </Box>
+
+
+
                             {/* End ----- */}
 
                             {/* Tab list Start here */}
-                            <Box height="0" position="relative" bgcolor="#F1F5F7">
+                            <Box height="10vh" position="relative" bgcolor="#F1F5F7" width={'47vw'}>
                                 <TabContext value={value}>
                                     <Box
                                         sx={{
@@ -976,9 +984,9 @@ const AuditSinglePageDetail = (props: Props) => {
                                                             '& .MuiBadge-badge': {
                                                                 color: '#FFF',
                                                                 backgroundColor: '#F94839',
-                                                                margin: '-6px',
-                                                                marginRight: '-8px',
-                                                                marginTop: '1px',
+                                                                margin: '-4px',
+                                                                // marginLeft: '-3px',
+
                                                                 fontSize: '10px'
                                                             }
                                                         }}
@@ -1056,7 +1064,7 @@ const AuditSinglePageDetail = (props: Props) => {
                             </Box>
                             {/* Tab list End */}
                         </Box>
-                        <Box borderLeft={'1px solid #D4DBE5'} width={'30%'}>
+                        <Box borderLeft={'1px solid #D4DBE5'} width={'40%'}>
                             <Box className={styles.showCommentHeader}>
                                 <Stack>
                                     <img src={commentHeader} alt="" />
@@ -1163,9 +1171,6 @@ const AuditSinglePageDetail = (props: Props) => {
                                     onChange={handleChangeAuditSwitch}
                                     aria-label="problem solution switch"
                                     sx={{
-                                        backgroundColor: '#F5F5F5',
-                                        borderRadius: '1rem',
-                                        padding: '2px',
                                         display: 'flex'
                                     }}
                                 >

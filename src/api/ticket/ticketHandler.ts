@@ -16,7 +16,8 @@ import {
   createNewCallRescheduler,
   getAllRescheduler,
   createTimer,
-  getPharmacyTickets
+  getPharmacyTickets,
+  getAllTaskCount
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -241,6 +242,12 @@ export const getAllReschedulerHandler = async () => {
   const { setCallRescheduler } = useTicketStore.getState();
   const reschedular = await getAllRescheduler();
   setCallRescheduler(reschedular);
+};
+
+export const getAllTaskCountHandler = async () => {
+  const { setAllTaskCount } = useTicketStore.getState();
+  const allTaskCount = await getAllTaskCount();
+  setAllTaskCount(allTaskCount);
 };
 
 export const createTimerHandler = async (

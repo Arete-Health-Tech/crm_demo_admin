@@ -36,6 +36,7 @@ const TicketCard = (props: Props) => {
   const { ticketID } = useParams();
   const { doctors, departments, allServices, stages } = useServiceStore();
   const [isNewTicket, setIsNewTicket] = useState(true);
+  const [taskPendingCount, setTaskPendingCount] = useState(0);
 
   const [currentStage, setCurrentStage] = useState<iStage>({
     _id: '',
@@ -46,7 +47,7 @@ const TicketCard = (props: Props) => {
     child: []
   });
 
-  const { tickets, filterTickets, setIsAuditor } = useTicketStore();
+  const { tickets, filterTickets, setIsAuditor, allTaskCount } = useTicketStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -189,6 +190,16 @@ const TicketCard = (props: Props) => {
       return `${dayDifference} days ago`
     }
   }
+
+  useEffect(() => {
+    const foundData = allTaskCount.find(item => item.ticketId === props.patientData._id);
+    if (foundData) {
+      setTaskPendingCount(foundData.totalCount);
+    } else {
+      setTaskPendingCount(0);
+    }
+  }, [props.patientData._id, allTaskCount]);
+
 
   const isSelected = ticketID === props.patientData._id;
 
@@ -393,7 +404,7 @@ const TicketCard = (props: Props) => {
         </Stack>
         <Stack sx={{ display: "flex", flexDirection: "row !important", gap: "5px" }}>
           <Stack className='task-pending'><img src={NotifyAudit} /></Stack>
-          <Stack className='task-pending'>5 Tasks Pending </Stack>
+          <Stack className='task-pending'>{taskPendingCount} Tasks Pending </Stack>
           <Stack className='ticket-card-notification'>2</Stack>
         </Stack>
       </Stack>

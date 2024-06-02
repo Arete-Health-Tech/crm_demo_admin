@@ -9,6 +9,7 @@
   background-color: var(--Background-Greyish, #f6f7f9);
   cursor: pointer;
 }
+
 .accordionTypeTime {
   padding: 0.5rem;
   color: var(--Text-Black, #080f1a);
@@ -17,41 +18,60 @@
   font-size: 0.75rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.125rem */
+  line-height: 150%;
+  /* 1.125rem */
 }
+
 .forSpacingDiv {
   height: 1rem;
   margin-left: 5%;
   border-left: 1px solid #d4dbe5;
 }
+
 .auditActivity {
-  height: 35vh;
+  height: 55vh;
   overflow-y: scroll;
 }
+
 .activity {
   height: 51vh;
   overflow-y: scroll;
 }
+
 .auditActivity::-webkit-scrollbar {
-  width: 5px; /* width of the entire scrollbar */
+  width: 5px;
+  /* width of the entire scrollbar */
 }
+
 .auditActivity::-webkit-scrollbar-track {
-  background: whitesmoke; /* color of the tracking area */
+  background: rgba(245, 245, 245, 0.484);
+  /* color of the tracking area */
 }
+
 .auditActivity::-webkit-scrollbar-thumb {
-  background-color: rgb(163, 165, 167); /* color of the scroll thumb */
-  border-radius: 20px; /* roundness of the scroll thumb */
+  background-color: rgba(163, 165, 167, 0.486);
+  /* color of the scroll thumb */
+  border-radius: 20px;
+  /* roundness of the scroll thumb */
 }
+
 .activity::-webkit-scrollbar {
-  width: 5px; /* width of the entire scrollbar */
+  width: 5px;
+  /* width of the entire scrollbar */
 }
+
 .activity::-webkit-scrollbar-track {
-  background: whitesmoke; /* color of the tracking area */
+  background: whitesmoke;
+  /* color of the tracking area */
 }
+
 .activity::-webkit-scrollbar-thumb {
-  background-color: rgb(163, 165, 167); /* color of the scroll thumb */
-  border-radius: 20px; /* roundness of the scroll thumb */
+  background-color: rgb(163, 165, 167);
+  /* color of the scroll thumb */
+  border-radius: 20px;
+  /* roundness of the scroll thumb */
 }
+
 .content {
   display: flex;
   max-width: 22.5rem;
@@ -70,13 +90,16 @@
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.3125rem */
+  line-height: 150%;
+  /* 1.3125rem */
 }
+
 .time {
   color: var(--Text-Light-Grey, #647491);
   font-family: Outfit;
   font-size: 0.625rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 0.9375rem */
+  line-height: 150%;
+  /* 0.9375rem */
 }

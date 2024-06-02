@@ -1,24 +1,34 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+
 .whtsappMessageBox::-webkit-scrollbar {
-  width: 5px; /* width of the entire scrollbar */
+  width: 5px;
+  /* width of the entire scrollbar */
 }
+
 .whtsappMessageBox::-webkit-scrollbar-track {
-  background: whitesmoke; /* color of the tracking area */
+  background: whitesmoke;
+  /* color of the tracking area */
 }
+
 .whtsappMessageBox::-webkit-scrollbar-thumb {
-  background-color: rgb(163, 165, 167); /* color of the scroll thumb */
-  border-radius: 20px; /* roundness of the scroll thumb */
+  background-color: rgba(163, 165, 167, 0.463);
+  /* color of the scroll thumb */
+  border-radius: 20px;
+  /* roundness of the scroll thumb */
 }
+
 .modalStyle {
   position: 'absolute';
   top: '50%';
   left: '50%';
   transform: 'translate(-50%, -50%)';
-  width: '400px'; /* Adjust width here */
+  width: '400px';
+  /* Adjust width here */
   background-color: 'white';
   box-shadow: '24px';
   padding: '16px';
 }
+
 .openedModal {
   border-radius: var(--16px, 16px);
   background: #fff;
@@ -32,6 +42,7 @@
   flex-direction: column;
   box-shadow: 24;
 }
+
 .reminder_modal_title {
   color: #000;
   font-family: 'Outfit', sans-serif;
@@ -66,6 +77,7 @@
 .reminder_modal_title {
   padding: 5px 0 15px 0;
 }
+
 .replytextArea {
   /* top: 5; */
   width: 100%;
@@ -78,10 +90,12 @@
   border: none;
   align-self: flex-end;
 }
+
 .replytextArea:focus {
   outline: none;
   border: none;
 }
+
 .sendButton {
   display: flex;
   height: 2rem;
@@ -93,6 +107,7 @@
   background: #ebedf0;
   align-self: flex-end;
 }
+
 .sendButtonText {
   color: var(--Text-Light-Grey, #647491);
   text-align: center;
@@ -102,8 +117,10 @@
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 500;
-  line-height: 150%; /* 1.3125rem */
+  line-height: 150%;
+  /* 1.3125rem */
 }
+
 .sendButtonActive {
   display: flex;
   height: 2rem;
@@ -115,6 +132,7 @@
   background: #0566ff;
   align-self: flex-end;
 }
+
 .sendButtonTextActive {
   color: var(--Text-Light-Grey, #fff);
   text-align: center;
@@ -124,5 +142,6 @@
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 500;
-  line-height: 150%; /* 1.3125rem */
+  line-height: 150%;
+  /* 1.3125rem */
 }

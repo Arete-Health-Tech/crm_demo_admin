@@ -195,9 +195,8 @@ export interface iTicketStore {
   setIsAuditor: (isAuditor: boolean) => void;
   isSwitchView: boolean;
   setIsSwitchView: (isSwitchView: boolean) => void;
-  whatsappMessageCount: number;
-  setWhatsappMessageCount: (whatsappMessageCount: number) => void;
-  
+  allTaskCount: iTaskCount[];
+  setAllTaskCount: (allTaskCount: iTaskCount[]) => void;
 }
 
 export interface iNote {
@@ -213,6 +212,10 @@ export interface iTimer {
   stoppedTimer?: number | null | undefined;
 }
 
+export interface iTaskCount {
+  ticketId: string;
+  totalCount: number;
+}
 export interface iReminder {
   _id?: string;
   date: number;

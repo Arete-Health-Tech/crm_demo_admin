@@ -13,6 +13,8 @@ import RepresentativeFour from './routes/RepresentativeFour';
 import RepresentativeFive from './routes/RepresentativeFive';
 import OrderList from '../screen/orders/OrderList';
 import Auditor from './routes/Auditor';
+import QueryResolution from '../screen/queryResolution/QueryResolution';
+import Query from './routes/Query';
 
 
 
@@ -57,7 +59,10 @@ const AppContainer = () => {
     return <OrderList />;
   } else if(user!==null && user.role === Roles.AUDIT){
     return <Auditor />;
-  } else {
+  } else if(user!==null && user.role ===Roles.DOCTOR){
+    return <Query />
+  }
+  else {
     return <UnAuthenticated />;
   }
 };

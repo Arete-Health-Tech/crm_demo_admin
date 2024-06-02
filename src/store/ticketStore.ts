@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import create  from 'zustand';
 import { iTicketStore } from '../types/store/ticket';
 import useUserStore from './userStore';
 

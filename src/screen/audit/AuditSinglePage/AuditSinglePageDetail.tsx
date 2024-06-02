@@ -52,7 +52,7 @@ import { styled, useTheme } from '@mui/material/styles';
 import AWS from 'aws-sdk';
 import Avatar1 from '../../../assets/avatar1.svg';
 import back_arrow from '../../../assets/back_arrow.svg';
-import NewAvatar from '../../../assets/avatar2.svg';
+import NewAvatar from '../../../assets/Avatar2.svg';
 import DropDownArrow from '../../../assets/DropdownArror.svg';
 import KebabMenu from '../../../assets/KebabMenu.svg';
 import AddAssigneeIcon from '../../../assets/add.svg';

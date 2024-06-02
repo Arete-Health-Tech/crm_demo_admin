@@ -110,7 +110,7 @@ const MessagingWidget = (props: Props) => {
       handleSendMessage();
     }
   };
-
+console.log(messages.length,"this is message for whatsapp")
   const handleSendMessage = async () => {
     await sendTextMessage(sendMessage, consumerId, ticketID as string);
     setSendMessage('');
@@ -119,6 +119,12 @@ const MessagingWidget = (props: Props) => {
   const handleImageUpload = () => {
     fileInputRef.current?.click();
   };
+
+ 
+
+
+
+
 
   const handleFileSelect = async (event) => {
     const selectedFile = event.target.files[0];

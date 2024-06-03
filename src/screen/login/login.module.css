@@ -19,6 +19,24 @@
     flex-shrink: 0;
 }
 
+.subLogo {
+    display: flex;
+    margin-top: 5px;
+    padding: var(--4px, 4px) var(--8px, 8px);
+    height: 29px;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    border-radius: var(--8px, 8px);
+    background: var(--Primary-Hover, #0049BD);
+    color: var(--Background-White, #FFF);
+    text-align: center;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: 150%;
+}
+
 .mail {
     display: flex;
     flex-direction: row !important;

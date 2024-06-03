@@ -82,9 +82,15 @@ const Login = () => {
       <Box className={styles.login_container} sx={{ background: `url(${LoginWallpaper}) lightgray 50% / cover no-repeat` }}>
 
         <Box className={styles.login_head}>
-          <Stack>
-            <img src={AreteLogo} alt='arete logo' />
+          <Stack display={'flex'} flexDirection={'row'} gap={'16px'}>
+            <Stack>
+              <img src={AreteLogo} alt='arete logo' />
+            </Stack>
+            <Stack className={styles.subLogo}>
+              Octa PRM
+            </Stack>
           </Stack>
+
           <Stack className={styles.mail}>
             <Stack className={styles.mailIcon}>
               <img src={MailIcon} alt='mail' />

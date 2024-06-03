@@ -585,8 +585,17 @@ const NSingleTicketDetails = (props: Props) => {
 
     const [messages, setMessages] = useState<DocumentData[]>([]);
 
+    console.log("Initializing socket connection...");
     useEffect(() => {
         console.log("Initializing socket connection...");
+
+        // Check if socket is connected
+        if (socket.connected) {
+            console.log("Socket connected successfully");
+        } else {
+            console.log("Socket not connected, attempting to connect...");
+            socket.connect();
+        }
 
         const handleNewMessage = (data) => {
             console.log('Received new message ', data);
@@ -601,7 +610,7 @@ const NSingleTicketDetails = (props: Props) => {
             socket.off('newMessage', handleNewMessage); // Remove the event listener
             socket.disconnect();
         };
-    }, [messages]);
+    }, []);
 
     console.log({ messages })
 

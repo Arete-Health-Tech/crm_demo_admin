@@ -588,15 +588,17 @@ const NSingleTicketDetails = (props: Props) => {
     useEffect(() => {
         console.log("Initializing socket connection...");
 
-        // Listen for the 'newMessage' event
-        socket.on('newMessage', (data) => {
+        const handleNewMessage = (data) => {
             console.log('Received new message ', data);
             setMessages((prevMessages) => [...prevMessages, data.message]);
-        });
+        };
+
+        // Listen for the 'newMessage' event
+        socket.on('newMessage', handleNewMessage);
 
         // Clean up the socket connection on component unmount
         return () => {
-            socket.off('newMessage'); // Remove the event listener
+            socket.off('newMessage', handleNewMessage); // Remove the event listener
             socket.disconnect();
         };
     }, []);

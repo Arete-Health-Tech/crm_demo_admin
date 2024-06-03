@@ -47,6 +47,7 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
   }
 }));
 
+console.log("just checking")
 
 const menuItemStyles = {
   color: "var(--Text-Black, #080F1A)",

@@ -94,6 +94,7 @@ import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
 import AWS from 'aws-sdk';
 import CustomModal from './widgets/CustomModal';
 import { apiClient, socket } from '../../api/apiClient';
+import { io } from 'socket.io-client';
 import ReschedulerAll from './widgets/ReschedulerAll';
 import RemainderAll from './widgets/RemainderAll';
 import SingleTicketSideBar from './SingleTicketSideBar/SingleTicketSideBar';
@@ -601,6 +602,31 @@ const NSingleTicketDetails = (props: Props) => {
     }, []);
 
     console.log({ messages })
+
+    
+  useEffect(() => {
+    if (ticketID) {
+      const collectionRef = collection(
+        database,
+        'ticket',
+        ticketID,
+        'messages'
+      );
+      const q = query(collectionRef, orderBy('createdAt'));
+      const unsub = onSnapshot(q, (snapshot) => {
+        const message: DocumentData[] = [];
+        snapshot.forEach((doc) => {
+          message.push(doc.data());
+        });
+
+        setMessages(message);
+      });
+
+      return () => unsub();
+    }
+  }, [ticketID]);
+
+
 
     return (
         <>

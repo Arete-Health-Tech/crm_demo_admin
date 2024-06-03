@@ -78,7 +78,6 @@ const MessagingWidget = (props: Props) => {
     };
   }, []);
 
-  console.log({ messages })
   
 
   useEffect(() => {

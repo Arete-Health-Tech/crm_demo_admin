@@ -1,9 +1,7 @@
 import React from 'react'
 import { Route, Routes } from 'react-router-dom';
-
-import QueryResolution from '../../screen/queryResolution/QueryResolution';
-import NavQuery from '../../screen/queryResolution/NavQuery';
-import QueryDashBoard from '../../screen/queryResolution/QueryDashBoard';
+import QueryResolutionLayout from '../../screen/queryResolution/QueryResolutionLayout';
+import NavQuery from '../../screen/queryResolution/Navbar/NavQuery';
 
 
 
@@ -12,8 +10,8 @@ function Query() {
     <>
       <NavQuery>
         <Routes>
-        <Route path="/" element={<QueryResolution />} />
-        {/* <Route path="/queryResolution/:ticketID" element={<QueryResolution />} /> */}
+          <Route path="/" element={<QueryResolutionLayout />} />
+          {/* <Route path="/queryResolution/:ticketID" element={<QueryResolution />} /> */}
         </Routes>
       </NavQuery>
     </>

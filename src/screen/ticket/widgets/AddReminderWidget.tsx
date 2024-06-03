@@ -14,7 +14,7 @@ import {
 import dayjs from 'dayjs';
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { createNewReminderHandler, getAllReminderHandler } from '../../../api/ticket/ticketHandler';
+import { createNewReminderHandler, getAllReminderHandler, getAllTaskCountHandler } from '../../../api/ticket/ticketHandler';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import CloseModalIcon from "../../../assets/Group 48095853.svg"
@@ -157,6 +157,7 @@ const AddReminderWidget = ({
     setTime('');
     setIsModalOpen(false);
     await getAllReminderHandler();
+    await getAllTaskCountHandler();
   };
 
   const closeModal = () => {

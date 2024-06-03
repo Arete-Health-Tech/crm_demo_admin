@@ -37,6 +37,7 @@ import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import useUserStore from '../../../store/userStore';
 import { apiClient } from '../../../api/apiClient';
 import { validateTicket } from '../../../api/ticket/ticket';
+import '../singleTicket.css';
 
 const drawerWidth = 450;
 export const ticketFilterCount = (
@@ -398,30 +399,43 @@ const TicketFilter = (props: {
             justifyContent="space-between"
           >
             <Stack direction="row" spacing={1}>
-              <FilterList />
-              <Typography variant="h6">Add Filter </Typography>
+              <FilterList sx={{ marginTop: "2px" }} />
+              <Stack sx={{
+                fontFamily: "Outfit,sans-serif",
+                fontSize: "20px !important",
+                fontWeight: "500"
+              }}
+              >Add Filter </Stack>
             </Stack>
 
             <Stack direction="row" spacing={1}>
-              <Button
+              <button
+                className='reminder-btn'
                 onClick={handleApplyFilter}
-                variant="contained"
-                sx={{ borderRadius: '3rem' }}
+                style={{ fontSize: "14px", borderRadius: "5px", }}
+
               >
                 Apply
-              </Button>
+              </button>
               {filterCount > 0 && (
-                <Button onClick={handleClearFilter} endIcon={<ClearAll />}>
-                  Clear Filters
-                </Button>
+                <button
+                  className='reminder-btn'
+                  onClick={handleClearFilter}
+                  style={{ fontSize: "14px", borderRadius: "5px", }}>
+                  Clear Filters <ClearAll />
+                </button>
               )}
             </Stack>
           </Box>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
+          <Box px={1} sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <Box p={2}>
-              <Typography variant="subtitle1" fontWeight={500}>
+              <Stack sx={{
+                fontFamily: "Outfit,sans-serif",
+                fontSize: "16px",
+                fontWeight: "500"
+              }}>
                 Select Stages
-              </Typography>
+              </Stack>
               <FormGroup>
                 {stagesLabel.map(({ id, label }) => (
                   <FormControlLabel
@@ -433,15 +447,22 @@ const TicketFilter = (props: {
                         checked={selectedFilters.stageList.includes(id)}
                       />
                     }
-                    label={label}
+                    label={<Stack sx={{
+                      fontFamily: "Outfit,sans-serif",
+                      fontSize: "14px",
+                    }}>{label}</Stack>}
                   />
                 ))}
               </FormGroup>
             </Box>
             <Box py={2} px={4}>
-              <Typography variant="subtitle1" fontWeight={500}>
+              <Stack sx={{
+                fontFamily: "Outfit,sans-serif",
+                fontSize: "14px",
+                fontWeight: "bold"
+              }}>
                 Created By
-              </Typography>
+              </Stack>
               <Select
                 size="medium"
                 onChange={handleRepresentative}
@@ -454,10 +475,10 @@ const TicketFilter = (props: {
               </Select>
             </Box>
           </Box>
-          <Box p={2}>
-            <Typography variant="subtitle1" fontWeight={500}>
+          <Box px={3}>
+            <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
               Result
-            </Typography>
+            </Stack>
             <ToggleButtonGroup
               color="primary"
               value={result}
@@ -467,7 +488,9 @@ const TicketFilter = (props: {
                 value="Won"
                 style={{
                   backgroundColor: selectedValue === 'Won' ? '#3949AB14' : 'white',
-                  color: selectedValue === 'Won' ? '#3949AB' : 'grey'
+                  color: selectedValue === 'Won' ? '#3949AB' : 'grey',
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
                 }}
                 onClick={handleToggleChange}
               >
@@ -478,8 +501,9 @@ const TicketFilter = (props: {
                 style={{
                   backgroundColor:
                     selectedValueLost === 'Lose' ? '#3949AB14' : 'white',
-
-                  color: selectedValueLost === 'Lose' ? '#3949AB' : 'grey'
+                  color: selectedValueLost === 'Lose' ? '#3949AB' : 'grey',
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
                 }}
                 onClick={handleToggleLostChange}
               >
@@ -488,61 +512,99 @@ const TicketFilter = (props: {
 
             </ToggleButtonGroup>
           </Box>
-          <Box p={1}>
-            <Typography variant="subtitle1" fontWeight={500}>
+          <Box p={1} px={3}>
+            <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
               Admission Type
-            </Typography>
+            </Stack>
             <ToggleButtonGroup
               color="primary"
               value={admissionType}
               onChange={handleAdmissionType}
             >
-              <ToggleButton value="Surgery">Surgery</ToggleButton>
-              <ToggleButton value="MM">MM</ToggleButton>
-              <ToggleButton value="Radiation">Radiation</ToggleButton>
+              <ToggleButton value="Surgery"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}>
+                Surgery
+              </ToggleButton>
+              <ToggleButton value="MM"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >
+                MM</ToggleButton>
+              <ToggleButton value="Radiation"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >Radiation</ToggleButton>
             </ToggleButtonGroup>
           </Box>
-          <Box p={1}>
-            <Typography variant="subtitle1" fontWeight={500}>
+          <Box p={1} px={3}>
+            <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
               Diagnotics Type
-            </Typography>
+            </Stack>
             <ToggleButtonGroup
               color="primary"
               value={diagnosticsType}
               onChange={handleDiagnosticsType}
             >
-              <ToggleButton value="MRI">MRI</ToggleButton>
-              <ToggleButton value="PET-CT">PET-CT</ToggleButton>
-              <ToggleButton value="CT-Scan">CT-Scan</ToggleButton>
-              <ToggleButton value="Lab">Lab</ToggleButton>
+              <ToggleButton value="MRI"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >MRI</ToggleButton>
+              <ToggleButton value="PET-CT"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >PET-CT</ToggleButton>
+              <ToggleButton value="CT-Scan"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >CT-Scan</ToggleButton>
+
+              <ToggleButton value="Lab"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >Lab</ToggleButton>
             </ToggleButtonGroup>
           </Box>
 
-          <Box p={1}>
-            <Typography variant="subtitle1" fontWeight={500}>
+          <Box p={1} px={3}>
+            <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
               Select Date Range
-            </Typography>
-            <Stack direction="row" spacing={2}>
+            </Stack>
+            <Stack py={1} direction="row" spacing={2}>
               <Box>
-                <Typography variant="caption">Start Date</Typography>
+                < Stack sx={{ fontFamily: "Outfit,san-serif", fontSize: "12px", fontWeight: "400" }}>Start Date</Stack>
                 <TextField
                   fullWidth
                   onChange={handleStartDateChange}
                   value={dateRange[0]}
                   type="date"
-                  InputLabelProps={{ shrink: true }}
-                  inputProps={{ max: new Date().toISOString().split('T')[0] }}
+                  InputLabelProps={{ shrink: true, style: { fontFamily: "Outfit,san-serif", fontSize: "14px" } }}
+                  inputProps={{ max: new Date().toISOString().split('T')[0], style: { fontFamily: "Outfit,san-serif", fontSize: "14px" } }}
                 />
               </Box>
               <Box>
-                <Typography variant="caption">End Date</Typography>
+                <Stack sx={{ fontFamily: "Outfit,san-serif", fontSize: "12px", fontWeight: "400" }}>End Date</Stack>
                 <TextField
                   fullWidth
                   onChange={handleEndDateChange}
                   value={dateRange[1]}
                   type="date"
-                  InputLabelProps={{ shrink: true }}
-                  inputProps={{ max: new Date().toISOString().split('T')[0], min: new Date(dateRange[0]).toDateString().split('T')[0] }}
+                  InputLabelProps={{ shrink: true, style: { fontFamily: "Outfit,san-serif", fontSize: "14px" } }}
+                  inputProps={{ max: new Date().toISOString().split('T')[0], min: new Date(dateRange[0]).toDateString().split('T')[0], style: { fontFamily: "Outfit,san-serif", fontSize: "14px" } }}
                 />
               </Box>
             </Stack>

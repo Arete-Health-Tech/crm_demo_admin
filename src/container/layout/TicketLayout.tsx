@@ -21,6 +21,7 @@ import {
 } from 'react';
 import {
   getAllReminderHandler,
+  getAllTaskCountHandler,
   getTicketHandler
 } from '../../api/ticket/ticketHandler';
 import useTicketStore from '../../store/ticketStore';
@@ -284,6 +285,7 @@ const Ticket = () => {
       await getDepartmentsHandler();
       await getAllReminderHandler();
       await getAllCallReschedulerHandler();
+      await getAllTaskCountHandler();
     })();
     setPageNumber(1)
     setIsAuditor(false)

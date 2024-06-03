@@ -1249,21 +1249,19 @@
 
 .avatar {
   position: relative;
-  top: -4px;
-  /* left: 1px; */
-  width: var(--32px, 32px);
-  height: var(--32px, 32px);
+  width: "2vw";
+  height: "5.9vh";
 }
 
 .avatar2 {
   position: relative;
-  right: 15px;
+  right: 8px;
 }
 
 .DropDownArrow {
   cursor: pointer;
   position: relative;
-  left: 8px;
+  left: 6px;
   width: var(--20px, 20px);
   height: var(--20px, 20px);
 }
@@ -1668,11 +1666,13 @@
   display: flex;
   justify-content: space-between;
 }
+
 .Ticket-probability {
   width: 100%;
   display: flex;
   justify-content: start;
 }
+
 .Ticket-probability-0 {
   display: flex;
   height: 1.75rem;
@@ -1684,6 +1684,7 @@
   background: #e5e9eb;
   color: #546e7a;
 }
+
 .Ticket-probability-25 {
   display: flex;
   height: 1.75rem;
@@ -1695,6 +1696,7 @@
   background: #fee4e1;
   color: #f94839;
 }
+
 .Ticket-probability-50 {
   display: flex;
   height: 1.75rem;
@@ -1706,6 +1708,7 @@
   background: #fff3d9;
   color: #ffb200;
 }
+
 .Ticket-probability-75 {
   display: flex;
   height: 1.75rem;
@@ -1717,6 +1720,7 @@
   background: #dae8ff;
   color: #0566ff;
 }
+
 .Ticket-probability-100 {
   display: flex;
   height: 1.75rem;
@@ -1728,6 +1732,7 @@
   background: #daf2e3;
   color: #08a742;
 }
+
 .Ticket-probability0 {
   display: flex;
   height: 1.75rem;
@@ -1744,9 +1749,11 @@
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.3125rem */
+  line-height: 150%;
+  /* 1.3125rem */
   cursor: pointer;
 }
+
 .Ticket-probability25 {
   display: flex;
   height: 1.75rem;
@@ -1762,9 +1769,11 @@
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.3125rem */
+  line-height: 150%;
+  /* 1.3125rem */
   cursor: pointer;
 }
+
 .Ticket-probability50 {
   display: flex;
   height: 1.75rem;
@@ -1781,9 +1790,11 @@
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.3125rem */
+  line-height: 150%;
+  /* 1.3125rem */
   cursor: pointer;
 }
+
 .Ticket-probability75 {
   display: flex;
   height: 1.75rem;
@@ -1800,9 +1811,11 @@
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.3125rem */
+  line-height: 150%;
+  /* 1.3125rem */
   cursor: pointer;
 }
+
 .Ticket-probability100 {
   display: flex;
   height: 1.75rem;
@@ -1819,6 +1832,7 @@
   font-size: 0.875rem;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 1.3125rem */
+  line-height: 150%;
+  /* 1.3125rem */
   cursor: pointer;
 }

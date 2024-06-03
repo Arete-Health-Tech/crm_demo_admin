@@ -41,6 +41,8 @@ const MessagingWidget = (props: Props) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState(null);
   const [id, setId] = useState('');
+  const [messages, setMessages] = useState<DocumentData[]>([]);
+  const [sendMessage, setSendMessage] = useState('');
   const containerRef = useRef<HTMLDivElement | null>(null);
   // const { user, setUser } = useUserStore();
   function getConsumerIdByDataId(dataArray, dataIdToMatch) {
@@ -51,7 +53,7 @@ const MessagingWidget = (props: Props) => {
     }
     return null; // Return null if no matching dataId found in the data array
   }
-  console.log(getConsumerIdByDataId ,"getConsumerIdByDataId")
+  console.log(getConsumerIdByDataId, "getConsumerIdByDataId")
 
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
 
@@ -62,19 +64,22 @@ const MessagingWidget = (props: Props) => {
 
   useEffect(() => {
     console.log("Initializing socket connection...");
-  
+
     // Listen for the 'newMessage' event
     socket.on('newMessage', (data) => {
-      console.log('Received new message:', data);
+      // console.log('Received new message:', data);
       setMessages((prevMessages) => [...prevMessages, data.message]);
     });
-  
+
     // Clean up the socket connection on component unmount
     return () => {
       socket.off('newMessage'); // Remove the event listener
       socket.disconnect();
     };
   }, []);
+
+  console.log({ messages })
+  
 
   useEffect(() => {
     if (ticketID) {
@@ -98,8 +103,6 @@ const MessagingWidget = (props: Props) => {
     }
   }, [ticketID]);
 
-  const [messages, setMessages] = useState<DocumentData[]>([]);
-  const [sendMessage, setSendMessage] = useState('');
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && sendMessage.trim() !== '') {
@@ -107,7 +110,7 @@ const MessagingWidget = (props: Props) => {
       handleSendMessage();
     }
   };
-
+console.log(messages.length,"this is message for whatsapp")
   const handleSendMessage = async () => {
     await sendTextMessage(sendMessage, consumerId, ticketID as string);
     setSendMessage('');
@@ -116,6 +119,12 @@ const MessagingWidget = (props: Props) => {
   const handleImageUpload = () => {
     fileInputRef.current?.click();
   };
+
+ 
+
+
+
+
 
   const handleFileSelect = async (event) => {
     const selectedFile = event.target.files[0];
@@ -193,7 +202,7 @@ const MessagingWidget = (props: Props) => {
 
         <Stack
           direction="column"
-          height={whtsappExpanded ? '80vh' : isAuditor ? '40vh' : '55vh'}
+          height={whtsappExpanded ? '80vh' : isAuditor ? '58vh' : '55vh'}
           position="relative"
           bgcolor="white"
         >
@@ -268,7 +277,7 @@ const MessagingWidget = (props: Props) => {
                           fontSize="0.875rem"
                           fontWeight={400}
                         >
-                          {message.text}dghfghfs
+                          {message.text}
                         </Typography>
                         <Box display="flex" justifyContent="space-between">
                           <Typography
@@ -281,8 +290,8 @@ const MessagingWidget = (props: Props) => {
                           >
                             {dayjs(message.createdAt).format(
                               'DD MMM YYYY hh:mm A'
-                                  )}
-                                  
+                            )}
+
                           </Typography>
                           <Avatar sx={{
                             fontSize: '8px', bgcolor: 'orange',

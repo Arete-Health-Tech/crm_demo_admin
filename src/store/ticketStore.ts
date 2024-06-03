@@ -1,4 +1,4 @@
-import { create } from 'zustand';
+import create  from 'zustand';
 import { iTicketStore } from '../types/store/ticket';
 import useUserStore from './userStore';
 
@@ -73,7 +73,9 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   isSwitchView: false,
   setIsSwitchView: (isSwitchView) => set({ isSwitchView }),
   isAuditor: false,
-  setIsAuditor: (isAuditor) => set({ isAuditor })
+  setIsAuditor: (isAuditor) => set({ isAuditor }),
+  allTaskCount: [],
+  setAllTaskCount: (allTaskCount) => set({ allTaskCount })
 }));
 
 export default useTicketStore;

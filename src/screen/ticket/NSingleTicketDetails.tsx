@@ -99,7 +99,7 @@ import RemainderAll from './widgets/RemainderAll';
 import SingleTicketSideBar from './SingleTicketSideBar/SingleTicketSideBar';
 import TaskBar from './SingleTicketSideBar/TaskBar';
 import Avatar1 from "../../assets/avatar1.svg"
-import NewAvatar from "../../assets/Avatar2.svg"
+import NewAvatar from "../../assets/avatar2.svg"
 import back_arrow from "../../assets/back_arrow.svg"
 import DropDownArrow from "../../assets/DropdownArror.svg"
 import KebabMenu from "../../assets/KebabMenu.svg"
@@ -128,6 +128,13 @@ interface iConsumer {
 
 interface Ticket {
     consumer: iConsumer[];
+    // Add other fields as needed
+}
+interface storeMessage {
+    message: string;
+    ticket: string;
+    unreadCount: number;
+
     // Add other fields as needed
 }
 
@@ -184,9 +191,9 @@ const NSingleTicketDetails = (props: Props) => {
     const [modalOpenRescheduler, setModalOpenRescheduler] = useState(false);
     const [matchedObjects, setMatchedObjects] = useState([]);
     const [callReschedulerData, setCallReschedulerData] = useState([]);
-    
-    
-  
+
+
+
 
     // console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
     // console.log(currentTicket,"this is current ticet")
@@ -272,7 +279,7 @@ const NSingleTicketDetails = (props: Props) => {
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
-       
+
     };
 
     const ITEM_HEIGHT = 48;
@@ -582,15 +589,14 @@ const NSingleTicketDetails = (props: Props) => {
         };
     }, []);
 
-    const [messages, setMessages] = useState<DocumentData[]>([]);
+    const [messages, setMessages] = useState<storeMessage[]>([]);
 
-    console.log("Initializing socket connection...");
     useEffect(() => {
-        console.log("useEffect is running"); // Check if this logs
+        console.log("useEffect is running in NsingleticketCard"); // Check if this logs
 
         // Check if socket is connected
         if (socket.connected) {
-            console.log("Socket connected successfully");
+            console.log("Socket connected successfully in NsingleticketCard");
         } else {
             console.log("Socket not connected, attempting to connect...");
             socket.connect();
@@ -612,31 +618,6 @@ const NSingleTicketDetails = (props: Props) => {
     }, []);
 
     console.log({ messages })
-
-    
-  useEffect(() => {
-    if (ticketID) {
-      const collectionRef = collection(
-        database,
-        'ticket',
-        ticketID,
-        'messages'
-      );
-      const q = query(collectionRef, orderBy('createdAt'));
-      const unsub = onSnapshot(q, (snapshot) => {
-        const message: DocumentData[] = [];
-        snapshot.forEach((doc) => {
-          message.push(doc.data());
-        });
-
-        setMessages(message);
-      });
-
-      return () => unsub();
-    }
-  }, [ticketID]);
-
-
 
     return (
         <>
@@ -922,24 +903,24 @@ const NSingleTicketDetails = (props: Props) => {
                                         }
                                     />
                                     <Tab label={<Badge badgeContent={2} sx={{
-                                            "& .MuiBadge-badge": {
-                                                color: "#FFF",
-                                                backgroundColor: "#F94839",
-                                                margin: '-3px',
-                                                fontSize: '9px',
+                                        "& .MuiBadge-badge": {
+                                            color: "#FFF",
+                                            backgroundColor: "#F94839",
+                                            margin: '-3px',
+                                            fontSize: '9px',
 
-                                                height: '20px',
-                                                // borderRadius: '80%', 
-                                                padding: -8,
-                                            }
-                                        }}>
-                                            Whatsapp
-                                        </Badge>}
+                                            height: '20px',
+                                            // borderRadius: '80%', 
+                                            padding: -8,
+                                        }
+                                    }}>
+                                        Whatsapp
+                                    </Badge>}
                                         value="2"
                                         className={
                                             value == '2' ? styles.selectedTab : styles.tabsLabel
                                         }
-                                       
+
                                     />
                                     {/* <Tab
                                     label="Email"

@@ -19,6 +19,7 @@ import LowPr from '../../../../src/assets/LowPr.svg'
 import HighPr from '../../../../src/assets/HighPr.svg'
 import NotifyAudit from '../../../../src/assets/NotifyAudit.svg'
 import '../singleTicket.css'
+import { socket } from '../../../api/apiClient';
 
 // import { updateIsNewTicket } from '../../../api/ticket/ticket';
 
@@ -27,6 +28,14 @@ type Props = {
   patientData: iTicket;
   index: number;
 };
+
+interface storeMessage {
+  message: string;
+  ticket: string;
+  unreadCount: number;
+
+  // Add other fields as needed
+}
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -202,6 +211,35 @@ const TicketCard = (props: Props) => {
 
 
   const isSelected = ticketID === props.patientData._id;
+
+  const [messages, setMessages] = useState<storeMessage[]>([]);
+
+  useEffect(() => {
+    console.log("useEffect is running in ticketCard"); // Check if this logs
+
+    // Check if socket is connected
+    if (socket.connected) {
+      console.log("Socket connected successfully in ticketCard");
+    } else {
+      console.log("Socket not connected, attempting to connect...");
+      socket.connect();
+    }
+
+    const handleNewMessage = (data) => {
+      console.log('Received new message in ticketCard', data);
+      setMessages((prevMessages) => [...prevMessages, data.message]);
+    };
+
+    // Listen for the 'newMessage' event
+    socket.on('newMessage', handleNewMessage);
+
+    // Clean up the socket connection on component unmount
+    return () => {
+      socket.off('newMessage', handleNewMessage); // Remove the event listener
+      socket.disconnect();
+    };
+  }, []);
+
 
   return (
     <Box

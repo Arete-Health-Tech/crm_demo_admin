@@ -30,7 +30,9 @@ export const createNodeConnector = async (nodedata: iNodeConnector) => {
   return data;
 };
 
-export const markAsRead = async (ticket: string) => {
-  const { data } = await apiClient.post(`/flow/markAsRead`, ticket);
+export const markAsRead = async (ticketID: string | undefined) => {
+  const { data } = await apiClient.post(`/flow/markAsRead`, {
+    ticket: ticketID
+  });
   return data;
 };

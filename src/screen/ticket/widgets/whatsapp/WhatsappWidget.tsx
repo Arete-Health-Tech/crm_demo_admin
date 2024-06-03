@@ -30,6 +30,7 @@ import collapseIcon from '../../../../assets/collapseIcon.svg';
 import CloseModalIcon from '../../../../assets/CloseModalIcon.svg';
 import { Avatar } from '@mui/material';
 import { io } from 'socket.io-client';
+import { markAsRead } from '../../../../api/flow/flow';
 type Props = {};
 
 const MessagingWidget = (props: Props) => {
@@ -53,13 +54,17 @@ const MessagingWidget = (props: Props) => {
     }
     return null; // Return null if no matching dataId found in the data array
   }
-  console.log(getConsumerIdByDataId, "getConsumerIdByDataId")
+  console.log({ ticketID })
 
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
 
   if (consumerId) {
   } else {
     console.log('Consumer ID not found for the given dataId.');
+  }
+
+  const handleMarkAsRead = async (ticketID: string | undefined) => {
+    await markAsRead(ticketID)
   }
 
   useEffect(() => {
@@ -69,6 +74,7 @@ const MessagingWidget = (props: Props) => {
     socket.on('newMessage', (data) => {
       // console.log('Received new message:', data);
       setMessages((prevMessages) => [...prevMessages, data.message]);
+      handleMarkAsRead(ticketID)
     });
 
     // Clean up the socket connection on component unmount
@@ -78,7 +84,10 @@ const MessagingWidget = (props: Props) => {
     };
   }, []);
 
-  
+  useEffect(() => {
+    handleMarkAsRead(ticketID)
+  }, [])
+
 
   useEffect(() => {
     if (ticketID) {
@@ -109,7 +118,7 @@ const MessagingWidget = (props: Props) => {
       handleSendMessage();
     }
   };
-console.log(messages.length,"this is message for whatsapp")
+  console.log(messages.length, "this is message for whatsapp")
   const handleSendMessage = async () => {
     await sendTextMessage(sendMessage, consumerId, ticketID as string);
     setSendMessage('');
@@ -118,12 +127,7 @@ console.log(messages.length,"this is message for whatsapp")
   const handleImageUpload = () => {
     fileInputRef.current?.click();
   };
-
- 
-
-
-
-
+  
 
   const handleFileSelect = async (event) => {
     const selectedFile = event.target.files[0];

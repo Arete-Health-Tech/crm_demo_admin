@@ -54,7 +54,7 @@
     top: 50%;
     left: 50%;
     display: flex;
-    width: 552px;
+    width: 464px;
 
 }
 
@@ -84,7 +84,7 @@
     width: 100%;
     justify-content: center;
     display: flex;
-    flex-direction: row;
+    flex-direction: row !important;
     gap: 4px;
     text-align: center;
     color: var(--Text-Light-Grey, #647491);

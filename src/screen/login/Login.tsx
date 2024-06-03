@@ -103,7 +103,7 @@ const Login = () => {
             <Stack className={styles.login_box_subtitle}>Please Enter You Details to Login into your account</Stack>
           </Stack>
 
-          <Stack display={'flex'} width={'100%'} flexDirection={'column'} gap={'24px'} marginTop={"46px"}>
+          <Stack display={'flex'} width={'100%'} flexDirection={'column'} gap={'9px'} marginTop={"40px"}>
             <ThemeProvider theme={theme}>
               <Stack width={'100%'} height={"48px"}>
                 <TextField
@@ -187,17 +187,17 @@ const Login = () => {
               </Stack>
             </ThemeProvider>
 
-            <Stack width={'100%'}>
-              <button
-                className={styles.login_btn}
-                onClick={handleLogin}
-              >
-                Login
-              </button>
-            </Stack>
 
           </Stack>
 
+          <Stack width={'100%'} marginTop={'24px'}>
+            <button
+              className={styles.login_btn}
+              onClick={handleLogin}
+            >
+              Login
+            </button>
+          </Stack>
 
           <Stack className={styles.admincontact}>Forgot your password and want to reset <span style={{ color: "#0566FF" }}>Contact Admin</span></Stack>
         </Box>

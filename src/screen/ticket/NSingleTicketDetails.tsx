@@ -601,7 +601,7 @@ const NSingleTicketDetails = (props: Props) => {
             socket.off('newMessage', handleNewMessage); // Remove the event listener
             socket.disconnect();
         };
-    }, []);
+    }, [messages]);
 
     console.log({ messages })
 

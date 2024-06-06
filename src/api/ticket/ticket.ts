@@ -160,3 +160,14 @@ export const updatePharmacyOrderStatus = async (
   console.log(data);
   return data;
 };
+
+export const updateService = async (
+  updatedData: Object,
+  ticketID: string | undefined
+) => {
+  const { data } = await apiClient.put(
+    `/ticket/updateService/${ticketID}`,
+    updatedData
+  );
+  return Promise.resolve(data);
+};

@@ -58,6 +58,8 @@ import KebabMenu from '../../../assets/KebabMenu.svg';
 import AddAssigneeIcon from '../../../assets/add.svg';
 import commentHeader from '../../../assets/commentHeader.svg';
 import CloseModalIcon from '../../../assets/Group 48095853.svg';
+import StarIcon from '../../../assets/star.svg'
+import EmptyStarIcon from '../../../assets/EmptyStar.svg'
 import './auditSingleTicket.css';
 import useTicketStore from '../../../store/ticketStore';
 import useServiceStore from '../../../store/serviceStore';
@@ -588,6 +590,8 @@ const AuditSinglePageDetail = (props: Props) => {
         setAuditorComment(event.target.value);
     };
 
+    const [rating, setRating] = useState(0)
+
     return (
         <div className={styles.main_layout}>
             {/* Right Section of Single Ticket Detail Page */}
@@ -1073,6 +1077,7 @@ const AuditSinglePageDetail = (props: Props) => {
                                     Auditor’s Comments
                                 </Stack>
                             </Box>
+
                             <Box className={styles.commentsBox}>
                                 <Box className={styles.problemBox}>
                                     <Box className={styles.problemText}>
@@ -1153,6 +1158,43 @@ const AuditSinglePageDetail = (props: Props) => {
                                     </Box>
                                 </Box>
                             </Box>
+
+                            <Box className={styles.Rating}>
+                                <Stack className={styles.Rating_title}>Audit Rating</Stack>
+                                <Stack className={styles.Rating_star}>
+                                    {[1, 2, 3, 4, 5].map((star) => {
+                                        return (
+                                            <Stack sx={{
+                                                display: 'flex',
+                                                flexDirection: "row",
+                                                gap: "4px",
+                                                justifyContent: "left",
+                                            }}
+                                            >
+                                                {rating >= star ? (
+                                                    <>
+                                                        <Stack className={styles.Star_icon}
+                                                            onClick={() => {
+                                                                setRating(star)
+                                                            }}>
+                                                            <img src={StarIcon} alt='starIcon' />
+                                                        </Stack>
+                                                    </>)
+                                                    :
+                                                    (
+                                                        <>
+                                                            <Stack className={styles.Star_icon}
+                                                                onClick={() => {
+                                                                    setRating(star)
+                                                                }}>
+                                                                <img src={EmptyStarIcon} alt='EmptyStarIcon' />
+                                                            </Stack>
+                                                        </>)}
+                                            </Stack>
+                                        )
+                                    })}</Stack>
+                            </Box>
+
                         </Box>
                     </Box>
                     <Box className={styles.auditorComment}>

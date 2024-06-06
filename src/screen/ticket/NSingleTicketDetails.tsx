@@ -11,7 +11,8 @@ import {
     MedicalServicesOutlined,
     PendingActionsOutlined,
     ReceiptLongOutlined,
-    Transgender
+    Transgender,
+    Upload
 } from '@mui/icons-material';
 import {
     Box,
@@ -34,8 +35,11 @@ import {
     Paper,
     Avatar,
     Menu,
-    Badge
+    Badge,
+    FormHelperText,
+    Autocomplete
 } from '@mui/material';
+import ClearIcon from '@mui/icons-material/Clear';
 import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
@@ -58,7 +62,7 @@ import {
 import Rx from '../../assets/Rx.svg';
 import Bulb from '../../assets/Vector.svg';
 import NotesWidget from './widgets/NotesWidget';
-import { iDepartment, iDoctor, iScript } from '../../types/store/service';
+import { iDepartment, iDoctor, iScript, iService } from '../../types/store/service';
 import QueryResolutionWidget from './widgets/QueryResolutionWidget';
 import { getSingleScript } from '../../api/script/script';
 import PrescriptionTabsWidget from './widgets/PrescriptionTabsWidget';
@@ -70,7 +74,7 @@ import {
 import MessagingWidget from './widgets/whatsapp/WhatsappWidget';
 import styles from './SingleTicketDetails.module.css';
 import ShowPrescription from './widgets/ShowPrescriptionModal';
-import { updateTicketSubStage } from '../../api/ticket/ticket';
+import { updateService, updateTicketSubStage } from '../../api/ticket/ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import Modal from '@mui/material/Modal';
 import Checkbox from '@mui/material/Checkbox';
@@ -138,6 +142,26 @@ interface storeMessage {
     // Add other fields as needed
 }
 
+type iPrescription = {
+    department: string;
+    // subDepartment: string;
+    doctor: string;
+    admission: null | string;
+    symptoms: string | null;
+    condition: string | null;
+    medicines: string[];
+    followUp: Date | number;
+    image: string | null;
+    isPharmacy: string | null;
+    caregiver_name: string | null;
+    caregiver_phone: string | null;
+    service?: { _id: string; label: string };
+};
+
+const initialPrescription = {
+    admission: 'none',
+};
+
 dayjs.extend(relativeTime);
 
 type Props = {};
@@ -191,9 +215,97 @@ const NSingleTicketDetails = (props: Props) => {
     const [modalOpenRescheduler, setModalOpenRescheduler] = useState(false);
     const [matchedObjects, setMatchedObjects] = useState([]);
     const [callReschedulerData, setCallReschedulerData] = useState([]);
+    const [admissionTypeClicked, setAmissionTypeClicked] = useState(true);
+    const [prescription, setPrescription] = useState<iPrescription>(
+        structuredClone(initialPrescription)
+    );
+    const [validations, setValidations] = useState({
+        admission: { message: '', value: false },
+        service: { message: '', value: false },
+    });
+    const [foundServices, setFoundServices] = useState<iService[]>([]);
+    const [buttonVariant, setButtonVariant] = useState<string | null>(null);
+    const [disableButton, setDisableButton] = useState(false);
+    const defaultValidation = { message: '', value: false };
+    const [selectedInternalRef, setSelectedInternalRef] = useState('');
+
+    const handleInternalRefChange = (event) => {
+        const value = event.target.value;
+        setSelectedInternalRef(value);
+        handleInternal(value);
+        console.log(value, "Internal Ref Change ")
+    };
+
+    const changePrescriptionValue = (field: any, value: any) => {
+        setPrescription((prev: any) => {
+            prev[field] = value;
+            return { ...prev };
+        });
+    };
+
+    useEffect(() => {
+        setPrescription(structuredClone(initialPrescription));
+    }, []);
+
+    const validation = () => {
+        const admission = prescription.admission === '';
+        setValidations((prev) => {
+            prev.admission = admission
+                ? { message: 'Invalid Value', value: true }
+                : defaultValidation;
+            return { ...prev };
+        });
+
+        return admission === false;
+    };
+    const handleInternal = (item: string) => {
+        console.log('this is response');
+        setButtonVariant(item);
+    };
 
 
+    const findService = async (query: string) => {
+        try {
+            if (query.length <= 3) return;
+            const { data } = await apiClient.get(`/service/search?search=${query}`);
+            setFoundServices(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
+    const handelUploadType = async () => {
+        setDisableButton(true);
+        const validationCheck = validation();
+        if (validationCheck === true) {
+            const payload = {
+                admission: prescription.admission,
+                service: prescription?.service?._id
+            }
+            const respose = await updateService(payload, ticketID);
+            setDisableButton(false);
+            setAmissionTypeClicked(true);
+            getTicketHandler(UNDEFINED, 1, "false", filterTickets);
+
+            // const url = ticketID !== undefined ? `/ticket/${ticketID}` : `/ticket`;
+            // window.location.href = url;
+            // window.location.reload();
+            // const ticket: any = structuredClone(prescription);
+            // delete ticket.department;
+            // delete ticket.subDepartment;
+            // ticket.departments = [prescription.department];
+
+            // ticket.followup = ticket.followup ? ticket.followup : null;
+            // // await createTicketHandler(ticket);
+            // setPrescription(structuredClone(initialPrescription));
+            // // setDiagnostics([]);
+            // setDisableButton(false);
+
+            // // navigate('/'); 
+        } else {
+            setDisableButton(false);
+        }
+    };
 
     // console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
     // console.log(currentTicket,"this is current ticet")
@@ -617,7 +729,7 @@ const NSingleTicketDetails = (props: Props) => {
         };
     }, []);
 
-    console.log({ messages })
+    // console.log({ messages })
 
     return (
         <>
@@ -836,6 +948,7 @@ const NSingleTicketDetails = (props: Props) => {
                                 </span>
                             </Stack>
 
+                            {/* Options Of Kebab Menu */}
                             <Stack
                                 ref={stackRef}
                                 display={op ? 'block' : 'none'}
@@ -847,10 +960,10 @@ const NSingleTicketDetails = (props: Props) => {
                                 </Stack>
                                 <Estimate setTicketUpdateFlag={setTicketUpdateFlag} />
                                 <Stack className="gray-border">{/* Borders */}</Stack>
-                                <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     Set Priority
-                                </MenuItem>
-                                <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                </MenuItem> */}
+                                <MenuItem sx={menuItemStyles} onClick={() => setAmissionTypeClicked(false)}>
                                     Add Surgery
                                 </MenuItem>
                                 <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
@@ -865,6 +978,9 @@ const NSingleTicketDetails = (props: Props) => {
                         </Stack>
                     </Box>
 
+
+
+
                     {/* Stage Card Start Here */}
 
                     <Box p={1} height="27vh">
@@ -875,6 +991,7 @@ const NSingleTicketDetails = (props: Props) => {
                             />
                         </Box>
                     </Box>
+
                     <Box height="0" position="relative" bgcolor="#F1F5F7">
                         <TabContext value={value}>
                             <Box
@@ -1036,6 +1153,184 @@ const NSingleTicketDetails = (props: Props) => {
                     <ExpandedPhoneModal />
                 </>
             }
+
+            {/* Add Surgery Modal */}
+
+            <Modal
+                open={!admissionTypeClicked}
+                onClose={() => { }}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <Box className="reminder-modal-container" gap={"10px"}>
+
+                    <Stack
+                        className='reminder-modal-title'
+                        direction="row"
+                        display="flex"
+                        alignItems="center"
+                    >
+                        <Stack className='Add-Surgery-title'>
+                            Add Surgery
+                        </Stack>
+                        <Stack
+                            className='modal-close'
+                            onClick={() => {
+                                changePrescriptionValue('admission', 'none');
+                                setAmissionTypeClicked(true);
+                                setSelectedInternalRef('');
+                            }}
+                        >
+                            <img src={CloseModalIcon} />
+                        </Stack>
+                    </Stack>
+
+                    <Box>
+                        <Stack flexWrap={'wrap'} flexDirection="row" gap={"14px"}>
+                            {[
+                                'none',
+                                'Surgery',
+                                'Radiation',
+                                'MM',
+                                'DC',
+                                'Internal Reference'
+                            ].map((item) => (
+                                // <Button
+                                //     size="small"
+                                //     sx={{ m: 0.4 }}
+                                //     key={item}
+                                //     onClick={() => changePrescriptionValue('admission', item)}
+                                //     variant={
+                                //         prescription.admission === item ? 'contained' : 'outlined'
+                                //     }
+                                // >
+                                //     {item}
+                                // </Button>
+                                <button
+                                    className="call-Button"
+                                    style={{
+                                        backgroundColor: prescription.admission === item ? '#DAE8FF' : '#F6F7F9',
+                                        fontSize: "14px",
+                                    }}
+                                    onClick={() => changePrescriptionValue('admission', item)}
+                                >
+                                    {item}
+                                </button>
+
+                            ))}
+                        </Stack>
+
+                        <FormHelperText error={validations.admission.value}>
+                            {validations.admission.message}
+                        </FormHelperText>
+
+                        {prescription.admission === 'Internal Reference' ? (
+                            <Stack my={1.5}>
+                                <FormControl size="small" fullWidth sx={{ minWidth: 120, m: 0.4 }}>
+                                    <InputLabel id="internal-reference-label" sx={{
+                                        textTransform: 'capitalize',
+                                        fontSize: '14px',
+                                        fontFamily: 'Outfit,sans-serif'
+                                    }}
+                                    >Internal Reference</InputLabel>
+                                    <Select
+
+                                        labelId="internal-reference-label"
+                                        value={selectedInternalRef}
+                                        onChange={handleInternalRefChange}
+                                        label="Internal Reference"
+                                        sx={{
+                                            '.MuiSelect-select': {
+                                                textTransform: 'capitalize',
+                                                fontSize: '14px',
+                                                fontFamily: 'Outfit,sans-serif'
+                                            },
+                                        }}
+                                    >
+                                        {['Med', 'Surg', 'Chemo'].map((item) => (
+                                            <MenuItem key={item} value={item} sx={menuItemStyles}>
+                                                {item}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Stack>
+                        ) : (
+                            prescription.admission !== 'none' && (
+                                <Box my={1.5}>
+                                    <Autocomplete
+                                        size="small"
+                                        fullWidth
+                                        onChange={(_, newValue) =>
+                                            changePrescriptionValue('service', newValue)
+                                        }
+                                        options={foundServices}
+                                        getOptionLabel={(option) => option.name}
+                                        renderInput={(params) => (
+                                            <TextField
+                                                onChange={(e) => findService(e.target.value)}
+                                                {...params}
+                                                label="Service"
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    style: {
+                                                        textTransform: 'capitalize',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Outfit,sans-serif'
+                                                    },
+                                                }}
+                                                InputLabelProps={{
+                                                    style: {
+                                                        textTransform: 'capitalize',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Outfit,sans-serif'
+                                                    },
+                                                }}
+                                            />
+                                        )}
+                                    />
+                                    <FormHelperText error={validations.service.value} sx={{
+                                        textTransform: 'capitalize',
+                                        fontSize: '14px',
+                                        fontFamily: 'Outfit,sans-serif'
+                                    }}>
+                                        {validations.service.message}
+                                    </FormHelperText>
+                                </Box>
+                            )
+                        )}
+                    </Box>
+
+                    <Box display="flex" justifyContent="flex-end">
+
+                        <button
+                            className='reminder-cancel-btn'
+                            onClick={() => {
+                                changePrescriptionValue('admission', 'none');
+                                setAmissionTypeClicked(true);
+                                setSelectedInternalRef('');
+                            }}>
+                            Cancel
+                        </button>
+                        <button
+                            className='reminder-btn'
+                            disabled={disableButton}
+                            onClick={handelUploadType}
+                            style={{
+                                backgroundColor: disableButton ? "#F6F7F9" : "#0566FF",
+                                color: disableButton ? "#647491" : "#FFF",
+                                marginLeft: "10px"
+                            }}
+                        >
+                            {disableButton ? 'Uploading ...' : 'Add Admission Type'}
+                        </button>
+                    </Box>
+
+                </Box>
+
+            </Modal>
+
+            {/* Add Surgery modal End */}
         </>
     );
 };

@@ -11,8 +11,8 @@ import TotalCallIcon from '../../assets/TotalCall.svg'
 import TotalRecievedCallIcon from '../../assets/call-received.svg'
 import AuditCallIcon from '../../assets/CallAudit.svg'
 import CommentIcon from '../../assets/message-search.svg'
-import LikeIcon from '../../assets/like.svg'
-import DislikeIcon from '../../assets/dislike.svg'
+import StarIcon from '../../assets/star.svg'
+import EmptyStarIcon from '../../assets/EmptyStar.svg'
 import Avatar1 from '../../assets/avatar1.svg'
 import Avatar2 from '../../assets/avatar2.svg'
 import { Style } from '@mui/icons-material';
@@ -76,17 +76,6 @@ const getBackgroundColor = (probability) => {
   return 'grey';
 };
 
-const getAuditValueColor = (auditValue) => {
-  if (auditValue === "Good") return '#08A742';
-  if (auditValue === "Bad") return '#F94839';
-  return '#FFB200';
-}
-const getAuditValueBackgroundColor = (auditValue) => {
-  if (auditValue === "Good") return '#DAF2E3';
-  if (auditValue === "Bad") return '#FEE4E1';
-  return '#FFF3D9';
-}
-
 interface AuditData {
   id: number;
   name: string;
@@ -101,7 +90,7 @@ interface AuditData {
   totalNumberOfAuditCall: number;
   probabilty: number;
   totalComments: number;
-  auditValue: string;
+  rating: number;
   // assignee: string;
 }
 
@@ -120,7 +109,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 2,
     probabilty: 25,
     totalComments: 3,
-    auditValue: "Bad"
+    rating: 3
   },
   {
     id: 2,
@@ -136,7 +125,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 3,
     probabilty: 50,
     totalComments: 3,
-    auditValue: "Good"
+    rating: 3
   },
   {
     id: 3,
@@ -152,7 +141,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 3,
     probabilty: 75,
     totalComments: 3,
-    auditValue: "Good"
+    rating: 3
   },
   {
     id: 4,
@@ -168,7 +157,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 3,
     probabilty: 25,
     totalComments: 3,
-    auditValue: "Bad"
+    rating: 3
   },
   {
     id: 5,
@@ -184,7 +173,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 3,
     probabilty: 100,
     totalComments: 6,
-    auditValue: "Good"
+    rating: 3
   },
   {
     id: 6,
@@ -200,7 +189,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 2,
     probabilty: 25,
     totalComments: 3,
-    auditValue: "Bad"
+    rating: 5
   },
 
   {
@@ -217,7 +206,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 3,
     probabilty: 100,
     totalComments: 6,
-    auditValue: "Good"
+    rating: 3
   },
   {
     id: 8,
@@ -233,7 +222,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 2,
     probabilty: 25,
     totalComments: 3,
-    auditValue: "Bad"
+    rating: 2
   }, {
     id: 9,
     name: "Rajiv Thakur",
@@ -248,7 +237,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 3,
     probabilty: 100,
     totalComments: 6,
-    auditValue: "Good"
+    rating: 3
   },
   {
     id: 10,
@@ -264,7 +253,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 2,
     probabilty: 25,
     totalComments: 3,
-    auditValue: "Bad"
+    rating: 4
   },
 
   {
@@ -281,7 +270,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 3,
     probabilty: 100,
     totalComments: 6,
-    auditValue: "Good"
+    rating: 3
   },
   {
     id: 12,
@@ -297,7 +286,7 @@ const sampleAuditData: AuditData[] = [
     totalNumberOfAuditCall: 2,
     probabilty: 25,
     totalComments: 3,
-    auditValue: "Bad"
+    rating: 3
   },
 
 ];
@@ -472,7 +461,7 @@ const Audit: React.FC = () => {
             <Box sx={{ position: "sticky" }}>
               <thead>
                 <tr className={styles.Audit_table_head}>
-                  <th className={styles.Audit_table_head_item1}> <img src={CheckBoxIcon} /> </th>
+
                   <th className={`${styles.Audit_table_head_item}`}>
                     Lead
                     <Stack sx={{ marginLeft: "5px", marginTop: "2px" }}>
@@ -503,9 +492,7 @@ const Audit: React.FC = () => {
                       setIsAuditor(true);
                       navigate(`/auditSingleTicketDetail/${"6652bf7accee77aaeaf8afb2"}`);
                     }}>
-                    <td className={styles.Audit_table_body_item1}>
-                      <img src={CheckBoxIcon} />
-                    </td>
+
                     {/* Lead */}
                     <td className={`${styles.Audit_table_body_item}`}>
 
@@ -614,12 +601,34 @@ const Audit: React.FC = () => {
 
                     {/* Audit Value */}
                     <td className={`${styles.Audit_table_body_item} ${styles.body_item7}`}>
-                      <Stack className={styles.Audit_Audit_value}
-                        sx={{
-                          color: getAuditValueColor(item.auditValue),
-                          backgroundColor: getAuditValueBackgroundColor(item.auditValue),
-                        }}
-                      > {item.auditValue !== "" ? item.auditValue == "Good" ? <img src={LikeIcon} /> : <img src={DislikeIcon} /> : "-"} {item.auditValue}</Stack>
+                      <Stack className={styles.Audit_Audit_value}>
+                        {[1, 2, 3, 4, 5].map((star) => {
+                          return (
+                            <Stack sx={{
+                              display: 'flex',
+                              flexDirection: "row",
+                              gap: "4px",
+                              justifyContent: "left",
+                            }}
+                            >
+                              {item.rating >= star ? (
+                                <>
+                                  <Stack className={styles.Star_icon}>
+                                    <img src={StarIcon} alt='starIcon' />
+                                  </Stack>
+                                </>)
+                                :
+                                (
+                                  <>
+                                    <Stack className={styles.Star_icon}>
+                                      <img src={EmptyStarIcon} alt='EmptyStarIcon' />
+                                    </Stack>
+                                  </>)}
+                            </Stack>
+
+                          )
+                        })}
+                      </Stack>
                     </td>
 
                     {/* Assignee */}

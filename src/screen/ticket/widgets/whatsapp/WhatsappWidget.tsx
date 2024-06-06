@@ -206,15 +206,18 @@ const MessagingWidget = (props: Props) => {
         <Stack
           direction="column"
           height={whtsappExpanded ? '80vh' : isAuditor ? '58vh' : '55vh'}
+
           position="relative"
           bgcolor="white"
           sx={{ borderBottomLeftRadius: "18px" }}
         >
           <Box
             ref={containerRef}
+            height={whtsappExpanded ? '70vh' : isAuditor ? '58vh' : '45vh'}
             sx={{
               backgroundImage: `url(${bgWhatsapp})`,
               overflowY: 'auto'
+
             }}
             className={styles.whtsappMessageBox}
           >

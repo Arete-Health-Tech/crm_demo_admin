@@ -361,6 +361,45 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 {/* Borders */}
             </Stack>
 
+            <Box className="Patient-records">
+                <Box className='additional-detail-Head'>
+                    <Stack className='additional-detail-Heading'>SECOND OPINIONS</Stack>
+                </Box>
+                <Box className='additional-detail-Head'>
+                    <Stack className='additional-detail-title'>Hospital</Stack>
+                    <Stack component='div' className='additional-detail-data' sx={{ textTransform: "capitalize" }}> Kalash Hospital
+                    </Stack>
+                </Box>
+                <Box className='additional-detail-Head'>
+                    <Stack className='additional-detail-title'>Doctor Name</Stack>
+                    <Stack component='div' className='additional-detail-data'>Dr. Amrita Singh</Stack>
+                </Box>
+                <Box className='additional-detail-Head'>
+                    <Stack className='additional-detail-title'>Remark</Stack>
+                    <Stack component='div' className='additional-detail-data'>Family reference</Stack>
+                </Box>
+            </Box>
+
+            <Stack className="gray-border">
+                {/* Borders */}
+            </Stack>
+
+            <Box className="Patient-records">
+                <Box className='additional-detail-Head'>
+                    <Stack className='additional-detail-Heading'>CONVERSION CHALLENGES</Stack>
+                </Box>
+                <Box className='additional-detail-Head'>
+                    <Stack className='record-tag pharmacy-tag' width={'10vw'} sx={{ color: "#080F1A" }}>Financial constraints</Stack>
+                </Box>
+                <Box className='additional-detail-Head'>
+                    <Stack className='record-tag pharmacy-tag' width={'10vw'} sx={{ color: "#080F1A" }}>Awaiting Test Result</Stack>
+                </Box>
+            </Box>
+
+            <Stack className="gray-border">
+                {/* Borders */}
+            </Stack>
+
             <Box className="Payment-detail">
                 <Box className='Payment-detail-Head'>
                     <Stack className='Payment-detail-Heading'>Value And Payment Mode</Stack>

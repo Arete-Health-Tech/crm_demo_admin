@@ -55,6 +55,8 @@ const LeadDetail: React.FC<MyComponentProps> = ({ isLeadDetail }) => {
                 {/* Borders */}
             </Stack>
 
+
+
             <PatientRecord isPatient={isLeadDetail} />
 
             <Stack className="gray-border">

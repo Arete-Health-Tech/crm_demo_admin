@@ -57,7 +57,7 @@ const SmsWidget = () => {
                     </Stack>
                 )}
 
-                <Box height={smsModal ? '70vh' : isAuditor ? "40vh" : '46vh'}>
+                <Box height={smsModal ? '70vh' : isAuditor ? "40vh" : '46vh'} sx={{ borderBottomLeftRadius: "18px" }}>
                     <Box display={'flex'} justifyContent={'start'} padding={2}>
                         <Box className={styles.callImageIcon}>
                             <img src={smsIcon} alt="" />
@@ -108,6 +108,7 @@ const SmsWidget = () => {
                     bottom={0}
                     bgcolor="white"
                     height={smsModal ? '15%' : '25%'}
+                    sx={{ borderBottomLeftRadius: "18px" }}
                 >
                     <Stack p={1} spacing={2}>
                         <Box display="flex">

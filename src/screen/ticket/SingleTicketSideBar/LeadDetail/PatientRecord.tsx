@@ -1,6 +1,6 @@
 
-import { Box, Stack, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import { Box, Button, IconButton, MenuItem, Select, SelectChangeEvent, Stack, TextField } from '@mui/material';
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Form, useParams } from 'react-router-dom'
 import '../../singleTicket.css';
 import ShowPrescription from '../../widgets/ShowPrescriptionModal';
@@ -8,6 +8,9 @@ import { iTicket } from '../../../../types/store/ticket';
 import useTicketStore from '../../../../store/ticketStore';
 import useServiceStore from '../../../../store/serviceStore';
 import { iDepartment, iDoctor } from '../../../../types/store/service';
+import DeleteIcon from '@mui/icons-material/Delete';
+// import EditIcon from '@mui/icons-material/Edit';
+import AddIcon from '@mui/icons-material/Add';
 
 const EditIcon = () => (
     <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -30,6 +33,9 @@ const PatientRecord = ({ isPatient }) => {
     const [isEditing, setIsEditing] = React.useState(false);
     const [diagonsticsTest, setDiagonsticsTest] = React.useState([""]);
     const [isDiagonsticTestEditing, setIsDiagonsticTestEditing] = React.useState(false);
+    const [admissionType, setAdmissionType] = useState<string>(
+        currentTicket?.prescription[0]?.admission || ''
+    );
     const {
         tickets,
     } = useTicketStore();
@@ -58,10 +64,48 @@ const PatientRecord = ({ isPatient }) => {
 
     const handleEditDiagonsticTest = (event) => {
         event.preventDefault();
-        // console.log('Form submitted with name:', name);
         setIsDiagonsticTestEditing(false);
     };
 
+    const handleDiagnosticChange = (e: SelectChangeEvent<string>, index: number) => {
+        if (currentTicket) {
+            const newDiagnostics = [...currentTicket.prescription[0].diagnostics];
+            newDiagnostics[index] = e.target.value as string;
+            setCurrentTicket({
+                ...currentTicket,
+                prescription: [{
+                    ...currentTicket.prescription[0],
+                    diagnostics: newDiagnostics
+                }]
+            });
+        }
+    };
+
+    const addDiagnosticTest = () => {
+        if (currentTicket) {
+            const newDiagnostics = [...currentTicket.prescription[0].diagnostics, ""];
+            setCurrentTicket({
+                ...currentTicket,
+                prescription: [{
+                    ...currentTicket.prescription[0],
+                    diagnostics: newDiagnostics
+                }]
+            });
+        }
+    };
+
+    const removeDiagnosticTest = (index: number) => {
+        if (currentTicket) {
+            const newDiagnostics = currentTicket.prescription[0].diagnostics.filter((_, i) => i !== index);
+            setCurrentTicket({
+                ...currentTicket,
+                prescription: [{
+                    ...currentTicket.prescription[0],
+                    diagnostics: newDiagnostics
+                }]
+            });
+        }
+    };
 
 
     return (
@@ -87,7 +131,7 @@ const PatientRecord = ({ isPatient }) => {
 
 
             {/* Admission Details */}
-            {currentTicket?.prescription[0]?.admission ? (
+            {/* {currentTicket?.prescription[0]?.admission ? (
                 <>
 
                     {currentTicket?.prescription?.[0]?.service && currentTicket?.prescription?.[0]?.service?.name ? (
@@ -212,91 +256,135 @@ const PatientRecord = ({ isPatient }) => {
 
 
                     <Stack className="gray-border">
-                        {/* Borders */}
+                       
                     </Stack>
                 </>
             ) : (
                 <>
-                    {/* Empty */}
+                    
                 </>
-            )}
+            )} */}
+
+            {/* Admission Details */}
+            {currentTicket?.prescription[0]?.admission ? (
+                <Box className="Patient-records">
+                    <Box className='Patient-records-Head'>
+                        <Stack className='Patient-records-Heading'>Admission Details</Stack>
+                        <Stack display="flex" flexDirection="row">
+                            {isEditing ? (
+                                <Stack>
+                                    <button className='save-btn' onClick={handleSubmit}>
+                                        Save
+                                    </button>
+                                </Stack>
+                            ) : (
+                                <Stack
+                                    component='div'
+                                    className='edit-icon'
+                                    sx={{ marginLeft: isEditing ? "10px" : "0" }}
+                                    onClick={() => setIsEditing(true)}
+                                >
+                                    <EditIcon />
+                                </Stack>
+                            )}
+                        </Stack>
+                    </Box>
+                    {isEditing ? (
+                        <Box className='Patient-records-Head'>
+                            <Stack className='Patient-records-data'>
+                                <Select
+                                    id="AdmissionType"
+                                    value={admissionType}
+                                    onChange={(e) => setAdmissionType(e.target.value as string)}
+                                    variant="outlined"
+                                    size="small"
+                                    inputProps={{ style: { fontSize: '12px', fontFamily: "Outfit,sans-serif" } }}
+                                >
+                                    <MenuItem value="surgery" sx={{ fontSize: '12px', fontFamily: "Outfit,sans-serif" }}>Surgery</MenuItem>
+                                    <MenuItem value="MM" sx={{ fontSize: '12px', fontFamily: "Outfit,sans-serif" }}>MM</MenuItem>
+                                    <MenuItem value="Radiation" sx={{ fontSize: '12px', fontFamily: "Outfit,sans-serif" }}>Radiation</MenuItem>
+                                </Select>
+                            </Stack>
+                        </Box>
+                    ) : (
+                        <Box className="record-tag pharmacy-tag">{currentTicket?.prescription[0]?.admission}</Box>
+                    )}
+                </Box>
+            ) : null}
+
+
 
 
             {/* Diagnostics Test */}
-            {currentTicket?.prescription?.[0]?.diagnostics?.length > 0 ? (
-                <>
-                    <Box className="Patient-records">
-                        <Box className='Patient-records-Head'>
-                            <Stack className='Patient-records-Heading'>Diagnostics Test</Stack>
-                            {isPatient ? (<>
-                                <Stack display="flex" flexDirection="row">
-                                    {isDiagonsticTestEditing ? (<Stack >
-                                        <button className='save-btn'
-                                            onClick={handleEditDiagonsticTest}>
+            {currentTicket?.prescription?.[0]?.diagnostics?.length >= 0 ? (
+                <Box className="Patient-records">
+                    <Box className='Patient-records-Head'>
+                        <Stack className='Patient-records-Heading'>Diagnostics Test</Stack>
+                        {true ? ( // Assuming isPatient is always true for the example
+                            <Stack display="flex" flexDirection="row">
+                                {isDiagonsticTestEditing ? (
+                                    <Stack display="flex" flexDirection="row" gap={"5px"} >
+
+                                        <Box className='Patient-records-Head'>
+                                            <button className='save-btn' onClick={addDiagnosticTest}>
+                                                <AddIcon />
+                                            </button>
+                                        </Box>
+
+                                        <button className='save-btn' onClick={handleEditDiagonsticTest}>
                                             Save
                                         </button>
-                                    </Stack>) : (<>
-
-                                        <Stack component='div'
-                                            className='edit-icon'
-                                            sx={{ marginLeft: isDiagonsticTestEditing ? "10px" : "0" }}
-                                            onClick={() => setIsDiagonsticTestEditing(true)}>
-                                            <EditIcon />
-                                        </Stack>
-                                    </>)}
-
-
-                                </Stack>
-                            </>)
-                                : (
-                                    <></>
+                                    </Stack>
+                                ) : (
+                                    <Stack
+                                        component='div'
+                                        className='edit-icon'
+                                        sx={{ marginLeft: isDiagonsticTestEditing ? "10px" : "0" }}
+                                        onClick={() => setIsDiagonsticTestEditing(true)}
+                                    >
+                                        <EditIcon />
+                                    </Stack>
                                 )}
-                        </Box>
-                        {currentTicket?.prescription?.[0]?.diagnostics.length > 0 ? (
-                            currentTicket?.prescription[0]?.diagnostics.map((diagnostic, index) => (
-                                <React.Fragment key={index}>
-                                    <Box className='Patient-records-Head'>
-
-                                        {isDiagonsticTestEditing ? (<>
-                                            <Stack className='Patient-records-data'>
-                                                <TextField
-                                                    id="Diagnostics Test"
-                                                    type="text"
-                                                    label="Diagnostics Test"
-                                                    variant="outlined"
-                                                    size="small"
-                                                    inputProps={{ style: { fontSize: '14px' } }}
-                                                    value={diagnostic}
-                                                    onChange={(e) => setName(e.target.value)}
-                                                />
-                                            </Stack>
-                                        </>) :
-                                            (<>
-                                                <Stack className='dot-list'>
-                                                    <span>&#8226;</span>
-                                                </Stack>
-                                                <Stack className='Patient-records-data'>{diagnostic}</Stack>
-                                            </>)}
-
-                                    </Box>
-                                </React.Fragment>
-                            ))
-                        ) : (
-                            <></>
-                        )}
-
+                            </Stack>
+                        ) : null}
                     </Box>
+                    {currentTicket?.prescription?.[0]?.diagnostics.map((diagnostic, index) => (
+                        <React.Fragment key={index}>
+                            <Box className='Patient-records-Head'>
+                                {isDiagonsticTestEditing ? (
+                                    <Stack className='Patient-records-data' direction="row" alignItems="center">
+                                        <Select
+                                            labelId="Diagnostics Test"
+                                            id="Diagnostics Test"
+                                            value={diagnostic}
+                                            onChange={(e) => handleDiagnosticChange(e, index)}
+                                            variant="outlined"
+                                            size="small"
+                                            style={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}
+                                        >
+                                            <MenuItem value="MRI" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>MRI</MenuItem>
+                                            <MenuItem value="PET-CH" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>PET-CH</MenuItem>
+                                            <MenuItem value="CT SCAN" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>CT SCAN</MenuItem>
+                                            <MenuItem value="Lab" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>Lab</MenuItem>
+                                        </Select>
+                                        <IconButton onClick={() => removeDiagnosticTest(index)}>
+                                            <DeleteIcon sx={{ color: 'red' }} />
+                                        </IconButton>
+                                    </Stack>
+                                ) : (
+                                    <>
+                                        <Stack className='dot-list'>
+                                            <span>&#8226;</span>
+                                        </Stack>
+                                        <Stack className='Patient-records-data'>{diagnostic}</Stack>
+                                    </>
+                                )}
+                            </Box>
+                        </React.Fragment>
+                    ))}
+                </Box>
+            ) : null}
 
-                    <Stack className="gray-border">
-                        {/* Borders */}
-                    </Stack>
-
-                </>
-            ) : (
-                <>
-                    {/* Empty */}
-                </>
-            )}
 
             {/* Pharmacy */}
             <Box className="Patient-records Pharmacy">

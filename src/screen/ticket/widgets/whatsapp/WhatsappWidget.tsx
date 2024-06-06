@@ -127,7 +127,7 @@ const MessagingWidget = (props: Props) => {
   const handleImageUpload = () => {
     fileInputRef.current?.click();
   };
-  
+
 
   const handleFileSelect = async (event) => {
     const selectedFile = event.target.files[0];
@@ -208,6 +208,7 @@ const MessagingWidget = (props: Props) => {
           height={whtsappExpanded ? '80vh' : isAuditor ? '58vh' : '55vh'}
           position="relative"
           bgcolor="white"
+          sx={{ borderBottomLeftRadius: "18px" }}
         >
           <Box
             ref={containerRef}
@@ -316,8 +317,9 @@ const MessagingWidget = (props: Props) => {
             }
           </Box>
 
-          {!isAuditor && <Box borderTop={2.5} borderColor="#317AE2" bottom={0} bgcolor="white">
-            <Stack p={"0px 8px 0px 8px"} spacing={2}>
+          {!isAuditor && <Box borderTop={2.5} borderColor="#317AE2" bottom={0} bgcolor="white"
+            sx={{ height: "10vh", borderBottomLeftRadius: "18px" }}>
+            <Stack p={"0px 8px 0px 8px"} spacing={4} >
               <Box
                 display="flex"
                 justifyContent="space-between"

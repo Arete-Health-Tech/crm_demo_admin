@@ -108,6 +108,7 @@ import back_arrow from "../../assets/back_arrow.svg"
 import DropDownArrow from "../../assets/DropdownArror.svg"
 import KebabMenu from "../../assets/KebabMenu.svg"
 import AddAssigneeIcon from "../../assets/add.svg"
+import red_remove from "../../assets/red_remove.svg"
 import CloseModalIcon from "../../assets/Group 48095853.svg"
 import "./singleTicket.css";
 import SearchBar from '../../container/layout/SearchBar';
@@ -119,6 +120,7 @@ import ExpandedSmsModal from './widgets/SmsWidget/ExpandedSmsModal';
 import ExpandedPhoneModal from './widgets/PhoneWidget/ExpandedPhoneModal';
 import { collection, DocumentData, onSnapshot, orderBy, query } from 'firebase/firestore';
 import { database } from '../../utils/firebase';
+import useReprentativeStore from '../../store/representative';
 interface iConsumer {
     uid: string;
     firstName: string;
@@ -182,6 +184,7 @@ const NSingleTicketDetails = (props: Props) => {
         setIsSwitchView,
     } = useTicketStore();
     const { doctors, departments, stages } = useServiceStore();
+    const { representative } = useReprentativeStore();
     const [currentTicket, setCurrentTicket] = useState<iTicket>();
     const [value, setValue] = useState('1');
     const [script, setScript] = useState<iScript>();
@@ -274,7 +277,7 @@ const NSingleTicketDetails = (props: Props) => {
         }
     };
 
-    console.log(currentTicket)
+    console.log({ representative })
 
     const handelUploadType = async () => {
         setDisableButton(true);
@@ -756,6 +759,7 @@ const NSingleTicketDetails = (props: Props) => {
         navigate(NAVIGATE_TO_TICKET);
     }
 
+
     return (
         <>
             <div className={isSwitchView ? "switch-main-layout" : "main-layout"}>
@@ -928,7 +932,7 @@ const NSingleTicketDetails = (props: Props) => {
                                     </div>
                                 </Stack>
 
-                                <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     <Stack className="Ticket-Assignee-item" >
                                         <Stack className="Ticket-Assignee-subItem" >
                                             <Stack className="Ticket-Assignee-avatar"><img src={NewAvatar} alt="User 2" /></Stack>
@@ -936,29 +940,42 @@ const NSingleTicketDetails = (props: Props) => {
                                         </Stack>
                                         <Stack className="Ticket-Assignee-Owner">Ticket Owner</Stack>
                                     </Stack>
-                                </MenuItem>
+                                </MenuItem> */}
 
-                                {avatars.map((avatar) => (
-                                    <MenuItem
-                                        key={avatar.id}
-                                        sx={menuItemStyles}
-                                        onClick={handleKebabClose}
-                                    >
-                                        <Stack className="Ticket-Assignee-item">
-                                            <Stack className="Ticket-Assignee-subItem">
-                                                <Stack className="Ticket-Assignee-avatar">
-                                                    <img src={avatar.src} alt={avatar.alt} />
+                                {representative.filter((item) => item.role === "REPRESENTATIVE")?.map((item) => {
+                                    const isTicketOwner = (item._id === currentTicket?.assigned?.[0]);
+                                    const isAssigned = currentTicket?.assigned?.slice(1).includes(item._id);
+
+                                    return (
+                                        <MenuItem
+                                            key={item._id}
+                                            sx={menuItemStyles}
+                                            onClick={handleKebabClose}
+                                        >
+                                            <Stack className="Ticket-Assignee-item">
+                                                <Stack className="Ticket-Assignee-subItem">
+                                                    <Stack className="Ticket-Assignee-avatar">
+                                                        {item.firstName[0]} {item.lastName[0]}
+                                                    </Stack>
+                                                    <Stack className="Ticket-Assignee-Name">
+                                                        {item.firstName} {item.lastName}
+                                                    </Stack>
                                                 </Stack>
-                                                <Stack className="Ticket-Assignee-Name">
-                                                    {avatar.name}
-                                                </Stack>
+                                                {isTicketOwner ? (
+                                                    <Stack className="Ticket-Assignee-Owner">Ticket Owner</Stack>
+                                                ) : isAssigned ? (
+                                                    <Stack>
+                                                        <img src={red_remove} alt="Remove Assignee" />
+                                                    </Stack>
+                                                ) : (
+                                                    <Stack className="Ticket-Assignee-Operation">
+                                                        <img src={AddAssigneeIcon} alt="Add Assignee" />
+                                                    </Stack>
+                                                )}
                                             </Stack>
-                                            <Stack className="Ticket-Assignee-Operation">
-                                                <img src={AddAssigneeIcon} alt="Add Assignee" />
-                                            </Stack>
-                                        </Stack>
-                                    </MenuItem>
-                                ))}
+                                        </MenuItem>
+                                    );
+                                })}
                             </Stack>
 
                             {/* end Lead Assignee */}

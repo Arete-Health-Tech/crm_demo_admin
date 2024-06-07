@@ -1334,6 +1334,25 @@
 
 .ticket-assigneemenu {
   width: 311px !important;
+  height: 40vh;
+  overflow-y: scroll;
+  overflow-x: hidden; 
+}
+
+.ticket-assigneemenu::-webkit-scrollbar {
+  width: 5px;
+  /* width of the entire scrollbar */
+}
+
+/* .noteBox::-webkit-scrollbar-track { */
+/* background: whitesmoke;  */
+/* color of the tracking area */
+/* } */
+.ticket-assigneemenu::-webkit-scrollbar-thumb {
+  background-color: rgb(163, 165, 167);
+  /* color of the scroll thumb */
+  border-radius: 20px;
+  /* roundness of the scroll thumb */
 }
 
 .search-container {

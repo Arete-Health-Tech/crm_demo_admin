@@ -109,6 +109,7 @@ export interface iTicket {
   won: string;
   loss: string;
   pharmacyStatus: string;
+  Probability: number;
 }
 
 export interface iPharmcyTicket {
@@ -197,6 +198,8 @@ export interface iTicketStore {
   setIsSwitchView: (isSwitchView: boolean) => void;
   allTaskCount: iTaskCount[];
   setAllTaskCount: (allTaskCount: iTaskCount[]) => void;
+  agentLogin: boolean;
+  setAgentLogin: (agentLogin: boolean) => void;
 }
 
 export interface iNote {
@@ -204,6 +207,7 @@ export interface iNote {
   ticket: string;
   createdAt?: number;
   creator?: string;
+  ucid?: string;
   _id?: string;
 }
 

@@ -75,7 +75,9 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   isAuditor: false,
   setIsAuditor: (isAuditor) => set({ isAuditor }),
   allTaskCount: [],
-  setAllTaskCount: (allTaskCount) => set({ allTaskCount })
+  setAllTaskCount: (allTaskCount) => set({ allTaskCount }),
+  agentLogin: false,
+  setAgentLogin: (agentLogin) => set({ agentLogin })
 }));
 
 export default useTicketStore;

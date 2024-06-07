@@ -74,8 +74,8 @@ import {
 import MessagingWidget from './widgets/whatsapp/WhatsappWidget';
 import styles from './SingleTicketDetails.module.css';
 import ShowPrescription from './widgets/ShowPrescriptionModal';
-import { updateService, updateTicketSubStage } from '../../api/ticket/ticket';
-import { UNDEFINED } from '../../constantUtils/constant';
+import { deleteTicket, updateService, updateTicketProbability, updateTicketSubStage, validateTicket } from '../../api/ticket/ticket';
+import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../constantUtils/constant';
 import Modal from '@mui/material/Modal';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
@@ -273,6 +273,8 @@ const NSingleTicketDetails = (props: Props) => {
             console.log(error);
         }
     };
+
+    console.log(currentTicket)
 
     const handelUploadType = async () => {
         setDisableButton(true);
@@ -569,7 +571,6 @@ const NSingleTicketDetails = (props: Props) => {
         if (location.pathname.includes('switchView')) {
             setIsSwitchView(true);
         }
-
     }, [
         ticketID,
         tickets,
@@ -583,7 +584,6 @@ const NSingleTicketDetails = (props: Props) => {
     ]);
 
     const [visible, setVisible] = useState(false);
-    const [probability, setProbability] = useState(0);
     const [probabilityModal, setProbabilityModal] = useState(false);
     const [isKebabMenu, setIsKebabMenu] = useState(false);
     const [op, setOp] = useState(false);
@@ -687,10 +687,22 @@ const NSingleTicketDetails = (props: Props) => {
 
 
     const stackRef = useRef<HTMLDivElement | null>(null);
+    const probabilityRef = useRef<HTMLDivElement | null>(null);
+    const visibleRef = useRef<HTMLDivElement | null>(null);
 
     const handleClickOutside = (event: MouseEvent) => {
-        if (stackRef.current && !stackRef.current.contains(event.target as Node)) {
+        const isClickOutsideStack = stackRef.current && !stackRef.current.contains(event.target as Node);
+        const isClickOutsideProbability = probabilityRef.current && !probabilityRef.current.contains(event.target as Node);
+        const isClickOutsideVisibleRef = visibleRef.current && !visibleRef.current.contains(event.target as Node);
+
+        if (isClickOutsideStack) {
             setOp(false);
+        }
+        if (isClickOutsideProbability) {
+            setProbabilityModal(false);
+        }
+        if (isClickOutsideProbability) {
+            setVisible(false);
         }
     };
 
@@ -701,35 +713,48 @@ const NSingleTicketDetails = (props: Props) => {
         };
     }, []);
 
-    const [messages, setMessages] = useState<storeMessage[]>([]);
+    // const [messages, setMessages] = useState<storeMessage[]>([]);
 
-    useEffect(() => {
-        console.log("useEffect is running in NsingleticketCard"); // Check if this logs
+    // useEffect(() => {
+    //     console.log("useEffect is running in NsingleticketCard"); // Check if this logs
 
-        // Check if socket is connected
-        if (socket.connected) {
-            console.log("Socket connected successfully in NsingleticketCard");
-        } else {
-            console.log("Socket not connected, attempting to connect...");
-            socket.connect();
-        }
+    //     // Check if socket is connected
+    //     if (socket.connected) {
+    //         console.log("Socket connected successfully in NsingleticketCard");
+    //     } else {
+    //         console.log("Socket not connected, attempting to connect...");
+    //         socket.connect();
+    //     }
 
-        const handleNewMessage = (data) => {
-            console.log('Received new message ', data);
-            setMessages((prevMessages) => [...prevMessages, data.message]);
-        };
+    //     const handleNewMessage = (data) => {
+    //         console.log('Received new message ', data);
+    //         setMessages((prevMessages) => [...prevMessages, data.message]);
+    //     };
 
-        // Listen for the 'newMessage' event
-        socket.on('newMessage', handleNewMessage);
+    //     // Listen for the 'newMessage' event
+    //     socket.on('newMessage', handleNewMessage);
 
-        // Clean up the socket connection on component unmount
-        return () => {
-            socket.off('newMessage', handleNewMessage); // Remove the event listener
-            socket.disconnect();
-        };
-    }, []);
+    //     // Clean up the socket connection on component unmount
+    //     return () => {
+    //         socket.off('newMessage', handleNewMessage); // Remove the event listener
+    //         socket.disconnect();
+    //     };
+    // }, []);
 
     // console.log({ messages })
+    const handleProbability = async (value) => {
+        await updateTicketProbability(value, ticketID)
+        setProbabilityModal(false)
+        getTicketHandler(UNDEFINED, 1, "false", filterTickets);
+    }
+
+    // This function is for calling the api of delete lead 
+    const handleLeadDelete = async () => {
+        await deleteTicket(ticketID)
+        getTicketHandler(UNDEFINED, 1, "false", filterTickets);
+        await validateTicket(ticketID);
+        navigate(NAVIGATE_TO_TICKET);
+    }
 
     return (
         <>
@@ -793,28 +818,28 @@ const NSingleTicketDetails = (props: Props) => {
                         <Stack className="Ticket-detail-card-right">
                             {/* probability start */}
                             <Box
-                                className={probability === 0
+                                className={currentTicket?.Probability === 0
                                     ? 'Ticket-probability0'
-                                    : probability === 25
+                                    : currentTicket?.Probability === 25
                                         ? 'Ticket-probability25'
-                                        : probability === 50
+                                        : currentTicket?.Probability === 50
                                             ? 'Ticket-probability50'
-                                            : probability === 75
+                                            : currentTicket?.Probability === 75
                                                 ? 'Ticket-probability75'
                                                 : 'Ticket-probability100'}
                                 // className="Box-assignee"
                                 onClick={() => {
-                                    setProbability(probability);
                                     setProbabilityModal(true);
                                 }}
                             >
-                                {probability}%
+                                {currentTicket?.Probability}%
                                 <span>
                                     <img src={DropDownArrow} alt='' />
                                 </span>
                             </Box>
 
                             <Stack
+                                ref={probabilityRef}
                                 display={probabilityModal ? 'block' : 'none'}
                                 className="KebabMenu-item ticket-assigneemenu"
                                 bgcolor="white"
@@ -831,19 +856,19 @@ const NSingleTicketDetails = (props: Props) => {
                                         Select Probability
                                     </Stack>
                                     <Stack display={'flex'} flexDirection={'row'} width={'100%'} justifyContent={'space-between'}>
-                                        <Stack className="Ticket-probability-0" onClick={() => { setProbability(0); setProbabilityModal(false) }}>
+                                        <Stack className="Ticket-probability-0" onClick={() => handleProbability(0)}>
                                             0%
                                         </Stack>
-                                        <Stack className="Ticket-probability-25" onClick={() => { setProbability(25); setProbabilityModal(false) }}>
+                                        <Stack className="Ticket-probability-25" onClick={() => handleProbability(25)}>
                                             25%
                                         </Stack>
-                                        <Stack className="Ticket-probability-50" onClick={() => { setProbability(50); setProbabilityModal(false) }}>
+                                        <Stack className="Ticket-probability-50" onClick={() => handleProbability(50)}>
                                             50%
                                         </Stack>
-                                        <Stack className="Ticket-probability-75" onClick={() => { setProbability(75); setProbabilityModal(false) }}>
+                                        <Stack className="Ticket-probability-75" onClick={() => handleProbability(75)}>
                                             75%
                                         </Stack>
-                                        <Stack className="Ticket-probability-100" onClick={() => { setProbability(100); setProbabilityModal(false) }}>
+                                        <Stack className="Ticket-probability-100" onClick={() => handleProbability(100)}>
                                             100%
                                         </Stack>
                                     </Stack>
@@ -870,6 +895,7 @@ const NSingleTicketDetails = (props: Props) => {
                             </Box>
 
                             <Stack
+                                ref={visibleRef}
                                 display={visible ? 'block' : 'none'}
                                 className="KebabMenu-item ticket-assigneemenu"
                                 bgcolor="white"
@@ -966,10 +992,10 @@ const NSingleTicketDetails = (props: Props) => {
                                 <MenuItem sx={menuItemStyles} onClick={() => setAmissionTypeClicked(false)}>
                                     Add Surgery
                                 </MenuItem>
-                                <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     Initate RFA
-                                </MenuItem>
-                                <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                </MenuItem> */}
+                                <MenuItem sx={menuItemStyles} onClick={handleLeadDelete}>
                                     Delete Lead
                                 </MenuItem>
                             </Stack>

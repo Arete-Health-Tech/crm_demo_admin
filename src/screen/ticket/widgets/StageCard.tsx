@@ -71,7 +71,6 @@ const StageCard = (props: Props) => {
     []
   );
   const { currentTicket, setTicketUpdateFlag } = props;
-
   const [lastModifiedDate, setLastModifiedDate] = useState<number>(0);
   const [currentStage, setCurrentStage] = useState<any>({});
   const [changeStageName, setChangeStageName] = useState<string>('');
@@ -84,6 +83,9 @@ const StageCard = (props: Props) => {
   const [disableLostButton, setDisableLostButton] = useState(true);
   const [disableWonButton, setDisableWonButton] = useState(true);
 
+  console.log({
+    currentTicket, stages, subStages, currentStage, nextStage, changeStageName, validStageList
+  })
 
   const [steps, setSteps] = useState([
     {
@@ -147,7 +149,8 @@ const StageCard = (props: Props) => {
       const stageDetail: any = stages?.find(
         ({ _id }) => currentTicket.stage === _id
       );
-      setValidStageList(stages?.slice(stageDetail?.code - 1));
+      setValidStageList(stages);
+      // setValidStageList(stages?.slice(stageDetail?.code - 1));
       const childCode: any[] = [];
       stageDetail?.child?.forEach((id) => {
         if (!currentTicket?.prescription[0].admission) {
@@ -216,10 +219,10 @@ const StageCard = (props: Props) => {
     }
   }, [currentTicket, stages, subStages, changeStageName, ticketID]);
 
-  const handleStages = async (e: any) => {
+  const handleStages = async (name: any) => {
     // console.log('selected', e.target.value);
 
-    setChangeStageName(e.target.value);
+    setChangeStageName(name);
     const payload = {
       stageCode: currentStage?.code + 1,
       subStageCode: {
@@ -420,7 +423,7 @@ const StageCard = (props: Props) => {
 
           <Box className={isSwitchView ? "switchViewSteps" : "steps"}>
             <ul className="nav">
-              {steps && steps.map((step, i) => {
+              {/* {steps && steps.map((step, i) => {
                 return (
                   <li
                     key={step.id}
@@ -428,6 +431,33 @@ const StageCard = (props: Props) => {
                   >
 
                     <LightTooltip title={step.label}
+                      disableInteractive
+                      placement="top"
+                      TransitionComponent={Zoom}
+                    >
+                      <Box>
+                        <br />
+                      </Box>
+                    </LightTooltip>
+                  </li>
+                );
+              })} */}
+              {validStageList.map(({ name, code }: iStage, index) => {
+                const isCurrentStage = changeStageName === name;
+                const isNextStage = nextStage === name;
+                const isPreviousStage = validStageList.findIndex(stage => stage.name === changeStageName) >= index;
+
+                return (
+                  <li
+                    key={code}
+                    className={`${isCurrentStage || isNextStage || isPreviousStage ? "active done" : ""}`}
+                    onClick={() => {
+                      if (isNextStage) {
+                        handleStages(name);
+                      }
+                    }}
+                  >
+                    <LightTooltip title={name}
                       disableInteractive
                       placement="top"
                       TransitionComponent={Zoom}
@@ -525,7 +555,8 @@ const StageCard = (props: Props) => {
           </Stack> */}
           <Box>
             {validStageList?.map(({ name, parent, code }: iStage, index) => {
-              if ([changeStageName, nextStage].includes(name)) {
+              // if ([changeStageName, nextStage].includes(name)) {
+              if (changeStageName.includes(name)) {
                 return (
                   <Box
                     color={'#0566FF'}
@@ -539,6 +570,7 @@ const StageCard = (props: Props) => {
                   </Box>
                 )
               }
+              // }
               // return (
               //   parent === null && (
               //     <MenuItem

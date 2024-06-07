@@ -23,55 +23,60 @@ import OrderListBody from '../../screen/orders/OrderListBody';
 import OrderDetailContainer from '../../screen/orders/orderDetailPage/OrderDetailContainer';
 import AuditSinglePageDetail from '../../screen/audit/AuditSinglePage/AuditSinglePageDetail';
 import SwitchViewTable from '../../screen/ticket/switchView/SwitchViewTable';
+import AgentLogin from '../../screen/agent/AgentLogin';
+import FileUpload from '../../screen/fileUpload/fileUpload';
 
 type Props = {};
 
 const Authenticated = (props: Props) => {
   return (
     <>
-      <Navbar>
-        <Routes>
-          <Route path="/" element={<DashboardLayout />}>
-            <Route index element={<Dashboard />} />
-            <Route path="department" element={<DepartmentLayout />}>
-              <Route index element={<Department />} />
-              <Route path="doctors" element={<Doctor />} />
-              <Route path="wards" element={<Wards />} />
+      <AgentLogin>
+        <Navbar>
+          <Routes>
+            <Route path="/" element={<DashboardLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="department" element={<DepartmentLayout />}>
+                <Route index element={<Department />} />
+                <Route path="doctors" element={<Doctor />} />
+                <Route path="wards" element={<Wards />} />
+              </Route>
+              <Route path="services" element={<Services />} />
+              <Route path="scripts" element={<Script />} />
+              <Route path="tags" element={<Tags />} />
+              <Route path="stages" element={<Stage />} />
+              <Route path="flow" element={<Flow />}>
+                <Route path="connector" element={<NodeConnector />} />
+                <Route path="node-replies" element={<NodeReplies />} />
+                <Route path="node-lists" element={<NodeList />} />
+              </Route>
             </Route>
-            <Route path="services" element={<Services />} />
-            <Route path="scripts" element={<Script />} />
-            <Route path="tags" element={<Tags />} />
-            <Route path="stages" element={<Stage />} />
-            <Route path="flow" element={<Flow />}>
-              <Route path="connector" element={<NodeConnector />} />
-              <Route path="node-replies" element={<NodeReplies />} />
-              <Route path="node-lists" element={<NodeList />} />
+            <Route path="ticket" element={<TicketLayout />}>
+              {/* <Route path=":ticketID" element={<SingleTicketDetails />} /> */}
+              <Route path=":ticketID" element={<NSingleTicketDetails />} />
             </Route>
-          </Route>
-          <Route path="ticket" element={<TicketLayout />}>
-            {/* <Route path=":ticketID" element={<SingleTicketDetails />} /> */}
-            <Route path=":ticketID" element={<NSingleTicketDetails />} />
-          </Route>
-          <Route path="tickets" element={<TicketLayout />} />
-          <Route path="dump" element={<Dump />} />
-          <Route path="/OrderList" element={<OrderListBody />} />
-          <Route
-            index
-            path="OrderList/orderDetails/:uid"
-            element={<OrderDetailContainer />}
-          />
-          <Route
-            index
-            path="/switchView"
-            element={<SwitchViewTable />}
-          />
-          <Route
-            index
-            path="/switchView/:ticketID"
-            element={<NSingleTicketDetails />}
-          />
-        </Routes>
-      </Navbar>
+            <Route path="tickets" element={<TicketLayout />} />
+            <Route path="dump" element={<Dump />} />
+            <Route path="/OrderList" element={<OrderListBody />} />
+            <Route
+              index
+              path="OrderList/orderDetails/:uid"
+              element={<OrderDetailContainer />}
+            />
+            <Route
+              index
+              path="/switchView"
+              element={<SwitchViewTable />}
+            />
+            <Route
+              index
+              path="/switchView/:ticketID"
+              element={<NSingleTicketDetails />}
+            />
+            <Route path="upload-file" element={<FileUpload />} />
+          </Routes>
+        </Navbar>
+      </AgentLogin>
     </>
   );
 };

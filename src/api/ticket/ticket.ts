@@ -1,3 +1,4 @@
+import { AxiosResponse } from 'axios';
 import {
   iCallRescheduler,
   iNote,
@@ -60,7 +61,7 @@ export const updateTicketSubStage = async (payload: {
   return Promise.resolve(data);
 };
 
-export const validateTicket = async (ticketId: string) => {
+export const validateTicket = async (ticketId: string | undefined) => {
   const result = await apiClient.put('/ticket/validateTicket', { ticketId });
   return result;
 };
@@ -161,6 +162,43 @@ export const updatePharmacyOrderStatus = async (
   return data;
 };
 
+interface ApiResponse {
+  status: string;
+  ucid: string;
+  data: any; // Adjust the type according to the structure of the response data
+  // Add other properties if needed
+}
+
+export const callAgent = async (
+  customerNumber: string
+): Promise<ApiResponse> => {
+  try {
+    const response: AxiosResponse<ApiResponse> = await apiClient.post(
+      '/calling/callagent',
+      {
+        customerNumber: customerNumber
+      }
+    );
+    return Promise.resolve(response.data);
+  } catch (error) {
+    return Promise.reject(error);
+  }
+};
+
+export const uploadEmrFile = async (file: any) => {
+  const { data } = await apiClient.post(`/csv/csvdata`, file);
+  return Promise.resolve(data);
+};
+export const uploadDocFile = async (docs: any) => {
+  const { data } = await apiClient.post(`/csv/admission`, docs, {
+    /* @ts-ignore */
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  });
+  return Promise.resolve(data);
+};
+
 export const updateService = async (
   updatedData: Object,
   ticketID: string | undefined
@@ -169,5 +207,21 @@ export const updateService = async (
     `/ticket/updateService/${ticketID}`,
     updatedData
   );
+  return Promise.resolve(data);
+};
+
+export const updateTicketProbability = async (
+  value: number,
+  ticketID: string | undefined
+) => {
+  const { data } = await apiClient.put(`/ticket/updateProbability`, {
+    id: ticketID,
+    probability: value
+  });
+  return Promise.resolve(data);
+};
+
+export const deleteTicket = async (ticketID: string | undefined) => {
+  const { data } = await apiClient.delete(`/ticket/deleteTicket/${ticketID}`);
   return Promise.resolve(data);
 };

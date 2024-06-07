@@ -21,11 +21,12 @@ import {
 } from '@mui/material';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
+  createNotesHandler,
   createTimerHandler,
   getTicketHandler
 } from '../../../api/ticket/ticketHandler';
 import { useParams } from 'react-router-dom';
-import { iTimer } from '../../../types/store/ticket';
+import { iNote, iTicket, iTimer } from '../../../types/store/ticket';
 import { Call } from '@mui/icons-material';
 import CallButtonIcon from '../../../assets/Call button variations.svg';
 import ClickedCallButtonIcon from '../../../assets/Call button Clicked.svg';
@@ -37,10 +38,12 @@ import '../singleTicket.css';
 import useTicketStore from '../../../store/ticketStore';
 import LeadDetail from '../SingleTicketSideBar/LeadDetail/LeadDetail';
 import ReactQuill from 'react-quill';
+import { callAgent } from '../../../api/ticket/ticket';
+import { toast } from 'react-toastify';
 
 const CustomModal = () => {
   const label = { inputProps: { 'aria-label': 'Size switch demo' } };
-
+  const [currentTicket, setCurrentTicket] = React.useState<iTicket>();
   const { ticketID } = useParams();
   const {
     tickets,
@@ -60,20 +63,53 @@ const CustomModal = () => {
   const [showForm, setShowForm] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
   const [note, setNote] = useState('');
+  const [secondOpinion, setSecondOpinion] = useState({
+    header: '',
+    hospital: '',
+    doctorName: '',
+    additionalInformation: ''
+  });
+  const [challengeSelected, setChallengeSelected] = useState<string[]>([]);
+  const [ucid, setUCID] = useState("");
   const [formData, setFormData] = useState<iTimer>({
     select: '',
     stoppedTimer: 0
   });
 
-  const startTimer = () => {
+  useEffect(() => {
+    const fetchTicket = tickets.find((element) => ticketID === element._id);
+    setCurrentTicket(fetchTicket);
+  }, [])
+
+
+  console.log({ challengeSelected })
+
+  const startTimer = async () => {
     if (timerRef.current !== null) {
       clearInterval(timerRef.current);
     }
     timerRef.current = setInterval(() => {
       setTimer((prevTimer) => prevTimer + 1);
     }, 1000);
-    setChipOpen(true);
-    setDialogOpen(true);
+    try {
+      const returnedData = await callAgent("918797255306")
+      // const returnedData = await callAgent(currentTicket?.consumer[0]?.phone)
+      if (returnedData.status == "Agent is not available") {
+        toast.error("Agent is not loggeIn")
+        // setOpenAgentModal(true)
+      } else if (returnedData.status == "queued successfully") {
+        setUCID(returnedData.ucid)
+        setChipOpen(true);
+        setDialogOpen(true);
+      } else {
+        toast.error(returnedData.status)
+        // setOpenAgentModal(true)
+      }
+    } catch {
+      console.log("error in customMOdal")
+    }
+    // setChipOpen(true);
+    // setDialogOpen(true);
   };
 
   const stopTimer = () => {
@@ -93,10 +129,33 @@ const CustomModal = () => {
       }));
       // console.log("this is next one")
       const sachin: any = ticketID;
+
+      //This function is for handle the time 
       const result = await createTimerHandler(formData, sachin);
+
+      //This if condition is for checking the notes which is inside the calling drawer 
+      if (note !== '<p><br></p>' && note !== "") {
+        const data: iNote = {
+          text: note,
+          ticket: sachin,
+          ucid: ucid
+        };
+        await createNotesHandler(data);
+        setNote('');
+      }
+
+      if (isVisible) {
+        if (secondOpinion.header !== '' && secondOpinion.hospital !== '' && secondOpinion.doctorName !== '') {
+          // await createSecondOpinion( )
+        }
+      }
+
+      //This if condition is for checking that what disposition we have selected 
       if (formData.select === "Rescheduled Call") {
         setIsModalOpenCall(true)
       }
+
+      // on submit button click after 1 second the ticket data will call 
       setTimeout(() => {
         (async () => {
           await getTicketHandler(
@@ -116,7 +175,13 @@ const CustomModal = () => {
         setShowForm(false);
         setTimer(0);
         setChipOpen(false);
-
+        setSecondOpinion({
+          header: '',
+          hospital: '',
+          doctorName: '',
+          additionalInformation: ''
+        })
+        setChallengeSelected([])
         // console.log(
         //   'Form submitted with stopped timer:',
         //   stoppedTimer,
@@ -149,18 +214,17 @@ const CustomModal = () => {
   };
 
   const handleClose = () => {
-    setChipOpen(false);
+    // setChipOpen(false);
     setShowForm(false);
 
-    if (timerRef.current !== null) {
-      clearInterval(timerRef.current);
-    }
-    setTimer(0);
+    // if (timerRef.current !== null) {
+    //   clearInterval(timerRef.current);
+    // }
+    // setTimer(0);
   };
 
   const isButtonClicked = (buttonName) => formData.select === buttonName;
 
-  const [challengeSelected, setChallengeSelected] = useState<string[]>([]);
   const challenges = [
     'Awaiting test results',
     'Awaiting TPA approvals',
@@ -192,7 +256,6 @@ const CustomModal = () => {
             className="maximize-icon"
             onClick={() => {
               setShowForm(true);
-              startTimer();
             }}
           >
             <img src={MaximizeIcon} alt="" />
@@ -202,7 +265,7 @@ const CustomModal = () => {
         <Stack
           className="Callbutton"
           onClick={() => {
-            setChipOpen(true);
+            startTimer();
           }}
         >
           <img src={CallButtonIcon} alt="" />
@@ -400,7 +463,7 @@ const CustomModal = () => {
 
               <Stack p={2}>
                 <Stack sx={{ borderRadius: '1rem', backgroundColor: '#FFF', paddingLeft: 2 }} p={1}>
-                  <Box display={'flex'} justifyContent={'space-between'}>
+                  <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                     <Stack
                       className="reminder-modal-title"
                       sx={{ fontSize: '14px !important', fontWeight: 500 }}
@@ -422,18 +485,25 @@ const CustomModal = () => {
                       <Box sx={{ width: '100%' }}>
                         <RadioGroup
                           row
-                          defaultValue="consulted"
                           name="consultationStatus"
                         >
                           <FormControlLabel
                             value="considering"
                             control={<Radio />}
                             label="Considering Consultation"
+                            onClick={() => setSecondOpinion(prevState => ({
+                              ...prevState,
+                              header: "Considering Consultation"
+                            }))}
                           />
-                          <FormControlLabel
+                          < FormControlLabel
                             value="consulted"
                             control={<Radio />}
                             label="Consulted"
+                            onClick={() => setSecondOpinion(prevState => ({
+                              ...prevState,
+                              header: "consulted"
+                            }))}
                           />
                         </RadioGroup>
 
@@ -441,29 +511,42 @@ const CustomModal = () => {
                           <TextField
                             required
                             label="Hospital"
-                            defaultValue="Kailash Hospital"
                             fullWidth
                             InputLabelProps={{ shrink: true }}
                             size="small"
+                            value={secondOpinion.hospital}
+                            onChange={(e) => setSecondOpinion(prevState => ({
+                              ...prevState,
+                              hospital: e.target.value
+                            }))}
                           />
                           <TextField
                             required
                             label="Doctor Name"
-                            defaultValue="Dr. Amrita Singh"
                             fullWidth
                             InputLabelProps={{ shrink: true }}
                             size="small"
+                            value={secondOpinion.doctorName}
+                            onChange={(e) => setSecondOpinion(prevState => ({
+                              ...prevState,
+                              doctorName: e.target.value
+                            }))}
                           />
                         </Box>
 
                         <Box sx={{ marginTop: 2 }}>
                           <TextField
-                            label="Additional Information"
-                            defaultValue="Got a family reference"
                             multiline
                             rows={4}
+                            label="Additional Information"
                             fullWidth
                             InputLabelProps={{ shrink: true }}
+                            size="small"
+                            value={secondOpinion.additionalInformation}
+                            onChange={(e) => setSecondOpinion(prevState => ({
+                              ...prevState,
+                              additionalInformation: e.target.value
+                            }))}
                           />
                         </Box>
                       </Box>
@@ -492,9 +575,13 @@ const CustomModal = () => {
                             onDelete={() => handleChallenge(challenge)}
                             deleteIcon={
                               challengeSelected.includes(challenge) ? (
-                                <img src={CloseModalIcon1} alt="" />
+                                <div style={{ backgroundColor: 'white', padding: '5px', borderRadius: '50%' }}>
+                                  <img src={CloseModalIcon1} alt="" />
+                                </div>
                               ) : (
-                                <img src={add_icon} alt="" />
+                                <div style={{ backgroundColor: 'white', padding: '5px', borderRadius: '50%' }}>
+                                  <img src={add_icon} alt="" />
+                                </div>
                               )
                             }
                             style={{

@@ -978,6 +978,7 @@
   justify-content: center;
   align-items: center;
   /* gap: var(--Spacing-4px, 4px); */
+  cursor: pointer;
   align-self: stretch;
   border-radius: var(--4px, 4px);
   background: var(--Background-Greyish, #f6f7f9);

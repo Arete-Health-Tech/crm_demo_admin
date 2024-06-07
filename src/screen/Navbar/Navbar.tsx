@@ -216,6 +216,7 @@ const Navbar = ({ children }) => {
                                         width: "3.5vw",
                                         height: "7vh",
                                         borderRadius: "8px",
+                                        cursor: 'pointer',
                                         backgroundColor: location.pathname === '/' ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
                                             background: '#E1E6EE'
@@ -245,6 +246,7 @@ const Navbar = ({ children }) => {
                                         width: "3.5vw",
                                         height: "7vh",
                                         borderRadius: "8px",
+                                        cursor: 'pointer',
                                         backgroundColor: location.pathname.includes('/ticket') || location.pathname.includes('/switchView') ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
                                             background: '#E1E6EE'
@@ -271,6 +273,7 @@ const Navbar = ({ children }) => {
                                         width: "3.5vw",
                                         height: "7vh",
                                         borderRadius: "8px",
+                                        cursor: 'pointer',
                                         backgroundColor: location.pathname.includes('/OrderList') ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
                                             background: '#E1E6EE'
@@ -297,6 +300,7 @@ const Navbar = ({ children }) => {
                                         width: "3.5vw",
                                         height: "7vh",
                                         borderRadius: "8px",
+                                        cursor: 'pointer',
                                         backgroundColor: location.pathname.includes('/Tasks') ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
                                             background: '#E1E6EE'
@@ -308,6 +312,31 @@ const Navbar = ({ children }) => {
                                         TransitionComponent={Zoom}
                                     >
                                         {location.pathname.includes('/Tasks') ? (<img src={TaskActiveIcon} alt="Tasks" />) : (<img src={Tasks} alt="Tasks" />)}
+                                    </LightTooltip>
+                                </Stack>
+                            </Stack>
+                            <Stack>
+                                <Stack onClick={() => goToPage('/upload-file')}
+                                    sx={{
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        alignItems: "center",
+                                        gap: "24px",
+                                        width: "3.5vw",
+                                        height: "7vh",
+                                        borderRadius: "8px",
+                                        cursor: 'pointer',
+                                        backgroundColor: location.pathname.includes('/upload-file') ? '#DAE8FF' : 'transparent',
+                                        '&:hover': {
+                                            background: '#E1E6EE'
+                                        }
+                                    }}>
+                                    <LightTooltip title="upload-file"
+                                        disableInteractive
+                                        placement="right"
+                                        TransitionComponent={Zoom}
+                                    >
+                                        {location.pathname.includes('/upload-file') ? (<img src={TaskActiveIcon} alt="upload-file" />) : (<img src={Tasks} alt="upload-file" />)}
                                     </LightTooltip>
                                 </Stack>
                             </Stack>
@@ -328,6 +357,7 @@ const Navbar = ({ children }) => {
                                         width: "3.5vw",
                                         height: "7vh",
                                         borderRadius: "8px",
+                                        cursor: 'pointer',
                                         backgroundColor: location.pathname === '/Configurations' ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
                                             background: '#E1E6EE'
@@ -349,7 +379,8 @@ const Navbar = ({ children }) => {
                                     display: 'flex',
                                     alignItems: 'center',
                                     justifyContent: 'center',
-                                    pb: 2
+                                    pb: 2,
+                                        cursor: 'pointer',
                                 }}
                             >
                                 <LightTooltip title="Logout"

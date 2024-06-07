@@ -1,5 +1,5 @@
 import { Box, FormControl, InputLabel, MenuItem, Modal, Select, Stack, TextField } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import NotFoundIcon from "../../../../assets/NotFoundDocument.svg"
 import "../../singleTicket.css"
 import UploadDocumentIcon from '../../../../assets/UploadDocument.svg'
@@ -17,9 +17,11 @@ interface FileObject {
 }
 
 const Document = () => {
+    const uploadFileRef = useRef<HTMLInputElement>(null);
 
     const [open, setOpen] = useState(false);
     const [file, setFile] = useState(null);
+    const [uploadFileName, setUploadFileName] = useState("");
     const [fileName, setFileName] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
     const [disableButton, setDisableButton] = useState(true);
@@ -52,7 +54,9 @@ const Document = () => {
     }
 
     const handleFileChange = (event) => {
+        const files = event.target.files && event.target.files;
         setFile(event.target.files[0]);
+        setUploadFileName(`${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`);
     };
 
     const handleFileNameChange = (event) => {
@@ -80,12 +84,19 @@ const Document = () => {
 
     return (
         <>
+            <input
+                id="file-upload"
+                style={{ display: 'none' }}
+                ref={uploadFileRef}
+                type="file"
+                onChange={handleFileChange}
+            />{' '}
             <Box className="document-container">
                 {
                     uploadFile.length === 0 ? (<>
 
                         <Box marginTop={'70px'}>
-                            <Stack><img src={NotFoundIcon} /></Stack>
+                            <Stack><img src={NotFoundIcon} alt='' /></Stack>
                             <Box className="NotFound-DocumentPage">
 
                                 <Stack className='NotFound-text'>No Document Found</Stack>
@@ -98,7 +109,7 @@ const Document = () => {
                             <Stack>
                                 {uploadFile.map((doc, index) => (
                                     <Box key={index} className="Uploaded-document">
-                                        <Stack className='Uploaded-document-icon'><img width="16px" height={'16px'} src={documentIcon} /></Stack>
+                                        <Stack className='Uploaded-document-icon'><img width="16px" height={'16px'} src={documentIcon} alt='' /></Stack>
                                         <Box display="flex" flexDirection="column">
                                             <Stack className="Uploaded-document-fileName">{doc.fileName}</Stack>
                                             <Stack display={'flex'} flexDirection={'row'} gap={"5px"}>
@@ -134,23 +145,16 @@ const Document = () => {
                             <Stack className='reminder-modal-title' sx={{ fontSize: "18px !important" }}>
                                 Upload Document
                             </Stack>
-                            <Stack
-                                className='modal-close'
+                            <Stack className='modal-close'
                                 onClick={handleClose}
                             >
-                                <img src={CloseModalIcon} />
+                                <img src={CloseModalIcon} alt='' />
                             </Stack>
                         </Stack>
 
-
-                        <Box className="file-upload">
+                        <Box className="file-upload" onClick={() => uploadFileRef.current?.click()}>
                             <Stack className="file-upload-title">
-                                <label htmlFor="file-upload" style={{ display: "flex", flexDirection: "row" }}> <img className='img-upload' src={UploadFileIcon} /> Upload Receipt sent by hospital</label>
-                                <input
-                                    id="file-upload"
-                                    type="file"
-                                    onChange={handleFileChange}
-                                />{' '}
+                                <label htmlFor="file-upload" style={{ display: "flex", flexDirection: "row" }}> <img className='img-upload' src={UploadFileIcon} alt='' /> Upload Receipt sent by hospital</label>
                             </Stack>
                             <Stack className="file-upload-Sub" marginTop="12px">Upload one .txt, .doc, .pdf, .docx, .png, .jpg</Stack>
                             <Stack className="file-upload-Sub">Max file size 5mb</Stack>
@@ -159,10 +163,13 @@ const Document = () => {
                         {file ? (
                             <Box className="Uploaded-file">
                                 <Stack display={"flex"} flexDirection={'row'} justifyContent={"flex-start"}>
-                                    <Stack className='Uploaded-Box'><img src={documentIcon} /></Stack>
-                                    <Stack p={'3px'} className="file-upload-Sub">File Uploaded Successfully</Stack>
+                                    <Stack className='Uploaded-Box'><img src={documentIcon} alt='' /></Stack>
+                                    <Box>
+                                        <Stack className="file-upload-Sub">{uploadFileName}</Stack>
+                                        {/* <Stack p={'3px'} className="file-upload-Sub">File Uploaded Successfully</Stack> */}
+                                    </Box>
                                 </Stack>
-                                <Stack p={1} sx={{ marginLeft: "250px" }}><img src={CheckedActiveIcon} /></Stack>
+                                <Stack p={1} sx={{ marginLeft: "250px" }}><img src={CheckedActiveIcon} alt='' /></Stack>
                             </Box>
                         ) : (
                             <>

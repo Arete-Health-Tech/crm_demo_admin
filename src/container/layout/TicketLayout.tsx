@@ -535,7 +535,8 @@ const Ticket = () => {
     results: null,
     admissionType: [],
     diagnosticsType: [],
-    dateRange: []
+    dateRange: [],
+    status: []
   };
 
   const backToDashboard = () => {

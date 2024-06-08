@@ -56,6 +56,7 @@ import axios from 'axios';
 import { apiClient } from '../../../api/apiClient';
 import { toast } from 'react-toastify';
 import CloseModalIcon from "../../../assets/Group 48095853.svg"
+import UploadEstimate from './UploadEstimate';
 
 
 type Props = { setTicketUpdateFlag: any };
@@ -112,6 +113,7 @@ const Estimate = (props: Props) => {
     isSameSite: false
   });
   const [isEstimateOpen, setIsEstimateOpen] = useState(false);
+  const [isUploadEstimateOpen, setIsUploadEstimateOpen] = useState(false);
   const [procedure, setProcedure] = useState<string>();
   const [investigation, setInvestigation] = useState('');
   const [clickedIndex, setClickedIndex] = useState<number | undefined>();
@@ -433,6 +435,7 @@ const Estimate = (props: Props) => {
     <>
       <>
         <MenuItem sx={menuItemStyles} onClick={() => setIsEstimateOpen(true)} > <Stack >Create Estimation</Stack></MenuItem>
+        <UploadEstimate />
         <MenuItem sx={menuItemStyles} onClick={handleOpen} > Skip Estimate</MenuItem>
         <MenuItem sx={{
           color: " #F94839",
@@ -493,6 +496,7 @@ const Estimate = (props: Props) => {
         </div>
       </div> */}
       {/* Modal of Skip Estimation */}
+
 
       <Modal
         open={open}

@@ -1,4 +1,4 @@
-import create  from 'zustand';
+import create from 'zustand';
 import { iTicketStore } from '../types/store/ticket';
 import useUserStore from './userStore';
 
@@ -27,7 +27,8 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
     stageList: [],
     representative: null,
     results: null,
-    dateRange: []
+    dateRange: [],
+    status: []
   },
   setFilterTickets: (filterTickets) => set({ filterTickets }),
   loaderOn: false,
@@ -36,6 +37,8 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   setPageNumber: (pageNumber) => set({ pageNumber }),
   estimates: [],
   setEstimates: (estimates) => set({ estimates }),
+  viewEstimates: [],
+  setViewEstimates: (viewEstimates) => set({ viewEstimates }),
   status: [],
   setStatus: (status) => set({ status }),
   pharmacyDateFilter: '',

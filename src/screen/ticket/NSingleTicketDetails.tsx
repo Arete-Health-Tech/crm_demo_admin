@@ -826,13 +826,16 @@ const NSingleTicketDetails = (props: Props) => {
                                             ? 'Ticket-probability50'
                                             : currentTicket?.Probability === 75
                                                 ? 'Ticket-probability75'
-                                                : 'Ticket-probability100'}
+                                                : currentTicket?.Probability === 100
+                                                    ? 'Ticket-probability100'
+                                                    : 'Ticket-probability0'}
                                 // className="Box-assignee"
                                 onClick={() => {
                                     setProbabilityModal(true);
                                 }}
                             >
-                                {currentTicket?.Probability}%
+                                {/* {currentTicket?.Probability}% */}
+                                {!currentTicket?.Probability ? 0 : currentTicket?.Probability}%
                                 <span>
                                     <img src={DropDownArrow} alt='' />
                                 </span>

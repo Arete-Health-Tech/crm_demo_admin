@@ -44,7 +44,8 @@ export const ticketFilterCount = (
   selectedFilters: iTicketFilter,
   admissionType: string[],
   diagnosticsType: string[],
-  dateRange: string[]
+  dateRange: string[],
+  statusType: string[]
 ) => {
   const stageListCount = selectedFilters['stageList'].length;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
@@ -54,6 +55,7 @@ export const ticketFilterCount = (
   const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
 
   const resultCount = selectedFilters['results'] ? 1 : 0;
+  const statusCount = statusType ? statusType.length : 0;
 
   // console.log(stageListCount, " this is stage list count");
   // console.log(admissionCount, " this is Admission Count")
@@ -62,7 +64,7 @@ export const ticketFilterCount = (
   // console.log(stageListCount, " this is stage list count");
   // console.log(resultCount, " this is result counnt")
 
-  const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount;
+  const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount + statusCount;
   return total;
 };
 const TicketFilter = (props: {
@@ -87,7 +89,8 @@ const TicketFilter = (props: {
     results: null,
     admissionType: [],
     diagnosticsType: [],
-    dateRange: []
+    dateRange: [],
+    status: []
   };
 
   const { setFilterTickets, setPageNumber, isSwitchView, } = useTicketStore();
@@ -102,6 +105,7 @@ const TicketFilter = (props: {
 
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const [admissionType, setAdmissionType] = React.useState<string[]>([]);
+  const [statusType, setStatusType] = React.useState<string[]>([]);
   const [result, setResult] = React.useState('');
   const [diagnosticsType, setDiagnosticsType] = React.useState<string[]>(
     () => []
@@ -163,6 +167,18 @@ const TicketFilter = (props: {
 
   };
 
+  const handleStatusType = (
+    event: React.MouseEvent<HTMLElement>,
+    Status: string[]
+  ) => {
+    setStatusType(Status);
+
+    dispatchFilter({
+      type: filterActions.STATUS,
+      payload: Status
+    });
+
+  };
 
   const handleDiagnosticsType = (
     event: React.MouseEvent<HTMLElement>,
@@ -297,7 +313,7 @@ const TicketFilter = (props: {
     setIsFilterOpen(false);
     setPageNumber(1);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType));
 
 
 
@@ -319,15 +335,17 @@ const TicketFilter = (props: {
     dispatchFilter({ type: filterActions.DIAGNOSTICSTYPE, payload: [] });
     dispatchFilter({ type: filterActions.DATERANGE, payload: [] });
     dispatchFilter({ type: filterActions.RESULTS, payload: null });
+    dispatchFilter({ type: filterActions.STATUS, payload: [] });
 
     setCurrentRepresentative('');
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType));
     setFilterCount(0);
     setPageNumber(1);
     setSelectedValue(null);
     setSelectedValueLost(null);
     setResult(" ")
     setAdmissionType((prev) => []);
+    setStatusType((prev) => []);
     setDiagnosticsType((prev) => []);
     setDateRange(["", ""]);
 
@@ -390,7 +408,7 @@ const TicketFilter = (props: {
           }
         }}
       >
-        <Box>
+        <Box >
           <Box
             p={2}
             borderBottom={1}
@@ -410,7 +428,7 @@ const TicketFilter = (props: {
 
             <Stack direction="row" spacing={1}>
               <button
-                className='reminder-btn'
+                className='filter-btn'
                 onClick={handleApplyFilter}
                 style={{ fontSize: "14px", borderRadius: "5px", }}
 
@@ -419,7 +437,7 @@ const TicketFilter = (props: {
               </button>
               {filterCount > 0 && (
                 <button
-                  className='reminder-btn'
+                  className='filter-btn'
                   onClick={handleClearFilter}
                   style={{ fontSize: "14px", borderRadius: "5px", }}>
                   Clear Filters <ClearAll />
@@ -508,6 +526,46 @@ const TicketFilter = (props: {
                 onClick={handleToggleLostChange}
               >
                 LOST
+              </ToggleButton>
+
+            </ToggleButtonGroup>
+          </Box>
+          <Box p={1} px={3}>
+            <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
+              Status
+            </Stack>
+            <ToggleButtonGroup
+              color="primary"
+              value={statusType}
+              onChange={handleStatusType}
+            >
+              <ToggleButton value="dnd"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >DND
+              </ToggleButton>
+              <ToggleButton value="pendingTask"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >DNP
+              </ToggleButton>
+              <ToggleButton value="todayTask"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >Today Task
+              </ToggleButton>
+              <ToggleButton value="pendingTask"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >Pending
               </ToggleButton>
 
             </ToggleButtonGroup>

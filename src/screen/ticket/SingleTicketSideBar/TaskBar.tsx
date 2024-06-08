@@ -7,6 +7,9 @@ import AddCallRescheduler from "../widgets/AddCallRescheduler";
 import MinimizeIcon from "@mui/icons-material/Minimize";
 import "../singleTicket.css";
 import useTicketStore from "../../../store/ticketStore";
+import StarIcon from '../../../assets/star.svg'
+import EmptyStarIcon from '../../../assets/EmptyStar.svg'
+
 const TaskBar = () => {
     const { isModalOpenCall, setIsModalOpenCall } = useTicketStore();
     const [anchorEl, setAnchorEl] = useState(null);
@@ -46,11 +49,12 @@ const TaskBar = () => {
         zIndex: "999999",
         border: "1px solid #66E6FF",
         borderRadius: 2,
-        padding: 1,
+        // padding: 1,
         backgroundColor: "white",
         color: "black",
         width: "20vw",
-        height: "65vh"
+        height: "65vh",
+        boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.1)"
     };
 
     const auditorButton = {
@@ -94,6 +98,7 @@ const TaskBar = () => {
         fontWeight: 500
     }
 
+    const [rating, setRating] = useState(0)
 
     return (
         <Box>
@@ -189,7 +194,7 @@ const TaskBar = () => {
                                 cursor: "pointer",
                             }}
                         >
-                            <Box style={auditorbuttonText}>
+                            <Box p={1} style={auditorbuttonText}>
                                 <img src={commentHeader} alt="" />
                                 <Stack sx={{ marginLeft: '0.5rem', whiteSpace: 'nowrap' }}>
                                     Auditor Comment
@@ -197,7 +202,7 @@ const TaskBar = () => {
                             </Box>
                             <MinimizeIcon onClick={() => setAuditorCommentsOpen(false)} />
                         </Box>
-                        <hr style={{ margin: '0.5rem 0rem' }} />
+                        <hr style={{ margin: '0rem 0rem' }} />
                         <Box className="commentsBox">
                             <Box className="problemBox">
                                 <Box className="problemText">
@@ -278,6 +283,43 @@ const TaskBar = () => {
                                 </Box>
                             </Box>
                         </Box>
+
+                        <Box className="Rating">
+                            <Stack className="Rating_title">Audit Rating</Stack>
+                            <Stack className="Rating_star">
+                                {[1, 2, 3, 4, 5].map((star) => {
+                                    return (
+                                        <Stack sx={{
+                                            display: 'flex',
+                                            flexDirection: "row",
+                                            gap: "4px",
+                                            justifyContent: "left",
+                                        }}
+                                        >
+                                            {rating >= star ? (
+                                                <>
+                                                    <Stack className="Star_icon"
+                                                        onClick={() => {
+                                                            setRating(star)
+                                                        }}>
+                                                        <img src={StarIcon} alt='starIcon' />
+                                                    </Stack>
+                                                </>)
+                                                :
+                                                (
+                                                    <>
+                                                        <Stack className="Star_icon"
+                                                            onClick={() => {
+                                                                setRating(star)
+                                                            }}>
+                                                            <img src={EmptyStarIcon} alt='EmptyStarIcon' />
+                                                        </Stack>
+                                                    </>)}
+                                        </Stack>
+                                    )
+                                })}</Stack>
+                        </Box>
+
                     </Box>
                     <Box
                         onClick={() => setAuditorCommentsOpen(true)}

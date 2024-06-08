@@ -863,7 +863,7 @@ const NSingleTicketDetails = (props: Props) => {
                             <Stack
                                 ref={probabilityRef}
                                 display={probabilityModal ? 'block' : 'none'}
-                                className="KebabMenu-item"
+                                className="probabilty-menu"
                                 bgcolor="white"
                             >
                                 <Stack
@@ -874,7 +874,7 @@ const NSingleTicketDetails = (props: Props) => {
                                     <img src={CloseModalIcon} />
                                 </Stack>
                                 <MenuItem sx={probabilityItemStyles}>
-                                    <Stack className={"Ticket-probability"}>
+                                    <Stack className={"Ticket-probability"} marginBottom={'10px'}>
                                         Select Probability
                                     </Stack>
                                     <Stack display={'flex'} flexDirection={'row'} width={'100%'} justifyContent={'space-between'}>
@@ -979,11 +979,23 @@ const NSingleTicketDetails = (props: Props) => {
                                         >
                                             <Stack className="Ticket-Assignee-item">
                                                 <Stack className="Ticket-Assignee-subItem">
-                                                    {/* <Stack className="Ticket-Assignee-avatar">
-                                                        {item.firstName[0]} {item.lastName[0]}
-                                                    </Stack> */}
-                                                    <Stack className="Ticket-Assignee-Name">
-                                                        {item.firstName} {item.lastName}
+                                                    <Stack className="Ticket-Assignee-avatar">
+                                                        <Avatar
+                                                            sx={{
+                                                                width: '20px',
+                                                                height: '20px',
+                                                                fontSize: '10px',
+                                                                bgcolor: 'orange',
+                                                                textTransform: "uppercase",
+                                                                marginTop: "2px"
+                                                            }}
+                                                        >
+                                                            {item.firstName[0]}
+                                                            {item.lastName[0]}
+                                                        </Avatar>
+                                                    </Stack>
+                                                    <Stack className="Ticket-Assignee-Name" display={'flex'} flexDirection={"row"} gap={"3px"}>
+                                                        <Stack style={{ textTransform: "capitalize" }}>{item.firstName}</Stack> <Stack style={{ textTransform: "capitalize" }}>{item.lastName}</Stack>
                                                     </Stack>
                                                 </Stack>
                                                 {isTicketOwner ? (
@@ -1122,15 +1134,11 @@ const NSingleTicketDetails = (props: Props) => {
                                 /> */}
                                     <Tab
                                         label={<Badge badgeContent={8} sx={{
-                                            "& .MuiBadge-badge": {
-                                                color: "#FFF",
-                                                backgroundColor: "#F94839",
-                                                margin: '-3px',
-                                                fontSize: '9px',
-
-                                                height: '20px',
-                                                // borderRadius: '80%', 
-                                                padding: -8,
+                                            '& .MuiBadge-badge': {
+                                                color: '#FFF',
+                                                backgroundColor: '#F94839',
+                                                margin: '-3.6px -4.5px',
+                                                fontSize: '10px'
                                             }
                                         }}>
                                             SMS

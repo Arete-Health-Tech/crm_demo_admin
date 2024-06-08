@@ -5,24 +5,29 @@
   box-shadow: none;
   border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
 }
+
 #avatar {
   margin: 0px -7px;
 }
+
 #avatar1 {
   margin: 0px -7px;
 }
+
 #assignedDropdown {
   border-radius: 50%;
   min-width: 4;
   padding: 0rem 1rem 0rem 0.5rem;
   cursor: pointer;
 }
+
 .dropdown {
   position: absolute;
   background-color: white;
   box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.2);
   z-index: 1;
-  width: 18.75rem; /* Adjust width as necessary */
+  width: 18.75rem;
+  /* Adjust width as necessary */
   border-radius: 0.4rem;
 }
 
@@ -52,6 +57,7 @@
 .dropdown button {
   margin: 5px;
 }
+
 .dropdownHeader {
   color: #000;
 
@@ -62,6 +68,7 @@
   font-weight: 500;
   line-height: 120%;
 }
+
 .leadAge {
   white-space: nowrap;
   padding-left: 0.5rem;
@@ -73,6 +80,7 @@
   font-weight: 400;
   line-height: 150%;
 }
+
 .gender {
   color: var(--Text-Grey, #354869);
   text-align: center;
@@ -81,13 +89,15 @@
   font-size: 14px;
   font-style: normal;
   font-weight: 400;
-  line-height: 150%; /* 21px */
+  line-height: 150%;
+  /* 21px */
   padding: 0px var(--4px, 4px);
   align-items: center;
   gap: var(--4px, 4px);
   border-radius: var(--8px, 8px);
   background: var(--Background-Greyish, #f6f7f9);
 }
+
 .estimationHeader {
   color: var(--Text-Light-Grey, #647491);
   /* Body/Small */
@@ -97,6 +107,7 @@
   font-weight: 400;
   line-height: 150%;
 }
+
 .estimationHeaderMenu {
   color: var(--Text-Black, #080f1a);
   /* Body/Medium */
@@ -106,6 +117,7 @@
   font-weight: 400;
   line-height: 150%;
 }
+
 .estimationHeaderMenuClose {
   color: var(--Alerts-Red, #f94839);
   /* Body/Medium */
@@ -115,18 +127,23 @@
   font-weight: 400;
   line-height: 150%;
 }
+
 .tabsLabel {
+  width: 20%;
   color: var(--Text-Light-Grey, #647491) !important;
   text-align: center !important;
   font-family: Outfit, sans-serif !important;
   font-size: 0.875rem !important;
   font-style: normal !important;
   font-weight: 400 !important;
-  line-height: 150% !important; /* 1.3125rem */
+  line-height: 150% !important;
+  /* 1.3125rem */
   text-transform: none !important;
-  
+
 }
+
 .selectedTab {
+  width: 20%;
   color: var(--Text-Black, #080f1a) !important;
   text-align: center !important;
   font-family: Outfit, sans-serif !important;

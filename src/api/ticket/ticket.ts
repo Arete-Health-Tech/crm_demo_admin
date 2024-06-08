@@ -170,7 +170,7 @@ interface ApiResponse {
 }
 
 export const callAgent = async (
-  customerNumber: string
+  customerNumber: string | undefined
 ): Promise<ApiResponse> => {
   try {
     const response: AxiosResponse<ApiResponse> = await apiClient.post(
@@ -223,5 +223,21 @@ export const updateTicketProbability = async (
 
 export const deleteTicket = async (ticketID: string | undefined) => {
   const { data } = await apiClient.delete(`/ticket/deleteTicket/${ticketID}`);
+  return Promise.resolve(data);
+};
+
+export const assignedTicket = async (
+  ticketID: string | undefined,
+  representativeid: string | undefined
+) => {
+  const { data } = await apiClient.put(`/ticket/assignedTicket`, {
+    ticketid: ticketID,
+    representativeid: representativeid
+  });
+  return Promise.resolve(data);
+};
+
+export const createSecondOpinion = async (opinion: any) => {
+  const data = await apiClient.post(`/task/opinion`, opinion);
   return Promise.resolve(data);
 };

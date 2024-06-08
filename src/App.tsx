@@ -5,6 +5,8 @@ import Toast from './components/Toast';
 import AppContainer from './container/AppContainer';
 import { getDesignTokens } from './styles/theme';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer } from 'react-toastify';
 
 export const ColorModeContext = createContext({ toggleColorMode: () => {} });
 
@@ -21,6 +23,7 @@ function App() {
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode]);
   return (
     <ColorModeContext.Provider value={colorMode}>
+      <ToastContainer />
       <ThemeProvider theme={theme}>
         <BrowserRouter>
           <AppContainer />

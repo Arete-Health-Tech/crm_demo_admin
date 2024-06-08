@@ -38,7 +38,7 @@ import '../singleTicket.css';
 import useTicketStore from '../../../store/ticketStore';
 import LeadDetail from '../SingleTicketSideBar/LeadDetail/LeadDetail';
 import ReactQuill from 'react-quill';
-import { callAgent } from '../../../api/ticket/ticket';
+import { callAgent, createSecondOpinion } from '../../../api/ticket/ticket';
 import { toast } from 'react-toastify';
 
 const CustomModal = () => {
@@ -64,10 +64,10 @@ const CustomModal = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [note, setNote] = useState('');
   const [secondOpinion, setSecondOpinion] = useState({
-    header: '',
+    type: '',
     hospital: '',
-    doctorName: '',
-    additionalInformation: ''
+    doctor: '',
+    additionalInfo: ''
   });
   const [challengeSelected, setChallengeSelected] = useState<string[]>([]);
   const [ucid, setUCID] = useState("");
@@ -85,28 +85,26 @@ const CustomModal = () => {
   console.log({ challengeSelected })
 
   const startTimer = async () => {
-    if (timerRef.current !== null) {
-      clearInterval(timerRef.current);
-    }
-    timerRef.current = setInterval(() => {
-      setTimer((prevTimer) => prevTimer + 1);
-    }, 1000);
-    try {
-      const returnedData = await callAgent("918797255306")
-      // const returnedData = await callAgent(currentTicket?.consumer[0]?.phone)
-      if (returnedData.status == "Agent is not available") {
-        toast.error("Agent is not loggeIn")
-        // setOpenAgentModal(true)
-      } else if (returnedData.status == "queued successfully") {
-        setUCID(returnedData.ucid)
-        setChipOpen(true);
-        setDialogOpen(true);
-      } else {
-        toast.error(returnedData.status)
-        // setOpenAgentModal(true)
+    const returnedData = await callAgent("917979084615")
+    // const returnedData = await callAgent(currentTicket?.consumer[0]?.phone)
+    console.log({ returnedData })
+    if (returnedData.status == "Agent is not available") {
+      toast.error("Agent is not loggedIn")
+      console.log("iinside the not login condition")
+      // setOpenAgentModal(true)
+    } else if (returnedData.status == "queued successfully") {
+      if (timerRef.current !== null) {
+        clearInterval(timerRef.current);
       }
-    } catch {
-      console.log("error in customMOdal")
+      timerRef.current = setInterval(() => {
+        setTimer((prevTimer) => prevTimer + 1);
+      }, 1000);
+      setUCID(returnedData.ucid)
+      setChipOpen(true);
+      setDialogOpen(true);
+    } else {
+      toast.error(returnedData.status)
+      // setOpenAgentModal(true)
     }
     // setChipOpen(true);
     // setDialogOpen(true);
@@ -144,11 +142,13 @@ const CustomModal = () => {
         setNote('');
       }
 
-      if (isVisible) {
-        if (secondOpinion.header !== '' && secondOpinion.hospital !== '' && secondOpinion.doctorName !== '') {
-          // await createSecondOpinion( )
-        }
-      }
+      const opinion = {
+        ...secondOpinion,
+        challengeSelected,
+        ticketid: ticketID
+      };
+
+      await createSecondOpinion(opinion)
 
       //This if condition is for checking that what disposition we have selected 
       if (formData.select === "Rescheduled Call") {
@@ -176,10 +176,10 @@ const CustomModal = () => {
         setTimer(0);
         setChipOpen(false);
         setSecondOpinion({
-          header: '',
+          type: '',
           hospital: '',
-          doctorName: '',
-          additionalInformation: ''
+          doctor: '',
+          additionalInfo: ''
         })
         setChallengeSelected([])
         // console.log(
@@ -493,7 +493,7 @@ const CustomModal = () => {
                             label="Considering Consultation"
                             onClick={() => setSecondOpinion(prevState => ({
                               ...prevState,
-                              header: "Considering Consultation"
+                              type: "Considering Consultation"
                             }))}
                           />
                           < FormControlLabel
@@ -502,7 +502,7 @@ const CustomModal = () => {
                             label="Consulted"
                             onClick={() => setSecondOpinion(prevState => ({
                               ...prevState,
-                              header: "consulted"
+                              type: "consulted"
                             }))}
                           />
                         </RadioGroup>
@@ -526,10 +526,10 @@ const CustomModal = () => {
                             fullWidth
                             InputLabelProps={{ shrink: true }}
                             size="small"
-                            value={secondOpinion.doctorName}
+                            value={secondOpinion.doctor}
                             onChange={(e) => setSecondOpinion(prevState => ({
                               ...prevState,
-                              doctorName: e.target.value
+                              doctor: e.target.value
                             }))}
                           />
                         </Box>
@@ -542,10 +542,10 @@ const CustomModal = () => {
                             fullWidth
                             InputLabelProps={{ shrink: true }}
                             size="small"
-                            value={secondOpinion.additionalInformation}
+                            value={secondOpinion.additionalInfo}
                             onChange={(e) => setSecondOpinion(prevState => ({
                               ...prevState,
-                              additionalInformation: e.target.value
+                              additionalInfo: e.target.value
                             }))}
                           />
                         </Box>

@@ -74,7 +74,7 @@ import {
 import MessagingWidget from './widgets/whatsapp/WhatsappWidget';
 import styles from './SingleTicketDetails.module.css';
 import ShowPrescription from './widgets/ShowPrescriptionModal';
-import { deleteTicket, updateService, updateTicketProbability, updateTicketSubStage, validateTicket } from '../../api/ticket/ticket';
+import { assignedToTicket, deleteTicket, removeFromTicket, updateService, updateTicketProbability, updateTicketSubStage, validateTicket } from '../../api/ticket/ticket';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../constantUtils/constant';
 import Modal from '@mui/material/Modal';
 import Checkbox from '@mui/material/Checkbox';
@@ -231,6 +231,7 @@ const NSingleTicketDetails = (props: Props) => {
     const [disableButton, setDisableButton] = useState(false);
     const defaultValidation = { message: '', value: false };
     const [selectedInternalRef, setSelectedInternalRef] = useState('');
+    const [inputSearch, setInputSearch] = useState('');
 
     const handleInternalRefChange = (event) => {
         const value = event.target.value;
@@ -704,7 +705,7 @@ const NSingleTicketDetails = (props: Props) => {
         if (isClickOutsideProbability) {
             setProbabilityModal(false);
         }
-        if (isClickOutsideProbability) {
+        if (isClickOutsideVisibleRef) {
             setVisible(false);
         }
     };
@@ -757,6 +758,20 @@ const NSingleTicketDetails = (props: Props) => {
         getTicketHandler(UNDEFINED, 1, "false", filterTickets);
         await validateTicket(ticketID);
         navigate(NAVIGATE_TO_TICKET);
+    }
+
+    //This function is for assigne ticket to different representative
+    const handleAddAssigne = async (assigneeId: string) => {
+        console.log(assigneeId)
+        const res = await assignedToTicket(ticketID, assigneeId)
+        getTicketHandler(UNDEFINED, 1, "false", filterTickets);
+    }
+
+    //This function is for remove assigne ticket from the representative
+    const handleRemoveAssigne = async (assigneeId: string) => {
+        console.log(assigneeId)
+        const res = await removeFromTicket(ticketID, assigneeId)
+        getTicketHandler(UNDEFINED, 1, "false", filterTickets);
     }
 
 
@@ -848,7 +863,7 @@ const NSingleTicketDetails = (props: Props) => {
                             <Stack
                                 ref={probabilityRef}
                                 display={probabilityModal ? 'block' : 'none'}
-                                className="KebabMenu-item ticket-assigneemenu"
+                                className="KebabMenu-item"
                                 bgcolor="white"
                             >
                                 <Stack
@@ -931,6 +946,7 @@ const NSingleTicketDetails = (props: Props) => {
                                             type="text"
                                             className="search-input"
                                             placeholder=" Search..."
+                                            onChange={(e) => setInputSearch(e.target.value)}
                                         />
                                     </div>
                                 </Stack>
@@ -945,7 +961,14 @@ const NSingleTicketDetails = (props: Props) => {
                                     </Stack>
                                 </MenuItem> */}
 
-                                {representative.filter((item) => item.role === "REPRESENTATIVE")?.map((item) => {
+                                {representative.filter((item) => {
+                                    const matchesSearch = inputSearch ?
+                                        item.firstName.toLowerCase().includes(inputSearch.toLowerCase()) ||
+                                        item.lastName.toLowerCase().includes(inputSearch.toLowerCase()) :
+                                        true;
+
+                                    return matchesSearch && item.role === "REPRESENTATIVE";
+                                })?.map((item) => {
                                     const isTicketOwner = (item._id === currentTicket?.assigned?.[0]);
                                     const isAssigned = currentTicket?.assigned?.slice(1).includes(item._id);
 
@@ -953,13 +976,12 @@ const NSingleTicketDetails = (props: Props) => {
                                         <MenuItem
                                             key={item._id}
                                             sx={menuItemStyles}
-                                            onClick={handleKebabClose}
                                         >
                                             <Stack className="Ticket-Assignee-item">
                                                 <Stack className="Ticket-Assignee-subItem">
-                                                    <Stack className="Ticket-Assignee-avatar">
+                                                    {/* <Stack className="Ticket-Assignee-avatar">
                                                         {item.firstName[0]} {item.lastName[0]}
-                                                    </Stack>
+                                                    </Stack> */}
                                                     <Stack className="Ticket-Assignee-Name">
                                                         {item.firstName} {item.lastName}
                                                     </Stack>
@@ -968,11 +990,17 @@ const NSingleTicketDetails = (props: Props) => {
                                                     <Stack className="Ticket-Assignee-Owner">Ticket Owner</Stack>
                                                 ) : isAssigned ? (
                                                     <Stack>
-                                                        <img src={red_remove} alt="Remove Assignee" />
+                                                        <img src={red_remove} alt="Remove Assignee"
+                                                            onClick={() => {
+                                                                handleRemoveAssigne(item._id)
+                                                            }} />
                                                     </Stack>
                                                 ) : (
                                                     <Stack className="Ticket-Assignee-Operation">
-                                                        <img src={AddAssigneeIcon} alt="Add Assignee" />
+                                                        <img src={AddAssigneeIcon} alt="Add Assignee"
+                                                            onClick={() => {
+                                                                handleAddAssigne(item._id)
+                                                            }} />
                                                     </Stack>
                                                 )}
                                             </Stack>
@@ -1132,13 +1160,13 @@ const NSingleTicketDetails = (props: Props) => {
                                             value == '5' ? styles.selectedTab : styles.tabsLabel
                                         }
                                     />
-                                    <Tab
+                                    {/* <Tab
                                         label="Query Resolution"
                                         value="6"
                                         className={
                                             value == '6' ? styles.selectedTab : styles.tabsLabel
                                         }
-                                    />
+                                    /> */}
                                     <Tab
                                         label="Notes"
                                         value="7"

@@ -36,6 +36,8 @@ import 'react-quill/dist/quill.snow.css';
 import ReactHtmlParser from 'html-react-parser';
 import { Avatar } from '@mui/material';
 import useUserStore from '../../../store/userStore';
+import { deleteNotes, updateNotes } from '../../../api/ticket/ticket';
+import { toast } from 'react-toastify';
 
 type Props = { setTicketUpdateFlag: any };
 
@@ -51,6 +53,9 @@ const NotesWidget = (props: Props) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const { ticketID } = useParams();
   const { user, setUser } = useUserStore();
+
+  console.log({ notesClickedData })
+
   const handleAddNewNote = async () => {
     if (note !== '<p><br></p>') {
       const data: iNote = {
@@ -75,8 +80,60 @@ const NotesWidget = (props: Props) => {
     }
   };
   const handleNoteEdited = async () => {
-    console.log('coming data');
+    if (note !== '<p><br></p>') {
+      const updatedNoteData = {
+        note: note,
+        ticketId: notesClickedData?._id,
+        // noteId: notesClickedData?._id
+      };
+      await updateNotes(updatedNoteData);
+      setTimeout(() => {
+        (async () => {
+          const result = await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            filterTickets
+          );
+          setNotesClickedData(null)
+          await getAllNotesHandler(ticketID as string);
+          props.setTicketUpdateFlag(result);
+        })();
+      }, 1000);
+
+      setNote('');
+      setNotesModal(false);
+    }
   };
+  const handleNoteDelete = async () => {
+    if (!notesClickedData?._id) {
+      console.error('No note ID found');
+      return;
+    }
+
+    const noteId = { ticketId: notesClickedData._id };
+    try {
+      await deleteNotes(noteId);
+    } catch (error) {
+      toast.error("something went wrong Please try again later")
+    }
+    setTimeout(() => {
+      (async () => {
+        const result = await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          filterTickets
+        );
+        setNotesClickedData(null)
+        await getAllNotesHandler(ticketID as string);
+        props.setTicketUpdateFlag(result);
+      })();
+    }, 1000);
+
+    setNote('');
+    setNotesModal(false);
+  }
 
   console.log(note);
 
@@ -374,6 +431,7 @@ const NotesWidget = (props: Props) => {
             </Box>
             <Box
               className={styles.DeleteNoteButton}
+              onClick={handleNoteDelete}
             >
               Delete
             </Box>

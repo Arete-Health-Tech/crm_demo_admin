@@ -226,7 +226,7 @@ export const deleteTicket = async (ticketID: string | undefined) => {
   return Promise.resolve(data);
 };
 
-export const assignedTicket = async (
+export const assignedToTicket = async (
   ticketID: string | undefined,
   representativeid: string | undefined
 ) => {
@@ -237,7 +237,41 @@ export const assignedTicket = async (
   return Promise.resolve(data);
 };
 
+export const removeFromTicket = async (
+  ticketID: string | undefined,
+  representativeid: string | undefined
+) => {
+  const { data } = await apiClient.delete(`/ticket/removeAssignedTicket`, {
+    data: {
+      ticketid: ticketID,
+      representativeid: representativeid
+    }
+  });
+  return Promise.resolve(data);
+};
 export const createSecondOpinion = async (opinion: any) => {
   const data = await apiClient.post(`/task/opinion`, opinion);
+  return Promise.resolve(data);
+};
+
+export const updateNotes = async (updatedNoteData: any) => {
+  const data = await apiClient.put(`/ticket/updateNotes`, updatedNoteData);
+  return Promise.resolve(data);
+};
+
+export const deleteNotes = async (noteId: any) => {
+  console.log(noteId);
+  const data = await apiClient.delete(`/ticket/deleteNote`, { data: noteId });
+  return Promise.resolve(data);
+};
+
+export const updateConusmerData = async (
+  updatedData: any,
+  ticketID: string | undefined
+) => {
+  const data = await apiClient.put(
+    `/ticket/updateConsumer/${ticketID}`,
+    updatedData
+  );
   return Promise.resolve(data);
 };

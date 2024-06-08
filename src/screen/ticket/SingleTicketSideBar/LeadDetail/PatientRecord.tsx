@@ -58,7 +58,7 @@ const PatientRecord = ({ isPatient }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        console.log('Form submitted with name:', name);
+        console.log({ admissionType });
         setIsEditing(false);
     };
 

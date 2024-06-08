@@ -8,6 +8,8 @@ import useTicketStore from '../../../../store/ticketStore';
 import useServiceStore from '../../../../store/serviceStore';
 import { iDepartment, iDoctor } from '../../../../types/store/service';
 import { Interface } from 'readline';
+import { updateConusmerData } from '../../../../api/ticket/ticket';
+import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
 import { apiClient } from '../../../../api/apiClient';
 
 interface patientData {
@@ -42,6 +44,9 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     const { doctors, departments, stages } = useServiceStore();
     const {
         tickets,
+        filterTickets,
+        searchByName,
+        pageNumber,
         viewEstimates,
         setViewEstimates
     } = useTicketStore();
@@ -126,7 +131,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         { id: 'doctor', label: 'Doctor', value: PatientData.doctor, setValue: setPatientData }
     ];
 
-
+    console.log(doctors, departments,)
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
@@ -147,9 +152,27 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         getTicketInfo(ticketID);
     }, [ticketID, tickets])
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log('Form submitted with name:', name);
+        console.log('Form submitted with name:', PatientData);
+        const updatedData = {
+            "consumer": {
+                "firstName": PatientData.name,
+                "gender": PatientData.gender,
+                "age": PatientData.age,
+            },
+            "prescription": {
+                doctor: PatientData.doctor,
+                department: PatientData.department
+            }
+        }
+        await updateConusmerData(updatedData, ticketID)
+        await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            filterTickets
+        );
         setIsEditing(false);
     };
 
@@ -273,13 +296,13 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                                 style={{ textTransform: 'capitalize', fontSize: '14px', fontFamily: 'Outfit,sans-serif' }}
                                                 inputProps={{ style: { fontSize: '14px' } }}
                                             >
-                                                <MenuItem value="Male" sx={{
+                                                <MenuItem value="M" sx={{
                                                     fontSize: '14px',
                                                     fontFamily: 'Outfit,sans-serif'
                                                 }}>
                                                     Male
                                                 </MenuItem>
-                                                <MenuItem value="Female" sx={{
+                                                <MenuItem value="F" sx={{
                                                     fontSize: '14px',
                                                     fontFamily: 'Outfit,sans-serif'
                                                 }}>
@@ -336,10 +359,10 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                                 </li>
                                             )}
                                             fullWidth
-                                            value={doctors.find((dept) => dept.name === PatientData.doctor) || null}
+                                            value={doctors.find((dept) => dept._id === PatientData.doctor) || null}
                                             onChange={(e, value) => setPatientData((prev) => ({
                                                 ...prev,
-                                                doctor: value ? value.name : '',
+                                                doctor: value ? value._id : '',
                                             }))}
                                             options={doctors.filter((item) => PatientData.department)}
                                             // options={doctors.filter((item) =>

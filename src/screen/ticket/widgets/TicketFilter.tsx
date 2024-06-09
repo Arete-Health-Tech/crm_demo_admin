@@ -546,7 +546,7 @@ const TicketFilter = (props: {
                 }}
               >DND
               </ToggleButton>
-              <ToggleButton value="pendingTask"
+              <ToggleButton value="dnp"
                 sx={{
                   fontFamily: "Outfit,sans-serif",
                   fontSize: '12px',

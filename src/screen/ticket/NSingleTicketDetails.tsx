@@ -1093,7 +1093,18 @@ const NSingleTicketDetails = (props: Props) => {
                                 <TabList
                                     onChange={handleChange}
                                     aria-label="lab API tabs example"
-                                    style={{ width: '95%' }}
+                                    style={{ width: '100%' }}
+                                    sx={{
+                                        '& .MuiTabs-indicator': {
+                                            display: 'none',
+                                        },
+                                        '.Mui-selected': {
+                                            // backgroundColor: "#0566FF !important",
+                                            color: "#FFFFFF",
+                                            borderBottom: "2px solid #0566FF"
+                                        },
+
+                                    }}
                                 // variant="scrollable"
                                 // scrollButtons="auto"
                                 // aria-label="scrollable auto tabs example"

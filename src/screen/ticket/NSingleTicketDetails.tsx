@@ -717,33 +717,33 @@ const NSingleTicketDetails = (props: Props) => {
         };
     }, []);
 
-    // const [messages, setMessages] = useState<storeMessage[]>([]);
+    const [messages, setMessages] = useState<storeMessage[]>([]);
 
-    // useEffect(() => {
-    //     console.log("useEffect is running in NsingleticketCard"); // Check if this logs
+    useEffect(() => {
+        console.log("useEffect is running in NsingleticketCard"); // Check if this logs
 
-    //     // Check if socket is connected
-    //     if (socket.connected) {
-    //         console.log("Socket connected successfully in NsingleticketCard");
-    //     } else {
-    //         console.log("Socket not connected, attempting to connect...");
-    //         socket.connect();
-    //     }
+        // Check if socket is connected
+        if (socket.connected) {
+            console.log("Socket connected successfully in NsingleticketCard");
+        } else {
+            console.log("Socket not connected, attempting to connect...");
+            socket.connect();
+        }
 
-    //     const handleNewMessage = (data) => {
-    //         console.log('Received new message ', data);
-    //         setMessages((prevMessages) => [...prevMessages, data.message]);
-    //     };
+        const handleNewMessage = (data) => {
+            console.log('Received new message ', data);
+            setMessages((prevMessages) => [...prevMessages, data.message]);
+        };
 
-    //     // Listen for the 'newMessage' event
-    //     socket.on('newMessage', handleNewMessage);
+        // Listen for the 'newMessage' event
+        socket.on('newMessage', handleNewMessage);
 
-    //     // Clean up the socket connection on component unmount
-    //     return () => {
-    //         socket.off('newMessage', handleNewMessage); // Remove the event listener
-    //         socket.disconnect();
-    //     };
-    // }, []);
+        // Clean up the socket connection on component unmount
+        return () => {
+            socket.off('newMessage', handleNewMessage); // Remove the event listener
+            socket.disconnect();
+        };
+    }, []);
 
     // console.log({ messages })
     const handleProbability = async (value) => {

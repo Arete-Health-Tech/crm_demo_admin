@@ -158,7 +158,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         const updatedData = {
             "consumer": {
                 "firstName": PatientData.name,
-                "gender": PatientData.gender,
+                "gender": PatientData.gender === "Male" ? "M" : PatientData.gender === "Female" ? "F" : "",
                 "age": PatientData.age,
             },
             "prescription": {
@@ -296,13 +296,13 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                                 style={{ textTransform: 'capitalize', fontSize: '14px', fontFamily: 'Outfit,sans-serif' }}
                                                 inputProps={{ style: { fontSize: '14px' } }}
                                             >
-                                                <MenuItem value="M" sx={{
+                                                <MenuItem value="Male" sx={{
                                                     fontSize: '14px',
                                                     fontFamily: 'Outfit,sans-serif'
                                                 }}>
                                                     Male
                                                 </MenuItem>
-                                                <MenuItem value="F" sx={{
+                                                <MenuItem value="Female" sx={{
                                                     fontSize: '14px',
                                                     fontFamily: 'Outfit,sans-serif'
                                                 }}>

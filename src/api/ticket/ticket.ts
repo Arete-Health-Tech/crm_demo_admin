@@ -203,6 +203,7 @@ export const updateService = async (
   updatedData: Object,
   ticketID: string | undefined
 ) => {
+  console.log({ updatedData });
   const { data } = await apiClient.put(
     `/ticket/updateService/${ticketID}`,
     updatedData
@@ -273,5 +274,10 @@ export const updateConusmerData = async (
     `/ticket/updateConsumer/${ticketID}`,
     updatedData
   );
+  return Promise.resolve(data);
+};
+
+export const getDocumentsData = async (ticketID: string | undefined) => {
+  const data = await apiClient.get(`/task/getDocs/${ticketID}`);
   return Promise.resolve(data);
 };

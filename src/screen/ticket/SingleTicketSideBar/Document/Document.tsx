@@ -11,6 +11,7 @@ import { UploadFile } from '@mui/icons-material'
 import { useParams } from 'react-router-dom'
 import { apiClient } from '../../../../api/apiClient'
 import CheckIcon from '@mui/icons-material/Check';
+import { getDocumentsData } from '../../../../api/ticket/ticket'
 
 interface FileObject {
     file: File | null;
@@ -118,23 +119,14 @@ const Document = () => {
         }
     };
 
+    const documentsData = async () => {
+        const response = await getDocumentsData(ticketID);
+        console.log(response)
+    }
+
     useEffect(() => {
-        fetchDocuments();
-    }, [ticketID]);
-
-    const fetchDocuments = async () => {
-        try {
-            const response = await apiClient.get(`/task/getDocs/${ticketID}`);
-
-            if (response.data) {
-                console.log(response, 'document Getting');
-            } else {
-                console.error('Error fetching documents:', response);
-            }
-        } catch (error) {
-            console.error('Error fetching documents:', error);
-        }
-    };
+        documentsData()
+    }, [])
 
 
     return (

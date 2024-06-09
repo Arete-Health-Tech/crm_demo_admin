@@ -87,6 +87,8 @@ export interface iPrescrition {
   symptoms: string;
 }
 
+
+
 export interface iTicket {
   _id: string;
   consumer: iConsumer[];
@@ -164,6 +166,8 @@ export interface iTicketStore {
   setPageNumber: (pageNumber: number) => void;
   estimates: iEstimate[];
   setEstimates: (estimates: iEstimate[]) => void;
+  viewEstimates: iEstimate2[];
+  setViewEstimates: (viewEstimates: iEstimate2) => void;
   status: iTimer[];
   setStatus: (status: iTimer[]) => void;
   pharmacyDateFilter: date;
@@ -252,6 +256,7 @@ export interface iTicketFilter {
   endDate?: number;
   dateRange: string[];
   results?: string | null;
+  status: string[];
 }
 
 export interface iCreator {

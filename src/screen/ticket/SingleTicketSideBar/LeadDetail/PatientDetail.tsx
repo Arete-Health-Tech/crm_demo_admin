@@ -8,6 +8,9 @@ import useTicketStore from '../../../../store/ticketStore';
 import useServiceStore from '../../../../store/serviceStore';
 import { iDepartment, iDoctor } from '../../../../types/store/service';
 import { Interface } from 'readline';
+import { updateConusmerData } from '../../../../api/ticket/ticket';
+import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
+import { apiClient } from '../../../../api/apiClient';
 
 interface patientData {
     uhid: string;
@@ -41,6 +44,11 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     const { doctors, departments, stages } = useServiceStore();
     const {
         tickets,
+        filterTickets,
+        searchByName,
+        pageNumber,
+        viewEstimates,
+        setViewEstimates
     } = useTicketStore();
 
     // console.log(doctors[0].departments[0], 'doctors');
@@ -59,6 +67,25 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
 
     const [name, setName] = React.useState('');
 
+
+    useEffect(() => {
+        const fetchEstimateData = async () => {
+
+            if (ticketID) {
+                try {
+                    const { data } = await apiClient.get(`ticket/uploadestimateData/${ticketID}`);
+                    setViewEstimates(data)
+                } catch (error) {
+                    console.error("Error fetching estimate data:", error);
+                }
+            } else {
+                console.error("Ticket ID is undefined.");
+            }
+        }
+
+        // console.log(estimates2, "fetchEstimateData");
+        fetchEstimateData();
+    }, [ticketID]);
 
     const patientName = (ticket) => {
         if (!ticket || !ticket.consumer || ticket.consumer.length === 0) {
@@ -104,7 +131,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         { id: 'doctor', label: 'Doctor', value: PatientData.doctor, setValue: setPatientData }
     ];
 
-
+    console.log(doctors, departments,)
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
@@ -125,15 +152,41 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         getTicketInfo(ticketID);
     }, [ticketID, tickets])
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log('Form submitted with name:', name);
+        console.log('Form submitted with name:', PatientData);
+        const updatedData = {
+            "consumer": {
+                "firstName": PatientData.name,
+                "gender": PatientData.gender,
+                "age": PatientData.age,
+            },
+            "prescription": {
+                doctor: PatientData.doctor,
+                department: PatientData.department
+            }
+        }
+        await updateConusmerData(updatedData, ticketID)
+        await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            filterTickets
+        );
         setIsEditing(false);
     };
 
     const fetchPdfUrl = async () => {
         if (currentTicket?.location) {
             window.open(currentTicket.location, '_blank');
+        } else {
+            setShowAlert(true);
+        }
+    };
+
+    const fetchUploadPdfUrl = async () => {
+        if (viewEstimates[viewEstimates.length - 1].location) {
+            window.open(viewEstimates[viewEstimates.length - 1].location, '_blank');
         } else {
             setShowAlert(true);
         }
@@ -243,13 +296,13 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                                 style={{ textTransform: 'capitalize', fontSize: '14px', fontFamily: 'Outfit,sans-serif' }}
                                                 inputProps={{ style: { fontSize: '14px' } }}
                                             >
-                                                <MenuItem value="Male" sx={{
+                                                <MenuItem value="M" sx={{
                                                     fontSize: '14px',
                                                     fontFamily: 'Outfit,sans-serif'
                                                 }}>
                                                     Male
                                                 </MenuItem>
-                                                <MenuItem value="Female" sx={{
+                                                <MenuItem value="F" sx={{
                                                     fontSize: '14px',
                                                     fontFamily: 'Outfit,sans-serif'
                                                 }}>
@@ -306,10 +359,10 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                                 </li>
                                             )}
                                             fullWidth
-                                            value={doctors.find((dept) => dept.name === PatientData.doctor) || null}
+                                            value={doctors.find((dept) => dept._id === PatientData.doctor) || null}
                                             onChange={(e, value) => setPatientData((prev) => ({
                                                 ...prev,
-                                                doctor: value ? value.name : '',
+                                                doctor: value ? value._id : '',
                                             }))}
                                             options={doctors.filter((item) => PatientData.department)}
                                             // options={doctors.filter((item) =>
@@ -404,9 +457,10 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 <Box className='Payment-detail-Head'>
                     <Stack className='Payment-detail-Heading'>Value And Payment Mode</Stack>
                 </Box>
-                {currentTicket?.estimate[0] ? (
+                {viewEstimates[viewEstimates.length - 1] ? (
                     <Box className="Payment-detail-data">
-                        <Stack className='Payment-value'>{'\u20B9'} {currentTicket?.estimate[0]?.total}</Stack>
+                        {/* <Stack className='Payment-value'>{'\u20B9'} {currentTicket?.estimate[0]?.total}</Stack> */}
+                        <Stack className='Payment-value'>{'\u20B9'} {viewEstimates[viewEstimates.length - 1]?.total}</Stack>
                         <Chip
                             label={
                                 currentTicket?.estimate[0]?.paymentType === 0
@@ -432,7 +486,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                         <Box p={1} className='Payment-value'>No Estimate Available</Box>
                     </Box>
                 )}
-                <Stack className='View-Estimation' onClick={fetchPdfUrl}>View Estimate</Stack>
+                <Stack className='View-Estimation' onClick={fetchUploadPdfUrl}>View Estimate</Stack>
+                {/* <Stack className='View-Estimation' onClick={fetchPdfUrl}>View Estimate</Stack> */}
                 {showAlert && (
 
                     <Snackbar

@@ -74,7 +74,7 @@ import {
 import MessagingWidget from './widgets/whatsapp/WhatsappWidget';
 import styles from './SingleTicketDetails.module.css';
 import ShowPrescription from './widgets/ShowPrescriptionModal';
-import { deleteTicket, updateService, updateTicketProbability, updateTicketSubStage, validateTicket } from '../../api/ticket/ticket';
+import { assignedToTicket, deleteTicket, removeFromTicket, updateService, updateTicketProbability, updateTicketSubStage, validateTicket } from '../../api/ticket/ticket';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../constantUtils/constant';
 import Modal from '@mui/material/Modal';
 import Checkbox from '@mui/material/Checkbox';
@@ -231,6 +231,7 @@ const NSingleTicketDetails = (props: Props) => {
     const [disableButton, setDisableButton] = useState(false);
     const defaultValidation = { message: '', value: false };
     const [selectedInternalRef, setSelectedInternalRef] = useState('');
+    const [inputSearch, setInputSearch] = useState('');
 
     const handleInternalRefChange = (event) => {
         const value = event.target.value;
@@ -704,7 +705,7 @@ const NSingleTicketDetails = (props: Props) => {
         if (isClickOutsideProbability) {
             setProbabilityModal(false);
         }
-        if (isClickOutsideProbability) {
+        if (isClickOutsideVisibleRef) {
             setVisible(false);
         }
     };
@@ -757,6 +758,20 @@ const NSingleTicketDetails = (props: Props) => {
         getTicketHandler(UNDEFINED, 1, "false", filterTickets);
         await validateTicket(ticketID);
         navigate(NAVIGATE_TO_TICKET);
+    }
+
+    //This function is for assigne ticket to different representative
+    const handleAddAssigne = async (assigneeId: string) => {
+        console.log(assigneeId)
+        const res = await assignedToTicket(ticketID, assigneeId)
+        getTicketHandler(UNDEFINED, 1, "false", filterTickets);
+    }
+
+    //This function is for remove assigne ticket from the representative
+    const handleRemoveAssigne = async (assigneeId: string) => {
+        console.log(assigneeId)
+        const res = await removeFromTicket(ticketID, assigneeId)
+        getTicketHandler(UNDEFINED, 1, "false", filterTickets);
     }
 
 
@@ -830,13 +845,16 @@ const NSingleTicketDetails = (props: Props) => {
                                             ? 'Ticket-probability50'
                                             : currentTicket?.Probability === 75
                                                 ? 'Ticket-probability75'
-                                                : 'Ticket-probability100'}
+                                                : currentTicket?.Probability === 100
+                                                    ? 'Ticket-probability100'
+                                                    : 'Ticket-probability0'}
                                 // className="Box-assignee"
                                 onClick={() => {
                                     setProbabilityModal(true);
                                 }}
                             >
-                                {currentTicket?.Probability}%
+                                {/* {currentTicket?.Probability}% */}
+                                {!currentTicket?.Probability ? 0 : currentTicket?.Probability}%
                                 <span>
                                     <img src={DropDownArrow} alt='' />
                                 </span>
@@ -845,7 +863,7 @@ const NSingleTicketDetails = (props: Props) => {
                             <Stack
                                 ref={probabilityRef}
                                 display={probabilityModal ? 'block' : 'none'}
-                                className="KebabMenu-item ticket-assigneemenu"
+                                className="probabilty-menu"
                                 bgcolor="white"
                             >
                                 <Stack
@@ -856,7 +874,7 @@ const NSingleTicketDetails = (props: Props) => {
                                     <img src={CloseModalIcon} />
                                 </Stack>
                                 <MenuItem sx={probabilityItemStyles}>
-                                    <Stack className={"Ticket-probability"}>
+                                    <Stack className={"Ticket-probability"} marginBottom={'10px'}>
                                         Select Probability
                                     </Stack>
                                     <Stack display={'flex'} flexDirection={'row'} width={'100%'} justifyContent={'space-between'}>
@@ -928,6 +946,7 @@ const NSingleTicketDetails = (props: Props) => {
                                             type="text"
                                             className="search-input"
                                             placeholder=" Search..."
+                                            onChange={(e) => setInputSearch(e.target.value)}
                                         />
                                     </div>
                                 </Stack>
@@ -942,7 +961,14 @@ const NSingleTicketDetails = (props: Props) => {
                                     </Stack>
                                 </MenuItem> */}
 
-                                {representative.filter((item) => item.role === "REPRESENTATIVE")?.map((item) => {
+                                {representative.filter((item) => {
+                                    const matchesSearch = inputSearch ?
+                                        item.firstName.toLowerCase().includes(inputSearch.toLowerCase()) ||
+                                        item.lastName.toLowerCase().includes(inputSearch.toLowerCase()) :
+                                        true;
+
+                                    return matchesSearch && item.role === "REPRESENTATIVE";
+                                })?.map((item) => {
                                     const isTicketOwner = (item._id === currentTicket?.assigned?.[0]);
                                     const isAssigned = currentTicket?.assigned?.slice(1).includes(item._id);
 
@@ -950,26 +976,43 @@ const NSingleTicketDetails = (props: Props) => {
                                         <MenuItem
                                             key={item._id}
                                             sx={menuItemStyles}
-                                            onClick={handleKebabClose}
                                         >
                                             <Stack className="Ticket-Assignee-item">
                                                 <Stack className="Ticket-Assignee-subItem">
                                                     <Stack className="Ticket-Assignee-avatar">
-                                                        {item.firstName[0]} {item.lastName[0]}
+                                                        <Avatar
+                                                            sx={{
+                                                                width: '20px',
+                                                                height: '20px',
+                                                                fontSize: '10px',
+                                                                bgcolor: 'orange',
+                                                                textTransform: "uppercase",
+                                                                marginTop: "2px"
+                                                            }}
+                                                        >
+                                                            {item.firstName[0]}
+                                                            {item.lastName[0]}
+                                                        </Avatar>
                                                     </Stack>
-                                                    <Stack className="Ticket-Assignee-Name">
-                                                        {item.firstName} {item.lastName}
+                                                    <Stack className="Ticket-Assignee-Name" display={'flex'} flexDirection={"row"} gap={"3px"}>
+                                                        <Stack style={{ textTransform: "capitalize" }}>{item.firstName}</Stack> <Stack style={{ textTransform: "capitalize" }}>{item.lastName}</Stack>
                                                     </Stack>
                                                 </Stack>
                                                 {isTicketOwner ? (
                                                     <Stack className="Ticket-Assignee-Owner">Ticket Owner</Stack>
                                                 ) : isAssigned ? (
                                                     <Stack>
-                                                        <img src={red_remove} alt="Remove Assignee" />
+                                                        <img src={red_remove} alt="Remove Assignee"
+                                                            onClick={() => {
+                                                                handleRemoveAssigne(item._id)
+                                                            }} />
                                                     </Stack>
                                                 ) : (
                                                     <Stack className="Ticket-Assignee-Operation">
-                                                        <img src={AddAssigneeIcon} alt="Add Assignee" />
+                                                        <img src={AddAssigneeIcon} alt="Add Assignee"
+                                                            onClick={() => {
+                                                                handleAddAssigne(item._id)
+                                                            }} />
                                                     </Stack>
                                                 )}
                                             </Stack>
@@ -1050,7 +1093,18 @@ const NSingleTicketDetails = (props: Props) => {
                                 <TabList
                                     onChange={handleChange}
                                     aria-label="lab API tabs example"
-                                    style={{ width: '95%' }}
+                                    style={{ width: '100%' }}
+                                    sx={{
+                                        '& .MuiTabs-indicator': {
+                                            display: 'none',
+                                        },
+                                        '.Mui-selected': {
+                                            // backgroundColor: "#0566FF !important",
+                                            color: "#FFFFFF",
+                                            borderBottom: "2px solid #0566FF"
+                                        },
+
+                                    }}
                                 // variant="scrollable"
                                 // scrollButtons="auto"
                                 // aria-label="scrollable auto tabs example"
@@ -1091,15 +1145,11 @@ const NSingleTicketDetails = (props: Props) => {
                                 /> */}
                                     <Tab
                                         label={<Badge badgeContent={8} sx={{
-                                            "& .MuiBadge-badge": {
-                                                color: "#FFF",
-                                                backgroundColor: "#F94839",
-                                                margin: '-3px',
-                                                fontSize: '9px',
-
-                                                height: '20px',
-                                                // borderRadius: '80%', 
-                                                padding: -8,
+                                            '& .MuiBadge-badge': {
+                                                color: '#FFF',
+                                                backgroundColor: '#F94839',
+                                                margin: '-3.6px -4.5px',
+                                                fontSize: '10px'
                                             }
                                         }}>
                                             SMS
@@ -1129,13 +1179,13 @@ const NSingleTicketDetails = (props: Props) => {
                                             value == '5' ? styles.selectedTab : styles.tabsLabel
                                         }
                                     />
-                                    <Tab
+                                    {/* <Tab
                                         label="Query Resolution"
                                         value="6"
                                         className={
                                             value == '6' ? styles.selectedTab : styles.tabsLabel
                                         }
-                                    />
+                                    /> */}
                                     <Tab
                                         label="Notes"
                                         value="7"

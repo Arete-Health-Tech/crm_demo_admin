@@ -156,7 +156,6 @@
   font-weight: 500;
   line-height: 150%; /* 1.3125rem */
   cursor: pointer;
-  
 }
 .createNoteActive {
   display: flex;
@@ -176,7 +175,6 @@
   font-style: normal;
   font-weight: 500;
   line-height: 150%; /* 1.3125rem */
-  
 }
 .notestextArea {
   display: flex;
@@ -188,7 +186,6 @@
   border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
   background: var(--Icons-White, #fff);
   margin: 0 0 0.5rem 0.5rem;
-  
 }
 .notestext {
   display: flex;
@@ -204,11 +201,9 @@
   font-style: normal;
   font-weight: 400;
   line-height: 150%; /* 1.3125rem */
-  
 }
 .notestext span {
   width: 95%;
-  
 }
 .notestext img {
   display: flex;
@@ -225,7 +220,6 @@
   font-style: normal;
   font-weight: 400;
   line-height: 150%; /* 0.9375rem */
-  
 }
 .noteIcon {
   width: 1.7rem;
@@ -277,7 +271,7 @@
   background: var(--Alerts-Red, #f94839);
   color: var(--White, #fff);
   text-align: center;
-
+  cursor: pointer;
   /* Links/Btn Text */
   font-family: 'Outfit', sans-serif;
   font-size: 0.875rem;

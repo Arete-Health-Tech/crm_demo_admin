@@ -1,4 +1,4 @@
-import { Box, FormControl, InputLabel, MenuItem, Modal, Select, Stack, TextField } from '@mui/material'
+import { Alert, Box, FormControl, InputLabel, MenuItem, Modal, Select, Stack, TextField } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import NotFoundIcon from "../../../../assets/NotFoundDocument.svg"
 import "../../singleTicket.css"
@@ -8,6 +8,9 @@ import UploadFileIcon from "../../../../assets/UploadFileIcon.svg";
 import CheckedActiveIcon from "../../../../assets/NotActive.svg"
 import documentIcon from "../../../../assets/document-text.svg"
 import { UploadFile } from '@mui/icons-material'
+import { useParams } from 'react-router-dom'
+import { apiClient } from '../../../../api/apiClient'
+import CheckIcon from '@mui/icons-material/Check';
 
 interface FileObject {
     file: File | null;
@@ -18,7 +21,7 @@ interface FileObject {
 
 const Document = () => {
     const uploadFileRef = useRef<HTMLInputElement>(null);
-
+    const { ticketID } = useParams();
     const [open, setOpen] = useState(false);
     const [file, setFile] = useState(null);
     const [uploadFileName, setUploadFileName] = useState("");
@@ -26,6 +29,7 @@ const Document = () => {
     const [selectedOption, setSelectedOption] = useState("");
     const [disableButton, setDisableButton] = useState(true);
     const [uploadFile, setUploadFile] = useState<FileObject[]>([]);
+    const [isUploaded, setIsUploaded] = useState(false);
 
     const checkIsEmpty = () => {
         if (
@@ -55,8 +59,13 @@ const Document = () => {
 
     const handleFileChange = (event) => {
         const files = event.target.files && event.target.files;
-        setFile(event.target.files[0]);
-        setUploadFileName(`${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`);
+        if (files && files.length > 0) {
+            console.log(files[0], "asasdsdaas");
+            setFile(files[0]);
+            setUploadFileName(`${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`);
+        } else {
+            console.error('No file selected.');
+        }
     };
 
     const handleFileNameChange = (event) => {
@@ -69,21 +78,68 @@ const Document = () => {
         setSelectedOption(event.target.value);
     }
 
-    const handleSubmit = () => {
-        const currentDate = new Date();
-        const formattedDate = new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }).format(currentDate);
-        const newFileObject: FileObject = {
-            file: file,
-            fileName: fileName,
-            fileTag: selectedOption,
-            timestamp: formattedDate,
-        };
-        setUploadFile(prevFiles => [...prevFiles, newFileObject]);
-        handleClose();
-    }
+
+    const handleSubmit = async () => {
+        try {
+            if (!file) {
+                console.error('File is null.');
+                return;
+            }
+            console.log(file, "inisde")
+            const formData = new FormData();
+            formData.append('document', file);
+            formData.append('tag', selectedOption);
+            formData.append('ticketid', `${ticketID}`);
+
+            // const { data } = await apiClient.post('/task/uploadDocs', formData);
+            // console.log(data, "data");
+            const { data } = await apiClient.post(
+                `/task/uploadDocs`,
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                }
+            );
+
+            if (data) {
+                console.log(data, 'document upload successful');
+                setIsUploaded(true);
+                setTimeout(() => {
+                    handleClose();
+                }, 3000);
+
+            } else {
+                console.error('Error uploading document:', data);
+            }
+        } catch (error) {
+            console.error('Error uploading document:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchDocuments();
+    }, [ticketID]);
+
+    const fetchDocuments = async () => {
+        try {
+            const response = await apiClient.get(`/task/getDocs/${ticketID}`);
+
+            if (response.data) {
+                console.log(response, 'document Getting');
+            } else {
+                console.error('Error fetching documents:', response);
+            }
+        } catch (error) {
+            console.error('Error fetching documents:', error);
+        }
+    };
+
 
     return (
         <>
+
             <input
                 id="file-upload"
                 style={{ display: 'none' }}
@@ -269,7 +325,9 @@ const Document = () => {
 
                             </Select>
                         </FormControl>
-
+                        {isUploaded && <Box marginTop={'5px'}> <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
+                            Document Uploaded SuccessFully.
+                        </Alert></Box>}
                         <Box
                             sx={{
                                 mt: 3,

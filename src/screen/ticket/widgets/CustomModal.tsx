@@ -51,7 +51,8 @@ const CustomModal = () => {
     reminders,
     pageNumber,
     searchByName,
-    setIsModalOpenCall
+    setIsModalOpenCall,
+    setAgentLogin
   } = useTicketStore();
   const [timer, setTimer] = useState(0);
 
@@ -91,7 +92,7 @@ const CustomModal = () => {
     if (returnedData.status == "Agent is not available") {
       toast.error("Agent is not loggedIn")
       console.log("iinside the not login condition")
-      // setOpenAgentModal(true)
+      setAgentLogin(true)
     } else if (returnedData.status == "queued successfully") {
       if (timerRef.current !== null) {
         clearInterval(timerRef.current);
@@ -104,7 +105,7 @@ const CustomModal = () => {
       setDialogOpen(true);
     } else {
       toast.error(returnedData.status)
-      // setOpenAgentModal(true)
+      setAgentLogin(true)
     }
     // setChipOpen(true);
     // setDialogOpen(true);
@@ -248,7 +249,9 @@ const CustomModal = () => {
     <div>
       {chipOpen == true ? (
         <Stack className="Clicked-call" display="flex" flexDirection="row">
-          <span className="Clicked-call-icon">
+          <span className="Clicked-call-icon" onClick={() => {
+            setShowForm(true);
+          }}>
             <img src={ClickedCallButtonIcon} alt="" />
           </span>
           <span className="Clicked-call-text">Calling</span>

@@ -32,6 +32,7 @@ import { iStage } from "../../../types/store/service";
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import CloseIcon from '@mui/icons-material/Close';
 import dayjs from "dayjs";
+import DownloadAllTickets from "../widgets/DownloadAllTickets";
 
 
 const datePickerStyle = {
@@ -94,7 +95,7 @@ const getColor = (probability) => {
   if (probability === 50) return '#FFB200';
   if (probability === 25) return '#F94839';
   if (probability === 0) return '#546E7A';
-  return 'grey';
+  return '#546E7A';
 };
 
 const getBackgroundColor = (probability) => {
@@ -103,7 +104,7 @@ const getBackgroundColor = (probability) => {
   if (probability === 50) return '#FFF3D9';
   if (probability === 25) return '#FEE4E1';
   if (probability === 0) return '#E5E9EB';
-  return 'grey';
+  return '#E5E9EB';
 };
 
 let AllIntervals: any[] = [];
@@ -471,7 +472,8 @@ function SwitchViewTable() {
     results: null,
     admissionType: [],
     diagnosticsType: [],
-    dateRange: []
+    dateRange: [],
+    status: []
   };
 
   // console.log(tickets, "switch view ")
@@ -637,6 +639,7 @@ function SwitchViewTable() {
         </Stack>
 
         <Stack display={'flex'} flexDirection={'row'}>
+          <Stack><DownloadAllTickets /></Stack>
           <Stack
             sx={{
               marginTop: '5px',
@@ -851,10 +854,10 @@ function SwitchViewTable() {
                     <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`} >
                       <Stack className={styles.SwitchView_Prob}
                         sx={{
-                          color: getColor(50),
-                          backgroundColor: getBackgroundColor(50),
+                          color: getColor(item?.Probability),
+                          backgroundColor: getBackgroundColor(item?.Probability),
                         }}
-                      >50%</Stack>
+                      >{!item?.Probability ? 0 : item?.Probability}%</Stack>
                     </td>
 
                     {/* Priority */}

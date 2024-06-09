@@ -3,10 +3,10 @@
 /* Single Ticket Detail Component CSS */
 
 .switch-main-layout {
-  height: 100vh;
+  height: 99.5vh;
   display: flex;
   background-color: #f6f7f9;
-  padding: 0.6rem;
+  padding: 8px 0rem 0.6rem 0.8rem;
 }
 
 .main-layout {
@@ -714,6 +714,20 @@
   cursor: pointer;
 }
 
+.filter-btn {
+  color: var(--White, #fff);
+  border-radius: var(--4px, 4px);
+  background: var(--Primary-Default, #0566ff);
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 150%;
+  padding: var(--Spacing-10px, 0px) var(--16px, 16px);
+  cursor: pointer;
+}
+
 .reminder-cancel-btn {
   color: #0566ff;
   border-radius: var(--4px, 4px);
@@ -1336,7 +1350,7 @@
   width: 311px !important;
   height: 40vh;
   overflow-y: scroll;
-  overflow-x: hidden; 
+  overflow-x: hidden;
 }
 
 .ticket-assigneemenu::-webkit-scrollbar {
@@ -1475,6 +1489,21 @@
   position: relative;
   top: 65px;
   right: 27%;
+  border: 1px solid #ebedf0;
+  border-radius: 20px;
+  box-shadow: 2px 2px 5px #e2e4e7;
+  z-index: 1600;
+}
+
+.probabilty-menu {
+  display: flex;
+  width: 300px;
+  padding: var(--Spacing-16px, 16px) var(--Spacing-0px, 0px) var(--8px, 10px) var(--Spacing-0px, 0px);
+  flex-direction: column;
+  align-items: left;
+  position: absolute;
+  top: 65px;
+  right: 35%;
   border: 1px solid #ebedf0;
   border-radius: 20px;
   box-shadow: 2px 2px 5px #e2e4e7;
@@ -2076,8 +2105,9 @@
 }
 
 .commentsBox {
-  height: 54vh;
+  height: 50vh;
   overflow-y: scroll;
+  padding-bottom: 50px;
 }
 
 .commentsBox::-webkit-scrollbar {
@@ -2102,4 +2132,34 @@
   font-style: normal;
   font-weight: 500;
   line-height: 120%;
+}
+
+/* Rating in agent portal */
+
+.Rating {
+  height: 10.5vh;
+  border-top: 1px solid var(--Borders-Light-Grey, #D4DBE5);
+  display: flex;
+  padding: var(--12px, 12px) var(--12px, 12px) var(--16px, 16px) var(--12px, 12px);
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  gap: 4px;
+}
+
+.Rating_title {
+  color: var(--Text-Black, #080F1A);
+  /* Body/Medium */
+  font-family: Outfit, sans-serif;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+}
+
+.Rating_star {
+  display: flex;
+  flex-direction: row !important;
+  align-items: flex-start;
+  gap: var(--4px, 4px);
 }

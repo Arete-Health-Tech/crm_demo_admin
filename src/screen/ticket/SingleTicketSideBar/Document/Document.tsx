@@ -1,4 +1,4 @@
-import { Alert, Box, FormControl, InputLabel, MenuItem, Modal, Select, Stack, TextField } from '@mui/material'
+import { Alert, Box, CircularProgress, FormControl, InputLabel, MenuItem, Modal, Select, Stack, TextField } from '@mui/material'
 import React, { useEffect, useRef, useState } from 'react'
 import NotFoundIcon from "../../../../assets/NotFoundDocument.svg"
 import "../../singleTicket.css"
@@ -17,11 +17,14 @@ interface UploadedFileObject {
     tag: string;
     ticketid: string | "";
     _id: string;
+    name: string;
+    date: Date;
 }
 
 const Document = () => {
     const uploadFileRef = useRef<HTMLInputElement>(null);
     const { ticketID } = useParams();
+    const [loading, setLoading] = useState(true);
     const [open, setOpen] = useState(false);
     const [file, setFile] = useState(null);
     const [uploadFileName, setUploadFileName] = useState("");
@@ -85,6 +88,8 @@ const Document = () => {
         try {
             const response = await getDocumentsData(ticketid);
             setUploadedFile(response.data.content)
+            // console.log(response.data.content,document);
+            setLoading(false);
         } catch (error) {
             setUploadedFile([])
             console.log("n data found")
@@ -131,6 +136,27 @@ const Document = () => {
         documentsData()
     }, [ticketID])
 
+    function convertToReadableDate(isoDateString) {
+        const date = new Date(isoDateString);
+
+        // Get the day, month, and year components
+        const day = date.getDate();
+        const monthIndex = date.getMonth();
+        const year = date.getFullYear();
+
+        // Define an array of month names
+        const monthNames = [
+            'January', 'February', 'March', 'April',
+            'May', 'June', 'July', 'August',
+            'September', 'October', 'November', 'December'
+        ];
+
+        // Get the month name using the month index
+        const monthName = monthNames[monthIndex];
+
+        // Format the date as "day month year"
+        return `${day} ${monthName} ${year}`;
+    }
 
     return (
         <>
@@ -143,36 +169,43 @@ const Document = () => {
                 onChange={handleFileChange}
             />{' '}
             <Box className="document-container">
-                {
-                    uploadedFile.length === 0 ? (<>
+                {loading ? (
+                    <> <Box marginTop={'70px'}>
+                        <CircularProgress />
+                    </Box>
+                    </>
+                ) : uploadedFile?.length === 0 ? (<>
 
-                        <Box marginTop={'70px'}>
-                            <Stack><img src={NotFoundIcon} alt='' /></Stack>
-                            <Box className="NotFound-DocumentPage">
+                    <Box marginTop={'70px'}>
+                        <Stack><img src={NotFoundIcon} alt='' /></Stack>
+                        <Box className="NotFound-DocumentPage">
 
-                                <Stack className='NotFound-text'>No Document Found</Stack>
-                                <Stack className='NotFound-subtext'>No Document Found</Stack>
-                            </Box>
+                            <Stack className='NotFound-text'>No Document Found</Stack>
+                            <Stack className='NotFound-subtext'>No Document Found</Stack>
                         </Box>
+                    </Box>
 
-                    </>)
-                        : (<>
-                            <Stack>
-                                {uploadedFile.map((doc, index) => (
+                </>)
+                    : (<>
+                        <Stack>
+                            {uploadedFile.map((doc, index) => (
+                                <a href={doc.document} target='blank' style={{ textDecoration: "none" }}>
                                     <Box key={index} className="Uploaded-document">
                                         <Stack className='Uploaded-document-icon'><img width="16px" height={'16px'} src={documentIcon} alt='' /></Stack>
                                         <Box display="flex" flexDirection="column">
-                                            <Stack className="Uploaded-document-fileName">{doc.tag}</Stack>
-                                            {/* <Stack display={'flex'} flexDirection={'row'} gap={"5px"}>
-                                                <Stack className="Uploaded-document-date">{doc.timestamp}</Stack>
-                                                <Stack className="Uploaded-document-tag">{doc.fileTag}</Stack>
-                                            </Stack> */}
+                                            {doc.name && <Stack className="Uploaded-document-fileName">{doc.name}</Stack>}
+                                            <Stack display={'flex'} flexDirection={'row'} gap={"5px"}>
+                                                {doc.date && <Stack className="Uploaded-document-date">{convertToReadableDate(doc.date)}</Stack>
+                                                }
+                                                <Stack className="Uploaded-document-tag">{doc.tag}</Stack>
+                                            </Stack>
 
                                         </Box>
                                     </Box>
-                                ))}
-                            </Stack>
-                        </>)
+                                </a>
+                            ))}
+                        </Stack>
+                    </>)
                 }
 
                 <Stack width={'100%'} ><button className='Upload-document-btn' onClick={handleOpen}><img src={UploadDocumentIcon} alt='upload' />Upload Document</button></Stack>

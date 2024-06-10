@@ -75,6 +75,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 try {
                     const { data } = await apiClient.get(`ticket/uploadestimateData/${ticketID}`);
                     setViewEstimates(data)
+                    console.log(data, "uploadestimate----")
                 } catch (error) {
                     console.error("Error fetching estimate data:", error);
                 }
@@ -185,9 +186,13 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     };
 
     const fetchUploadPdfUrl = async () => {
-        if (viewEstimates[viewEstimates.length - 1].location) {
+        if (viewEstimates[viewEstimates.length - 1]?.total) {
             window.open(viewEstimates[viewEstimates.length - 1].location, '_blank');
-        } else {
+        }
+        // if (viewEstimates[viewEstimates.length - 1].location) {
+        //     window.open(viewEstimates[viewEstimates.length - 1].location, '_blank');
+        // } 
+        else {
             setShowAlert(true);
         }
     };
@@ -461,7 +466,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                     <Box className="Payment-detail-data">
                         {/* <Stack className='Payment-value'>{'\u20B9'} {currentTicket?.estimate[0]?.total}</Stack> */}
                         <Stack className='Payment-value'>{'\u20B9'} {viewEstimates[viewEstimates.length - 1]?.total}</Stack>
-                        <Chip
+                        {/* <Chip
                             label={
                                 currentTicket?.estimate[0]?.paymentType === 0
                                     ? 'Cash'
@@ -479,7 +484,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                 fontFamily: `'Outfit', sans-serif`,
                                 padding: 0,
                             }}
-                        />
+                        /> */}
                     </Box>
                 ) : (
                     <Box className='Patient-records-Head'>

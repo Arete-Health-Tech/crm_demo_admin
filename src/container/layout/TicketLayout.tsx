@@ -85,11 +85,13 @@ const Ticket = () => {
     isSwitchView,
     setIsSwitchView,
     setIsAuditor,
+    viewEstimates
   } = useTicketStore();
 
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
+  const [totalEstimateValue, setTotalEstimateValue] = useState(0);
   const [phone, setPhone] = useState(null)
 
   const [reminderList, setReminderList] = useState<any[]>([]);
@@ -546,6 +548,20 @@ const Ticket = () => {
     navigate('/')
   }
 
+  const totalEstimate = (ticketID: any) => {
+    if (viewEstimates.length !== 0) {
+      if (viewEstimates[viewEstimates.length - 1]?.ticket === ticketID) {
+        return viewEstimates[viewEstimates.length - 1]?.total;
+      }
+      else {
+        return 0;
+      }
+    }
+    else {
+      return 0;
+    }
+
+  }
 
   // console.log({ page })
 

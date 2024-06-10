@@ -17,9 +17,10 @@ import DnpIcon from '../../../../src/assets/DNP-icon.svg'
 import MediumPr from '../../../../src/assets/MediumPr.svg'
 import LowPr from '../../../../src/assets/LowPr.svg'
 import HighPr from '../../../../src/assets/HighPr.svg'
+import DefaultPr from '../../../../src/assets/DefaultPr.svg'
 import NotifyAudit from '../../../../src/assets/NotifyAudit.svg'
 import '../singleTicket.css'
-import { socket } from '../../../api/apiClient';
+import { apiClient, socket } from '../../../api/apiClient';
 
 // import { updateIsNewTicket } from '../../../api/ticket/ticket';
 
@@ -56,7 +57,8 @@ const TicketCard = (props: Props) => {
     child: []
   });
 
-  const { tickets, filterTickets, setIsAuditor, allTaskCount } = useTicketStore();
+  const { tickets, filterTickets, setIsAuditor, allTaskCount, viewEstimates,
+    setViewEstimates } = useTicketStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -240,6 +242,33 @@ const TicketCard = (props: Props) => {
   //   };
   // }, []);
 
+  const [totalEstimateValue, setTotalEstimateValue] = useState(0);
+
+  useEffect(() => {
+    const fetchEstimateData = async () => {
+      const ticketId = props.patientData._id;
+
+      if (!ticketId) {
+        console.error("Ticket ID is undefined.");
+        return;
+      }
+
+      try {
+        const { data } = await apiClient.get(`ticket/uploadestimateData/${ticketId}`);
+
+        if (data?.length && data[data.length - 1]?.ticket === ticketId) {
+          setTotalEstimateValue(data[data.length - 1]?.total);
+        } else {
+          setTotalEstimateValue(0);
+        }
+      } catch (error) {
+        console.error("Error fetching estimate data:", error);
+        setTotalEstimateValue(0); // Optionally reset state on error
+      }
+    };
+
+    fetchEstimateData();
+  }, [props.patientData._id]);
 
   return (
     <Box
@@ -274,13 +303,16 @@ const TicketCard = (props: Props) => {
 
         <Stack className='ticket-card-line1-left'>
           <Stack sx={stageStyle}> {stageName}</Stack>
-          {props.patientData.estimate.length === 0 ? (<>
+          {totalEstimateValue == 0 ? (<>
+            {/* <Stack className="Priority-tag"> <img src={DefaultPr} alt="DefaultPr" /><span style={{ fontSize: "12px" }}>N/A</span></Stack> */}
+            <></>
           </>) : (
             <>
-              <Stack className="Priority-tag">{220 > 15000 ?
+              <Stack className="Priority-tag">{totalEstimateValue > 15000 ?
                 (<><img src={HighPr} alt="" />High</>)
-                : 220 < 4500 && 450 < 2220 ?
-                  (<><img src={MediumPr} alt="" />Medium</>)
+                :
+                (totalEstimateValue < 15000) && 4550 < (totalEstimateValue)
+                  ? (<><img src={MediumPr} alt="" />Medium</>)
                   : (<><img src={LowPr} alt="" />Low</>)}
               </Stack>
 

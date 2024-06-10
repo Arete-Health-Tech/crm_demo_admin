@@ -36,8 +36,9 @@ const Document = () => {
 
     const checkIsEmpty = () => {
         if (
-            file !== null &&
-            fileName !== ""
+            file !== null
+            // &&
+            // fileName !== ""
         ) {
             setDisableButton((_) => false);
         } else {
@@ -51,7 +52,7 @@ const Document = () => {
 
     useEffect(() => {
         checkIsEmpty();
-    }, [file, fileName])
+    }, [file])
 
     const handleClose = () => {
         setFile(null);
@@ -260,7 +261,7 @@ const Document = () => {
                             </>
                         )}
 
-                        <TextField
+                        {/* <TextField
                             required
                             id="outlined-required"
                             label="Document Name"
@@ -282,7 +283,7 @@ const Document = () => {
                                 }
                             }}
                             sx={{ marginTop: "12px" }}
-                        />
+                        /> */}
 
                         <FormControl fullWidth sx={{ marginTop: "12px" }}>
                             <InputLabel id="demo-simple-select-label" sx={{

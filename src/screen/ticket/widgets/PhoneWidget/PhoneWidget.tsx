@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import styles from './PhoneWidget.module.css';
 import phoneIcon from '../../../../assets/phoneIcon.svg';
@@ -10,28 +10,29 @@ import useTicketStore from '../../../../store/ticketStore';
 import CloseModalIcon from '../../../../assets/CloseModalIcon.svg';
 import { Avatar } from '@mui/material';
 import useUserStore from '../../../../store/userStore';
+import { iTicket } from '../../../../types/store/ticket';
+import { useParams } from 'react-router-dom';
 
 const PhoneWidget = () => {
-    const { setPhoneModal, phoneModal, isAuditor } = useTicketStore();
+    const { ticketID } = useParams();
+    const { setPhoneModal, phoneModal, isAuditor, tickets } = useTicketStore();
     const [sendMessage, setSendMessage] = useState('');
     const fileInputRef = useRef<HTMLInputElement | null>(null);
     const { user, setUser } = useUserStore();
-    const handleFileSelect = async (event) => {
-        const selectedFile = event.target.files[0];
-        //  console.log(selectedFile,"thisi s selected file")
-        const formData = new FormData();
+    const [currentTicket, setCurrentTicket] = useState<iTicket>();
 
-        // Append each Blob to the FormData object
-        // console.log(consumerId, 'this is consimer id ');
-        formData.append('images', selectedFile);
+    const getTicketInfo = (ticketID: string | undefined) => {
+        const fetchTicket = tickets.find((element) => ticketID === element._id);
+        // console.log(fetchTicket," this is refetched dsfgsdgsdghsdhsdfh");
+        setCurrentTicket(fetchTicket);
+        return fetchTicket;
     };
 
-    const handleKeyPress = (e) => {
-        if (e.key === 'Enter' && sendMessage.trim() !== '') {
-            // console.log('press enter');
-            console.log('enter');
-        }
-    };
+    useEffect(() => {
+        getTicketInfo(ticketID)
+    }, [ticketID])
+
+    console.log(currentTicket)
 
     return (
         <>
@@ -58,43 +59,57 @@ const PhoneWidget = () => {
                 )}
 
                 {/* Box for showing audio */}
-                <Box height={'40vh'}>
-                    <Box display={'flex'} justifyContent={'start'} padding={2}>
-                        <Box className={styles.callImageIcon}>
-                            <img src={phoneIcon} alt="" />
-                        </Box>
-                        <Box className={styles.phoneReply}>
-                            <Box className={styles.audio}>
-                                <audio controls>
-                                    <source src={''} type="audio/mpeg" />
-                                    Your browser does not support the audio element.
-                                </audio>
-                            </Box>
+                <Box className={styles.phoneBox}>
+                    {currentTicket?.phoneData?.map((item, index) => {
+                        if (item) {
+                            return (
+                                <>
+                                    < Box display={'flex'} justifyContent={'start'} padding={2}>
+                                        <Box className={styles.callImageIcon}>
+                                            <img src={phoneIcon} alt="" />
+                                        </Box>
+                                        <Box className={styles.phoneReply}>
+                                            <Box className={styles.audio}>
+                                                <audio controls>
+                                                    <source src={item.recording !== null ? item.recording : ""} type="audio/mpeg" />
+                                                    Your browser does not support the audio element.
+                                                </audio>
+                                            </Box>
 
-                            <Box
-                                display={'flex'}
-                                justifyContent={'space-between'}
-                                alignItems={'center'}
-                            >
-                                <Box className={styles.phoneReplyDateTime}>
-                                    12 April 2024 09:30AM
-                                </Box>
-                                <Box width="1.25rem" height="1.25rem">
-                                    <Avatar sx={{
-                                        fontSize: '8px', bgcolor: 'orange',
-                                        height: '1rem',
-                                        width: '1rem',
-                                        margin: '0.3rem',
-                                        marginTop: '8px'
-                                    }}>
-                                        {user?.firstName[0]?.toUpperCase()}
-                                        {user?.lastName[0]?.toUpperCase()}
-                                    </Avatar>
-                                    {/* <img src={avatar1} alt="" /> */}
-                                </Box>
-                            </Box>
-                        </Box>
-                    </Box>
+                                            <Box
+                                                display={'flex'}
+                                                justifyContent={'space-between'}
+                                                alignItems={'center'}
+                                            >
+                                                <Box className={styles.phoneReplyDateTime}>
+                                                    12 April 2024 09:30AM
+                                                </Box>
+                                                <Box width="1.25rem" height="1.25rem">
+                                                    <Avatar sx={{
+                                                        fontSize: '8px', bgcolor: 'orange',
+                                                        height: '1rem',
+                                                        width: '1rem',
+                                                        margin: '0.3rem',
+                                                        marginTop: '8px'
+                                                    }}>
+                                                        {user?.firstName[0]?.toUpperCase()}
+                                                        {user?.lastName[0]?.toUpperCase()}
+                                                    </Avatar>
+                                                    {/* <img src={avatar1} alt="" /> */}
+                                                </Box>
+                                            </Box>
+                                        </Box>
+                                    </Box>
+                                </>
+                            )
+                        } else {
+                            return (
+                                <>
+                                    No data Available
+                                </>
+                            )
+                        }
+                    })}
                 </Box>
 
                 {/* For chat box  */}

@@ -105,3 +105,18 @@
   font-weight: 500;
   white-space: nowrap;
 }
+.phoneBox {
+  height: 40vh;
+  overflow: scroll;
+}
+.phoneBox::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+}
+/* .phoneBox::-webkit-scrollbar-track { */
+/* background: whitesmoke;  */
+/* color of the tracking area */
+/* } */
+.phoneBox::-webkit-scrollbar-thumb {
+  background-color: rgb(163, 165, 167); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+}

@@ -281,3 +281,13 @@ export const getDocumentsData = async (ticketid: string | undefined) => {
   const data = await apiClient.get(`/task/getDocs/${ticketid}`);
   return Promise.resolve(data);
 };
+
+export const setReschedularCompleted = async (taskData: object) => {
+  const data = await apiClient.put(`/task/updateTaskRESCHEDULAR`, taskData);
+  return Promise.resolve(data);
+};
+
+export const setReminderCompleted = async (taskData: object) => {
+  const data = await apiClient.put(`/task/updateTaskReminder`, taskData);
+  return Promise.resolve(data);
+};

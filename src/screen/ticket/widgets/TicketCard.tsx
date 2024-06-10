@@ -350,7 +350,7 @@ const TicketCard = (props: Props) => {
           </>
           )}
 
-          {props.patientData.consumer[0].dob
+          {props.patientData.consumer[0].age
             ? (<><Stack>{props.patientData.consumer[0].age}</Stack></>)
             : (<></>)
           }

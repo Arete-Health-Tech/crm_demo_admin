@@ -62,7 +62,12 @@ import {
 import Rx from '../../assets/Rx.svg';
 import Bulb from '../../assets/Vector.svg';
 import NotesWidget from './widgets/NotesWidget';
-import { iDepartment, iDoctor, iScript, iService } from '../../types/store/service';
+import {
+    iDepartment,
+    iDoctor,
+    iScript,
+    iService
+} from '../../types/store/service';
 import QueryResolutionWidget from './widgets/QueryResolutionWidget';
 import { getSingleScript } from '../../api/script/script';
 import PrescriptionTabsWidget from './widgets/PrescriptionTabsWidget';
@@ -74,7 +79,15 @@ import {
 import MessagingWidget from './widgets/whatsapp/WhatsappWidget';
 import styles from './SingleTicketDetails.module.css';
 import ShowPrescription from './widgets/ShowPrescriptionModal';
-import { assignedToTicket, deleteTicket, removeFromTicket, updateService, updateTicketProbability, updateTicketSubStage, validateTicket } from '../../api/ticket/ticket';
+import {
+    assignedToTicket,
+    deleteTicket,
+    removeFromTicket,
+    updateService,
+    updateTicketProbability,
+    updateTicketSubStage,
+    validateTicket
+} from '../../api/ticket/ticket';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../constantUtils/constant';
 import Modal from '@mui/material/Modal';
 import Checkbox from '@mui/material/Checkbox';
@@ -102,15 +115,15 @@ import ReschedulerAll from './widgets/ReschedulerAll';
 import RemainderAll from './widgets/RemainderAll';
 import SingleTicketSideBar from './SingleTicketSideBar/SingleTicketSideBar';
 import TaskBar from './SingleTicketSideBar/TaskBar';
-import Avatar1 from "../../assets/avatar1.svg"
-import NewAvatar from "../../assets/avatar2.svg"
-import back_arrow from "../../assets/back_arrow.svg"
-import DropDownArrow from "../../assets/DropdownArror.svg"
-import KebabMenu from "../../assets/KebabMenu.svg"
-import AddAssigneeIcon from "../../assets/add.svg"
-import red_remove from "../../assets/red_remove.svg"
-import CloseModalIcon from "../../assets/Group 48095853.svg"
-import "./singleTicket.css";
+import Avatar1 from '../../assets/avatar1.svg';
+import NewAvatar from '../../assets/avatar2.svg';
+import back_arrow from '../../assets/back_arrow.svg';
+import DropDownArrow from '../../assets/DropdownArror.svg';
+import KebabMenu from '../../assets/KebabMenu.svg';
+import AddAssigneeIcon from '../../assets/add.svg';
+import red_remove from '../../assets/red_remove.svg';
+import CloseModalIcon from '../../assets/Group 48095853.svg';
+import './singleTicket.css';
 import SearchBar from '../../container/layout/SearchBar';
 import Activities from './widgets/Activities/Activities';
 import SmsWidget from './widgets/SmsWidget/SmsWidget';
@@ -118,7 +131,13 @@ import PhoneWidget from './widgets/PhoneWidget/PhoneWidget';
 import ExpandedModal from './widgets/whatsapp/ExpandedModal';
 import ExpandedSmsModal from './widgets/SmsWidget/ExpandedSmsModal';
 import ExpandedPhoneModal from './widgets/PhoneWidget/ExpandedPhoneModal';
-import { collection, DocumentData, onSnapshot, orderBy, query } from 'firebase/firestore';
+import {
+    collection,
+    DocumentData,
+    onSnapshot,
+    orderBy,
+    query
+} from 'firebase/firestore';
 import { database } from '../../utils/firebase';
 import useReprentativeStore from '../../store/representative';
 interface iConsumer {
@@ -161,7 +180,7 @@ type iPrescription = {
 };
 
 const initialPrescription = {
-    admission: 'none',
+    admission: 'none'
 };
 
 dayjs.extend(relativeTime);
@@ -181,7 +200,7 @@ const NSingleTicketDetails = (props: Props) => {
         callRescheduler,
         estimates,
         isSwitchView,
-        setIsSwitchView,
+        setIsSwitchView
     } = useTicketStore();
     const { doctors, departments, stages } = useServiceStore();
     const { representative } = useReprentativeStore();
@@ -196,7 +215,6 @@ const NSingleTicketDetails = (props: Props) => {
     >([]);
 
     const [open, setOpen] = useState(false);
-
 
     const theme = useTheme();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -224,7 +242,7 @@ const NSingleTicketDetails = (props: Props) => {
     );
     const [validations, setValidations] = useState({
         admission: { message: '', value: false },
-        service: { message: '', value: false },
+        service: { message: '', value: false }
     });
     const [foundServices, setFoundServices] = useState<iService[]>([]);
     const [buttonVariant, setButtonVariant] = useState<string | null>(null);
@@ -237,7 +255,7 @@ const NSingleTicketDetails = (props: Props) => {
         const value = event.target.value;
         setSelectedInternalRef(value);
         handleInternal(value);
-        console.log(value, "Internal Ref Change ")
+        console.log(value, 'Internal Ref Change ');
     };
 
     const changePrescriptionValue = (field: any, value: any) => {
@@ -267,7 +285,6 @@ const NSingleTicketDetails = (props: Props) => {
         setButtonVariant(item);
     };
 
-
     const findService = async (query: string) => {
         try {
             if (query.length <= 3) return;
@@ -278,7 +295,7 @@ const NSingleTicketDetails = (props: Props) => {
         }
     };
 
-    console.log({ representative })
+    console.log({ representative });
 
     const handelUploadType = async () => {
         setDisableButton(true);
@@ -289,12 +306,12 @@ const NSingleTicketDetails = (props: Props) => {
                     admission: prescription.admission,
                     service: prescription?.service?._id
                 }
-            }
+            };
             const ticketId = ticketID;
             const respose = await updateService(payload, ticketId);
             setDisableButton(false);
             setAmissionTypeClicked(true);
-            getTicketHandler(UNDEFINED, 1, "false", filterTickets);
+            getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
 
             // const url = ticketID !== undefined ? `/ticket/${ticketID}` : `/ticket`;
             // window.location.href = url;
@@ -310,7 +327,7 @@ const NSingleTicketDetails = (props: Props) => {
             // // setDiagnostics([]);
             // setDisableButton(false);
 
-            // // navigate('/'); 
+            // // navigate('/');
         } else {
             setDisableButton(false);
         }
@@ -400,7 +417,6 @@ const NSingleTicketDetails = (props: Props) => {
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
-
     };
 
     const ITEM_HEIGHT = 48;
@@ -619,8 +635,8 @@ const NSingleTicketDetails = (props: Props) => {
         fontWeight: '400',
         lineHeight: '150%',
         '&:hover': {
-            backgroundColor: 'inherit', // Prevent background change on hover
-        },
+            backgroundColor: 'inherit' // Prevent background change on hover
+        }
     };
 
     const menuItemStyles = {
@@ -629,7 +645,7 @@ const NSingleTicketDetails = (props: Props) => {
         fontSize: '14px',
         fontStyle: 'normal',
         fontWeight: '400',
-        lineHeight: '150%',
+        lineHeight: '150%'
     };
 
     const calculatedDate = (date: any) => {
@@ -684,23 +700,25 @@ const NSingleTicketDetails = (props: Props) => {
     };
 
     const avatars = [
-        { id: 1, src: Avatar1, alt: "User 1", name: "Robert Fox" },
-        { id: 2, src: NewAvatar, alt: "User 2", name: "Floyd Miles" },
-        { id: 3, src: Avatar1, alt: "User 3", name: "Dianee Russel" },
-        { id: 4, src: NewAvatar, alt: "User 4", name: "Jack Andreson" },
-        { id: 6, src: Avatar1, alt: "User 5", name: "Will Smith" }
+        { id: 1, src: Avatar1, alt: 'User 1', name: 'Robert Fox' },
+        { id: 2, src: NewAvatar, alt: 'User 2', name: 'Floyd Miles' },
+        { id: 3, src: Avatar1, alt: 'User 3', name: 'Dianee Russel' },
+        { id: 4, src: NewAvatar, alt: 'User 4', name: 'Jack Andreson' },
+        { id: 6, src: Avatar1, alt: 'User 5', name: 'Will Smith' }
     ];
-
-
 
     const stackRef = useRef<HTMLDivElement | null>(null);
     const probabilityRef = useRef<HTMLDivElement | null>(null);
     const visibleRef = useRef<HTMLDivElement | null>(null);
 
     const handleClickOutside = (event: MouseEvent) => {
-        const isClickOutsideStack = stackRef.current && !stackRef.current.contains(event.target as Node);
-        const isClickOutsideProbability = probabilityRef.current && !probabilityRef.current.contains(event.target as Node);
-        const isClickOutsideVisibleRef = visibleRef.current && !visibleRef.current.contains(event.target as Node);
+        const isClickOutsideStack =
+            stackRef.current && !stackRef.current.contains(event.target as Node);
+        const isClickOutsideProbability =
+            probabilityRef.current &&
+            !probabilityRef.current.contains(event.target as Node);
+        const isClickOutsideVisibleRef =
+            visibleRef.current && !visibleRef.current.contains(event.target as Node);
 
         if (isClickOutsideStack) {
             setOp(false);
@@ -723,13 +741,13 @@ const NSingleTicketDetails = (props: Props) => {
     const [messages, setMessages] = useState<storeMessage[]>([]);
 
     useEffect(() => {
-        console.log("useEffect is running in NsingleticketCard"); // Check if this logs
+        console.log('useEffect is running in NsingleticketCard'); // Check if this logs
 
         // Check if socket is connected
         if (socket.connected) {
-            console.log("Socket connected successfully in NsingleticketCard");
+            console.log('Socket connected successfully in NsingleticketCard');
         } else {
-            console.log("Socket not connected, attempting to connect...");
+            console.log('Socket not connected, attempting to connect...');
             socket.connect();
         }
 
@@ -750,37 +768,36 @@ const NSingleTicketDetails = (props: Props) => {
 
     // console.log({ messages })
     const handleProbability = async (value) => {
-        await updateTicketProbability(value, ticketID)
-        setProbabilityModal(false)
-        getTicketHandler(UNDEFINED, 1, "false", filterTickets);
-    }
+        await updateTicketProbability(value, ticketID);
+        setProbabilityModal(false);
+        getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+    };
 
-    // This function is for calling the api of delete lead 
+    // This function is for calling the api of delete lead
     const handleLeadDelete = async () => {
-        await deleteTicket(ticketID)
-        getTicketHandler(UNDEFINED, 1, "false", filterTickets);
+        await deleteTicket(ticketID);
+        getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
         await validateTicket(ticketID);
         navigate(NAVIGATE_TO_TICKET);
-    }
+    };
 
     //This function is for assigne ticket to different representative
     const handleAddAssigne = async (assigneeId: string) => {
-        console.log(assigneeId)
-        const res = await assignedToTicket(ticketID, assigneeId)
-        getTicketHandler(UNDEFINED, 1, "false", filterTickets);
-    }
+        console.log(assigneeId);
+        const res = await assignedToTicket(ticketID, assigneeId);
+        getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+    };
 
     //This function is for remove assigne ticket from the representative
     const handleRemoveAssigne = async (assigneeId: string) => {
-        console.log(assigneeId)
-        const res = await removeFromTicket(ticketID, assigneeId)
-        getTicketHandler(UNDEFINED, 1, "false", filterTickets);
-    }
-
+        console.log(assigneeId);
+        const res = await removeFromTicket(ticketID, assigneeId);
+        getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+    };
 
     return (
         <>
-            <div className={isSwitchView ? "switch-main-layout" : "main-layout"}>
+            <div className={isSwitchView ? 'switch-main-layout' : 'main-layout'}>
                 {/* Right Section of Single Ticket Detail Page */}
 
                 <div className="stack-box">
@@ -795,9 +812,17 @@ const NSingleTicketDetails = (props: Props) => {
                             display="flex"
                             flexDirection="row"
                         >
-                            {isSwitchView && <Stack sx={{ cursor: 'pointer' }} display={'flex'} justifyContent={'center'} marginRight={2} onClick={() => navigate(-1)}>
-                                <img src={back_arrow} alt="" />
-                            </Stack>}
+                            {isSwitchView && (
+                                <Stack
+                                    sx={{ cursor: 'pointer' }}
+                                    display={'flex'}
+                                    justifyContent={'center'}
+                                    marginRight={2}
+                                    onClick={() => navigate(-1)}
+                                >
+                                    <img src={back_arrow} alt="" />
+                                </Stack>
+                            )}
                             <Stack display="flex" flexDirection="column">
                                 <Stack display="flex" flexDirection="row">
                                     <Stack className="Ticket-detail-card-left-name">
@@ -834,23 +859,22 @@ const NSingleTicketDetails = (props: Props) => {
 
                         {/* Right Side */}
 
-
-
-
                         <Stack className="Ticket-detail-card-right">
                             {/* probability start */}
                             <Box
-                                className={currentTicket?.Probability === 0
-                                    ? 'Ticket-probability0'
-                                    : currentTicket?.Probability === 25
-                                        ? 'Ticket-probability25'
-                                        : currentTicket?.Probability === 50
-                                            ? 'Ticket-probability50'
-                                            : currentTicket?.Probability === 75
-                                                ? 'Ticket-probability75'
-                                                : currentTicket?.Probability === 100
-                                                    ? 'Ticket-probability100'
-                                                    : 'Ticket-probability0'}
+                                className={
+                                    currentTicket?.Probability === 0
+                                        ? 'Ticket-probability0'
+                                        : currentTicket?.Probability === 25
+                                            ? 'Ticket-probability25'
+                                            : currentTicket?.Probability === 50
+                                                ? 'Ticket-probability50'
+                                                : currentTicket?.Probability === 75
+                                                    ? 'Ticket-probability75'
+                                                    : currentTicket?.Probability === 100
+                                                        ? 'Ticket-probability100'
+                                                        : 'Ticket-probability0'
+                                }
                                 // className="Box-assignee"
                                 onClick={() => {
                                     setProbabilityModal(true);
@@ -859,7 +883,7 @@ const NSingleTicketDetails = (props: Props) => {
                                 {/* {currentTicket?.Probability}% */}
                                 {!currentTicket?.Probability ? 0 : currentTicket?.Probability}%
                                 <span>
-                                    <img src={DropDownArrow} alt='' />
+                                    <img src={DropDownArrow} alt="" />
                                 </span>
                             </Box>
 
@@ -877,23 +901,43 @@ const NSingleTicketDetails = (props: Props) => {
                                     <img src={CloseModalIcon} />
                                 </Stack>
                                 <MenuItem sx={probabilityItemStyles}>
-                                    <Stack className={"Ticket-probability"} marginBottom={'10px'}>
+                                    <Stack className={'Ticket-probability'} marginBottom={'10px'}>
                                         Select Probability
                                     </Stack>
-                                    <Stack display={'flex'} flexDirection={'row'} width={'100%'} justifyContent={'space-between'}>
-                                        <Stack className="Ticket-probability-0" onClick={() => handleProbability(0)}>
+                                    <Stack
+                                        display={'flex'}
+                                        flexDirection={'row'}
+                                        width={'100%'}
+                                        justifyContent={'space-between'}
+                                    >
+                                        <Stack
+                                            className="Ticket-probability-0"
+                                            onClick={() => handleProbability(0)}
+                                        >
                                             0%
                                         </Stack>
-                                        <Stack className="Ticket-probability-25" onClick={() => handleProbability(25)}>
+                                        <Stack
+                                            className="Ticket-probability-25"
+                                            onClick={() => handleProbability(25)}
+                                        >
                                             25%
                                         </Stack>
-                                        <Stack className="Ticket-probability-50" onClick={() => handleProbability(50)}>
+                                        <Stack
+                                            className="Ticket-probability-50"
+                                            onClick={() => handleProbability(50)}
+                                        >
                                             50%
                                         </Stack>
-                                        <Stack className="Ticket-probability-75" onClick={() => handleProbability(75)}>
+                                        <Stack
+                                            className="Ticket-probability-75"
+                                            onClick={() => handleProbability(75)}
+                                        >
                                             75%
                                         </Stack>
-                                        <Stack className="Ticket-probability-100" onClick={() => handleProbability(100)}>
+                                        <Stack
+                                            className="Ticket-probability-100"
+                                            onClick={() => handleProbability(100)}
+                                        >
                                             100%
                                         </Stack>
                                     </Stack>
@@ -902,19 +946,48 @@ const NSingleTicketDetails = (props: Props) => {
                             {/* probability end */}
                             {/* Lead Assignee */}
 
-
-                            <Box className='Box-assignee' onClick={() => { setVisible(!visible); setOp(false); }}>
-                                <Stack
-                                    direction="row"
-                                    alignItems="center"
-                                >
-                                    <span className='avatar'> <Avatar src={Avatar1} alt="User 1" /></span>
-                                    <span className='NewAvatar avatar'> <Avatar src={NewAvatar} alt="User 2" /></span>
-                                    <span className='DropDownArrow' >
-                                        <img
-                                            src={DropDownArrow}
-                                            alt=""
-                                        />
+                            <Box
+                                className="Box-assignee"
+                                onClick={() => {
+                                    setVisible(!visible);
+                                    setOp(false);
+                                }}
+                            >
+                                <Stack direction="row" alignItems="center">
+                                    <span className="avatar">
+                                        {' '}
+                                        <Avatar
+                                            sx={{
+                                                width: '2.5vw',
+                                                height: '5vh',
+                                                fontSize: '12px',
+                                                bgcolor: 'orange',
+                                                textTransform: 'uppercase',
+                                                marginTop: '2px'
+                                            }}
+                                            alt="User 1"
+                                        >
+                                            {representative?.filter((item) => item.role === 'REPRESENTATIVE')[0]?.firstName[0]}{representative?.filter((item) => item.role === 'REPRESENTATIVE')[0]?.lastName[0]}
+                                        </Avatar>
+                                    </span>
+                                    <span className="NewAvatar avatar">
+                                        {' '}
+                                        <Avatar
+                                            sx={{
+                                                width: '2.5vw',
+                                                height: '5vh',
+                                                fontSize: '12px',
+                                                bgcolor: 'orange',
+                                                textTransform: 'uppercase',
+                                                marginTop: '2px'
+                                            }}
+                                            alt="User 2"
+                                        >
+                                            {representative?.filter((item) => item.role === 'REPRESENTATIVE')[1]?.firstName[0]}{representative?.filter((item) => item.role === 'REPRESENTATIVE')[1]?.lastName[0]}
+                                        </Avatar>
+                                    </span>
+                                    <span className="DropDownArrow">
+                                        <img src={DropDownArrow} alt="" />
                                     </span>
                                 </Stack>
                             </Box>
@@ -964,64 +1037,88 @@ const NSingleTicketDetails = (props: Props) => {
                                     </Stack>
                                 </MenuItem> */}
 
-                                {representative.filter((item) => {
-                                    const matchesSearch = inputSearch ?
-                                        item.firstName.toLowerCase().includes(inputSearch.toLowerCase()) ||
-                                        item.lastName.toLowerCase().includes(inputSearch.toLowerCase()) :
-                                        true;
+                                {representative
+                                    .filter((item) => {
+                                        const matchesSearch = inputSearch
+                                            ? item.firstName
+                                                .toLowerCase()
+                                                .includes(inputSearch.toLowerCase()) ||
+                                            item.lastName
+                                                .toLowerCase()
+                                                .includes(inputSearch.toLowerCase())
+                                            : true;
 
-                                    return matchesSearch && item.role === "REPRESENTATIVE";
-                                })?.map((item) => {
-                                    const isTicketOwner = (item._id === currentTicket?.assigned?.[0]);
-                                    const isAssigned = currentTicket?.assigned?.slice(1).includes(item._id);
+                                        return matchesSearch && item.role === 'REPRESENTATIVE';
+                                    })
+                                    ?.map((item) => {
+                                        const isTicketOwner =
+                                            item._id === currentTicket?.assigned?.[0];
+                                        const isAssigned = currentTicket?.assigned
+                                            ?.slice(1)
+                                            .includes(item._id);
 
-                                    return (
-                                        <MenuItem
-                                            key={item._id}
-                                            sx={menuItemStyles}
-                                        >
-                                            <Stack className="Ticket-Assignee-item">
-                                                <Stack className="Ticket-Assignee-subItem">
-                                                    <Stack className="Ticket-Assignee-avatar">
-                                                        <Avatar
-                                                            sx={{
-                                                                width: '20px',
-                                                                height: '20px',
-                                                                fontSize: '10px',
-                                                                bgcolor: 'orange',
-                                                                textTransform: "uppercase",
-                                                                marginTop: "2px"
-                                                            }}
+                                        return (
+                                            <MenuItem key={item._id} sx={menuItemStyles}>
+                                                <Stack className="Ticket-Assignee-item">
+                                                    <Stack className="Ticket-Assignee-subItem">
+                                                        <Stack className="Ticket-Assignee-avatar">
+                                                            <Avatar
+                                                                sx={{
+                                                                    width: '20px',
+                                                                    height: '20px',
+                                                                    fontSize: '10px',
+                                                                    bgcolor: 'orange',
+                                                                    textTransform: 'uppercase',
+                                                                    marginTop: '2px'
+                                                                }}
+                                                            >
+                                                                {item.firstName[0]}
+                                                                {item.lastName[0]}
+                                                            </Avatar>
+                                                        </Stack>
+                                                        <Stack
+                                                            className="Ticket-Assignee-Name"
+                                                            display={'flex'}
+                                                            flexDirection={'row'}
+                                                            gap={'3px'}
                                                         >
-                                                            {item.firstName[0]}
-                                                            {item.lastName[0]}
-                                                        </Avatar>
+                                                            <Stack style={{ textTransform: 'capitalize' }}>
+                                                                {item.firstName}
+                                                            </Stack>{' '}
+                                                            <Stack style={{ textTransform: 'capitalize' }}>
+                                                                {item.lastName}
+                                                            </Stack>
+                                                        </Stack>
                                                     </Stack>
-                                                    <Stack className="Ticket-Assignee-Name" display={'flex'} flexDirection={"row"} gap={"3px"}>
-                                                        <Stack style={{ textTransform: "capitalize" }}>{item.firstName}</Stack> <Stack style={{ textTransform: "capitalize" }}>{item.lastName}</Stack>
-                                                    </Stack>
+                                                    {isTicketOwner ? (
+                                                        <Stack className="Ticket-Assignee-Owner">
+                                                            Ticket Owner
+                                                        </Stack>
+                                                    ) : isAssigned ? (
+                                                        <Stack>
+                                                            <img
+                                                                src={red_remove}
+                                                                alt="Remove Assignee"
+                                                                onClick={() => {
+                                                                    handleRemoveAssigne(item._id);
+                                                                }}
+                                                            />
+                                                        </Stack>
+                                                    ) : (
+                                                        <Stack className="Ticket-Assignee-Operation">
+                                                            <img
+                                                                src={AddAssigneeIcon}
+                                                                alt="Add Assignee"
+                                                                onClick={() => {
+                                                                    handleAddAssigne(item._id);
+                                                                }}
+                                                            />
+                                                        </Stack>
+                                                    )}
                                                 </Stack>
-                                                {isTicketOwner ? (
-                                                    <Stack className="Ticket-Assignee-Owner">Ticket Owner</Stack>
-                                                ) : isAssigned ? (
-                                                    <Stack>
-                                                        <img src={red_remove} alt="Remove Assignee"
-                                                            onClick={() => {
-                                                                handleRemoveAssigne(item._id)
-                                                            }} />
-                                                    </Stack>
-                                                ) : (
-                                                    <Stack className="Ticket-Assignee-Operation">
-                                                        <img src={AddAssigneeIcon} alt="Add Assignee"
-                                                            onClick={() => {
-                                                                handleAddAssigne(item._id)
-                                                            }} />
-                                                    </Stack>
-                                                )}
-                                            </Stack>
-                                        </MenuItem>
-                                    );
-                                })}
+                                            </MenuItem>
+                                        );
+                                    })}
                             </Stack>
 
                             {/* end Lead Assignee */}
@@ -1033,7 +1130,11 @@ const NSingleTicketDetails = (props: Props) => {
                             {/* Kebab Menu */}
                             <Stack component="div">
                                 <span onClick={handleClick}>
-                                    <img src={KebabMenu} alt="Kebab Menu" style={{ cursor: 'pointer' }} />
+                                    <img
+                                        src={KebabMenu}
+                                        alt="Kebab Menu"
+                                        style={{ cursor: 'pointer' }}
+                                    />
                                 </span>
                             </Stack>
 
@@ -1052,7 +1153,10 @@ const NSingleTicketDetails = (props: Props) => {
                                 {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     Set Priority
                                 </MenuItem> */}
-                                <MenuItem sx={menuItemStyles} onClick={() => setAmissionTypeClicked(false)}>
+                                <MenuItem
+                                    sx={menuItemStyles}
+                                    onClick={() => setAmissionTypeClicked(false)}
+                                >
                                     Add Surgery
                                 </MenuItem>
                                 {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
@@ -1066,9 +1170,6 @@ const NSingleTicketDetails = (props: Props) => {
                             {/* end kebab Menu */}
                         </Stack>
                     </Box>
-
-
-
 
                     {/* Stage Card Start Here */}
 
@@ -1088,8 +1189,7 @@ const NSingleTicketDetails = (props: Props) => {
                                     borderBottom: 1,
                                     borderColor: 'divider',
                                     display: 'flex',
-                                    justifyContent: 'space-around',
-
+                                    justifyContent: 'space-around'
                                 }}
                                 bgcolor="white"
                             >
@@ -1099,45 +1199,49 @@ const NSingleTicketDetails = (props: Props) => {
                                     style={{ width: '100%' }}
                                     sx={{
                                         '& .MuiTabs-indicator': {
-                                            display: 'none',
+                                            display: 'none'
                                         },
                                         '.Mui-selected': {
                                             // backgroundColor: "#0566FF !important",
-                                            color: "#FFFFFF",
-                                            borderBottom: "2px solid #0566FF"
-                                        },
-
+                                            color: '#FFFFFF',
+                                            borderBottom: '2px solid #0566FF'
+                                        }
                                     }}
                                 // variant="scrollable"
                                 // scrollButtons="auto"
                                 // aria-label="scrollable auto tabs example"
                                 >
                                     <Tab
-                                        label='Activities'
+                                        label="Activities"
                                         value="1"
                                         className={
                                             value == '1' ? styles.selectedTab : styles.tabsLabel
                                         }
                                     />
-                                    <Tab label={<Badge badgeContent={2} sx={{
-                                        "& .MuiBadge-badge": {
-                                            color: "#FFF",
-                                            backgroundColor: "#F94839",
-                                            margin: '-3px',
-                                            fontSize: '9px',
+                                    <Tab
+                                        label={
+                                            <Badge
+                                                badgeContent={2}
+                                                sx={{
+                                                    '& .MuiBadge-badge': {
+                                                        color: '#FFF',
+                                                        backgroundColor: '#F94839',
+                                                        margin: '-3px',
+                                                        fontSize: '9px',
 
-                                            height: '20px',
-                                            // borderRadius: '80%', 
-                                            padding: -8,
+                                                        height: '20px',
+                                                        // borderRadius: '80%',
+                                                        padding: -8
+                                                    }
+                                                }}
+                                            >
+                                                Whatsapp
+                                            </Badge>
                                         }
-                                    }}>
-                                        Whatsapp
-                                    </Badge>}
                                         value="2"
                                         className={
                                             value == '2' ? styles.selectedTab : styles.tabsLabel
                                         }
-
                                     />
                                     {/* <Tab
                                     label="Email"
@@ -1147,36 +1251,46 @@ const NSingleTicketDetails = (props: Props) => {
                                     }
                                 /> */}
                                     <Tab
-                                        label={<Badge badgeContent={8} sx={{
-                                            '& .MuiBadge-badge': {
-                                                color: '#FFF',
-                                                backgroundColor: '#F94839',
-                                                margin: '-3.6px -4.5px',
-                                                fontSize: '10px'
-                                            }
-                                        }}>
-                                            SMS
-                                        </Badge>}
+                                        label={
+                                            <Badge
+                                                badgeContent={8}
+                                                sx={{
+                                                    '& .MuiBadge-badge': {
+                                                        color: '#FFF',
+                                                        backgroundColor: '#F94839',
+                                                        margin: '-3.6px -4.5px',
+                                                        fontSize: '10px'
+                                                    }
+                                                }}
+                                            >
+                                                SMS
+                                            </Badge>
+                                        }
                                         value="4"
                                         className={
                                             value == '4' ? styles.selectedTab : styles.tabsLabel
                                         }
                                     />
                                     <Tab
-                                        label={<Badge badgeContent={4} sx={{
-                                            "& .MuiBadge-badge": {
-                                                color: "#FFF",
-                                                backgroundColor: "#F94839",
-                                                margin: '-3px',
-                                                fontSize: '9px',
+                                        label={
+                                            <Badge
+                                                badgeContent={4}
+                                                sx={{
+                                                    '& .MuiBadge-badge': {
+                                                        color: '#FFF',
+                                                        backgroundColor: '#F94839',
+                                                        margin: '-3px',
+                                                        fontSize: '9px',
 
-                                                height: '20px',
-                                                // borderRadius: '80%', 
-                                                padding: -8,
-                                            }
-                                        }}>
-                                            Phone Calls
-                                        </Badge>}
+                                                        height: '20px',
+                                                        // borderRadius: '80%',
+                                                        padding: -8
+                                                    }
+                                                }}
+                                            >
+                                                Phone Calls
+                                            </Badge>
+                                        }
                                         value="5"
                                         className={
                                             value == '5' ? styles.selectedTab : styles.tabsLabel
@@ -1226,11 +1340,11 @@ const NSingleTicketDetails = (props: Props) => {
                     </Box>
 
                     {/* End ----- */}
-                </div >
+                </div>
 
                 {/* Left Section of Single Ticket Detail Page */}
 
-                < div className="sidebar-box" >
+                <div className="sidebar-box">
                     <div className="side-bar">
                         <SingleTicketSideBar
                             reminderLists={matchedObjects}
@@ -1240,15 +1354,15 @@ const NSingleTicketDetails = (props: Props) => {
                     <div className="task-bar">
                         <TaskBar />
                     </div>
-                </div >
-            </div >
-            {isSwitchView &&
+                </div>
+            </div>
+            {isSwitchView && (
                 <>
                     <ExpandedModal />
                     <ExpandedSmsModal />
                     <ExpandedPhoneModal />
                 </>
-            }
+            )}
 
             {/* Add Surgery Modal */}
 
@@ -1258,19 +1372,16 @@ const NSingleTicketDetails = (props: Props) => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box className="reminder-modal-container" gap={"10px"}>
-
+                <Box className="reminder-modal-container" gap={'10px'}>
                     <Stack
-                        className='reminder-modal-title'
+                        className="reminder-modal-title"
                         direction="row"
                         display="flex"
                         alignItems="center"
                     >
-                        <Stack className='Add-Surgery-title'>
-                            Add Surgery
-                        </Stack>
+                        <Stack className="Add-Surgery-title">Add Surgery</Stack>
                         <Stack
-                            className='modal-close'
+                            className="modal-close"
                             onClick={() => {
                                 changePrescriptionValue('admission', 'none');
                                 setAmissionTypeClicked(true);
@@ -1282,7 +1393,7 @@ const NSingleTicketDetails = (props: Props) => {
                     </Stack>
 
                     <Box>
-                        <Stack flexWrap={'wrap'} flexDirection="row" gap={"14px"}>
+                        <Stack flexWrap={'wrap'} flexDirection="row" gap={'14px'}>
                             {[
                                 'none',
                                 'Surgery',
@@ -1305,14 +1416,14 @@ const NSingleTicketDetails = (props: Props) => {
                                 <button
                                     className="call-Button"
                                     style={{
-                                        backgroundColor: prescription.admission === item ? '#DAE8FF' : '#F6F7F9',
-                                        fontSize: "14px",
+                                        backgroundColor:
+                                            prescription.admission === item ? '#DAE8FF' : '#F6F7F9',
+                                        fontSize: '14px'
                                     }}
                                     onClick={() => changePrescriptionValue('admission', item)}
                                 >
                                     {item}
                                 </button>
-
                             ))}
                         </Stack>
 
@@ -1322,15 +1433,22 @@ const NSingleTicketDetails = (props: Props) => {
 
                         {prescription.admission === 'Internal Reference' ? (
                             <Stack my={1.5}>
-                                <FormControl size="small" fullWidth sx={{ minWidth: 120, m: 0.4 }}>
-                                    <InputLabel id="internal-reference-label" sx={{
-                                        textTransform: 'capitalize',
-                                        fontSize: '14px',
-                                        fontFamily: 'Outfit,sans-serif'
-                                    }}
-                                    >Internal Reference</InputLabel>
+                                <FormControl
+                                    size="small"
+                                    fullWidth
+                                    sx={{ minWidth: 120, m: 0.4 }}
+                                >
+                                    <InputLabel
+                                        id="internal-reference-label"
+                                        sx={{
+                                            textTransform: 'capitalize',
+                                            fontSize: '14px',
+                                            fontFamily: 'Outfit,sans-serif'
+                                        }}
+                                    >
+                                        Internal Reference
+                                    </InputLabel>
                                     <Select
-
                                         labelId="internal-reference-label"
                                         value={selectedInternalRef}
                                         onChange={handleInternalRefChange}
@@ -1340,7 +1458,7 @@ const NSingleTicketDetails = (props: Props) => {
                                                 textTransform: 'capitalize',
                                                 fontSize: '14px',
                                                 fontFamily: 'Outfit,sans-serif'
-                                            },
+                                            }
                                         }}
                                     >
                                         {['Med', 'Surg', 'Chemo'].map((item) => (
@@ -1373,23 +1491,26 @@ const NSingleTicketDetails = (props: Props) => {
                                                         textTransform: 'capitalize',
                                                         fontSize: '14px',
                                                         fontFamily: 'Outfit,sans-serif'
-                                                    },
+                                                    }
                                                 }}
                                                 InputLabelProps={{
                                                     style: {
                                                         textTransform: 'capitalize',
                                                         fontSize: '14px',
                                                         fontFamily: 'Outfit,sans-serif'
-                                                    },
+                                                    }
                                                 }}
                                             />
                                         )}
                                     />
-                                    <FormHelperText error={validations.service.value} sx={{
-                                        textTransform: 'capitalize',
-                                        fontSize: '14px',
-                                        fontFamily: 'Outfit,sans-serif'
-                                    }}>
+                                    <FormHelperText
+                                        error={validations.service.value}
+                                        sx={{
+                                            textTransform: 'capitalize',
+                                            fontSize: '14px',
+                                            fontFamily: 'Outfit,sans-serif'
+                                        }}
+                                    >
                                         {validations.service.message}
                                     </FormHelperText>
                                 </Box>
@@ -1398,32 +1519,30 @@ const NSingleTicketDetails = (props: Props) => {
                     </Box>
 
                     <Box display="flex" justifyContent="flex-end">
-
                         <button
-                            className='reminder-cancel-btn'
+                            className="reminder-cancel-btn"
                             onClick={() => {
                                 changePrescriptionValue('admission', 'none');
                                 setAmissionTypeClicked(true);
                                 setSelectedInternalRef('');
-                            }}>
+                            }}
+                        >
                             Cancel
                         </button>
                         <button
-                            className='reminder-btn'
+                            className="reminder-btn"
                             disabled={disableButton}
                             onClick={handelUploadType}
                             style={{
-                                backgroundColor: disableButton ? "#F6F7F9" : "#0566FF",
-                                color: disableButton ? "#647491" : "#FFF",
-                                marginLeft: "10px"
+                                backgroundColor: disableButton ? '#F6F7F9' : '#0566FF',
+                                color: disableButton ? '#647491' : '#FFF',
+                                marginLeft: '10px'
                             }}
                         >
                             {disableButton ? 'Uploading ...' : 'Add Admission Type'}
                         </button>
                     </Box>
-
                 </Box>
-
             </Modal>
 
             {/* Add Surgery modal End */}

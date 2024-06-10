@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import "../../singleTicket.css";
-import Accordion from './Accordion';
-import { apiClient } from '../../../../api/apiClient';
-import { useParams } from 'react-router-dom';
 import { Box } from '@mui/material';
+import AccordionReminder from './AccordionReminder.tsx';
 
 const ReminderList = ({ reminderData }) => {
 
@@ -40,12 +38,14 @@ const ReminderList = ({ reminderData }) => {
                     <>
                         {
                             reminderData.map((item, index) => (
-                                <Accordion
+                                <AccordionReminder
                                     key={index}
                                     title={item.title}
                                     content={item.description}
                                     date={separateDate(item.date)}
                                     time={separateTime(item.date)}
+                                    completed={item.completed}
+                                    _id={item._id}
                                 />
                             ))
                         }

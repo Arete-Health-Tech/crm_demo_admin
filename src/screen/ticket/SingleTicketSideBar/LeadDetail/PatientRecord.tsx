@@ -1,4 +1,3 @@
-
 import { Box, Button, IconButton, MenuItem, Select, SelectChangeEvent, Stack, TextField } from '@mui/material';
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Form, useParams } from 'react-router-dom'
@@ -11,6 +10,8 @@ import { iDepartment, iDoctor } from '../../../../types/store/service';
 import DeleteIcon from '@mui/icons-material/Delete';
 // import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
+import { updateConusmerData } from '../../../../api/ticket/ticket';
+import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
 
 const EditIcon = () => (
     <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -29,9 +30,15 @@ interface MyComponentProps {
 }
 
 const PatientRecord = ({ isPatient }) => {
+    const {
+        filterTickets,
+        searchByName,
+        pageNumber,
+    } = useTicketStore();
     const [currentTicket, setCurrentTicket] = React.useState<iTicket>();
     const [isEditing, setIsEditing] = React.useState(false);
     const [diagonsticsTest, setDiagonsticsTest] = React.useState([""]);
+    const [diagonstics, setDiagonstics] = React.useState([""]);
     const [isDiagonsticTestEditing, setIsDiagonsticTestEditing] = React.useState(false);
     const [admissionType, setAdmissionType] = useState<string>(
         currentTicket?.prescription[0]?.admission || ''
@@ -56,14 +63,39 @@ const PatientRecord = ({ isPatient }) => {
 
     }, [ticketID, tickets, diagonsticsTest])
 
-    const handleSubmit = (event) => {
+    const handleAdmissionSubmit = async (event) => {
         event.preventDefault();
-        console.log({ admissionType });
+        const updatedData = {
+            "consumer": {},
+            "prescription": {
+                "admission": admissionType
+            }
+        }
+        await updateConusmerData(updatedData, ticketID)
+        await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            filterTickets
+        );
         setIsEditing(false);
     };
 
-    const handleEditDiagonsticTest = (event) => {
+    const handleEditDiagonsticTest = async (event) => {
         event.preventDefault();
+        const updatedData = {
+            "consumer": {},
+            "prescription": {
+                "diagnostics": diagonstics
+            }
+        }
+        await updateConusmerData(updatedData, ticketID)
+        await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            filterTickets
+        );
         setIsDiagonsticTestEditing(false);
     };
 
@@ -71,6 +103,7 @@ const PatientRecord = ({ isPatient }) => {
         if (currentTicket) {
             const newDiagnostics = [...currentTicket.prescription[0].diagnostics];
             newDiagnostics[index] = e.target.value as string;
+            setDiagonstics(newDiagnostics)
             setCurrentTicket({
                 ...currentTicket,
                 prescription: [{
@@ -78,8 +111,11 @@ const PatientRecord = ({ isPatient }) => {
                     diagnostics: newDiagnostics
                 }]
             });
+
         }
     };
+
+    console.log(diagonstics)
 
     const addDiagnosticTest = () => {
         if (currentTicket) {
@@ -273,7 +309,7 @@ const PatientRecord = ({ isPatient }) => {
                         <Stack display="flex" flexDirection="row">
                             {isEditing ? (
                                 <Stack>
-                                    <button className='save-btn' onClick={handleSubmit}>
+                                    <button className='save-btn' onClick={handleAdmissionSubmit}>
                                         Save
                                     </button>
                                 </Stack>

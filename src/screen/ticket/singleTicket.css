@@ -213,6 +213,22 @@
   border-radius: 4px;
   cursor: pointer;
 }
+.cancel-btn {
+  font-size: 0.875rem;
+  font-family: 'Outfit', sans-serif;
+  border: 1px solid #fff;
+  color: #080f1a;
+  display: flex;
+  height: 24px;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+  padding: 10px 12px;
+  text-transform: capitalize;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
 .save-btn:hover {
   background-color: #095ee7;

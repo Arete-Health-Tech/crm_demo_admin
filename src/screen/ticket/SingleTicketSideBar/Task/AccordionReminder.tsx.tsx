@@ -5,11 +5,11 @@ import CheckFilledIcon from "../../../../assets/Checkbox-Final.svg";
 
 import "../../singleTicket.css";
 import { Box, Grid, Stack } from "@mui/material";
-import useTicketStore from "../../../../store/ticketStore";
-import { setReschedularCompleted } from "../../../../api/ticket/ticket";
+import { setReminderCompleted } from "../../../../api/ticket/ticket";
 import { getTicketHandler } from "../../../../api/ticket/ticketHandler";
+import useTicketStore from "../../../../store/ticketStore";
 
-function Accordion(props) {
+function AccordionReminder(props) {
     const [active, setActive] = useState(false);
     const content = useRef<HTMLDivElement>(null);
     const [height, setHeight] = useState("0px");
@@ -20,19 +20,23 @@ function Accordion(props) {
         pageNumber,
     } = useTicketStore();
 
+    // useEffect(() => {
+    //     console.log("Height for ", props.title, ": ", height);
+    // }, [height]);
+
     function toggleAccordion() {
         setActive(!active);
         setHeight(active ? "0px" : `${content?.current?.scrollHeight}px`);
         setArrowRotation(active ? 0 : 180);
     }
 
-    const handleChecked =async () => {
+    const handleChecked = async () => {
         try {
             const taskData = {
                 taskId: props._id,
                 completed: true
             }
-            await setReschedularCompleted(taskData)
+            await setReminderCompleted(taskData)
             await getTicketHandler(
                 searchByName,
                 pageNumber,
@@ -94,4 +98,4 @@ function Accordion(props) {
     );
 }
 
-export default Accordion;
+export default AccordionReminder;

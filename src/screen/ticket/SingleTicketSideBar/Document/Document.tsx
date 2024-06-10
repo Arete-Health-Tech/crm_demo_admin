@@ -12,12 +12,11 @@ import { useParams } from 'react-router-dom'
 import { apiClient } from '../../../../api/apiClient'
 import CheckIcon from '@mui/icons-material/Check';
 import { getDocumentsData } from '../../../../api/ticket/ticket'
-
-interface FileObject {
-    file: File | null;
-    fileName: string;
-    fileTag: string | "";
-    timestamp: string;
+interface UploadedFileObject {
+    document: string;
+    tag: string;
+    ticketid: string | "";
+    _id: string;
 }
 
 const Document = () => {
@@ -29,7 +28,7 @@ const Document = () => {
     const [fileName, setFileName] = useState("");
     const [selectedOption, setSelectedOption] = useState("");
     const [disableButton, setDisableButton] = useState(true);
-    const [uploadFile, setUploadFile] = useState<FileObject[]>([]);
+    const [uploadedFile, setUploadedFile] = useState<UploadedFileObject[]>([]);
     const [isUploaded, setIsUploaded] = useState(false);
 
     const checkIsEmpty = () => {
@@ -80,6 +79,18 @@ const Document = () => {
     }
 
 
+
+    const documentsData = async () => {
+        const ticketid = ticketID
+        try {
+            const response = await getDocumentsData(ticketid);
+            setUploadedFile(response.data.content)
+        } catch (error) {
+            setUploadedFile([])
+            console.log("n data found")
+        }
+    }
+
     const handleSubmit = async () => {
         try {
             if (!file) {
@@ -107,10 +118,8 @@ const Document = () => {
             if (data) {
                 console.log(data, 'document upload successful');
                 setIsUploaded(true);
-                setTimeout(() => {
-                    handleClose();
-                }, 3000);
-
+                documentsData()
+                handleClose();
             } else {
                 console.error('Error uploading document:', data);
             }
@@ -118,15 +127,9 @@ const Document = () => {
             console.error('Error uploading document:', error);
         }
     };
-
-    const documentsData = async () => {
-        const response = await getDocumentsData(ticketID);
-        console.log(response)
-    }
-
     useEffect(() => {
         documentsData()
-    }, [])
+    }, [ticketID])
 
 
     return (
@@ -141,7 +144,7 @@ const Document = () => {
             />{' '}
             <Box className="document-container">
                 {
-                    uploadFile.length === 0 ? (<>
+                    uploadedFile.length === 0 ? (<>
 
                         <Box marginTop={'70px'}>
                             <Stack><img src={NotFoundIcon} alt='' /></Stack>
@@ -155,15 +158,15 @@ const Document = () => {
                     </>)
                         : (<>
                             <Stack>
-                                {uploadFile.map((doc, index) => (
+                                {uploadedFile.map((doc, index) => (
                                     <Box key={index} className="Uploaded-document">
                                         <Stack className='Uploaded-document-icon'><img width="16px" height={'16px'} src={documentIcon} alt='' /></Stack>
                                         <Box display="flex" flexDirection="column">
-                                            <Stack className="Uploaded-document-fileName">{doc.fileName}</Stack>
-                                            <Stack display={'flex'} flexDirection={'row'} gap={"5px"}>
+                                            <Stack className="Uploaded-document-fileName">{doc.tag}</Stack>
+                                            {/* <Stack display={'flex'} flexDirection={'row'} gap={"5px"}>
                                                 <Stack className="Uploaded-document-date">{doc.timestamp}</Stack>
                                                 <Stack className="Uploaded-document-tag">{doc.fileTag}</Stack>
-                                            </Stack>
+                                            </Stack> */}
 
                                         </Box>
                                     </Box>

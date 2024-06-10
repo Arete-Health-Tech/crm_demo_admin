@@ -47,7 +47,7 @@ const FileUpload = () => {
         setUploading(true);
         try {
             if (selectedButtonUpload === "emr") {
-                let count = 1;
+                let count = 0;
                 console.log(file)
                 for (let i = 0; i < file.length; i++) {
                     const apiResponse = await uploadEmrFile([file[i]]);
@@ -59,7 +59,7 @@ const FileUpload = () => {
                             setOpen(false);
                             setSelectedFile("");
                             setUploading(false);
-                            navigate('/');
+                            navigate('/ticket');
                             return; // Exit the function after success
                         }
                     } else {

@@ -201,11 +201,11 @@ export const uploadDocFile = async (docs: any) => {
 
 export const updateService = async (
   updatedData: Object,
-  ticketID: string | undefined
+  ticketId: string | undefined
 ) => {
   console.log({ updatedData });
   const { data } = await apiClient.put(
-    `/ticket/updateService/${ticketID}`,
+    `/ticket/updateService/${ticketId}`,
     updatedData
   );
   return Promise.resolve(data);
@@ -277,7 +277,7 @@ export const updateConusmerData = async (
   return Promise.resolve(data);
 };
 
-export const getDocumentsData = async (ticketID: string | undefined) => {
-  const data = await apiClient.get(`/task/getDocs/${ticketID}`);
+export const getDocumentsData = async (ticketid: string | undefined) => {
+  const data = await apiClient.get(`/task/getDocs/${ticketid}`);
   return Promise.resolve(data);
 };

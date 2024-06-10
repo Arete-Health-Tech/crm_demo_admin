@@ -285,10 +285,13 @@ const NSingleTicketDetails = (props: Props) => {
         const validationCheck = validation();
         if (validationCheck === true) {
             const payload = {
-                admission: prescription.admission,
-                service: prescription?.service?._id
+                prescription: {
+                    admission: prescription.admission,
+                    service: prescription?.service?._id
+                }
             }
-            const respose = await updateService(payload, ticketID);
+            const ticketId = ticketID;
+            const respose = await updateService(payload, ticketId);
             setDisableButton(false);
             setAmissionTypeClicked(true);
             getTicketHandler(UNDEFINED, 1, "false", filterTickets);

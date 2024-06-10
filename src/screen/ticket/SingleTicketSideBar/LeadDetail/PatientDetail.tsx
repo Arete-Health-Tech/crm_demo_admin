@@ -425,16 +425,16 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 </Box>
                 <Box className='additional-detail-Head'>
                     <Stack className='additional-detail-title'>Hospital</Stack>
-                    <Stack component='div' className='additional-detail-data' sx={{ textTransform: "capitalize" }}> {currentTicket?.opinion[currentTicket?.opinion.length - 1]?.hospital ? currentTicket?.opinion[currentTicket?.opinion.length - 1]?.hospital : "No Data Available"}
+                    <Stack component='div' className='additional-detail-data' sx={{ textTransform: "capitalize" }}> {currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.hospital ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.hospital : "No Data Available"}
                     </Stack>
                 </Box>
                 <Box className='additional-detail-Head'>
                     <Stack className='additional-detail-title'>Doctor Name</Stack>
-                    <Stack component='div' className='additional-detail-data'>{currentTicket?.opinion[currentTicket?.opinion.length - 1]?.doctor ? currentTicket?.opinion[currentTicket?.opinion.length - 1]?.doctor : "No Data Available"}</Stack>
+                    <Stack component='div' className='additional-detail-data'>{currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.doctor ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.doctor : "No Data Available"}</Stack>
                 </Box>
                 <Box className='additional-detail-Head'>
                     <Stack className='additional-detail-title'>Remark</Stack>
-                    <Stack component='div' className='additional-detail-data'>{currentTicket?.opinion[currentTicket?.opinion.length - 1]?.additionalInfo ? currentTicket?.opinion[currentTicket?.opinion.length - 1]?.additionalInfo : "No Data Available"}</Stack>
+                    <Stack component='div' className='additional-detail-data'>{currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.additionalInfo ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.additionalInfo : "No Data Available"}</Stack>
                 </Box>
             </Box>
 

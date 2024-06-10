@@ -301,14 +301,20 @@ const NSingleTicketDetails = (props: Props) => {
         setDisableButton(true);
         const validationCheck = validation();
         if (validationCheck === true) {
-            const payload = {
-                prescription: {
-                    admission: prescription.admission,
-                    service: prescription?.service?._id
-                }
+            const payload =
+            {
+
+                admission: prescription.admission,
+                service: prescription?.service?._id
+
             };
             const ticketId = ticketID;
-            const respose = await updateService(payload, ticketId);
+            const respose = await updateService({
+
+                admission: prescription.admission,
+                service: prescription?.service?._id
+
+            }, ticketId);
             setDisableButton(false);
             setAmissionTypeClicked(true);
             getTicketHandler(UNDEFINED, 1, 'false', filterTickets);

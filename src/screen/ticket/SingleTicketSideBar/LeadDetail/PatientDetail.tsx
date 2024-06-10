@@ -419,7 +419,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 {/* Borders */}
             </Stack>
 
-            <Box className="Patient-records">
+            {(currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) && <Box className="Patient-records">
                 <Box className='additional-detail-Head'>
                     <Stack className='additional-detail-Heading'>SECOND OPINIONS</Stack>
                 </Box>
@@ -436,7 +436,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                     <Stack className='additional-detail-title'>Remark</Stack>
                     <Stack component='div' className='additional-detail-data'>{currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.additionalInfo ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.additionalInfo : "No Data Available"}</Stack>
                 </Box>
-            </Box>
+            </Box>}
 
             <Stack className="gray-border">
                 {/* Borders */}

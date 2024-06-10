@@ -438,9 +438,9 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 </Box>
             </Box>}
 
-            <Stack className="gray-border">
+            {(currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) && <Stack className="gray-border">
                 {/* Borders */}
-            </Stack>
+            </Stack>}
 
             <Box className="Patient-records">
                 <Box className='additional-detail-Head'>

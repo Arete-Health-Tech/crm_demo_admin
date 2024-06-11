@@ -99,7 +99,7 @@ export interface opinionData {
   hospital: string;
   ticketid: string;
   type: string;
-  ConversionChallenges?: string[];
+  challengeSelected: string[] | [];
   _id: string;
 }
 

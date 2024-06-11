@@ -425,19 +425,24 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 {/* Borders */}
             </Stack>}
             {(currentTicket?.opinion.length !== 0) ? (<>
-                <Box className="Patient-records">
-                    <Box className='additional-detail-Head'>
-                        <Stack className='additional-detail-Heading'>CONVERSION CHALLENGES</Stack>
-                    </Box>
-                    {/* {currentTicket?.opinion?.ConversionChallenges?.map((item, index) => {
-                        < Box className='additional-detail-Head'>
-                            <Stack className='record-tag pharmacy-tag' width={'10vw'} sx={{ color: "#080F1A" }}>{item}</Stack>
+                {(currentTicket?.opinion[0]?.challengeSelected.length !== 0) ? (<>
+                    <Box className="Patient-records">
+                        <Box className='additional-detail-Head'>
+                            <Stack className='additional-detail-Heading'>CONVERSION CHALLENGES</Stack>
                         </Box>
-                    })} */}
-                </Box >
-                <Stack className="gray-border">
-                    {/* Borders */}
-                </Stack>
+                        {currentTicket?.opinion[0]?.challengeSelected?.map((item) => (
+                            <Box className='additional-detail-Head' key={item}>
+                                <Stack className='record-tag pharmacy-tag' width={'10.2vw'} sx={{ color: "#080F1A" }}>
+                                    {item}
+                                </Stack>
+                            </Box>
+                        ))}
+                    </Box >
+                    <Stack className="gray-border">
+                        {/* Borders */}
+                    </Stack>
+                </>) : (<></>)}
+
             </>) : (<></>)}
 
 

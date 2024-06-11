@@ -87,7 +87,21 @@ export interface iPrescrition {
   symptoms: string;
 }
 
-
+export interface phoneData {
+  recording: string | null;
+  ticketid: string;
+  time: string;
+  _id: string;
+}
+export interface opinionData {
+  additionalInfo: string;
+  doctor: string;
+  hospital: string;
+  ticketid: string;
+  type: string;
+  challengeSelected: string[] | [];
+  _id: string;
+}
 
 export interface iTicket {
   _id: string;
@@ -111,6 +125,8 @@ export interface iTicket {
   won: string;
   loss: string;
   pharmacyStatus: string;
+  phoneData: phoneData[];
+  opinion: opinionData[];
   Probability: number;
 }
 
@@ -200,6 +216,8 @@ export interface iTicketStore {
   setIsAuditor: (isAuditor: boolean) => void;
   isSwitchView: boolean;
   setIsSwitchView: (isSwitchView: boolean) => void;
+  isEstimateUpload: boolean;
+  setIsEstimateUpload: (isEstimateUpload: boolean) => void;
   allTaskCount: iTaskCount[];
   setAllTaskCount: (allTaskCount: iTaskCount[]) => void;
   agentLogin: boolean;

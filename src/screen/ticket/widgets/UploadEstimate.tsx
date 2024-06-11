@@ -14,7 +14,8 @@ function UploadEstimate() {
     filterTickets,
     pageNumber,
     searchByName,
-    setViewEstimates
+    setViewEstimates,
+    setIsEstimateUpload
   } = useTicketStore();
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
@@ -59,7 +60,7 @@ function UploadEstimate() {
 
 
   const handleSubmit = async () => {
-    console.log(file, " thi sis file")
+    // console.log(file, " thi sis file")
     const formdata = new FormData();
     if (ticketID !== undefined) {
       formdata.append('ticket', ticketID);
@@ -67,13 +68,13 @@ function UploadEstimate() {
     if (file) {
       formdata.append('estimate', file);
     }
-    console.log(noteTextValue, 'noteTextValue');
+    // console.log(noteTextValue, 'noteTextValue');
     if (noteTextValue) {
       formdata.append('total', noteTextValue);
     }
 
     try {
-      console.log("this is inside")
+      // console.log("this is inside")
       const { data } = await apiClient.post(
         `/ticket/${ticketID}/estimate/upload`,
         formdata,
@@ -83,6 +84,7 @@ function UploadEstimate() {
           }
         }
       );
+      setIsEstimateUpload(true);
       console.log(data, "uploaded estimate successfully");
       // try {
       //   const { data } = await apiClient.get(`ticket/uploadestimateData/${ticketID}`);

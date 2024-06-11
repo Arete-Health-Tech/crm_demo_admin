@@ -86,7 +86,11 @@ const CustomModal = () => {
   console.log({ challengeSelected })
 
   const startTimer = async () => {
+<<<<<<< HEAD
     const returnedData = await callAgent("916397401855")
+=======
+    const returnedData = await callAgent(currentTicket?.consumer[0]?.phone)
+>>>>>>> 68acb9f417b6401c91b9dabc5a9c6bf7355223f3
     // const returnedData = await callAgent(currentTicket?.consumer[0]?.phone)
     console.log({ returnedData })
     if (returnedData.status == "Agent is not available") {

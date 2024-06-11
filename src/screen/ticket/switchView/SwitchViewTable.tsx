@@ -9,7 +9,7 @@ import { getDoctorsHandler } from "../../../api/doctor/doctorHandler";
 import { getDepartmentsHandler } from "../../../api/department/departmentHandler";
 import { iCallRescheduler, iReminder } from "../../../types/store/ticket";
 import { socketEventConstants } from "../../../constantUtils/socketEventsConstants";
-import { socket } from "../../../api/apiClient";
+import { apiClient, socket } from "../../../api/apiClient";
 import { getTicket } from "../../../api/ticket/ticket";
 import { getAllStageCountHandler } from "../../../api/dashboard/dashboardHandler";
 import { Box, Chip, Modal, Stack, Typography } from "@mui/material";
@@ -33,6 +33,7 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import CloseIcon from '@mui/icons-material/Close';
 import dayjs from "dayjs";
 import DownloadAllTickets from "../widgets/DownloadAllTickets";
+import { isNull } from "util";
 
 
 const datePickerStyle = {
@@ -130,9 +131,10 @@ function SwitchViewTable() {
     setPageNumber,
     isSwitchView,
     setIsSwitchView,
-    setIsAuditor
+    setIsAuditor,
+    viewEstimates,
+    setViewEstimates
   } = useTicketStore();
-
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
@@ -628,6 +630,42 @@ function SwitchViewTable() {
     setDates(dateStrings);
   }
 
+  const [estimateData, setEstimateData] = useState({});
+
+  useEffect(() => {
+    const fetchAllEstimateData = async () => {
+      const estimates = {};
+      for (const item of tickets) {
+        const estimate = await fetchEstimateData(item._id);
+        estimates[item._id] = estimate;
+      }
+      setEstimateData(estimates);
+    };
+
+    fetchAllEstimateData();
+  }, [tickets]);
+
+  const fetchEstimateData = async (ticketId: any): Promise<number> => {
+    if (!ticketId) {
+      console.error("Ticket ID is undefined.");
+      return 0;
+    }
+
+    try {
+      const response = await apiClient.get(`ticket/uploadestimateData/${ticketId}`);
+      const data = response.data;
+      if (data?.length && data[data.length - 1]?.ticket === ticketId) {
+        return data[data.length - 1]?.total || 0;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      console.error("Error fetching estimate data:", error);
+      return 0;
+    }
+  };
+
+
 
   return (<>
     <Box className={styles.SwitchView_container}>
@@ -862,14 +900,15 @@ function SwitchViewTable() {
 
                     {/* Priority */}
                     <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`} >
-                      {item.estimate.length === 0 ? (<>
+                      {estimateData[item._id] == 0 ? (<>
                         <Stack className="Priority-tag"> <img src={DefaultPr} alt="DefaultPr" /><span style={{ fontSize: "12px" }}>N/A</span></Stack>
                       </>) : (
                         <>
-                          <Stack className="Priority-tag">{220 > 15000 ?
+                          <Stack className="Priority-tag">{estimateData[item._id] > 15000 ?
                             (<><img src={HighPr} alt="" />High</>)
-                            : 220 < 4500 && 450 < 2220 ?
-                              (<><img src={MediumPr} alt="" />Medium</>)
+                            :
+                            (estimateData[item._id] < 15000) && 4550 < (estimateData[item._id])
+                              ? (<><img src={MediumPr} alt="" />Medium</>)
                               : (<><img src={LowPr} alt="" />Low</>)}
                           </Stack>
 

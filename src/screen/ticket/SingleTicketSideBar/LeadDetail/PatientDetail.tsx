@@ -48,7 +48,9 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         searchByName,
         pageNumber,
         viewEstimates,
-        setViewEstimates
+        setViewEstimates,
+        isEstimateUpload,
+        setIsEstimateUpload
     } = useTicketStore();
 
     // console.log(doctors[0].departments[0], 'doctors');
@@ -75,6 +77,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 try {
                     const { data } = await apiClient.get(`ticket/uploadestimateData/${ticketID}`);
                     setViewEstimates(data)
+                    console.log(data, "uploadestimate----")
                 } catch (error) {
                     console.error("Error fetching estimate data:", error);
                 }
@@ -85,27 +88,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
 
         // console.log(estimates2, "fetchEstimateData");
         fetchEstimateData();
-    }, [ticketID]);
-
-    const patientName = (ticket) => {
-        if (!ticket || !ticket.consumer || ticket.consumer.length === 0) {
-            return '';
-        }
-
-        const firstName = ticket.consumer[0]?.firstName;
-        const lastName = ticket.consumer[0]?.lastName;
-
-        let patientName = '';
-        if (firstName && lastName) {
-            const capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-            const capitalizedLastName = lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
-            patientName = capitalizedFirstName + ' ' + capitalizedLastName;
-        } else if (firstName) {
-            patientName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-        }
-
-        return patientName;
-    };
+        setIsEstimateUpload(false);
+    }, [ticketID, isEstimateUpload]);
 
     const doctorSetter = (id: string) => {
         return doctors.find((doctor: iDoctor) => doctor._id === id)?.name;
@@ -131,7 +115,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         { id: 'doctor', label: 'Doctor', value: PatientData.doctor, setValue: setPatientData }
     ];
 
-    console.log(doctors, departments,)
+    // console.log(doctors, departments,)
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
@@ -140,13 +124,11 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             setPatientData(prevData => ({
                 ...prevData,
                 uhid: `${fetchTicket?.consumer?.[0]?.uid}`,
-                name: patientName(fetchTicket),
+                name: `${fetchTicket?.consumer?.[0]?.firstName ?? ''} ${fetchTicket?.consumer?.[0]?.lastName ?? ''}`,
                 age: `${fetchTicket?.consumer?.[0]?.age}`,
                 gender: (fetchTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (fetchTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
-                doctor: `${doctorSetter(fetchTicket?.prescription?.[0]?.doctor!)}`,
-                department: `${departmentSetter(
-                    fetchTicket?.prescription[0]?.departments[0]!
-                )}`
+                doctor: `${fetchTicket?.prescription?.[0]?.doctor}`,
+                department: `${fetchTicket?.prescription[0]?.departments[0]}`
             }));
         };
         getTicketInfo(ticketID);
@@ -154,16 +136,16 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log('Form submitted with name:', PatientData);
+        // console.log('Form submitted with name:', PatientData);
         const updatedData = {
             "consumer": {
                 "firstName": PatientData.name,
-                "gender": PatientData.gender,
+                "gender": PatientData.gender === "Male" ? "M" : PatientData.gender === "Female" ? "F" : "",
                 "age": PatientData.age,
             },
             "prescription": {
                 doctor: PatientData.doctor,
-                department: PatientData.department
+                departments: [PatientData.department]
             }
         }
         await updateConusmerData(updatedData, ticketID)
@@ -185,9 +167,13 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     };
 
     const fetchUploadPdfUrl = async () => {
-        if (viewEstimates[viewEstimates.length - 1].location) {
+        if (viewEstimates[viewEstimates.length - 1]?.total) {
             window.open(viewEstimates[viewEstimates.length - 1].location, '_blank');
-        } else {
+        }
+        // if (viewEstimates[viewEstimates.length - 1].location) {
+        //     window.open(viewEstimates[viewEstimates.length - 1].location, '_blank');
+        // } 
+        else {
             setShowAlert(true);
         }
     };
@@ -199,7 +185,11 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                     <Stack className='Patient-detail-Heading'>Patient Details</Stack>
                     {isPatient ? (<>
                         <Stack display="flex" flexDirection="row">
-                            {isEditing ? (<Stack >
+                            {isEditing ? (<Stack display="flex" flexDirection="row">
+                                <button className='cancel-btn'
+                                    onClick={() => setIsEditing(false)}>
+                                    cancel
+                                </button>
                                 <button className='save-btn'
                                     onClick={handleSubmit}>
                                     Save
@@ -296,13 +286,13 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                                 style={{ textTransform: 'capitalize', fontSize: '14px', fontFamily: 'Outfit,sans-serif' }}
                                                 inputProps={{ style: { fontSize: '14px' } }}
                                             >
-                                                <MenuItem value="M" sx={{
+                                                <MenuItem value="Male" sx={{
                                                     fontSize: '14px',
                                                     fontFamily: 'Outfit,sans-serif'
                                                 }}>
                                                     Male
                                                 </MenuItem>
-                                                <MenuItem value="F" sx={{
+                                                <MenuItem value="Female" sx={{
                                                     fontSize: '14px',
                                                     fontFamily: 'Outfit,sans-serif'
                                                 }}>
@@ -319,10 +309,10 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                         <Autocomplete
                                             size="small"
                                             fullWidth
-                                            value={departments.find((dept) => dept.name === PatientData.department) || null}
+                                            value={departments.find((dept) => dept._id === PatientData.department) || null}
                                             onChange={(e, value) => setPatientData((prev) => ({
                                                 ...prev,
-                                                department: value ? value.name : '',
+                                                department: value ? `${value._id}` : '',
                                             }))}
                                             renderOption={(props, option) => (
                                                 <li {...props} style={{ textTransform: 'capitalize', fontFamily: "sans-serif", fontSize: "12px" }}>
@@ -364,11 +354,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                                 ...prev,
                                                 doctor: value ? value._id : '',
                                             }))}
-                                            options={doctors.filter((item) => PatientData.department)}
-                                            // options={doctors.filter((item) =>
-                                            //     item.departments.includes(PatientData.department)
-                                            // )}
-
+                                            options={doctors.filter((item) => item.departments.includes(PatientData.department))}
                                             getOptionLabel={(option) => option.name}
                                             renderInput={(params) => <TextField {...params}
                                                 label="Doctor"
@@ -392,7 +378,9 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                 (field.value !== null && field.value !== undefined && field.value !== "") ? (
                                     <Box key={field.id} className='Patient-detail-Head'>
                                         <Stack className='Patient-detail-title'>{field.label}</Stack>
-                                        <Stack component='div' className='Patient-detail-data'>{field.value}</Stack>
+                                        <Stack component='div' className='Patient-detail-data'>{
+                                            field.label === "Department" ? departmentSetter(field.value) : field.label === "Doctor" ? doctorSetter(field.value) : (field.value)
+                                        }</Stack>
                                     </Box>
                                 ) : (
                                     <React.Fragment key={field.id} />
@@ -414,44 +402,49 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 {/* Borders */}
             </Stack>
 
-            <Box className="Patient-records">
+            {(currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) && <Box className="Patient-records">
                 <Box className='additional-detail-Head'>
                     <Stack className='additional-detail-Heading'>SECOND OPINIONS</Stack>
                 </Box>
                 <Box className='additional-detail-Head'>
                     <Stack className='additional-detail-title'>Hospital</Stack>
-                    <Stack component='div' className='additional-detail-data' sx={{ textTransform: "capitalize" }}> Kalash Hospital
+                    <Stack component='div' className='additional-detail-data' sx={{ textTransform: "capitalize" }}> {currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.hospital ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.hospital : "No Data Available"}
                     </Stack>
                 </Box>
                 <Box className='additional-detail-Head'>
                     <Stack className='additional-detail-title'>Doctor Name</Stack>
-                    <Stack component='div' className='additional-detail-data'>Dr. Amrita Singh</Stack>
+                    <Stack component='div' className='additional-detail-data'>{currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.doctor ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.doctor : "No Data Available"}</Stack>
                 </Box>
                 <Box className='additional-detail-Head'>
                     <Stack className='additional-detail-title'>Remark</Stack>
-                    <Stack component='div' className='additional-detail-data'>Family reference</Stack>
+                    <Stack component='div' className='additional-detail-data'>{currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.additionalInfo ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.additionalInfo : "No Data Available"}</Stack>
                 </Box>
-            </Box>
+            </Box>}
 
-            <Stack className="gray-border">
+            {(currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) && <Stack className="gray-border">
                 {/* Borders */}
-            </Stack>
+            </Stack>}
+            {(currentTicket?.opinion?.length !== 0) ? (<>
+                {(currentTicket?.opinion[0]?.challengeSelected?.length !== 0) ? (<>
+                    <Box className="Patient-records">
+                        <Box className='additional-detail-Head'>
+                            <Stack className='additional-detail-Heading'>CONVERSION CHALLENGES</Stack>
+                        </Box>
+                        {currentTicket?.opinion[0]?.challengeSelected?.map((item) => (
+                            <Box className='additional-detail-Head' key={item}>
+                                <Stack className='record-tag pharmacy-tag' width={'10.2vw'} sx={{ color: "#080F1A" }}>
+                                    {item}
+                                </Stack>
+                            </Box>
+                        ))}
+                    </Box >
+                    <Stack className="gray-border">
+                        {/* Borders */}
+                    </Stack>
+                </>) : (<></>)}
 
-            <Box className="Patient-records">
-                <Box className='additional-detail-Head'>
-                    <Stack className='additional-detail-Heading'>CONVERSION CHALLENGES</Stack>
-                </Box>
-                <Box className='additional-detail-Head'>
-                    <Stack className='record-tag pharmacy-tag' width={'10vw'} sx={{ color: "#080F1A" }}>Financial constraints</Stack>
-                </Box>
-                <Box className='additional-detail-Head'>
-                    <Stack className='record-tag pharmacy-tag' width={'10vw'} sx={{ color: "#080F1A" }}>Awaiting Test Result</Stack>
-                </Box>
-            </Box>
+            </>) : (<></>)}
 
-            <Stack className="gray-border">
-                {/* Borders */}
-            </Stack>
 
             <Box className="Payment-detail">
                 <Box className='Payment-detail-Head'>
@@ -461,7 +454,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                     <Box className="Payment-detail-data">
                         {/* <Stack className='Payment-value'>{'\u20B9'} {currentTicket?.estimate[0]?.total}</Stack> */}
                         <Stack className='Payment-value'>{'\u20B9'} {viewEstimates[viewEstimates.length - 1]?.total}</Stack>
-                        <Chip
+                        {/* <Chip
                             label={
                                 currentTicket?.estimate[0]?.paymentType === 0
                                     ? 'Cash'
@@ -479,7 +472,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                 fontFamily: `'Outfit', sans-serif`,
                                 padding: 0,
                             }}
-                        />
+                        /> */}
                     </Box>
                 ) : (
                     <Box className='Patient-records-Head'>

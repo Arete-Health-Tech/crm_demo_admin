@@ -46,6 +46,8 @@ const ReschedulerList = ({ callReschedulerData }) => {
                                     content={item.description}
                                     date={separateDate(item.date)}
                                     time={separateTime(item.date)}
+                                    completed={item.completed}
+                                    _id={item._id}
                                 />
                             ))
                         }

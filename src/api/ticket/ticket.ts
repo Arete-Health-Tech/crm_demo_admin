@@ -201,10 +201,11 @@ export const uploadDocFile = async (docs: any) => {
 
 export const updateService = async (
   updatedData: Object,
-  ticketID: string | undefined
+  ticketId: string | undefined
 ) => {
+  console.log({ updatedData });
   const { data } = await apiClient.put(
-    `/ticket/updateService/${ticketID}`,
+    `/ticket/updateService/${ticketId}`,
     updatedData
   );
   return Promise.resolve(data);
@@ -273,5 +274,20 @@ export const updateConusmerData = async (
     `/ticket/updateConsumer/${ticketID}`,
     updatedData
   );
+  return Promise.resolve(data);
+};
+
+export const getDocumentsData = async (ticketid: string | undefined) => {
+  const data = await apiClient.get(`/task/getDocs/${ticketid}`);
+  return Promise.resolve(data);
+};
+
+export const setReschedularCompleted = async (taskData: object) => {
+  const data = await apiClient.put(`/task/updateTaskRESCHEDULAR`, taskData);
+  return Promise.resolve(data);
+};
+
+export const setReminderCompleted = async (taskData: object) => {
+  const data = await apiClient.put(`/task/updateTaskReminder`, taskData);
   return Promise.resolve(data);
 };

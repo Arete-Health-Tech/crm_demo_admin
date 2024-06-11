@@ -37,13 +37,15 @@ export const createServiceTagsHandler = async (tag: createTag) => {
   setServiceTags([...serviceTags, serviceTagAdded]);
 };
 
-export const getServicePackedHandler=async ()=>{
-  const allServicePacked=await searchServicePck();
+export const getServicePackedHandler = async () => {
+  const allServicePacked = await searchServicePck();
 
 
 }
- 
+
 export const getAllServiceFromDbHandler = async () => {
   const allService = await searchServiceAll();
- 
+  // console.log(allService, "fbdfbdbfkdbfjk8889---------")
+  const { setServices } = useServiceStore.getState();
+  setServices(allService);
 };

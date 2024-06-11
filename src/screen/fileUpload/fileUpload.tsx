@@ -38,7 +38,7 @@ const FileUpload = () => {
     const [uploading, setUploading] = useState<boolean>(false);
     const [selectedButtonUpload, setSelectedButtonUpload] = useState<string>("");
     const [file, setFile] = useState<CsvRecord[]>([]);
-    const [docs, setDoc] = useState<CsvRecord[]>([]);
+    const [docs, setDoc] = useState<FormData | null>(null);
     const [open, setOpen] = useState<boolean>(true);
 
     const uploadFileRef = useRef<HTMLInputElement>(null);
@@ -47,7 +47,7 @@ const FileUpload = () => {
         setUploading(true);
         try {
             if (selectedButtonUpload === "emr") {
-                let count = 1;
+                let count = 0;
                 console.log(file)
                 for (let i = 0; i < file.length; i++) {
                     const apiResponse = await uploadEmrFile([file[i]]);
@@ -59,13 +59,27 @@ const FileUpload = () => {
                             setOpen(false);
                             setSelectedFile("");
                             setUploading(false);
-                            navigate('/');
+                            navigate('/ticket');
                             return; // Exit the function after success
                         }
                     } else {
                         toast.error("Error uploading CSV file");
                         setUploading(false);
                     }
+                }
+            } else if (selectedButtonUpload === "admission") {
+                const apiResponse = await uploadDocFile(docs);
+                console.log(apiResponse)
+                if (apiResponse.message === "CSV data and admission data stored in the database successfully") {
+                    toast.success("File uploaded successfully");
+                    setOpen(false);
+                    setSelectedFile("");
+                    setUploading(false);
+                    navigate('/ticket');
+                    return; // Exit the function after success
+                } else {
+                    toast.error("Error uploading CSV file");
+                    setUploading(false);
                 }
             }
         }
@@ -94,7 +108,7 @@ const FileUpload = () => {
     const uploadFile = async (event: ChangeEvent<HTMLInputElement>) => {
         setFile([])
         const files = event.target.files && event.target.files;
-        if (files && files[0] && files[0].type === 'text/csv') {
+        if (files && files[0] && files[0].type === 'text/csv' && selectedButtonUpload === "emr") {
             setSelectedFile(`${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`);
             const file = files[0];
             Papa.parse(file, {
@@ -103,12 +117,21 @@ const FileUpload = () => {
                 skipEmptyLines: true,
                 complete: (results: Papa.ParseResult<CsvRecord>) => {
                     console.log('Parsed:', results.data);
-                    selectedButtonUpload == "emr" ? setFile(results.data) : setDoc(results.data)
+                    setFile(results.data)
                 },
                 error: (error) => {
                     console.error('Error parsing:', error);
                 }
             });
+        } else if (files && files[0] && files[0].type === 'text/csv' && selectedButtonUpload === "admission") {
+            if (files.length > 0) {
+                setSelectedFile(`${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`);
+                let filesToUpload = new FormData();
+                for (let i = 0; i < files.length; i++) {
+                    filesToUpload.append("docs", files[i]); // Append each file individually
+                }
+                setDoc(filesToUpload);
+            }
         } else {
             toast.error('Please select a CSV', {
                 position: 'top-center',

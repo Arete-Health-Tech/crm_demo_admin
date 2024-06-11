@@ -50,7 +50,7 @@ import {
 } from '../../../types/store/service';
 import { iEstimate } from '../../../types/store/ticket';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
-import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
+import { NAVIGATE_TO_SWITCHVIEW_TICKET, NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import { updateTicketSubStage, validateTicket } from '../../../api/ticket/ticket';
 import axios from 'axios';
 import { apiClient } from '../../../api/apiClient';
@@ -64,7 +64,7 @@ type Props = { setTicketUpdateFlag: any };
 const drawerWidth = 1100;
 
 const Estimate = (props: Props) => {
-  const { tickets } = useTicketStore();
+  const { tickets, isSwitchView } = useTicketStore();
   const { ticketID } = useParams();
   const ticket = tickets.find((element) => element._id === ticketID);
 
@@ -408,7 +408,12 @@ const Estimate = (props: Props) => {
   const handleOnClose = async () => {
     if (ticketID) {
       await validateTicket(ticketID);
-      navigate(NAVIGATE_TO_TICKET);
+      if (!isSwitchView) {
+        navigate(NAVIGATE_TO_TICKET);
+      } else {
+        navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
+      }
+
     }
   };
 
@@ -434,7 +439,7 @@ const Estimate = (props: Props) => {
   return (
     <>
       <>
-        <MenuItem sx={menuItemStyles} onClick={() => setIsEstimateOpen(true)} > <Stack >Create Estimation</Stack></MenuItem>
+        {/* <MenuItem sx={menuItemStyles} onClick={() => setIsEstimateOpen(true)} > <Stack >Create Estimation</Stack></MenuItem> */}
         <UploadEstimate />
         <MenuItem sx={menuItemStyles} onClick={handleOpen} > Skip Estimate</MenuItem>
         <MenuItem sx={{

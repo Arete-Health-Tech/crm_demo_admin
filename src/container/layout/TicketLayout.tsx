@@ -16,9 +16,7 @@ import { filterActions } from '../../screen/ticket/ticketStateReducers/actions/f
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import CloseIcon from '@mui/icons-material/Close';
 
-import {
-  useEffect, useState, useRef, useReducer
-} from 'react';
+import { useEffect, useState, useRef, useReducer } from 'react';
 import {
   getAllReminderHandler,
   getAllTaskCountHandler,
@@ -47,19 +45,30 @@ import {
 } from '../../api/stages/stagesHandler';
 import useServiceStore from '../../store/serviceStore';
 import './styles.css';
-import { getAllCallReschedulerHandler, getTicket } from '../../api/ticket/ticket';
+import {
+  getAllCallReschedulerHandler,
+  getTicket
+} from '../../api/ticket/ticket';
 import CustomSpinLoader from '../../components/CustomSpinLoader';
 import { socket } from '../../api/apiClient';
 import { socketEventConstants } from '../../constantUtils/socketEventsConstants';
 import useUserStore from '../../store/userStore';
-import { selectedFiltersReducer, ticketFilterTypes } from '../../screen/ticket/ticketStateReducers/filter';
+import {
+  selectedFiltersReducer,
+  ticketFilterTypes
+} from '../../screen/ticket/ticketStateReducers/filter';
 import { getAllNotesWithoutTicketId } from '../../api/notes/allNote';
-import '../../screen/ticket/singleTicket.css'
-import ToggleIcon from '../../../src/assets/Toggle.svg'
+import '../../screen/ticket/singleTicket.css';
+import ToggleIcon from '../../../src/assets/Toggle.svg';
 import ExpandedModal from '../../screen/ticket/widgets/whatsapp/ExpandedModal';
 import ExpandedSmsModal from '../../screen/ticket/widgets/SmsWidget/ExpandedSmsModal';
 import ExpandedPhoneModal from '../../screen/ticket/widgets/PhoneWidget/ExpandedPhoneModal';
-import AuditFilterIcon from '../../../src/assets/commentHeader.svg'
+import AuditFilterIcon from '../../../src/assets/commentHeader.svg';
+import { toast } from 'react-toastify';
+import {
+  getAllServiceFromDbHandler,
+  getAllServicesHandler
+} from '../../api/service/serviceHandler';
 
 // .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
@@ -85,12 +94,13 @@ const Ticket = () => {
     isSwitchView,
     setIsSwitchView,
     setIsAuditor,
+    viewEstimates
   } = useTicketStore();
-
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
-  const [phone, setPhone] = useState(null)
+  const [totalEstimateValue, setTotalEstimateValue] = useState(0);
+  const [phone, setPhone] = useState(null);
 
   const [reminderList, setReminderList] = useState<any[]>([]);
   const [callReschedulerList, setcallReschedulerList] = useState<any[]>([]);
@@ -126,7 +136,7 @@ const Ticket = () => {
     event: React.ChangeEvent<unknown>,
     pageNo: number
   ) => {
-    setPageNumber(pageNo)
+    setPageNumber(pageNo);
     if (pageNo !== page) {
       // console.log(pageNo)
       // console.log(page)
@@ -161,12 +171,10 @@ const Ticket = () => {
     // setTicketCount(ticketCache["count"]);
     // setTickets(ticketCache[1]);
     setPage(1);
-    setPageNumber(1)
+    setPageNumber(1);
     // console.log({ filterTickets }, "002");
     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   };
-
-
 
   // const handleSeachName = (
   //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -192,18 +200,17 @@ const Ticket = () => {
       if (value === '') {
         fetchTicketsOnEmpthySearch();
         setSearchError('Type to search & Enter');
-        redirectTicket()
+        redirectTicket();
         return;
       }
       // console.log({ filterTickets }, "003");
       await getTicketHandler(value, 1, 'false', filterTickets);
       setSearchByName(value);
       setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
-      setPageNumber(1)
+      setPageNumber(1);
       setPage(1);
-      redirectTicket()
+      redirectTicket();
     }
-
   };
 
   // const checkFilterLength = () => {
@@ -286,9 +293,10 @@ const Ticket = () => {
       await getAllReminderHandler();
       await getAllCallReschedulerHandler();
       await getAllTaskCountHandler();
+      await getAllServiceFromDbHandler();
     })();
-    setPageNumber(1)
-    setIsAuditor(false)
+    setPageNumber(1);
+    setIsAuditor(false);
   }, []);
 
   // const isAlamredReminderExist = (reminder: iReminder) => {
@@ -300,11 +308,10 @@ const Ticket = () => {
   // };
 
   const handleCloseModal = async () => {
-
     const result = await getAllReminderHandler();
     setTimeout(() => {
       setPage(1);
-      setPageNumber(1)
+      setPageNumber(1);
       let list = alarmReminderedList;
       list.splice(0, 1);
       setShowReminderModal(false);
@@ -314,7 +321,6 @@ const Ticket = () => {
   };
 
   const handleCloseCallReschedulerModal = async () => {
-
     const result = await getAllCallReschedulerHandler();
 
     setTimeout(() => {
@@ -326,10 +332,109 @@ const Ticket = () => {
       setAlarmCallReschedulerList([]);
       setcallReschedulerList(result);
     }, 100);
+  };
 
-
-  }
-
+  const handleCallReminderToast = () => {
+    toast(
+      <div>
+        <div
+          style={{
+            display: 'flex',
+            color: '#080F1A',
+            fontSize: '14px',
+            fontFamily: 'Outfit,san-serif',
+            fontWeight: 'bold'
+          }}
+        >
+          <NotificationsActiveIcon sx={{ fontSize: '20px', marginRight: '14px' }} />
+          Reminder{' '}
+          {(
+            ticketReminderPatient?.consumer[0]?.firstName || 'N/A'
+          ).toUpperCase()}
+          {(
+            ticketReminderPatient?.consumer[0]?.lastName || 'N/A'
+          ).toUpperCase()}
+        </div>
+        <div
+          style={{
+            color: '#647491',
+            fontSize: '12px',
+            fontFamily: 'Outfit,san-serif',
+            marginLeft: '33px'
+          }}
+        >
+          {alarmReminderedList[0]?.title.toUpperCase()}
+        </div>
+      </div>,
+      {
+        autoClose: false,
+        style: {
+          color: '#fff',
+          fontSize: '16px',
+          borderRadius: '0.5rem'
+        },
+        onClick: handleCloseModal,
+        onClose: handleCloseModal
+      }
+    );
+  };
+  const handleCallReschedulerToast = () => {
+    toast(
+      <div>
+        <div
+          style={{
+            display: 'flex',
+            color: '#080F1A',
+            fontSize: '14px',
+            fontFamily: 'Outfit,san-serif',
+            fontWeight: 'bold'
+          }}
+        >
+          <NotificationsActiveIcon sx={{ fontSize: '20px', marginRight: '14px' }} />
+          {ticketCallReschedulerPatient && (
+            <Typography>{`Call Rescheduler for ${(
+              ticketCallReschedulerPatient?.consumer[0]?.firstName ||
+              'N/A'
+            ).toUpperCase()}${(
+              ticketCallReschedulerPatient?.consumer[0]?.lastName ||
+              'N/A'
+            ).toUpperCase()} `}</Typography>
+          )}{' '}
+        </div>
+        <div
+          style={{
+            color: '#647491',
+            fontSize: '12px',
+            fontFamily: 'Outfit,san-serif',
+            marginLeft: '33px'
+          }}
+        >
+          <Typography
+            fontSize={'18px'}
+            fontWeight={'600'}
+            margin={'10px'}
+          >
+            {alarmCallReschedulerList[0]?.selectedLabels
+              ? alarmCallReschedulerList[0].selectedLabels
+                .map((label) => label.label)
+                .join(', ')
+                .toUpperCase()
+              : 'N/A'}
+          </Typography>
+        </div>
+      </div>,
+      {
+        autoClose: false,
+        style: {
+          color: '#fff',
+          fontSize: '16px',
+          borderRadius: '0.5rem'
+        },
+        onClick: handleCloseCallReschedulerModal,
+        onClose: handleCloseCallReschedulerModal
+      }
+    );
+  };
 
   const clearAllInterval = (AllIntervals: any[]) => {
     AllIntervals?.forEach((interval) => {
@@ -349,13 +454,16 @@ const Ticket = () => {
   useEffect(() => {
     const refetchTickets = async () => {
       const copiedFilterTickets = { ...filterTickets };
-      let pageNumber = page
+      let pageNumber = page;
       if (ticketID) {
-
       } else {
-        await getTicketHandler(searchName, pageNumber, 'false', copiedFilterTickets);
+        await getTicketHandler(
+          searchName,
+          pageNumber,
+          'false',
+          copiedFilterTickets
+        );
       }
-
     };
 
     socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
@@ -380,7 +488,6 @@ const Ticket = () => {
   //   };
   // }, []);
 
-
   useEffect(() => {
     // console.log('gotham FULL', reminders, 'remindelist', reminderList);
     clearAllInterval(AllIntervals);
@@ -396,10 +503,8 @@ const Ticket = () => {
           reminderDetail.date + 11000 > currentTime.getTime()
           // isAlamredReminderExist(reminderDetail)
         ) {
-
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
-
               const data = await getTicket(
                 UNDEFINED,
                 1,
@@ -468,9 +573,13 @@ const Ticket = () => {
         clearAllInterval(AllIntervals);
       };
     });
-
-
   }, [reminders]);
+
+  useEffect(() => {
+    if (showReminderModal) {
+      handleCallReminderToast();
+    }
+  }, [showReminderModal]);
 
   useEffect(() => {
     // console.log('gotham FULL', reminders, 'remindelist', reminderList);
@@ -486,10 +595,8 @@ const Ticket = () => {
           callRescheduleDetail.date + 11000 > currentTime.getTime()
           // isAlamredReminderExist(reminderDetail)
         ) {
-
           (async () => {
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
-
               const data = await getTicket(
                 UNDEFINED,
                 1,
@@ -526,7 +633,11 @@ const Ticket = () => {
     });
   }, [callRescheduler]);
 
-
+  useEffect(() => {
+    if (showCallReschedulerModal) {
+      handleCallReschedulerToast();
+    }
+  }, [showCallReschedulerModal]);
 
   const { setFilterTickets } = useTicketStore();
   const initialFilters = {
@@ -540,14 +651,22 @@ const Ticket = () => {
   };
 
   const backToDashboard = () => {
-
     getTicketHandler(UNDEFINED, 1, 'false', initialFilters);
     setFilterTickets(initialFilters);
-    navigate('/')
-  }
+    navigate('/');
+  };
 
-
-  // console.log({ page })
+  const totalEstimate = (ticketID: any) => {
+    if (viewEstimates.length !== 0) {
+      if (viewEstimates[viewEstimates.length - 1]?.ticket === ticketID) {
+        return viewEstimates[viewEstimates.length - 1]?.total;
+      } else {
+        return 0;
+      }
+    } else {
+      return 0;
+    }
+  };
 
   return (
     <>
@@ -566,7 +685,6 @@ const Ticket = () => {
             flexDirection={'column'}
             justifyContent={'space-between'}
           >
-
             <Box
               display={'flex'}
               flexDirection={'row'}
@@ -584,13 +702,14 @@ const Ticket = () => {
                 Tickets
               </Stack>
               <Stack display={'flex'} flexDirection={'row'}>
-                <Stack><DownloadAllTickets /></Stack>
+                <Stack>
+                  <DownloadAllTickets />
+                </Stack>
                 <Stack
                   sx={{
                     marginTop: '5px',
                     marginRight: '10px',
-                    cursor: 'pointer',
-
+                    cursor: 'pointer'
                   }}
                   onClick={() => {
                     setIsSwitchView(!isSwitchView);
@@ -601,7 +720,7 @@ const Ticket = () => {
                     src={ToggleIcon}
                     alt="switch View"
                     style={{
-                      fill: "blue"
+                      fill: 'blue'
                     }}
                   />
                 </Stack>
@@ -637,12 +756,14 @@ const Ticket = () => {
                     onKeyDown={handleSearchKeyPress}
                   />
                 </Stack>
-                <Stack sx={{
-                  marginTop: "10px",
-                  marginRight: '-10px',
-                  width: "24px",
-                  height: "24px"
-                }}>
+                <Stack
+                  sx={{
+                    marginTop: '10px',
+                    marginRight: '-10px',
+                    width: '24px',
+                    height: '24px'
+                  }}
+                >
                   <img src={AuditFilterIcon} alt="Audit Filter" />
                 </Stack>
                 <Stack marginRight={'-10px'}>
@@ -737,7 +858,7 @@ const Ticket = () => {
           {currentRoute ? <DefaultScreen /> : <Outlet />}
         </Box>
         <Box>
-          <Modal
+          {/* <Modal
             open={showReminderModal}
           // onClose={() => handleCloseModal()}
           >
@@ -801,10 +922,10 @@ const Ticket = () => {
                 />
               </Box>
             </Box>
-          </Modal>
+          </Modal> */}
         </Box>
         <Box>
-          <Modal
+          {/* <Modal
             open={showCallReschedulerModal}
           // onClose={() => handleCloseModal()}
           >
@@ -874,7 +995,7 @@ const Ticket = () => {
                 />
               </Box>
             </Box>
-          </Modal>
+          </Modal> */}
         </Box>
 
         {/* <CustomSpinLoader open={loaderOn} /> */}

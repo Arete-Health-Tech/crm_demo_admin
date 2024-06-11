@@ -308,7 +308,11 @@ const PatientRecord = ({ isPatient }) => {
                         <Stack className='Patient-records-Heading'>Admission Details</Stack>
                         <Stack display="flex" flexDirection="row">
                             {isEditing ? (
-                                <Stack>
+                                <Stack display="flex" flexDirection="row">
+                                    <button className='cancel-btn'
+                                        onClick={() => setIsEditing(false)}>
+                                        cancel
+                                    </button>
                                     <button className='save-btn' onClick={handleAdmissionSubmit}>
                                         Save
                                     </button>
@@ -360,7 +364,10 @@ const PatientRecord = ({ isPatient }) => {
                             <Stack display="flex" flexDirection="row">
                                 {isDiagonsticTestEditing ? (
                                     <Stack display="flex" flexDirection="row" gap={"5px"} >
-
+                                        <button className='cancel-btn'
+                                            onClick={() => setIsDiagonsticTestEditing(false)}>
+                                            cancel
+                                        </button>
                                         <Box className='Patient-records-Head'>
                                             <button className='save-btn' onClick={addDiagnosticTest}>
                                                 <AddIcon />

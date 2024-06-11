@@ -67,6 +67,27 @@ const FileUpload = () => {
                         setUploading(false);
                     }
                 }
+            } else if (selectedButtonUpload === "admission") {
+                let count = 0;
+                console.log(docs)
+                for (let i = 0; i < docs.length; i++) {
+                    const apiResponse = await uploadDocFile([docs[i]]);
+                    console.log(apiResponse)
+                    if (apiResponse.status === "success") {
+                        count = count + 1
+                        if (count == docs.length) {
+                            toast.success(apiResponse.message);
+                            setOpen(false);
+                            setSelectedFile("");
+                            setUploading(false);
+                            navigate('/ticket');
+                            return; // Exit the function after success
+                        }
+                    } else {
+                        toast.error("Error uploading CSV file");
+                        setUploading(false);
+                    }
+                }
             }
         }
         catch (error) {

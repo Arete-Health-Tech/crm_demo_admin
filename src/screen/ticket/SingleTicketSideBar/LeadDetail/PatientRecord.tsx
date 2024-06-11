@@ -251,20 +251,15 @@ const PatientRecord = ({ isPatient }) => {
         setDisableButton(true);
         const validationCheck = validation();
         if (validationCheck === true) {
-            const payload =
-            {
-
-                admission: prescription.admission,
-                service: prescription?.service?._id
-
-            };
+            const updatedData = {
+                "consumer": {},
+                "prescription": {
+                    admission: prescription.admission,
+                    service: prescription?.service?._id
+                }
+            }
             const ticketId = ticketID;
-            const respose = await updateService({
-
-                admission: prescription.admission,
-                service: prescription?.service?._id
-
-            }, ticketId);
+            const respose = await updateService(updatedData, ticketId);
             setDisableButton(false);
             setAmissionTypeClicked(true);
             setIsEditing(false);
@@ -384,7 +379,7 @@ const PatientRecord = ({ isPatient }) => {
                                             'Radiation',
                                             'MM',
                                             'DC',
-                                            'Internal Reference'
+                                            // 'Internal Reference'
                                         ].map((item) => (
                                             <button
                                                 className="call-Button"

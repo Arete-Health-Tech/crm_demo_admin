@@ -424,8 +424,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             {(currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) && <Stack className="gray-border">
                 {/* Borders */}
             </Stack>}
-            {(currentTicket?.opinion.length !== 0) ? (<>
-                {(currentTicket?.opinion[0]?.challengeSelected.length !== 0) ? (<>
+            {(currentTicket?.opinion?.length !== 0) ? (<>
+                {(currentTicket?.opinion[0]?.challengeSelected?.length !== 0) ? (<>
                     <Box className="Patient-records">
                         <Box className='additional-detail-Head'>
                             <Stack className='additional-detail-Heading'>CONVERSION CHALLENGES</Stack>

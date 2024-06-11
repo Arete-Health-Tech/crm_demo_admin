@@ -48,7 +48,9 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         searchByName,
         pageNumber,
         viewEstimates,
-        setViewEstimates
+        setViewEstimates,
+        isEstimateUpload,
+        setIsEstimateUpload
     } = useTicketStore();
 
     // console.log(doctors[0].departments[0], 'doctors');
@@ -86,27 +88,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
 
         // console.log(estimates2, "fetchEstimateData");
         fetchEstimateData();
-    }, [ticketID]);
-
-    const patientName = (ticket) => {
-        if (!ticket || !ticket.consumer || ticket.consumer.length === 0) {
-            return '';
-        }
-
-        const firstName = ticket.consumer[0]?.firstName;
-        const lastName = ticket.consumer[0]?.lastName;
-
-        let patientName = '';
-        if (firstName && lastName) {
-            const capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-            const capitalizedLastName = lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
-            patientName = capitalizedFirstName + ' ' + capitalizedLastName;
-        } else if (firstName) {
-            patientName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-        }
-
-        return patientName;
-    };
+        setIsEstimateUpload(false);
+    }, [ticketID, isEstimateUpload]);
 
     const doctorSetter = (id: string) => {
         return doctors.find((doctor: iDoctor) => doctor._id === id)?.name;
@@ -132,7 +115,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         { id: 'doctor', label: 'Doctor', value: PatientData.doctor, setValue: setPatientData }
     ];
 
-    console.log(doctors, departments,)
+    // console.log(doctors, departments,)
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
@@ -141,7 +124,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             setPatientData(prevData => ({
                 ...prevData,
                 uhid: `${fetchTicket?.consumer?.[0]?.uid}`,
-                name: patientName(fetchTicket),
+                name: `${fetchTicket?.consumer?.[0]?.firstName ?? ''} ${fetchTicket?.consumer?.[0]?.lastName ?? ''}`,
                 age: `${fetchTicket?.consumer?.[0]?.age}`,
                 gender: (fetchTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (fetchTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
                 doctor: `${fetchTicket?.prescription?.[0]?.doctor}`,
@@ -153,7 +136,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log('Form submitted with name:', PatientData);
+        // console.log('Form submitted with name:', PatientData);
         const updatedData = {
             "consumer": {
                 "firstName": PatientData.name,
@@ -441,20 +424,22 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             {(currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) && <Stack className="gray-border">
                 {/* Borders */}
             </Stack>}
-
-            <Box className="Patient-records">
-                <Box className='additional-detail-Head'>
-                    <Stack className='additional-detail-Heading'>CONVERSION CHALLENGES</Stack>
-                </Box>
-                {/* {currentTicket?.ConversionChallenges?.map((item, index) => {
-                    < Box className='additional-detail-Head'>
-                        <Stack className='record-tag pharmacy-tag' width={'10vw'} sx={{ color: "#080F1A" }}>{item}</Stack>
+            {(currentTicket?.opinion.length !== 0) ? (<>
+                <Box className="Patient-records">
+                    <Box className='additional-detail-Head'>
+                        <Stack className='additional-detail-Heading'>CONVERSION CHALLENGES</Stack>
                     </Box>
-                })} */}
-            </Box >
-            <Stack className="gray-border">
-                {/* Borders */}
-            </Stack>
+                    {/* {currentTicket?.opinion?.ConversionChallenges?.map((item, index) => {
+                        < Box className='additional-detail-Head'>
+                            <Stack className='record-tag pharmacy-tag' width={'10vw'} sx={{ color: "#080F1A" }}>{item}</Stack>
+                        </Box>
+                    })} */}
+                </Box >
+                <Stack className="gray-border">
+                    {/* Borders */}
+                </Stack>
+            </>) : (<></>)}
+
 
             <Box className="Payment-detail">
                 <Box className='Payment-detail-Head'>

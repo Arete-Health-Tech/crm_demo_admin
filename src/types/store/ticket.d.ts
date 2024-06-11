@@ -216,6 +216,8 @@ export interface iTicketStore {
   setIsAuditor: (isAuditor: boolean) => void;
   isSwitchView: boolean;
   setIsSwitchView: (isSwitchView: boolean) => void;
+  isEstimateUpload: boolean;
+  setIsEstimateUpload: (isEstimateUpload: boolean) => void;
   allTaskCount: iTaskCount[];
   setAllTaskCount: (allTaskCount: iTaskCount[]) => void;
   agentLogin: boolean;

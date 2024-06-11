@@ -60,6 +60,7 @@ import ExpandedModal from '../../screen/ticket/widgets/whatsapp/ExpandedModal';
 import ExpandedSmsModal from '../../screen/ticket/widgets/SmsWidget/ExpandedSmsModal';
 import ExpandedPhoneModal from '../../screen/ticket/widgets/PhoneWidget/ExpandedPhoneModal';
 import AuditFilterIcon from '../../../src/assets/commentHeader.svg'
+import { getAllServiceFromDbHandler, getAllServicesHandler } from '../../api/service/serviceHandler';
 
 // .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
@@ -288,6 +289,7 @@ const Ticket = () => {
       await getAllReminderHandler();
       await getAllCallReschedulerHandler();
       await getAllTaskCountHandler();
+      await getAllServiceFromDbHandler();
     })();
     setPageNumber(1)
     setIsAuditor(false)

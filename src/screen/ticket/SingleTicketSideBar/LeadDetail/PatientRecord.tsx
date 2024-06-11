@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, MenuItem, Select, SelectChangeEvent, Stack, TextField } from '@mui/material';
+import { Autocomplete, Box, Button, FormControl, FormHelperText, IconButton, InputLabel, MenuItem, Select, SelectChangeEvent, Stack, TextField } from '@mui/material';
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Form, useParams } from 'react-router-dom'
 import '../../singleTicket.css';
@@ -6,12 +6,15 @@ import ShowPrescription from '../../widgets/ShowPrescriptionModal';
 import { iTicket } from '../../../../types/store/ticket';
 import useTicketStore from '../../../../store/ticketStore';
 import useServiceStore from '../../../../store/serviceStore';
-import { iDepartment, iDoctor } from '../../../../types/store/service';
+import { iDepartment, iDoctor, iService } from '../../../../types/store/service';
 import DeleteIcon from '@mui/icons-material/Delete';
 // import EditIcon from '@mui/icons-material/Edit';
 import AddIcon from '@mui/icons-material/Add';
-import { updateConusmerData } from '../../../../api/ticket/ticket';
+import { updateConusmerData, updateService } from '../../../../api/ticket/ticket';
 import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
+import { elements } from 'chart.js';
+import { UNDEFINED } from '../../../../constantUtils/constant';
+import { apiClient } from '../../../../api/apiClient';
 
 const EditIcon = () => (
     <svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -28,6 +31,35 @@ const EditIcon = () => (
 interface MyComponentProps {
     isPatient: boolean;
 }
+
+type iPrescription = {
+    department: string;
+    // subDepartment: string;
+    doctor: string;
+    admission: null | string;
+    symptoms: string | null;
+    condition: string | null;
+    medicines: string[];
+    followUp: Date | number;
+    image: string | null;
+    isPharmacy: string | null;
+    caregiver_name: string | null;
+    caregiver_phone: string | null;
+    service?: { _id: string; label: string };
+};
+
+const initialPrescription = {
+    admission: 'none'
+};
+
+const menuItemStyles = {
+    color: 'var(--Text-Black, #080F1A)',
+    fontFamily: `"Outfit", sans-serif`,
+    fontSize: '14px',
+    fontStyle: 'normal',
+    fontWeight: '400',
+    lineHeight: '150%'
+};
 
 const PatientRecord = ({ isPatient }) => {
     const {
@@ -46,8 +78,9 @@ const PatientRecord = ({ isPatient }) => {
     const {
         tickets,
     } = useTicketStore();
-    const [name, setName] = React.useState('John Miller');
+    const { allServices, services } = useServiceStore();
     const { ticketID } = useParams();
+    // console.log(services, "servicee-------------------------------------");
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
@@ -58,10 +91,20 @@ const PatientRecord = ({ isPatient }) => {
                 setDiagonsticsTest(currentTicket?.prescription?.[0]?.diagnostics?.length[0]);
             }
         };
+
         getTicketInfo(ticketID);
-        console.log(diagonsticsTest, 'ncdbfndbfndbfn');
+
+        // console.log(diagonsticsTest, 'ncdbfndbfndbfn');
 
     }, [ticketID, tickets, diagonsticsTest])
+
+    const getServiceName = () => {
+        const service = services?.filter((elements) => currentTicket?.prescription?.[0]?.service === elements._id)
+        console.log(service[0]?.name, "---xdfsd---------------------");
+        return service[0]?.name
+    }
+
+
 
     const handleAdmissionSubmit = async (event) => {
         event.preventDefault();
@@ -115,7 +158,8 @@ const PatientRecord = ({ isPatient }) => {
         }
     };
 
-    console.log(diagonstics)
+    // console.log(diagonstics)
+
 
     const addDiagnosticTest = () => {
         if (currentTicket) {
@@ -143,12 +187,114 @@ const PatientRecord = ({ isPatient }) => {
         }
     };
 
+    const [admissionTypeClicked, setAmissionTypeClicked] = useState(true);
+    const [prescription, setPrescription] = useState<iPrescription>(
+        structuredClone(initialPrescription)
+    );
+    const [validations, setValidations] = useState({
+        admission: { message: '', value: false },
+        service: { message: '', value: false }
+    });
+    const [foundServices, setFoundServices] = useState<iService[]>([]);
+    const [buttonVariant, setButtonVariant] = useState<string | null>(null);
+    const [disableButton, setDisableButton] = useState(false);
+    const defaultValidation = { message: '', value: false };
+    const [selectedInternalRef, setSelectedInternalRef] = useState('');
+    const [inputSearch, setInputSearch] = useState('');
+
+    const handleInternalRefChange = (event) => {
+        const value = event.target.value;
+        setSelectedInternalRef(value);
+        handleInternal(value);
+        console.log(value, 'Internal Ref Change ');
+    };
+
+    const changePrescriptionValue = (field: any, value: any) => {
+        setPrescription((prev: any) => {
+            prev[field] = value;
+            return { ...prev };
+        });
+    };
+
+    useEffect(() => {
+        setPrescription(structuredClone(initialPrescription));
+    }, []);
+
+    const validation = () => {
+        const admission = prescription.admission === '';
+        setValidations((prev) => {
+            prev.admission = admission
+                ? { message: 'Invalid Value', value: true }
+                : defaultValidation;
+            return { ...prev };
+        });
+
+        return admission === false;
+    };
+
+    const handleInternal = (item: string) => {
+        console.log('this is response');
+        setButtonVariant(item);
+    };
+
+    const findService = async (query: string) => {
+        try {
+            if (query.length <= 3) return;
+            const { data } = await apiClient.get(`/service/search?search=${query}`);
+            setFoundServices(data);
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const handelUploadType = async () => {
+        setDisableButton(true);
+        const validationCheck = validation();
+        if (validationCheck === true) {
+            const payload =
+            {
+
+                admission: prescription.admission,
+                service: prescription?.service?._id
+
+            };
+            const ticketId = ticketID;
+            const respose = await updateService({
+
+                admission: prescription.admission,
+                service: prescription?.service?._id
+
+            }, ticketId);
+            setDisableButton(false);
+            setAmissionTypeClicked(true);
+            setIsEditing(false);
+            getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+
+            // const url = ticketID !== undefined ? `/ticket/${ticketID}` : `/ticket`;
+            // window.location.href = url;
+            // window.location.reload();
+            // const ticket: any = structuredClone(prescription);
+            // delete ticket.department;
+            // delete ticket.subDepartment;
+            // ticket.departments = [prescription.department];
+
+            // ticket.followup = ticket.followup ? ticket.followup : null;
+            // // await createTicketHandler(ticket);
+            // setPrescription(structuredClone(initialPrescription));
+            // // setDiagnostics([]);
+            // setDisableButton(false);
+
+            // // navigate('/');
+        } else {
+            setDisableButton(false);
+        }
+    };
 
     return (
         <>
 
             {/* Diagnosis */}
-            <Box className="Patient-records">
+            {/* <Box className="Patient-records">
                 <Box className='Patient-records-Head'>
                     <Stack className='Patient-records-Heading'>Diagnosis</Stack>
 
@@ -162,144 +308,11 @@ const PatientRecord = ({ isPatient }) => {
             </Box>
 
             <Stack className="gray-border">
-                {/* Borders */}
-            </Stack>
+           
+            </Stack> */}
 
 
-            {/* Admission Details */}
-            {/* {currentTicket?.prescription[0]?.admission ? (
-                <>
 
-                    {currentTicket?.prescription?.[0]?.service && currentTicket?.prescription?.[0]?.service?.name ? (
-                        <><Box className="Patient-records">
-                            <Box className='Patient-records-Head'>
-                                <Stack className='Patient-records-Heading'>Admission Details</Stack>
-                                {isPatient ? (<>
-                                    <Stack display="flex" flexDirection="row">
-                                        {isEditing ? (<Stack >
-                                            <button className='save-btn'
-                                                onClick={handleSubmit}>
-                                                Save
-                                            </button>
-                                        </Stack>) : (<>
-                                            <Stack component='div'
-                                                className='edit-icon'
-                                                sx={{ marginLeft: isEditing ? "10px" : "0" }}
-                                                onClick={() => setIsEditing(true)}>
-                                                <EditIcon />
-                                            </Stack>
-                                        </>)}
-                                    </Stack>
-                                </>)
-                                    : (
-                                        <></>
-                                    )}
-                            </Box>
-
-
-                            <Box className='Patient-records-Head'>
-                                {isEditing ? (<></>) : (<><Stack className='dot-list'>
-                                    <span>&#8226;</span>
-                                </Stack></>)}
-
-                                {isEditing ? (<>
-                                    <Stack className='Patient-records-data'>
-                                        <TextField
-                                            id="Service Name"
-                                            type="text"
-                                            label="Service Name"
-                                            variant="outlined"
-                                            size="small"
-                                            inputProps={{ style: { fontSize: '14px' } }}
-                                            value={currentTicket.prescription[0].service.name}
-                                            onChange={(e) => setName(e.target.value)}
-                                        />
-                                    </Stack>
-                                </>) : (<>
-                                    <Stack className='Patient-records-data'>{currentTicket.prescription[0].service.name}</Stack>
-                                </>)}
-
-                            </Box>
-
-                            {isEditing ? (<>
-                                <Stack className='Patient-records-data'>
-                                    <TextField
-                                        id="AdmissionType"
-                                        type="text"
-                                        label="AdmissionType"
-                                        variant="outlined"
-                                        size="small"
-                                        inputProps={{ style: { fontSize: '14px' } }}
-                                        value={currentTicket?.prescription[0]?.admission}
-                                        onChange={(e) => setName(e.target.value)}
-                                    />
-                                </Stack>
-                            </>) : (<>
-                                <Box className="record-tag pharmacy-tag">{currentTicket?.prescription[0]?.admission} </Box>
-                            </>)}
-
-                        </Box>
-                        </>
-                    ) : (
-                        <>
-                            <Box className="Patient-records">
-                                <Box className='Patient-records-Head'>
-                                    <Stack className='Patient-records-Heading'>Admission Details</Stack>
-
-                                    {isPatient ? (<>
-                                        <Stack display="flex" flexDirection="row">
-                                            {isEditing ? (<Stack >
-                                                <button className='save-btn'
-                                                    onClick={handleSubmit}>
-                                                    Save
-                                                </button>
-                                            </Stack>) : (<>
-                                                <Stack component='div'
-                                                    className='edit-icon'
-                                                    sx={{ marginLeft: isEditing ? "10px" : "0" }}
-                                                    onClick={() => setIsEditing(true)}>
-                                                    <EditIcon />
-                                                </Stack>
-                                            </>)}
-
-
-                                        </Stack>
-                                    </>)
-                                        : (
-                                            <></>
-                                        )}
-                                </Box>
-                                {isEditing ? (<>
-                                    <Stack className='Patient-records-data'>
-                                        <TextField
-                                            id="AdmissionType"
-                                            type="text"
-                                            label="AdmissionType"
-                                            variant="outlined"
-                                            size="small"
-                                            inputProps={{ style: { fontSize: '14px' } }}
-                                            value={currentTicket?.prescription[0]?.admission}
-                                            onChange={(e) => setName(e.target.value)}
-                                        />
-                                    </Stack>
-                                </>) : (<>
-                                    <Box className="record-tag" sx={{ marginTop: "6px", }}>{currentTicket?.prescription[0]?.admission}</Box>
-                                </>)}
-                            </Box>
-                        </>
-
-                    )}
-
-
-                    <Stack className="gray-border">
-                       
-                    </Stack>
-                </>
-            ) : (
-                <>
-                    
-                </>
-            )} */}
 
             {/* Admission Details */}
             {currentTicket?.prescription[0]?.admission ? (
@@ -309,15 +322,32 @@ const PatientRecord = ({ isPatient }) => {
                         <Stack display="flex" flexDirection="row">
                             {isEditing ? (
                                 <Stack display="flex" flexDirection="row">
-                                    <button className='cancel-btn'
-                                        onClick={() => setIsEditing(false)}>
-                                        cancel
+                                    <button style={{
+                                        color: "black",
+
+                                    }}
+                                        onClick={() => {
+                                            changePrescriptionValue('admission', 'none');
+                                            setIsEditing(false);
+                                            setSelectedInternalRef('');
+                                        }}>
+                                        Cancel
                                     </button>
-                                    <button className='save-btn' onClick={handleAdmissionSubmit}>
-                                        Save
+                                    <button
+                                        className='save-btn'
+                                        disabled={disableButton}
+                                        onClick={handelUploadType}
+                                        style={{
+                                            backgroundColor: disableButton ? '#F6F7F9' : '#0566FF',
+                                            color: disableButton ? '#647491' : '#FFF',
+                                            marginLeft: '10px'
+                                        }}
+                                    >
+                                        {disableButton ? 'Uploading ...' : 'Save'}
                                     </button>
                                 </Stack>
                             ) : (
+
                                 <Stack
                                     component='div'
                                     className='edit-icon'
@@ -331,7 +361,7 @@ const PatientRecord = ({ isPatient }) => {
                     </Box>
                     {isEditing ? (
                         <Box className='Patient-records-Head'>
-                            <Stack className='Patient-records-data'>
+                            {/* <Stack className='Patient-records-data'>
                                 <Select
                                     id="AdmissionType"
                                     value={admissionType}
@@ -344,10 +374,135 @@ const PatientRecord = ({ isPatient }) => {
                                     <MenuItem value="MM" sx={{ fontSize: '12px', fontFamily: "Outfit,sans-serif" }}>MM</MenuItem>
                                     <MenuItem value="Radiation" sx={{ fontSize: '12px', fontFamily: "Outfit,sans-serif" }}>Radiation</MenuItem>
                                 </Select>
-                            </Stack>
+                            </Stack> */}
+                            <Box display={"flex"} flexDirection="column">
+                                <Box display={`${isEditing}` ? "block" : "none"}>
+                                    <Stack flexWrap={'wrap'} flexDirection="row" gap={'14px'}>
+                                        {[
+                                            'none',
+                                            'Surgery',
+                                            'Radiation',
+                                            'MM',
+                                            'DC',
+                                            'Internal Reference'
+                                        ].map((item) => (
+                                            <button
+                                                className="call-Button"
+                                                style={{
+                                                    backgroundColor:
+                                                        prescription.admission === item ? '#DAE8FF' : '#F6F7F9',
+                                                    fontSize: '12px'
+                                                }}
+                                                onClick={() => changePrescriptionValue('admission', item)}
+                                            >
+                                                {item}
+                                            </button>
+                                        ))}
+                                    </Stack>
+
+                                    <FormHelperText error={validations.admission.value}>
+                                        {validations.admission.message}
+                                    </FormHelperText>
+
+                                    {prescription.admission === 'Internal Reference' ? (
+                                        <Stack my={1.5}>
+                                            <FormControl
+                                                size="small"
+                                                fullWidth
+                                                sx={{ minWidth: 120, m: 0.4 }}
+                                            >
+                                                <InputLabel
+                                                    id="internal-reference-label"
+                                                    sx={{
+                                                        textTransform: 'capitalize',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Outfit,sans-serif'
+                                                    }}
+                                                >
+                                                    Internal Reference
+                                                </InputLabel>
+                                                <Select
+                                                    labelId="internal-reference-label"
+                                                    value={selectedInternalRef}
+                                                    onChange={handleInternalRefChange}
+                                                    label="Internal Reference"
+                                                    sx={{
+                                                        '.MuiSelect-select': {
+                                                            textTransform: 'capitalize',
+                                                            fontSize: '14px',
+                                                            fontFamily: 'Outfit,sans-serif'
+                                                        }
+                                                    }}
+                                                >
+                                                    {['Med', 'Surg', 'Chemo'].map((item) => (
+                                                        <MenuItem key={item} value={item} sx={menuItemStyles}>
+                                                            {item}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Stack>
+                                    ) : (
+                                        prescription.admission !== 'none' && (
+                                            <Box my={1.5}>
+                                                <Autocomplete
+                                                    size="small"
+                                                    fullWidth
+                                                    onChange={(_, newValue) =>
+                                                        changePrescriptionValue('service', newValue)
+                                                    }
+                                                    options={foundServices}
+                                                    getOptionLabel={(option) => option.name}
+                                                    renderInput={(params) => (
+                                                        <TextField
+                                                            onChange={(e) => findService(e.target.value)}
+                                                            {...params}
+                                                            label="Service"
+                                                            InputProps={{
+                                                                ...params.InputProps,
+                                                                style: {
+                                                                    textTransform: 'capitalize',
+                                                                    fontSize: '14px',
+                                                                    fontFamily: 'Outfit,sans-serif'
+                                                                }
+                                                            }}
+                                                            InputLabelProps={{
+                                                                style: {
+                                                                    textTransform: 'capitalize',
+                                                                    fontSize: '14px',
+                                                                    fontFamily: 'Outfit,sans-serif'
+                                                                }
+                                                            }}
+                                                        />
+                                                    )}
+                                                />
+                                                <FormHelperText
+                                                    error={validations.service.value}
+                                                    sx={{
+                                                        textTransform: 'capitalize',
+                                                        fontSize: '14px',
+                                                        fontFamily: 'Outfit,sans-serif'
+                                                    }}
+                                                >
+                                                    {validations.service.message}
+                                                </FormHelperText>
+                                            </Box>
+                                        )
+                                    )}
+                                </Box>
+                            </Box>
                         </Box>
                     ) : (
-                        <Box className="record-tag pharmacy-tag">{currentTicket?.prescription[0]?.admission}</Box>
+                        <>
+                            {getServiceName() &&
+                                <Stack display={'flex'} flexDirection={'row'}>
+                                    <Stack className='dot-list'  >
+                                        <span>&#8226;</span>
+                                    </Stack>
+                                    <Stack className='Patient-records-data'>{getServiceName()}</Stack>
+                                </Stack>}
+                            <Box className="record-tag pharmacy-tag">{currentTicket?.prescription[0]?.admission}</Box>
+                        </>
                     )}
                 </Box>
             ) : null}
@@ -406,9 +561,13 @@ const PatientRecord = ({ isPatient }) => {
                                             style={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}
                                         >
                                             <MenuItem value="MRI" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>MRI</MenuItem>
-                                            <MenuItem value="PET-CH" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>PET-CH</MenuItem>
+                                            <MenuItem value="PET-CT" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>PET-CH</MenuItem>
                                             <MenuItem value="CT SCAN" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>CT SCAN</MenuItem>
                                             <MenuItem value="Lab" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>Lab</MenuItem>
+                                            <MenuItem value="EEG" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>EEG</MenuItem>
+                                            <MenuItem value="USG" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>USG</MenuItem>
+                                            <MenuItem value="X-RAY" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>X-RAY</MenuItem>
+                                            <MenuItem value="EMG" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>EMG</MenuItem>
                                         </Select>
                                         <IconButton onClick={() => removeDiagnosticTest(index)}>
                                             <DeleteIcon sx={{ color: 'red' }} />

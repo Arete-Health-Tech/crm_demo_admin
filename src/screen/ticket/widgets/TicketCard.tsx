@@ -58,7 +58,7 @@ const TicketCard = (props: Props) => {
   });
 
   const { tickets, filterTickets, setIsAuditor, allTaskCount, viewEstimates,
-    setViewEstimates } = useTicketStore();
+    setViewEstimates, isEstimateUpload, setIsEstimateUpload } = useTicketStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -268,7 +268,8 @@ const TicketCard = (props: Props) => {
     };
 
     fetchEstimateData();
-  }, [props.patientData._id]);
+    setIsEstimateUpload(false);
+  }, [props.patientData._id, isEstimateUpload]);
 
   return (
     <Box

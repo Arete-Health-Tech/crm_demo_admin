@@ -251,13 +251,14 @@ const PatientRecord = ({ isPatient }) => {
         setDisableButton(true);
         const validationCheck = validation();
         if (validationCheck === true) {
-            const updatedData = {
-                "consumer": {},
-                "prescription": {
-                    admission: prescription.admission,
-                    service: prescription?.service?._id
-                }
+            const updatedData =
+            // "consumer": {},
+            // "prescription":
+            {
+                admission: prescription.admission,
+                service: prescription?.service?._id
             }
+
             const ticketId = ticketID;
             const respose = await updateService(updatedData, ticketId);
             setDisableButton(false);

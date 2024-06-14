@@ -1,16 +1,16 @@
 import * as React from 'react';
 import {
-    styled,
-    Theme,
-    CSSObject,
-    createTheme,
-    ThemeProvider
+  styled,
+  Theme,
+  CSSObject,
+  createTheme,
+  ThemeProvider
 } from '@mui/material/styles';
 import {
-    Tooltip,
-    Zoom,
-    TooltipProps,
-    tooltipClasses,
+  Tooltip,
+  Zoom,
+  TooltipProps,
+  tooltipClasses,
 
 } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -38,6 +38,7 @@ import SettingActive from '../../assets/ActiveSetting.svg';
 import TaskActiveIcon from '../../assets/ActiveTask.svg';
 import { StackedBarChartSharp } from '@mui/icons-material';
 import Audit_Icon from '../../assets/presention-chart.svg'
+import Audit_DefaultIcon from '../../assets/DefaultAuditIcon.svg'
 
 
 
@@ -58,7 +59,7 @@ const NavAudit = ({ children }) => {
     navigate(path);
   };
 
- 
+
 
   const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -152,7 +153,7 @@ const NavAudit = ({ children }) => {
                     width: '3.5vw',
                     height: '7vh',
                     borderRadius: '8px',
-                    backgroundColor: location.pathname.includes('/auditDetails')
+                    backgroundColor: (location.pathname.includes('/auditDetails') || location.pathname.includes('/auditSingleTicketDetail'))
                       ? '#DAE8FF'
                       : 'transparent',
                     '&:hover': {
@@ -166,80 +167,14 @@ const NavAudit = ({ children }) => {
                     placement="right"
                     TransitionComponent={Zoom}
                   >
-                    {location.pathname.includes('/auditDetails') ? (
+                    {(location.pathname.includes('/auditDetails') || location.pathname.includes('/auditSingleTicketDetail')) ? (
                       <img src={Audit_Icon} alt="Audit" />
                     ) : (
-                      <img src={NonActiveTicket} alt="Audit" />
+                      <img src={Audit_DefaultIcon} alt="Audit" />
                     )}
                   </LightTooltip>
                 </Stack>
               </Stack>
-              {/* <Stack>
-                <Stack
-                  onClick={() => goToPage('/OrderList')}
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: '24px',
-                    width: '3.5vw',
-                    height: '7vh',
-                    borderRadius: '8px',
-                    backgroundColor: location.pathname.includes('/OrderList')
-                      ? '#DAE8FF'
-                      : 'transparent',
-                    '&:hover': {
-                      background: '#E1E6EE'
-                    }
-                  }}
-                >
-                  <LightTooltip
-                    title="Pharmacy"
-                    disableInteractive
-                    placement="right"
-                    TransitionComponent={Zoom}
-                  >
-                    {location.pathname.includes('/OrderList') ? (
-                      <img src={ActivePharmacyIcon} alt="Pharmacy" />
-                    ) : (
-                      <img src={pharmacy} alt="Pharmacy" />
-                    )}
-                  </LightTooltip>
-                </Stack>
-              </Stack> */}
-              {/* <Stack>
-                <Stack
-                  onClick={() => goToPage('/Tasks')}
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    gap: '24px',
-                    width: '3.5vw',
-                    height: '7vh',
-                    borderRadius: '8px',
-                    backgroundColor: location.pathname.includes('/Tasks')
-                      ? '#DAE8FF'
-                      : 'transparent',
-                    '&:hover': {
-                      background: '#E1E6EE'
-                    }
-                  }}
-                >
-                  <LightTooltip
-                    title="Tasks"
-                    disableInteractive
-                    placement="right"
-                    TransitionComponent={Zoom}
-                  >
-                    {location.pathname.includes('/Tasks') ? (
-                      <img src={TaskActiveIcon} alt="Tasks" />
-                    ) : (
-                      <img src={Tasks} alt="Tasks" />
-                    )}
-                  </LightTooltip>
-                </Stack>
-              </Stack> */}
             </Box>
 
             {/* <Box sx={{ flexGrow: 1 }} /> */}
@@ -306,7 +241,7 @@ const NavAudit = ({ children }) => {
         {/* </Drawer> */}
         <Box
           component="main"
-          // sx={{ flexGrow: 1 }}
+        // sx={{ flexGrow: 1 }}
         >
           {children}
         </Box>

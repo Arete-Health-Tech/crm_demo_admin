@@ -12,6 +12,7 @@ import { useParams } from 'react-router-dom'
 import { apiClient } from '../../../../api/apiClient'
 import CheckIcon from '@mui/icons-material/Check';
 import { getDocumentsData } from '../../../../api/ticket/ticket'
+import useTicketStore from '../../../../store/ticketStore'
 interface UploadedFileObject {
     document: string;
     tag: string;
@@ -33,7 +34,10 @@ const Document = () => {
     const [disableButton, setDisableButton] = useState(true);
     const [uploadedFile, setUploadedFile] = useState<UploadedFileObject[]>([]);
     const [isUploaded, setIsUploaded] = useState(false);
-
+    const {
+        isAuditor,
+        setIsAuditor
+    } = useTicketStore();
     const checkIsEmpty = () => {
         if (
             file !== null
@@ -64,7 +68,7 @@ const Document = () => {
     const handleFileChange = (event) => {
         const files = event.target.files && event.target.files;
         if (files && files.length > 0) {
-            console.log(files[0], "asasdsdaas");
+            // console.log(files[0], "asasdsdaas");
             setFile(files[0]);
             setUploadFileName(`${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`);
         } else {
@@ -78,7 +82,7 @@ const Document = () => {
     }
 
     const handleSectedOptionChange = (event) => {
-        console.log(event.target.value);
+        // console.log(event.target.value);
         setSelectedOption(event.target.value);
     }
 
@@ -93,7 +97,7 @@ const Document = () => {
             setLoading(false);
         } catch (error) {
             setUploadedFile([])
-            console.log("n data found")
+            console.log("no data found")
         }
     }
 
@@ -103,7 +107,7 @@ const Document = () => {
                 console.error('File is null.');
                 return;
             }
-            console.log(file, "inisde")
+            // console.log(file, "inisde")
             const formData = new FormData();
             formData.append('document', file);
             formData.append('tag', selectedOption);
@@ -169,7 +173,7 @@ const Document = () => {
                 type="file"
                 onChange={handleFileChange}
             />{' '}
-            <Box className="document-container">
+            <Box className={!isAuditor ? "document-container" : "Audit-document-container"}>
                 {loading ? (
                     <> <Box marginTop={'70px'}>
                         <CircularProgress />
@@ -209,8 +213,7 @@ const Document = () => {
                     </>)
                 }
 
-                <Stack width={'100%'} ><button className='Upload-document-btn' onClick={handleOpen}><img src={UploadDocumentIcon} alt='upload' />Upload Document</button></Stack>
-
+                {!isAuditor && <Stack width={'100%'} ><button className='Upload-document-btn' onClick={handleOpen}><img src={UploadDocumentIcon} alt='upload' />Upload Document</button></Stack>}
                 {/* Modal For Uploading Document */}
 
                 <Modal

@@ -74,6 +74,58 @@ export const getTicketHandler = async (
   setTickets(sortedTickets);
   setLoaderOn(false);
 };
+export const customTicketHandler = async (
+  name: string,
+  pageNumber: number = 1,
+  downloadAll: 'true' | 'false' = 'false',
+  selectedFilters: iTicketFilter | null,
+  ticketId: string = UNDEFINED,
+  fetchUpdated: boolean = false
+) => {
+  const {
+    setTickets,
+    setTicketCount,
+    setTicketCache,
+    ticketCache,
+    setEmptyDataText,
+    setDownloadTickets,
+    setLoaderOn
+  } = useTicketStore.getState();
+  const { user } = useUserStore.getState();
+  const phone = 916397401855;
+
+  setLoaderOn(true);
+  // console.log(selectedFilters," this is selected filters");
+  const data = await getTicket(
+    name,
+    pageNumber,
+    downloadAll,
+    selectedFilters,
+    ticketId,
+    fetchUpdated,
+    phone
+  );
+  const sortedTickets = data.tickets;
+  const count = data.count;
+
+  if (sortedTickets.length < 1) {
+    setEmptyDataText('No Data Found');
+  } else {
+    setEmptyDataText('');
+  }
+  if (name === UNDEFINED && downloadAll === 'false') {
+    setTicketCache({ ...ticketCache, [pageNumber]: sortedTickets, count });
+  }
+  if (downloadAll === 'true') {
+    setDownloadTickets(sortedTickets);
+    setLoaderOn(false);
+    // console.log("total download data",sortedTickets.length);
+    return sortedTickets;
+  }
+  setTicketCount(count);
+  setTickets(sortedTickets);
+  setLoaderOn(false);
+};
 
 export const getPharmcyTicketHandler = async () => {
   const {

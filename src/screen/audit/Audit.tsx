@@ -1,5 +1,5 @@
-import { Box, MenuItem, Pagination, Stack, Tooltip, TooltipProps, Zoom, styled, tooltipClasses } from '@mui/material';
-import React, { useState } from 'react';
+import { Avatar, Box, MenuItem, Pagination, Stack, Tooltip, TooltipProps, Zoom, styled, tooltipClasses } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import styles from "./audit.module.css";
 import ArrowDownIcon from '../../assets/ArrowDown.svg';
@@ -19,18 +19,21 @@ import { Style } from '@mui/icons-material';
 import { DatePicker } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import useTicketStore from '../../store/ticketStore';
-
-
-const datePickerStyle = {
-  backgroundColor: '#E1E6EE',
-  color: "#000",
-  fontFamily: "Outfit,sans-serif",
-  borderRadius: '16px',
-  minHeight: "35px",
-  padding: "4px 20px",
-  border: "none",
-  width: "250px"
-};
+import { UNDEFINED } from '../../constantUtils/constant';
+import { customTicketHandler, getTicketHandler } from '../../api/ticket/ticketHandler';
+import { getAllNotesWithoutTicketId } from '../../api/notes/allNote';
+import { getStagesHandler, getSubStagesHandler } from '../../api/stages/stagesHandler';
+import { getDoctorsHandler } from '../../api/doctor/doctorHandler';
+import { getDepartmentsHandler } from '../../api/department/departmentHandler';
+import { getAllServiceFromDbHandler } from '../../api/service/serviceHandler';
+import { socket } from '../../api/apiClient';
+import { socketEventConstants } from '../../constantUtils/socketEventsConstants';
+import CustomPagination from '../../container/layout/CustomPagination';
+import { getTicket } from '../../api/ticket/ticket';
+import { getRepresntativesHandler } from '../../api/representive/representativeHandler';
+import useReprentativeStore from '../../store/representative';
+import useServiceStore from '../../store/serviceStore';
+import AuditFilters from './AuditFilters';
 
 
 const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -46,17 +49,6 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
     color: '#0566FF',
   }
 }));
-
-console.log("just checking")
-
-const menuItemStyles = {
-  color: "var(--Text-Black, #080F1A)",
-  fontFamily: `"Outfit", sans-serif`,
-  fontSize: "14px",
-  fontStyle: "normal",
-  fontWeight: "400",
-  lineHeight: "150%",
-};
 
 const getColor = (probability) => {
   if (probability === 100) return '#08A742';
@@ -76,238 +68,272 @@ const getBackgroundColor = (probability) => {
   return 'grey';
 };
 
-interface AuditData {
-  id: number;
-  name: string;
-  uhid: string;
-  gender: string;
-  age: string;
-  stage: string;
-  subStage: string;
-  lastContactedDate: string;
-  totalNumberOfCall: number;
-  totalNumberOfAttendedCall: number;
-  totalNumberOfAuditCall: number;
-  probabilty: number;
-  totalComments: number;
-  rating: number;
-  // assignee: string;
-}
 
-const sampleAuditData: AuditData[] = [
-  {
-    id: 1,
-    name: "Simran Kaur",
-    uhid: "UHI7842347625",
-    gender: "F",
-    age: "32",
-    stage: "Contacted",
-    subStage: "Create Estimate",
-    lastContactedDate: "25 May 2024",
-    totalNumberOfCall: 11,
-    totalNumberOfAttendedCall: 7,
-    totalNumberOfAuditCall: 2,
-    probabilty: 25,
-    totalComments: 3,
-    rating: 3
-  },
-  {
-    id: 2,
-    name: "Yuvraj Singh",
-    uhid: "UHI7842347634",
-    gender: "M",
-    age: "24",
-    stage: "New Lead",
-    subStage: "Send Engagement",
-    lastContactedDate: "24 May 2024",
-    totalNumberOfCall: 10,
-    totalNumberOfAttendedCall: 5,
-    totalNumberOfAuditCall: 3,
-    probabilty: 50,
-    totalComments: 3,
-    rating: 3
-  },
-  {
-    id: 3,
-    name: "Aman Joshi",
-    uhid: "UHI7845347635",
-    gender: "M",
-    age: "26",
-    stage: "Contacted",
-    subStage: "Add Call Summary",
-    lastContactedDate: "24 May 2024",
-    totalNumberOfCall: 10,
-    totalNumberOfAttendedCall: 5,
-    totalNumberOfAuditCall: 3,
-    probabilty: 75,
-    totalComments: 3,
-    rating: 3
-  },
-  {
-    id: 4,
-    name: "Ankit Sharma",
-    uhid: "UHI7842347695",
-    gender: "M",
-    age: "55",
-    stage: "Orientation",
-    subStage: "Call Patient",
-    lastContactedDate: "11 May 2024",
-    totalNumberOfCall: 10,
-    totalNumberOfAttendedCall: 5,
-    totalNumberOfAuditCall: 3,
-    probabilty: 25,
-    totalComments: 3,
-    rating: 3
-  },
-  {
-    id: 5,
-    name: "Rajiv Thakur",
-    uhid: "UHI7842347275",
-    gender: "M",
-    age: "21",
-    stage: "Nurturing",
-    subStage: "Call Patient",
-    lastContactedDate: "24 April 2024",
-    totalNumberOfCall: 8,
-    totalNumberOfAttendedCall: 5,
-    totalNumberOfAuditCall: 3,
-    probabilty: 100,
-    totalComments: 6,
-    rating: 3
-  },
-  {
-    id: 6,
-    name: "Simran Kaur",
-    uhid: "UHI7842347625",
-    gender: "F",
-    age: "32",
-    stage: "Contacted",
-    subStage: "Create Estimate",
-    lastContactedDate: "25 May 2024",
-    totalNumberOfCall: 11,
-    totalNumberOfAttendedCall: 7,
-    totalNumberOfAuditCall: 2,
-    probabilty: 25,
-    totalComments: 3,
-    rating: 5
-  },
-
-  {
-    id: 7,
-    name: "Rajiv Thakur",
-    uhid: "UHI7842347275",
-    gender: "M",
-    age: "21",
-    stage: "Nurturing",
-    subStage: "Call Patient",
-    lastContactedDate: "24 April 2024",
-    totalNumberOfCall: 8,
-    totalNumberOfAttendedCall: 5,
-    totalNumberOfAuditCall: 3,
-    probabilty: 100,
-    totalComments: 6,
-    rating: 3
-  },
-  {
-    id: 8,
-    name: "Simran Kaur",
-    uhid: "UHI7842347625",
-    gender: "F",
-    age: "32",
-    stage: "Contacted",
-    subStage: "Create Estimate",
-    lastContactedDate: "25 May 2024",
-    totalNumberOfCall: 11,
-    totalNumberOfAttendedCall: 7,
-    totalNumberOfAuditCall: 2,
-    probabilty: 25,
-    totalComments: 3,
-    rating: 2
-  }, {
-    id: 9,
-    name: "Rajiv Thakur",
-    uhid: "UHI7842347275",
-    gender: "M",
-    age: "21",
-    stage: "Nurturing",
-    subStage: "Call Patient",
-    lastContactedDate: "24 April 2024",
-    totalNumberOfCall: 8,
-    totalNumberOfAttendedCall: 5,
-    totalNumberOfAuditCall: 3,
-    probabilty: 100,
-    totalComments: 6,
-    rating: 3
-  },
-  {
-    id: 10,
-    name: "Simran Kaur",
-    uhid: "UHI7842347625",
-    gender: "F",
-    age: "32",
-    stage: "Contacted",
-    subStage: "Create Estimate",
-    lastContactedDate: "25 May 2024",
-    totalNumberOfCall: 11,
-    totalNumberOfAttendedCall: 7,
-    totalNumberOfAuditCall: 2,
-    probabilty: 25,
-    totalComments: 3,
-    rating: 4
-  },
-
-  {
-    id: 11,
-    name: "Rajiv Thakur",
-    uhid: "UHI7842347275",
-    gender: "M",
-    age: "21",
-    stage: "Nurturing",
-    subStage: "Call Patient",
-    lastContactedDate: "24 April 2024",
-    totalNumberOfCall: 8,
-    totalNumberOfAttendedCall: 5,
-    totalNumberOfAuditCall: 3,
-    probabilty: 100,
-    totalComments: 6,
-    rating: 3
-  },
-  {
-    id: 12,
-    name: "Simran Kaur",
-    uhid: "UHI7842347625",
-    gender: "F",
-    age: "32",
-    stage: "Contacted",
-    subStage: "Create Estimate",
-    lastContactedDate: "25 May 2024",
-    totalNumberOfCall: 11,
-    totalNumberOfAttendedCall: 7,
-    totalNumberOfAuditCall: 2,
-    probabilty: 25,
-    totalComments: 3,
-    rating: 3
-  },
-
-];
 
 const Audit: React.FC = () => {
   const navigate = useNavigate();
+  const { stages } = useServiceStore();
   const { setIsAuditor } = useTicketStore();
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [itemsPerPage] = useState<number>(10);
-  const [openStageFilter, setOpenStageFilter] = useState(false);
-  const [openAuditValueFilter, setOpenAuditValueFilter] = useState(false);
-  const [openAgentNameFilter, setOpenAgentNameFilter] = useState(false);
-
-
-  const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    setCurrentPage(value);
+  const [searchName, setSearchName] = useState<string>(UNDEFINED);
+  const {
+    tickets,
+    filterTickets,
+    setSearchByName,
+    searchByName,
+    ticketCount,
+    setTicketCount,
+    setTickets,
+    ticketCache,
+    emptyDataText,
+    loaderOn,
+    pageNumber,
+    setPageNumber,
+  } = useTicketStore();
+  const { representative } = useReprentativeStore();
+  const redirectTicket = () => {
+    navigate('/auditDetails');
   };
 
-  const offset = (currentPage - 1) * itemsPerPage;
-  const currentPageData = sampleAuditData.slice(offset, offset + itemsPerPage);
-  const pageCount = Math.ceil(sampleAuditData.length / itemsPerPage);
+  const [searchError, setSearchError] = useState<string>(
+    'Type to search & Enter'
+  );
+  const [pageCount, setPageCount] = useState<number>(1);
+  const [page, setPage] = useState<number>(1);
+  // const navigate = useNavigate();
+
+
+  const handleSearchKeyPress = async (e: any) => {
+    // console.log("e", e)
+    const value = e.target?.value;
+    if (value) {
+      setSearchName(value);
+    }
+    if (e.key === 'Enter') {
+      setTickets([]);
+
+      if (value === '') {
+        fetchTicketsOnEmpthySearch();
+        setSearchError('Type to search & Enter');
+        redirectTicket();
+        return;
+      }
+      // console.log({ filterTickets }, "003");
+      // await getTicketHandler(value, 1, 'false', filterTickets);/
+      await customTicketHandler(value, 1, 'false', filterTickets);
+      setSearchByName(value);
+      setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
+      setPageNumber(1);
+      setPage(1);
+      redirectTicket();
+    }
+  };
+
+  useEffect(() => {
+    setPageCount(Math.ceil(ticketCount / 10));
+    setPage(pageNumber);
+    // console.log("ticket count",tickets )
+  }, [tickets, searchByName]);
+
+  const fetchTicketsOnEmpthySearch = async () => {
+    setSearchName(UNDEFINED);
+    setSearchByName(UNDEFINED);
+    // setTicketCount(ticketCache["count"]);
+    // setTickets(ticketCache[1]);
+    setPage(1);
+    setPageNumber(1);
+    // console.log({ filterTickets }, "002");
+    // await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+    await customTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+  };
+
+  const handlePagination = async (
+    event: React.ChangeEvent<unknown>,
+    pageNo: number
+  ) => {
+    setPageNumber(pageNo);
+    if (pageNo !== page) {
+      // console.log(pageNo)
+      // console.log(page)
+      setTickets([]);
+      // if (
+      //   ticketCache[pageNo] &&
+      //   ticketCache[pageNo]?.length > 0 &&
+      //   searchName === UNDEFINED &&
+      //   ticketFilterCount(filterTickets) < 1
+      // ) {
+      //   setTickets(ticketCache[pageNo]);
+      // } else {
+      //   await getTicketHandler(searchName, pageNo, 'false', filterTickets);
+      // }
+
+
+      // await getTicketHandler(searchName, pageNo, 'false', filterTickets);
+      await customTicketHandler(searchName, pageNo, 'false', filterTickets);
+      setPage(pageNo);
+      setPageNumber(pageNo);
+
+      redirectTicket();
+    }
+  };
+  window.onload = redirectTicket;
+
+  useEffect(() => {
+    const getTickets = async () => {
+      const phone = 916397401855;
+      // console.log(selectedFilters," this is selected filters");
+      const ticketId: string = UNDEFINED;
+      const fetchUpdated: boolean = false
+      const data = await getTicket(
+        UNDEFINED,
+        pageNumber,
+        'false',
+        filterTickets,
+        ticketId,
+        fetchUpdated,
+        phone
+      );
+      const sortedTickets = data?.tickets;
+      const count = data?.count;
+      // console.log(sortedTickets, "dfjdfdfndmf");
+      setTicketCount(count);
+      setTickets(sortedTickets);
+    }
+
+    // getTickets();
+    (async function () {
+      // console.log({ filterTickets }, "006");
+      // await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+
+      await customTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+      await getAllNotesWithoutTicketId();
+      await getStagesHandler();
+      await getSubStagesHandler();
+      await getDoctorsHandler();
+      await getDepartmentsHandler();
+      await getAllServiceFromDbHandler();
+      await getRepresntativesHandler();
+    })();
+    setPageNumber(1);
+  }, []);
+
+  // console.log(representative, "reprenstative");
+  useEffect(() => {
+    const refetchTickets = async () => {
+      const copiedFilterTickets = { ...filterTickets };
+      let pageNumber = page;
+
+      // await getTicketHandler(
+      //   searchName,
+      //   pageNumber,
+      //   'false',
+      //   copiedFilterTickets
+      // );
+      await customTicketHandler(
+        searchName,
+        pageNumber,
+        'false',
+        copiedFilterTickets
+      );
+
+    };
+
+    socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+
+    return () => {
+      socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    };
+  }, [filterTickets, page, searchName]);
+
+  const { setFilterTickets } = useTicketStore();
+  const initialFilters = {
+    stageList: [],
+    representative: null,
+    results: null,
+    admissionType: [],
+    diagnosticsType: [],
+    dateRange: [],
+    status: []
+  };
+  console.log(tickets, "----------------");
+
+  const calculateRecivedCall = (phoneCalls: any) => {
+    let count = 0;
+
+    if (Array.isArray(phoneCalls) && phoneCalls.length > 0) {
+      phoneCalls.forEach((item) => {
+        if (item?.recording !== null) {
+          count++;
+        }
+      });
+    }
+
+    return count;
+  }
+
+  const handleStage = (stageId: any) => {
+    if (stages) {
+      switch (stageId) {
+        case stages[0]._id:
+          return "New Lead";
+          break;
+        case stages[1]._id:
+          return "Contacted";
+          break;
+        case stages[2]._id:
+          return "Working";
+          break;
+        case stages[3]._id:
+          return "Orientation";
+          break;
+        case stages[4]._id:
+          return "Nurturing";
+          break;
+        default:
+          break;
+      }
+    }
+    else {
+      return "Unknown"
+    }
+
+  }
+
+  const handleSubStage = (code: any) => {
+    switch (code) {
+      case 1:
+        return "Send Engagement";
+        break;
+      case 2:
+        return "Create Estimate";
+        break;
+      case 3:
+        return "Call Patient";
+        break;
+      case 4:
+        return "Add Call Summary";
+        break;
+      default:
+        break;
+    }
+  }
+
+  const handleAssigne = (assignees: any) => {
+    // Ensure assignees is an array
+    if (!Array.isArray(assignees)) {
+      return [];
+    }
+
+    return assignees.reduce((result: string[], assigneeId: string) => {
+      const rep = representative.find(rep => rep._id === assigneeId);
+      if (rep) {
+        const initials = `${rep.firstName.charAt(0)}${rep.lastName.charAt(0)}`;
+        result.push(initials);
+      }
+      return result;
+    }, []);
+  };
 
 
   return (
@@ -320,135 +346,39 @@ const Audit: React.FC = () => {
       <Box className={styles.Audit_filters_container}>
 
         <Box className={styles.Audit_filters_left}>
-
-          {/* Date Filters */}
-          <Stack>
-            <DatePicker.RangePicker
-              style={datePickerStyle}
-            />
-            <style>{`
-                    .ant-picker-range .ant-picker-input input::placeholder {
-                     color: black; /* Change this to your desired color */
-                    }
-                   `}</style>
-
-          </Stack>
-
-          {/* Stage Filter */}
-          <Stack className={styles.Audit_stage_filter}>
-            <Stack className={styles.Audit_filters} onClick={() => {
-              setOpenStageFilter(!openStageFilter);
-              setOpenAuditValueFilter(false);
-              setOpenAgentNameFilter(false);
-            }}>
-              <span className={styles.Audit_filters_title}>
-                {/* {pharmacyOrderStatusFilter ? pharmacyOrderStatusFilter === "Pending" ? "Processing" : pharmacyOrderStatusFilter : "All Orders"} */}
-                Stages
-                {/* All Orders */}
-              </span>
-              <span className={styles.Audit_filters_icon}><img src={ArrowDownIcon} alt="Arrow-Down" /></span>
-            </Stack >
-            <Stack display={openStageFilter ? "block" : "none"}
-              className={styles.Audit_filters_options} bgcolor="white"
-            >
-              <MenuItem sx={menuItemStyles}
-              // onClick={() => handleOrderTypeStatusFilter("Pending")}
-              >
-                New Lead
-              </MenuItem>
-              <MenuItem
-                sx={menuItemStyles}
-              // onClick={() => handleOrderTypeStatusFilter("Ready")}
-              >
-                Contacted
-              </MenuItem>
-              <MenuItem
-                sx={menuItemStyles}
-              // onClick={() => handleOrderTypeStatusFilter("Ready")}
-              >
-                Working
-              </MenuItem>
-              <MenuItem
-                sx={menuItemStyles}
-              // onClick={() => handleOrderTypeStatusFilter("Ready")}
-              >
-                Orientation
-              </MenuItem>
-              <MenuItem
-                sx={menuItemStyles}
-              // onClick={() => handleOrderTypeStatusFilter("Ready")}
-              >
-                Nurturing
-              </MenuItem>
-            </Stack>
-          </Stack>
-
-          {/* Audit Value Filters */}
-          <Stack className={styles.Audit_stage_filter}>
-            <Stack className={styles.Audit_filters} onClick={() => {
-              setOpenAuditValueFilter(!openAuditValueFilter);
-              setOpenStageFilter(false);
-              setOpenAgentNameFilter(false);
-            }}>
-              <span className={styles.Audit_filters_title}>
-                {/* {pharmacyOrderStatusFilter ? pharmacyOrderStatusFilter === "Pending" ? "Processing" : pharmacyOrderStatusFilter : "All Orders"} */}
-                Audit Value
-                {/* All Orders */}
-              </span>
-              <span className={styles.Audit_filters_icon}><img src={ArrowDownIcon} alt="Arrow-Down" /></span>
-            </Stack>
-            <Stack display={openAuditValueFilter ? "block" : "none"}
-              className={styles.Audit_filters_options} bgcolor="white"
-            >
-              <MenuItem sx={menuItemStyles} >
-                Good
-              </MenuItem>
-              <MenuItem
-                sx={menuItemStyles}>
-                Bad
-              </MenuItem>
-
-            </Stack>
-          </Stack>
-
-          {/* Agent Name Filters */}
-          <Stack className={styles.Audit_stage_filter}>
-            <Stack className={styles.Audit_filters} onClick={() => {
-              setOpenAgentNameFilter(!openAgentNameFilter);
-              setOpenAuditValueFilter(false);
-              setOpenStageFilter(false);
-            }}>
-              <span className={styles.Audit_filters_title}>
-                Agent Name
-              </span>
-              <span className={styles.Audit_filters_icon}><img src={ArrowDownIcon} alt="Arrow-Down" /></span>
-            </Stack>
-            <Stack display={openAgentNameFilter ? "block" : "none"}
-              className={styles.Audit_filters_options} bgcolor="white"
-            >
-              <MenuItem sx={menuItemStyles} >
-                Sachin Foa
-              </MenuItem>
-              <MenuItem
-                sx={menuItemStyles}>
-                Ayush Jain
-              </MenuItem>
-
-            </Stack>
-          </Stack>
-
+          <AuditFilters setPage={setPage} />
         </Box>
 
-        {/* Search Filters */}
-        <Stack className={styles.search}>
-          <div className={styles.search_container}>
-            <span className={styles.search_icon}><SearchIcon /></span>
-            <input type="text"
-              className={styles.search_input}
-              placeholder=" Search..."
-            />
-          </div>
-        </Stack>
+        <Box display={'flex'} flexDirection={'column'}>
+          <Box
+            display={'flex'}
+            flexDirection={'row'}
+            justifyContent={'space-between'}
+            gap={'10px'}
+          >
+            <Stack width={'95%'} position={'relative'}>
+              <span className="search-icon">
+                {' '}
+                <SearchIcon />
+              </span>
+              <input
+                type="text"
+                className="search-input"
+                placeholder=" Search..."
+                onKeyDown={handleSearchKeyPress}
+              />
+            </Stack>
+          </Box>
+          <Box
+            sx={{
+              fontFamily: `Outfit,sanserif`,
+              fontSize: '13px',
+              color: '#647491'
+            }}
+          >
+            {searchError && <div>{searchError}</div>}
+          </Box>
+        </Box>
 
       </Box>
 
@@ -458,6 +388,7 @@ const Audit: React.FC = () => {
           <table className={styles.Audit_table} style={{
             height: '95%'
           }}>
+
             <Box sx={{ position: "sticky" }}>
               <thead>
                 <tr className={styles.Audit_table_head}>
@@ -486,27 +417,28 @@ const Audit: React.FC = () => {
               '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#555' }
             }}>
               <tbody>
-                {currentPageData.map(item => (
-                  <tr key={item.id} className={styles.Audit_table_body}
+                {tickets.map(item => (
+                  <tr key={item._id} className={styles.Audit_table_body}
                     onClick={() => {
                       setIsAuditor(true);
-                      navigate(`/auditSingleTicketDetail/${"6652bf7accee77aaeaf8afb2"}`);
+                      // navigate(`/auditSingleTicketDetail/${"6652bf7accee77aaeaf8afb2"}`);
+                      navigate(`/auditSingleTicketDetail/${item._id}`);
                     }}>
 
                     {/* Lead */}
                     <td className={`${styles.Audit_table_body_item}`}>
 
                       <Stack display={'flex'} flexDirection={'row'} gap={'8px'}>
-                        <Stack className={styles.Audit_name}>
-                          {item.name}
+                        <Stack className={styles.Audit_name} sx={{ textTransform: "capitalize !important" }}>
+                          {`${item?.consumer?.[0]?.firstName ?? ''} ${item?.consumer?.[0]?.lastName ?? ''}`}
                         </Stack>
                         <Stack className={styles.Audit_GenAge}>
-                          <Stack className={styles.Audit_Gen}>{item.gender}</Stack>
-                          <Stack className={styles.Audit_Age}> {item.age}</Stack>
+                          {item.consumer[0]?.gender && <Stack className={styles.Audit_Gen}>{item.consumer[0]?.gender}</Stack>}
+                          {item.consumer[0]?.age && <Stack className={styles.Audit_Age}> {item.consumer[0]?.age}</Stack>}
                         </Stack>
                       </Stack>
                       <Stack className={styles.Audit_uhid}>
-                        #{item.uhid}
+                        #{item.consumer[0]?.uid}
                       </Stack>
 
                     </td>
@@ -514,7 +446,7 @@ const Audit: React.FC = () => {
                     {/* Stage */}
                     <td className={`${styles.Audit_table_body_item} ${styles.body_item2}`}>
                       <Stack className={styles.Audit_stage}>
-                        {item.stage}
+                        {handleStage(item.stage)}
                       </Stack>
                       <Stack sx={{
                         display: "flex",
@@ -527,7 +459,8 @@ const Audit: React.FC = () => {
                           <img src={ConnectorIcon} />
                         </Stack>
                         <Stack className={styles.Audit_substage}>
-                          {item.subStage}
+                          {/* {item.subStage} */}
+                          {handleSubStage(item?.subStageCode?.code)}
                         </Stack>
                       </Stack>
                     </td>
@@ -535,7 +468,8 @@ const Audit: React.FC = () => {
                     {/* Last Contacted */}
                     <td className={`${styles.Audit_table_body_item} ${styles.body_item3}`}>
                       <Stack className={styles.Audit_last_date}>
-                        {item.lastContactedDate}
+                        {/* {item.lastContactedDate} */}
+                        23 April 2023
                       </Stack>
                     </td>
 
@@ -551,7 +485,7 @@ const Audit: React.FC = () => {
                         >
                           <Stack className={styles.Audit_CallValues}>
                             <Stack className={styles.Audit_CallIcon}><img src={TotalCallIcon} /></Stack>
-                            <Stack className={styles.Audit_call_value}>{item.totalNumberOfCall}</Stack>
+                            <Stack className={styles.Audit_call_value}>{item?.phoneData?.length ?? 0}</Stack>
                           </Stack>
                         </LightTooltip>
                         <LightTooltip
@@ -562,7 +496,7 @@ const Audit: React.FC = () => {
                         >
                           <Stack className={styles.Audit_CallValues}>
                             <Stack className={styles.Audit_CallIcon}><img src={TotalRecievedCallIcon} /></Stack>
-                            <Stack className={styles.Audit_call_value}>{item.totalNumberOfAttendedCall}</Stack>
+                            <Stack className={styles.Audit_call_value}>{calculateRecivedCall(item?.phoneData)}</Stack>
                           </Stack>
                         </LightTooltip>
                         <LightTooltip
@@ -573,7 +507,10 @@ const Audit: React.FC = () => {
                         >
                           <Stack className={styles.Audit_CallValues}>
                             <Stack className={styles.Audit_CallIcon}><img src={AuditCallIcon} /></Stack>
-                            <Stack className={styles.Audit_call_value}>{item.totalNumberOfAuditCall}</Stack>
+                            <Stack className={styles.Audit_call_value}>
+                              {/* {item.totalNumberOfAuditCall} */}
+                              0
+                            </Stack>
                           </Stack>
                         </LightTooltip>
                       </Stack>
@@ -584,17 +521,16 @@ const Audit: React.FC = () => {
 
                       <Stack className={styles.Audit_Prob}
                         sx={{
-                          color: getColor(item.probabilty),
-                          backgroundColor: getBackgroundColor(item.probabilty),
+                          color: getColor(item?.Probability ?? 0),
+                          backgroundColor: getBackgroundColor(item?.Probability ?? 0),
                         }}
-                      > {item.probabilty}%</Stack>
-
+                      > {item?.Probability ?? 0}%</Stack>
                     </td>
 
                     {/* Comments */}
                     <td className={`${styles.Audit_table_body_item} ${styles.body_item6}`}>
                       <Stack className={styles.Audit_commentValue}>
-                        <Stack className={styles.Audit_call_value}>{item.totalComments}</Stack>
+                        <Stack className={styles.Audit_call_value}>{item?.auditorcomment?.length ?? '0'}</Stack>
                         <Stack className={styles.Audit_CallIcon}><img src={CommentIcon} /></Stack>
                       </Stack>
                     </td>
@@ -604,43 +540,95 @@ const Audit: React.FC = () => {
                       <Stack className={styles.Audit_Audit_value}>
                         {[1, 2, 3, 4, 5].map((star) => {
                           return (
-                            <Stack sx={{
-                              display: 'flex',
-                              flexDirection: "row",
-                              gap: "4px",
-                              justifyContent: "left",
-                            }}
+                            <Stack
+                              key={star} // Add a key to avoid React warning
+                              sx={{
+                                display: 'flex',
+                                flexDirection: "row",
+                                gap: "4px",
+                                justifyContent: "left",
+                              }}
                             >
-                              {item.rating >= star ? (
-                                <>
+                              {item?.auditorcomment?.length > 0 ? (
+                                item.auditorcomment[item.auditorcomment.length - 1]?.ratings >= star ? (
                                   <Stack className={styles.Star_icon}>
                                     <img src={StarIcon} alt='starIcon' />
                                   </Stack>
-                                </>)
-                                :
-                                (
-                                  <>
-                                    <Stack className={styles.Star_icon}>
-                                      <img src={EmptyStarIcon} alt='EmptyStarIcon' />
-                                    </Stack>
-                                  </>)}
+                                ) : (
+                                  <Stack className={styles.Star_icon}>
+                                    <img src={EmptyStarIcon} alt='EmptyStarIcon' />
+                                  </Stack>
+                                )
+                              ) : (
+                                0 >= star ? (
+                                  <Stack className={styles.Star_icon}>
+                                    <img src={StarIcon} alt='starIcon' />
+                                  </Stack>
+                                ) : (
+                                  <Stack className={styles.Star_icon}>
+                                    <img src={EmptyStarIcon} alt='EmptyStarIcon' />
+                                  </Stack>
+                                )
+                              )}
                             </Stack>
-
-                          )
+                          );
                         })}
                       </Stack>
                     </td>
 
+
                     {/* Assignee */}
                     <td className={`${styles.Audit_table_body_item} ${styles.body_item8}`}>
                       <Stack className={styles.Audit_assigne_avatar}>
-                        <Stack>
-                          <img src={Avatar1} />
-                        </Stack>
-                        <Stack className={styles.Audit_assigne_Avatar2}>
-                          <img src={Avatar2} />
-                        </Stack>
-                      </Stack>
+                        {handleAssigne(item?.assigned).map((i, index) => {
+                          if (index === 0) {
+                            return (<>
+
+
+                              <Avatar
+                                sx={{
+                                  width: '35px',
+                                  height: '35px',
+                                  fontSize: '10px',
+                                  bgcolor: 'orange',
+                                  textTransform: 'uppercase',
+                                  marginTop: '2px'
+                                }}
+                              >
+                                {i}
+                              </Avatar>
+
+                            </>)
+                          }
+
+                          return null;
+
+                        })}
+                        {handleAssigne(item?.assigned).map((i, index) => {
+                          if (index === 1) {
+                            return (<>
+                              <Avatar
+                                sx={{
+                                  width: '35px',
+                                  height: '35px',
+                                  fontSize: '10px',
+                                  bgcolor: '#0096FF',
+                                  textTransform: 'uppercase',
+                                  marginTop: '2px',
+                                  position: 'relative',
+                                  right: "14px"
+                                }}
+                              >
+                                {i}
+                              </Avatar>
+
+                            </>)
+                          }
+
+                          return null;
+
+                        })}
+                      </Stack >
                     </td>
 
                   </tr>
@@ -649,7 +637,7 @@ const Audit: React.FC = () => {
             </Box>
 
             <Box className={styles.Audit_pagination}>
-              <Pagination
+              {/* <Pagination
                 count={pageCount}
                 page={currentPage}
                 onChange={handlePageChange}
@@ -667,6 +655,11 @@ const Audit: React.FC = () => {
                     },
                   },
                 }}
+              /> */}
+              <CustomPagination
+                handlePagination={handlePagination}
+                pageCount={pageCount}
+                page={pageNumber}
               />
             </Box>
           </table>

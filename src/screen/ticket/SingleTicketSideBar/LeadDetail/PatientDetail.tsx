@@ -50,7 +50,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         viewEstimates,
         setViewEstimates,
         isEstimateUpload,
-        setIsEstimateUpload
+        setIsEstimateUpload,
+        isAuditor
     } = useTicketStore();
 
     // console.log(doctors[0].departments[0], 'doctors');
@@ -77,7 +78,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 try {
                     const { data } = await apiClient.get(`ticket/uploadestimateData/${ticketID}`);
                     setViewEstimates(data)
-                    console.log(data, "uploadestimate----")
+                    // console.log(data, "uploadestimate----")
                 } catch (error) {
                     console.error("Error fetching estimate data:", error);
                 }
@@ -195,12 +196,12 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                     Save
                                 </button>
                             </Stack>) : (<>
-                                <Stack component='div'
+                                {!isAuditor && <Stack component='div'
                                     className='edit-icon'
                                     sx={{ marginLeft: isEditing ? "10px" : "0" }}
                                     onClick={() => setIsEditing(true)}>
                                     <EditIcon />
-                                </Stack>
+                                </Stack>}
                             </>)}
 
 
@@ -424,7 +425,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             {(currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) && <Stack className="gray-border">
                 {/* Borders */}
             </Stack>}
-            {(currentTicket?.opinion?.length !== 0) ? (<>
+            {(currentTicket?.opinion && currentTicket?.opinion?.length !== 0) ? (<>
                 {(currentTicket?.opinion[0]?.challengeSelected?.length !== 0) ? (<>
                     <Box className="Patient-records">
                         <Box className='additional-detail-Head'>

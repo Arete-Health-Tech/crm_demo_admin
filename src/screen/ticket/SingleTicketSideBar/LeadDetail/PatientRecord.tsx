@@ -66,6 +66,7 @@ const PatientRecord = ({ isPatient }) => {
         filterTickets,
         searchByName,
         pageNumber,
+        isAuditor
     } = useTicketStore();
     const [currentTicket, setCurrentTicket] = React.useState<iTicket>();
     const [isEditing, setIsEditing] = React.useState(false);
@@ -100,7 +101,7 @@ const PatientRecord = ({ isPatient }) => {
 
     const getServiceName = () => {
         const service = services?.filter((elements) => currentTicket?.prescription?.[0]?.service === elements._id)
-        console.log(service[0]?.name, "---xdfsd---------------------");
+        // console.log(service[0]?.name, "---xdfsd---------------------");
         return service[0]?.name
     }
 
@@ -189,6 +190,7 @@ const PatientRecord = ({ isPatient }) => {
 
     const [admissionTypeClicked, setAmissionTypeClicked] = useState(true);
     const [prescription, setPrescription] = useState<iPrescription>(
+        /* @ts-ignore */
         structuredClone(initialPrescription)
     );
     const [validations, setValidations] = useState({
@@ -206,7 +208,7 @@ const PatientRecord = ({ isPatient }) => {
         const value = event.target.value;
         setSelectedInternalRef(value);
         handleInternal(value);
-        console.log(value, 'Internal Ref Change ');
+        // console.log(value, 'Internal Ref Change ');
     };
 
     const changePrescriptionValue = (field: any, value: any) => {
@@ -217,6 +219,7 @@ const PatientRecord = ({ isPatient }) => {
     };
 
     useEffect(() => {
+        /* @ts-ignore */
         setPrescription(structuredClone(initialPrescription));
     }, []);
 
@@ -233,7 +236,7 @@ const PatientRecord = ({ isPatient }) => {
     };
 
     const handleInternal = (item: string) => {
-        console.log('this is response');
+        // console.log('this is response');
         setButtonVariant(item);
     };
 
@@ -343,15 +346,19 @@ const PatientRecord = ({ isPatient }) => {
                                     </button>
                                 </Stack>
                             ) : (
+                                <>
+                                    {!isAuditor && <Stack
+                                        component='div'
+                                        className='edit-icon'
+                                        sx={{ marginLeft: isEditing ? "10px" : "0" }}
+                                        onClick={() => setIsEditing(true)}
+                                    >
+                                        <EditIcon />
+                                    </Stack>
+                                    }
+                                </>
 
-                                <Stack
-                                    component='div'
-                                    className='edit-icon'
-                                    sx={{ marginLeft: isEditing ? "10px" : "0" }}
-                                    onClick={() => setIsEditing(true)}
-                                >
-                                    <EditIcon />
-                                </Stack>
+
                             )}
                         </Stack>
                     </Box>
@@ -504,10 +511,13 @@ const PatientRecord = ({ isPatient }) => {
             ) : null}
 
 
-
+            {currentTicket?.prescription?.[0]?.diagnostics?.length > 0 ?
+                <Stack className="gray-border">
+                    {/* Borders */}
+                </Stack> : (<></>)}
 
             {/* Diagnostics Test */}
-            {currentTicket?.prescription?.[0]?.diagnostics?.length >= 0 ? (
+            {currentTicket?.prescription?.[0]?.diagnostics?.length > 0 ? (
                 <Box className="Patient-records">
                     <Box className='Patient-records-Head'>
                         <Stack className='Patient-records-Heading'>Diagnostics Test</Stack>
@@ -530,14 +540,17 @@ const PatientRecord = ({ isPatient }) => {
                                         </button>
                                     </Stack>
                                 ) : (
-                                    <Stack
-                                        component='div'
-                                        className='edit-icon'
-                                        sx={{ marginLeft: isDiagonsticTestEditing ? "10px" : "0" }}
-                                        onClick={() => setIsDiagonsticTestEditing(true)}
-                                    >
-                                        <EditIcon />
-                                    </Stack>
+                                    <>
+                                        {!isAuditor && <Stack
+                                            component='div'
+                                            className='edit-icon'
+                                            sx={{ marginLeft: isDiagonsticTestEditing ? "10px" : "0" }}
+                                            onClick={() => setIsDiagonsticTestEditing(true)}
+                                        >
+                                            <EditIcon />
+                                        </Stack>}
+                                    </>
+
                                 )}
                             </Stack>
                         ) : null}
@@ -557,7 +570,7 @@ const PatientRecord = ({ isPatient }) => {
                                             style={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}
                                         >
                                             <MenuItem value="MRI" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>MRI</MenuItem>
-                                            <MenuItem value="PET-CT" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>PET-CH</MenuItem>
+                                            <MenuItem value="PET-CT" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>PET-CT</MenuItem>
                                             <MenuItem value="CT SCAN" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>CT SCAN</MenuItem>
                                             <MenuItem value="Lab" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>Lab</MenuItem>
                                             <MenuItem value="EEG" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>EEG</MenuItem>
@@ -571,6 +584,7 @@ const PatientRecord = ({ isPatient }) => {
                                     </Stack>
                                 ) : (
                                     <>
+
                                         <Stack className='dot-list'>
                                             <span>&#8226;</span>
                                         </Stack>
@@ -583,7 +597,9 @@ const PatientRecord = ({ isPatient }) => {
                 </Box>
             ) : null}
 
-
+            <Stack className="gray-border">
+                {/* Borders */}
+            </Stack>
             {/* Pharmacy */}
             <Box className="Patient-records Pharmacy">
                 <Box className='Patient-records-Head'>

@@ -487,31 +487,31 @@ function SwitchViewTable() {
     // navigate('/')
     navigate('/ticket')
   }
-
+  // console.log(stages[0]._id), "stagesdata");
 
   useEffect(() => {
     getAllStageCountHandler()
       .then((timerData) => {
+        console.log(timerData, "continer card");
         if (timerData && timerData.tickets) {
           const data = timerData.tickets.length;
           setStageCount(data);
         } else {
           timerData.ticketsCountByStage.forEach((item) => {
             switch (item.stage) {
-              case '6494196d698ecd9a9db95e3a':
-                // console.log(item.count, "new lead");
+              case stages[0]._id:
                 setNewLead(item.count);
                 break;
-              case '649598d9586b137ea9086788':
+              case stages[1]._id:
                 setContacted(item.count);
                 break;
-              case '649ace47bda0ea4d79a1ec38':
+              case stages[2]._id:
                 setWorking(item.count);
                 break;
-              case '649acdbbbda0ea4d79a1ec36':
+              case stages[3]._id:
                 setOrientation(item.count);
                 break;
-              case '649ace20bda0ea4d79a1ec37':
+              case stages[4]._id:
                 setNurturing(item.count);
                 break;
               default:
@@ -614,14 +614,15 @@ function SwitchViewTable() {
   const departmentSetter = (id: string) => {
     return departments.find((element) => element._id === id)?.name;
   };
-
   const getStageName = (ticket) => {
+    const stageDetail = stages?.find(({ _id }) => ticket?.stage === _id);
 
-    const stageDetail: any = stages?.find(
-      ({ _id }) => ticket?.stage === _id
-    );
+    if (stageDetail) {
+      return stageDetail.name;
+    } else {
 
-    return stageDetail.name;
+      return 'Unknown Stage';
+    }
   }
 
   const [dates, setDates] = useState([null, null]);
@@ -714,21 +715,10 @@ function SwitchViewTable() {
       {/* Switch View Filters */}
       <Box className={styles.SwitchView_filters_container}>
 
-        {/* Date Filter */}
-        <Box className={styles.SwitchView_filters_left}>
-          {/* Date Filters */}
-          <Stack>
-            <DatePicker.RangePicker
-              style={datePickerStyle}
-              onChange={handleDateRange}
-            />
-            <style>{`
-                    .ant-picker-range .ant-picker-input input::placeholder {
-                     color: black; /* Change this to your desired color */
-                    }
-                   `}</style>
 
-          </Stack>
+        <Box className={styles.SwitchView_filters_left}>
+
+
         </Box>
 
         {/* Search Filter And Filters Component */}
@@ -825,8 +815,9 @@ function SwitchViewTable() {
                     {/* Lead */}
                     <td className={`${styles.SwitchView_table_body_item}`}>
                       <Stack display={'flex'} flexDirection={'row'} gap={'8px'}>
-                        <Stack className={styles.SwitchView_name} sx={{ textTransform: "capitalize" }}>
-                          {patientName(item)}
+                        <Stack className={styles.SwitchView_name} sx={{ textTransform: "capitalize !important" }}>
+                          {/* {patientName(item)} */}
+                          {`${item?.consumer?.[0]?.firstName ?? ''} ${item?.consumer?.[0]?.lastName ?? ''}`}
                         </Stack>
                         <Stack className={styles.SwitchView_GenAge}>
                           {item.consumer[0]?.gender && <Stack className={styles.SwitchView_Gen}>{item.consumer[0]?.gender}</Stack>}

@@ -238,6 +238,7 @@ const NSingleTicketDetails = (props: Props) => {
     const [callReschedulerData, setCallReschedulerData] = useState([]);
     const [admissionTypeClicked, setAmissionTypeClicked] = useState(true);
     const [prescription, setPrescription] = useState<iPrescription>(
+        /* @ts-ignore */
         structuredClone(initialPrescription)
     );
     const [validations, setValidations] = useState({
@@ -266,6 +267,7 @@ const NSingleTicketDetails = (props: Props) => {
     };
 
     useEffect(() => {
+        /* @ts-ignore */
         setPrescription(structuredClone(initialPrescription));
     }, []);
 
@@ -651,7 +653,7 @@ const NSingleTicketDetails = (props: Props) => {
         fontSize: '14px',
         fontStyle: 'normal',
         fontWeight: '400',
-        lineHeight: '150%'
+        lineHeight: '150%',
     };
 
     const calculatedDate = (date: any) => {
@@ -1001,9 +1003,10 @@ const NSingleTicketDetails = (props: Props) => {
                             <Stack
                                 ref={visibleRef}
                                 display={visible ? 'block' : 'none'}
-                                className="KebabMenu-item ticket-assigneemenu"
+                                className=" ticket-assigneemenu"
                                 bgcolor="white"
                             >
+
                                 <Stack
                                     className="Ticket-Assignee-title"
                                     sx={{ marginLeft: '15px' }}
@@ -1032,8 +1035,8 @@ const NSingleTicketDetails = (props: Props) => {
                                         />
                                     </div>
                                 </Stack>
-
-                                {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                <Stack className='ticket-asssignee-container'>
+                                    {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     <Stack className="Ticket-Assignee-item" >
                                         <Stack className="Ticket-Assignee-subItem" >
                                             <Stack className="Ticket-Assignee-avatar"><img src={NewAvatar} alt="User 2" /></Stack>
@@ -1043,89 +1046,91 @@ const NSingleTicketDetails = (props: Props) => {
                                     </Stack>
                                 </MenuItem> */}
 
-                                {representative
-                                    .filter((item) => {
-                                        const matchesSearch = inputSearch
-                                            ? item.firstName
-                                                .toLowerCase()
-                                                .includes(inputSearch.toLowerCase()) ||
-                                            item.lastName
-                                                .toLowerCase()
-                                                .includes(inputSearch.toLowerCase())
-                                            : true;
+                                    {representative
+                                        .filter((item) => {
+                                            const matchesSearch = inputSearch
+                                                ? item.firstName
+                                                    .toLowerCase()
+                                                    .includes(inputSearch.toLowerCase()) ||
+                                                item.lastName
+                                                    .toLowerCase()
+                                                    .includes(inputSearch.toLowerCase())
+                                                : true;
 
-                                        return matchesSearch && item.role === 'REPRESENTATIVE';
-                                    })
-                                    ?.map((item) => {
-                                        const isTicketOwner =
-                                            item._id === currentTicket?.assigned?.[0];
-                                        const isAssigned = currentTicket?.assigned
-                                            ?.slice(1)
-                                            .includes(item._id);
+                                            return matchesSearch && item.role === 'REPRESENTATIVE';
+                                        })
+                                        ?.map((item) => {
+                                            const isTicketOwner =
+                                                item._id === currentTicket?.assigned?.[0];
+                                            const isAssigned = currentTicket?.assigned
+                                                ?.slice(1)
+                                                .includes(item._id);
 
-                                        return (
-                                            <MenuItem key={item._id} sx={menuItemStyles}>
-                                                <Stack className="Ticket-Assignee-item">
-                                                    <Stack className="Ticket-Assignee-subItem">
-                                                        <Stack className="Ticket-Assignee-avatar">
-                                                            <Avatar
-                                                                sx={{
-                                                                    width: '20px',
-                                                                    height: '20px',
-                                                                    fontSize: '10px',
-                                                                    bgcolor: 'orange',
-                                                                    textTransform: 'uppercase',
-                                                                    marginTop: '2px'
-                                                                }}
+                                            return (
+                                                <MenuItem key={item._id} sx={menuItemStyles}>
+                                                    <Stack className="Ticket-Assignee-item">
+                                                        <Stack className="Ticket-Assignee-subItem">
+                                                            <Stack className="Ticket-Assignee-avatar">
+                                                                <Avatar
+                                                                    sx={{
+                                                                        width: '20px',
+                                                                        height: '20px',
+                                                                        fontSize: '10px',
+                                                                        bgcolor: 'orange',
+                                                                        textTransform: 'uppercase',
+                                                                        marginTop: '2px'
+                                                                    }}
+                                                                >
+                                                                    {item.firstName[0]}
+                                                                    {item.lastName[0]}
+                                                                </Avatar>
+                                                            </Stack>
+                                                            <Stack
+                                                                className="Ticket-Assignee-Name"
+                                                                display={'flex'}
+                                                                flexDirection={'row'}
+                                                                gap={'3px'}
                                                             >
-                                                                {item.firstName[0]}
-                                                                {item.lastName[0]}
-                                                            </Avatar>
-                                                        </Stack>
-                                                        <Stack
-                                                            className="Ticket-Assignee-Name"
-                                                            display={'flex'}
-                                                            flexDirection={'row'}
-                                                            gap={'3px'}
-                                                        >
-                                                            <Stack style={{ textTransform: 'capitalize' }}>
-                                                                {item.firstName}
-                                                            </Stack>{' '}
-                                                            <Stack style={{ textTransform: 'capitalize' }}>
-                                                                {item.lastName}
+                                                                <Stack style={{ textTransform: 'capitalize' }}>
+                                                                    {item.firstName}
+                                                                </Stack>{' '}
+                                                                <Stack style={{ textTransform: 'capitalize' }}>
+                                                                    {item.lastName}
+                                                                </Stack>
                                                             </Stack>
                                                         </Stack>
+                                                        {isTicketOwner ? (
+                                                            <Stack className="Ticket-Assignee-Owner">
+                                                                Ticket Owner
+                                                            </Stack>
+                                                        ) : isAssigned ? (
+                                                            <Stack>
+                                                                <img
+                                                                    src={red_remove}
+                                                                    alt="Remove Assignee"
+                                                                    onClick={() => {
+                                                                        handleRemoveAssigne(item._id);
+                                                                    }}
+                                                                />
+                                                            </Stack>
+                                                        ) : (
+                                                            <Stack className="Ticket-Assignee-Operation">
+                                                                <img
+                                                                    src={AddAssigneeIcon}
+                                                                    alt="Add Assignee"
+                                                                    onClick={() => {
+                                                                        handleAddAssigne(item._id);
+                                                                    }}
+                                                                />
+                                                            </Stack>
+                                                        )}
                                                     </Stack>
-                                                    {isTicketOwner ? (
-                                                        <Stack className="Ticket-Assignee-Owner">
-                                                            Ticket Owner
-                                                        </Stack>
-                                                    ) : isAssigned ? (
-                                                        <Stack>
-                                                            <img
-                                                                src={red_remove}
-                                                                alt="Remove Assignee"
-                                                                onClick={() => {
-                                                                    handleRemoveAssigne(item._id);
-                                                                }}
-                                                            />
-                                                        </Stack>
-                                                    ) : (
-                                                        <Stack className="Ticket-Assignee-Operation">
-                                                            <img
-                                                                src={AddAssigneeIcon}
-                                                                alt="Add Assignee"
-                                                                onClick={() => {
-                                                                    handleAddAssigne(item._id);
-                                                                }}
-                                                            />
-                                                        </Stack>
-                                                    )}
-                                                </Stack>
-                                            </MenuItem>
-                                        );
-                                    })}
+                                                </MenuItem>
+                                            );
+                                        })}
+                                </Stack>
                             </Stack>
+
 
                             {/* end Lead Assignee */}
 
@@ -1406,19 +1411,8 @@ const NSingleTicketDetails = (props: Props) => {
                                 'Radiation',
                                 'MM',
                                 'DC',
-                                'Internal Reference'
+                                // 'Internal Reference'
                             ].map((item) => (
-                                // <Button
-                                //     size="small"
-                                //     sx={{ m: 0.4 }}
-                                //     key={item}
-                                //     onClick={() => changePrescriptionValue('admission', item)}
-                                //     variant={
-                                //         prescription.admission === item ? 'contained' : 'outlined'
-                                //     }
-                                // >
-                                //     {item}
-                                // </Button>
                                 <button
                                     className="call-Button"
                                     style={{

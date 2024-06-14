@@ -58,6 +58,7 @@ import KebabMenu from '../../../assets/KebabMenu.svg';
 import AddAssigneeIcon from '../../../assets/add.svg';
 import commentHeader from '../../../assets/commentHeader.svg';
 import CloseModalIcon from '../../../assets/Group 48095853.svg';
+import NotFoundIcon from '../../../assets/NotFoundTask.svg';
 import StarIcon from '../../../assets/star.svg'
 import EmptyStarIcon from '../../../assets/EmptyStar.svg'
 import './auditSingleTicket.css';
@@ -83,6 +84,10 @@ import NotesWidget from '../../ticket/widgets/NotesWidget';
 import SingleTicketSideBar from '../../ticket/SingleTicketSideBar/SingleTicketSideBar';
 import TaskBar from '../../ticket/SingleTicketSideBar/TaskBar';
 import ConnectorIcon from '../../../assets/hierarchy.svg'
+import { UNDEFINED } from '../../../constantUtils/constant';
+import { customTicketHandler } from '../../../api/ticket/ticketHandler';
+import { getTicket } from '../../../api/ticket/ticket';
+import useReprentativeStore from '../../../store/representative';
 interface iConsumer {
     uid: string;
     firstName: string;
@@ -182,90 +187,6 @@ const AuditSinglePageDetail = (props: Props) => {
     const [matchedObjects, setMatchedObjects] = useState([]);
     const [callReschedulerData, setCallReschedulerData] = useState([]);
 
-    // this state defines the audit comment
-    const [selected, setSelected] = useState('problem');
-
-    // console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
-    // console.log(currentTicket,"this is current ticet")
-    // console.log(callRescheduler, ' this is call rescheduler ');
-    // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
-
-    // const handlePhoneCall = async (e: React.SyntheticEvent) => {
-    //   const desiredStage = '6494196d698ecd9a9db95e3a';
-    //   const currentStage = currentTicket?.stage;
-    //   if (currentStage === desiredStage) {
-    //     const currentSubStageCode = currentTicket?.subStageCode?.code;
-
-    //     const stageDetail: any = stages?.find(
-    //       ({ _id }) => currentTicket?.stage === _id
-    //     );
-    //     const noOfChilds = stageDetail?.child?.length || 3;
-    //     if (
-    //       currentSubStageCode &&
-    //       (!currentTicket?.prescription[0].admission ||
-    //         currentSubStageCode > noOfChilds - 3) &&
-    //       currentSubStageCode < noOfChilds
-    //     ) {
-    //       setOpen(true); // Open the modal
-
-    //       const payload = {
-    //         subStageCode: {
-    //           active: true,
-    //           code: 3
-    //         },
-    //         ticket: currentTicket?._id
-    //       };
-
-    //       const result = await updateTicketSubStage(payload);
-    //       setTimeout(() => {
-    //         (async () => {
-    //           await getTicketHandler(
-    //             searchByName,
-    //             pageNumber,
-    //             'false',
-    //             filterTickets
-    //           );
-    //           setTicketUpdateFlag(result);
-    //         })();
-    //       }, 1000);
-    //     }
-    //   }else {
-    //      const currentSubStageCode = currentTicket?.subStageCode?.code;
-
-    //      const stageDetail: any = stages?.find(
-    //        ({ _id }) => currentTicket?.stage === _id
-    //      );
-    //      const noOfChilds = stageDetail?.child?.length || 3;
-    //      if (
-    //        currentSubStageCode &&
-    //        (!currentTicket?.prescription[0].admission ||
-    //          currentSubStageCode > noOfChilds - 3) &&
-    //        currentSubStageCode < noOfChilds
-    //      ) {
-
-    //        const payload = {
-    //          subStageCode: {
-    //            active: true,
-    //            code: 3
-    //          },
-    //          ticket: currentTicket?._id
-    //        };
-
-    //        const result = await updateTicketSubStage(payload);
-    //        setTimeout(() => {
-    //          (async () => {
-    //            await getTicketHandler(
-    //              searchByName,
-    //              pageNumber,
-    //              'false',
-    //              filterTickets
-    //            );
-    //            setTicketUpdateFlag(result);
-    //          })();
-    //        }, 1000);
-    //      }
-    //   }
-    // }
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
@@ -281,6 +202,8 @@ const AuditSinglePageDetail = (props: Props) => {
             }
         }
     };
+
+
 
     const getTicketInfo = (ticketID: string | undefined) => {
         const fetchTicket = tickets.find((element) => ticketID === element._id);
@@ -558,7 +481,7 @@ const AuditSinglePageDetail = (props: Props) => {
         { id: 6, src: Avatar1, alt: 'User 5', name: 'Will Smith' }
     ];
 
-    console.log('console in nsingleticlet');
+    // console.log('console in nsingleticlet');
 
     const stackRef = useRef<HTMLDivElement | null>(null);
 
@@ -575,6 +498,80 @@ const AuditSinglePageDetail = (props: Props) => {
         };
     }, []);
 
+
+
+    const handleStage = (stageId: any) => {
+        if (stages) {
+            switch (stageId) {
+                case stages[0]._id:
+                    return "New Lead";
+                    break;
+                case stages[1]._id:
+                    return "Contacted";
+                    break;
+                case stages[2]._id:
+                    return "Working";
+                    break;
+                case stages[3]._id:
+                    return "Orientation";
+                    break;
+                case stages[4]._id:
+                    return "Nurturing";
+                    break;
+                default:
+                    break;
+            }
+        }
+        else {
+            return "Unknown"
+        }
+
+    }
+    const handleSubStage = (code: any) => {
+        switch (code) {
+            case 1:
+                return "Send Engagement";
+                break;
+            case 2:
+                return "Create Estimate";
+                break;
+            case 3:
+                return "Call Patient";
+                break;
+            case 4:
+                return "Add Call Summary";
+                break;
+            default:
+                break;
+        }
+    }
+
+    const [selected, setSelected] = useState('');
+    const [auditorComment, setAuditorComment] = useState('');
+    const [rating, setRating] = useState(0)
+    const [isAuditorDisable, setIsAuditorDisable] = useState(false);
+
+    const checkIsEmpty = () => {
+        if (
+            auditorComment !== '' &&
+            rating > 0 &&
+            selected !== null
+        ) {
+            setIsAuditorDisable((_) => true);
+        } else {
+            setIsAuditorDisable((_) => false);
+        }
+    };
+
+    useEffect(() => {
+        checkIsEmpty();
+    }, [auditorComment, rating, selected])
+
+    const handleComment = (event) => {
+        setAuditorComment(event.target.value);
+        // console.log(event.target.value, "Comment by Auditor")
+    };
+
     const handleChangeAuditSwitch = (
         event: React.MouseEvent<HTMLElement>,
         newSelected: string | null
@@ -582,15 +579,69 @@ const AuditSinglePageDetail = (props: Props) => {
         if (newSelected !== null) {
             setSelected(newSelected);
         }
+        // console.log(newSelected, "Selected Option");
     };
 
-    const [auditorComment, setAuditorComment] = useState('');
+    const [isCommentAdded, setIsCommentAdded] = useState(false);
 
-    const handleComment = (event) => {
-        setAuditorComment(event.target.value);
+    useEffect(() => {
+        const clearAllData = () => {
+            setRating(0);
+            setSelected('');
+            setAuditorComment('');
+            setIsAuditorDisable(false);
+        }
+        const getTickets = async () => {
+            await customTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+        }
+        getTickets();
+        clearAllData();
+    }, [isCommentAdded])
+
+
+    const handleAuditorComments = async () => {
+
+        const commentData = {
+            ticketid: ticketID,
+            comments: auditorComment,
+            ratings: rating,
+            result: selected
+        }
+
+        // console.log(commentData, "Comment by Auditor completted")
+        try {
+            // console.log("this is inside")
+            const { data } = await apiClient.post(
+                `/ticket/addAuditorComment`,
+                commentData,
+
+            );
+            console.log(data, "comment created successfully")
+            setIsCommentAdded(true);
+
+        } catch (error) {
+            console.error('Error occurred:', error);
+        }
+    }
+
+    const { representative } = useReprentativeStore();
+    const handleAssigne = (assignees: any) => {
+        if (!Array.isArray(assignees)) {
+            return [];
+        }
+
+        return assignees.reduce((result: { initials: string; fullName: string }[], assigneeId: string) => {
+            const rep = representative.find(rep => rep._id === assigneeId);
+            if (rep) {
+                const initials = `${rep.firstName.charAt(0)}${rep.lastName.charAt(0)}`;
+                const fullName = `${rep.firstName} ${rep.lastName}`;
+                result.push({ initials, fullName });
+            }
+            return result;
+        }, []);
     };
 
-    const [rating, setRating] = useState(0)
+    // console.log(handleAssigne(currentTicket?.assigned), "Assigiii data");
 
     return (
         <div className={styles.main_layout}>
@@ -650,15 +701,17 @@ const AuditSinglePageDetail = (props: Props) => {
                         {/* probability start */}
                         <Box
                             className={
-                                probability === 0
+                                currentTicket?.Probability === 0
                                     ? 'Ticket-probability0'
-                                    : probability === 25
+                                    : currentTicket?.Probability === 25
                                         ? 'Ticket-probability25'
-                                        : probability === 50
+                                        : currentTicket?.Probability === 50
                                             ? 'Ticket-probability50'
-                                            : probability === 75
+                                            : currentTicket?.Probability === 75
                                                 ? 'Ticket-probability75'
-                                                : 'Ticket-probability100'
+                                                : currentTicket?.Probability === 100
+                                                    ? 'Ticket-probability100'
+                                                    : 'Ticket-probability0'
                             }
                             // className="Box-assignee"
                             onClick={() => {
@@ -668,112 +721,86 @@ const AuditSinglePageDetail = (props: Props) => {
                                 }
                             }}
                         >
-                            {probability}%
+                            {currentTicket?.Probability}%
                             {/* <span>
                                 <img src={DropDownArrow} alt="" />
                             </span> */}
                         </Box>
-
-                        <Stack
-                            display={probabilityModal ? 'block' : 'none'}
-                            className="KebabMenu-item ticket-assigneemenu"
-                            bgcolor="white"
-                        >
-                            <Stack
-                                className="modal-close"
-                                onClick={() => setProbabilityModal(false)}
-                                sx={{ border: '1px solid #EBEDF0' }}
-                            >
-                                <img src={CloseModalIcon} />
-                            </Stack>
-                            <MenuItem sx={probabilityItemStyles}>
-                                <Stack className={'Ticket-probability'}>
-                                    Select Probability
-                                </Stack>
-                                <Stack
-                                    display={'flex'}
-                                    flexDirection={'row'}
-                                    width={'100%'}
-                                    justifyContent={'space-between'}
-                                >
-                                    <Stack
-                                        className="Ticket-probability-0"
-                                        onClick={() => {
-                                            setProbability(0);
-                                            setProbabilityModal(false);
-                                        }}
-                                    >
-                                        0%
-                                    </Stack>
-                                    <Stack
-                                        className="Ticket-probability-25"
-                                        onClick={() => {
-                                            setProbability(25);
-                                            setProbabilityModal(false);
-                                        }}
-                                    >
-                                        25%
-                                    </Stack>
-                                    <Stack
-                                        className="Ticket-probability-50"
-                                        onClick={() => {
-                                            setProbability(50);
-                                            setProbabilityModal(false);
-                                        }}
-                                    >
-                                        50%
-                                    </Stack>
-                                    <Stack
-                                        className="Ticket-probability-75"
-                                        onClick={() => {
-                                            setProbability(75);
-                                            setProbabilityModal(false);
-                                        }}
-                                    >
-                                        75%
-                                    </Stack>
-                                    <Stack
-                                        className="Ticket-probability-100"
-                                        onClick={() => {
-                                            setProbability(100);
-                                            setProbabilityModal(false);
-                                        }}
-                                    >
-                                        100%
-                                    </Stack>
-                                </Stack>
-                            </MenuItem>
-                        </Stack>
                         {/* probability end */}
                         {/* Lead Assignee */}
 
                         <Box
                             className={styles.Box_assignee}
                             onClick={() => {
-                                if (!isAuditor) {
-                                    setVisible(!visible);
-                                    setOp(false);
-                                }
+
+                                setVisible(!visible);
+                                setOp(false);
+
                             }}
                         >
                             <Stack direction="row" alignItems="center">
-                                <span className="avatar">
-                                    {' '}
-                                    <Avatar src={Avatar1} alt="User 1" />
-                                </span>
-                                <span className="avatar2 avatar">
-                                    {' '}
-                                    <Avatar src={NewAvatar} alt="User 2" />
-                                </span>
-                                {!isAuditor && <span className="DropDownArrow">
-                                    <img src={DropDownArrow} alt="" />
-                                </span>}
+                                {handleAssigne(currentTicket?.assigned).map((item, index, array) => {
+                                    if (index === 0) {
+                                        return (
+                                            <div key={index} style={{ position: 'relative', display: 'flex', flexDirection: "row" }}>
+                                                <Stack>
+                                                    <Avatar
+                                                        sx={{
+                                                            width: '35px',
+                                                            height: '35px',
+                                                            fontSize: '10px',
+                                                            bgcolor: 'orange',
+                                                            textTransform: 'uppercase',
+                                                            marginTop: '2px',
+                                                        }}
+                                                    >
+                                                        {item?.initials}
+                                                    </Avatar>
+                                                </Stack>
+                                                {handleAssigne(currentTicket?.assigned).map((item, index, array) => {
+                                                    if (index === 1) {
+                                                        return (
+                                                            <div key={index} style={{ position: 'relative', display: 'flex', flexDirection: "row" }}>
+                                                                <Stack>
+                                                                    <Avatar
+                                                                        sx={{
+                                                                            width: '35px',
+                                                                            height: '35px',
+                                                                            fontSize: '10px',
+                                                                            bgcolor: '#0096FF',
+                                                                            textTransform: 'uppercase',
+                                                                            marginTop: '2px',
+                                                                            position: 'relative',
+                                                                            right: "4px"
+                                                                        }}
+                                                                    >
+                                                                        {item?.initials}
+                                                                    </Avatar>
+                                                                </Stack>
+                                                            </div>
+                                                        );
+                                                    }
+                                                    return null;
+                                                })}
+                                                <Stack sx={{
+                                                    marginTop: "10px",
+                                                    // position: 'absolute',
+                                                    // right: "-3px"
+                                                }}>
+                                                    <img src={DropDownArrow} alt="" />
+                                                </Stack>
+                                            </div>
+                                        );
+                                    }
+                                    return null;
+                                })}
+
                             </Stack>
                         </Box>
 
                         <Stack
                             display={visible ? 'block' : 'none'}
-                            className="KebabMenu-item ticket-assigneemenu"
+                            className="KebabMenu-item"
                             bgcolor="white"
                         >
                             <Stack
@@ -790,9 +817,9 @@ const AuditSinglePageDetail = (props: Props) => {
                                 <img src={CloseModalIcon} />
                             </Stack>
 
-                            <Stack className="search">
+                            {/* <Stack className="search">
                                 <div className="search-container">
-                                    {/* <span className="search-icon">&#128269;</span> */}
+                                    
                                     <span className="search-icon">
                                         <SearchIcon />
                                     </span>
@@ -802,9 +829,9 @@ const AuditSinglePageDetail = (props: Props) => {
                                         placeholder=" Search..."
                                     />
                                 </div>
-                            </Stack>
+                            </Stack> */}
 
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                            {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                 <Stack className="Ticket-Assignee-item">
                                     <Stack className="Ticket-Assignee-subItem">
                                         <Stack className="Ticket-Assignee-avatar">
@@ -814,9 +841,44 @@ const AuditSinglePageDetail = (props: Props) => {
                                     </Stack>
                                     <Stack className="Ticket-Assignee-Owner">Ticket Owner</Stack>
                                 </Stack>
-                            </MenuItem>
+                            </MenuItem> */}
 
-                            {avatars.map((avatar) => (
+                            {handleAssigne(currentTicket?.assigned).map((item) => {
+                                return (<>
+
+
+                                    <MenuItem
+                                        key={item.id}
+                                        sx={menuItemStyles}
+                                        onClick={handleKebabClose}
+                                    >
+                                        <Stack className="Ticket-Assignee-item">
+                                            <Stack className="Ticket-Assignee-subItem">
+
+                                                <Avatar
+                                                    sx={{
+                                                        width: '20px',
+                                                        height: '20px',
+                                                        fontSize: '6px',
+                                                        bgcolor: 'orange',
+                                                        textTransform: 'uppercase',
+                                                        marginTop: '2px'
+                                                    }}
+                                                >
+                                                    {item?.initials}
+                                                </Avatar>
+                                                <Stack className="Ticket-Assignee-Name" sx={{ textTransform: "capitalize" }}>
+                                                    {item.fullName}
+                                                </Stack>
+                                            </Stack>
+                                        </Stack>
+                                    </MenuItem>
+
+
+                                </>)
+                            })}
+
+                            {/* {avatars.map((avatar) => (
                                 <MenuItem
                                     key={avatar.id}
                                     sx={menuItemStyles}
@@ -836,7 +898,7 @@ const AuditSinglePageDetail = (props: Props) => {
                                         </Stack>
                                     </Stack>
                                 </MenuItem>
-                            ))}
+                            ))} */}
                         </Stack>
 
                         {/* end Lead Assignee */}
@@ -845,43 +907,6 @@ const AuditSinglePageDetail = (props: Props) => {
                             {calculatedDate(currentTicket?.date)}
                         </Stack>
 
-                        {/* Kebab Menu */}
-                        {!isAuditor && <Stack component="div">
-                            <span onClick={handleClick}>
-                                <img
-                                    src={KebabMenu}
-                                    alt="Kebab Menu"
-                                    style={{ cursor: 'pointer' }}
-                                />
-                            </span>
-                        </Stack>}
-
-                        <Stack
-                            ref={stackRef}
-                            display={op ? 'block' : 'none'}
-                            className="KebabMenu-item"
-                            bgcolor="white"
-                        >
-                            <Stack className="Kebabmenu-title" sx={{ marginLeft: '15px' }}>
-                                Estimation
-                            </Stack>
-                            <Estimate setTicketUpdateFlag={setTicketUpdateFlag} />
-                            <Stack className="gray-border">{/* Borders */}</Stack>
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
-                                Set Priority
-                            </MenuItem>
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
-                                Add Surgery
-                            </MenuItem>
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
-                                Initate RFA
-                            </MenuItem>
-                            <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
-                                Delete Lead
-                            </MenuItem>
-                        </Stack>
-
-                        {/* end kebab Menu */}
                     </Stack>
                 </Box>
 
@@ -903,7 +928,7 @@ const AuditSinglePageDetail = (props: Props) => {
                             }
                             <Box p={2} px={4}>
                                 <Stack className={styles.Audit_stage}>
-                                    New Lead
+                                    {handleStage(currentTicket?.stage)}
                                 </Stack>
                                 <Stack sx={{
                                     display: "flex",
@@ -916,7 +941,7 @@ const AuditSinglePageDetail = (props: Props) => {
                                         <img src={ConnectorIcon} />
                                     </Stack>
                                     <Stack className={styles.Audit_substage}>
-                                        Call Completed By Patient
+                                        {handleSubStage(currentTicket?.subStageCode?.code)}
                                     </Stack>
                                 </Stack>
                             </Box>
@@ -1068,7 +1093,9 @@ const AuditSinglePageDetail = (props: Props) => {
                             </Box>
                             {/* Tab list End */}
                         </Box>
-                        <Box borderLeft={'1px solid #D4DBE5'} width={'40%'}>
+
+                        {/* Auditor Box */}
+                        <Box borderLeft={'1px solid #D4DBE5'} width={'30vw'}>
                             <Box className={styles.showCommentHeader}>
                                 <Stack>
                                     <img src={commentHeader} alt="" />
@@ -1079,84 +1106,95 @@ const AuditSinglePageDetail = (props: Props) => {
                             </Box>
 
                             <Box className={styles.commentsBox}>
-                                <Box className={styles.problemBox}>
-                                    <Box className={styles.problemText}>
-                                        No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                    </Box>
-                                    <Box className={styles.problemBottomBox}>
-                                        <Box className={styles.problemBottomDate}>
-                                            12 April 2024 09:30AM
+                                {currentTicket?.auditorcomment && currentTicket.auditorcomment.length > 0 ? (
+                                    <>
+                                        {currentTicket.auditorcomment.map((item, index) => (
+                                            <Box className={styles.problemBox} key={index}>
+                                                {item?.comments && <Box className={styles.problemText}>
+                                                    {item?.comments}
+                                                </Box>}
+                                                <Box display={"flex"} flexDirection={"row"}>
+                                                    {[1, 2, 3, 4, 5].map((star) => {
+                                                        return (
+                                                            <Stack
+                                                                key={star} // Add a key to avoid React warning
+                                                                sx={{
+                                                                    display: 'flex',
+                                                                    flexDirection: "row",
+                                                                    gap: "4px",
+                                                                    justifyContent: "left",
+                                                                }}
+                                                            >
+                                                                {item?.ratings > 0 ? (
+                                                                    item?.ratings >= star ? (
+                                                                        <Stack className={styles.Star_icon}>
+                                                                            <img src={StarIcon} alt='starIcon' />
+                                                                        </Stack>
+                                                                    ) : (
+                                                                        <Stack className={styles.Star_icon}>
+                                                                            <img src={EmptyStarIcon} alt='EmptyStarIcon' />
+                                                                        </Stack>
+                                                                    )
+                                                                ) : (
+                                                                    0 >= star ? (
+                                                                        <Stack className={styles.Star_icon}>
+                                                                            <img src={StarIcon} alt='starIcon' />
+                                                                        </Stack>
+                                                                    ) : (
+                                                                        <Stack className={styles.Star_icon}>
+                                                                            <img src={EmptyStarIcon} alt='EmptyStarIcon' />
+                                                                        </Stack>
+                                                                    )
+                                                                )}
+                                                            </Stack>
+                                                        );
+                                                    })}
+                                                </Box>
+                                                <Box className={styles.problemBottomBox}>
+                                                    <Box className={styles.problemBottomDate}>
+                                                        12 April 2024 09:30AM
+                                                    </Box>
+                                                    {item?.result && <Box
+                                                        // className={styles.problemBottomChip}
+                                                        className={
+                                                            item?.result === "problem"
+                                                                ? styles.problemBottomChip
+                                                                : styles.solutionBottomChip
+                                                        }
+                                                    >
+                                                        {item?.result}
+                                                    </Box>
+                                                    }
+
+                                                </Box>
+
+                                            </Box>
+                                        ))}
+                                    </>
+                                ) : (
+                                    <>
+                                        <Box className="NotFound-Page">
+                                            <img src={NotFoundIcon} />
+                                            <Box textAlign={'center'} sx={{
+                                                font: "bold",
+                                                fontSize: "24px",
+                                                fontFamily: "Outfit,sans-serif"
+                                            }}>
+                                                No Audit Comments
+                                            </Box>
+                                            <Box textAlign={'center'} sx={{
+                                                font: "bold",
+                                                fontSize: "16px",
+                                                fontFamily: "Outfit,sans-serif",
+                                                color: "grey"
+                                            }}>
+                                                Add Comments
+                                            </Box>
+
                                         </Box>
-                                        <Box className={styles.problemBottomChip}>
-                                            Problem
-                                        </Box>
-                                    </Box>
-                                </Box>
-                                <Box className={styles.problemBox}>
-                                    <Box className={styles.problemText}>
-                                        No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                    </Box>
-                                    <Box className={styles.problemBottomBox}>
-                                        <Box className={styles.problemBottomDate}>
-                                            12 April 2024 09:30AM
-                                        </Box>
-                                        <Box className={styles.solutionBottomChip}>
-                                            Solution
-                                        </Box>
-                                    </Box>
-                                </Box>
-                                <Box className={styles.problemBox}>
-                                    <Box className={styles.problemText}>
-                                        No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                    </Box>
-                                    <Box className={styles.problemBottomBox}>
-                                        <Box className={styles.problemBottomDate}>
-                                            12 April 2024 09:30AM
-                                        </Box>
-                                        <Box className={styles.problemBottomChip}>
-                                            Problem
-                                        </Box>
-                                    </Box>
-                                </Box>
-                                <Box className={styles.problemBox}>
-                                    <Box className={styles.problemText}>
-                                        No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                    </Box>
-                                    <Box className={styles.problemBottomBox}>
-                                        <Box className={styles.problemBottomDate}>
-                                            12 April 2024 09:30AM
-                                        </Box>
-                                        <Box className={styles.solutionBottomChip}>
-                                            Solution
-                                        </Box>
-                                    </Box>
-                                </Box>
-                                <Box className={styles.problemBox}>
-                                    <Box className={styles.problemText}>
-                                        No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                    </Box>
-                                    <Box className={styles.problemBottomBox}>
-                                        <Box className={styles.problemBottomDate}>
-                                            12 April 2024 09:30AM
-                                        </Box>
-                                        <Box className={styles.problemBottomChip}>
-                                            Problem
-                                        </Box>
-                                    </Box>
-                                </Box>
-                                <Box className={styles.problemBox}>
-                                    <Box className={styles.problemText}>
-                                        No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                    </Box>
-                                    <Box className={styles.problemBottomBox}>
-                                        <Box className={styles.problemBottomDate}>
-                                            12 April 2024 09:30AM
-                                        </Box>
-                                        <Box className={styles.solutionBottomChip}>
-                                            Solution
-                                        </Box>
-                                    </Box>
-                                </Box>
+                                    </>
+                                )}
+
                             </Box>
 
                             <Box className={styles.Rating}>
@@ -1197,12 +1235,19 @@ const AuditSinglePageDetail = (props: Props) => {
 
                         </Box>
                     </Box>
+
+
                     <Box className={styles.auditorComment}>
                         <Box className={styles.auditorCommenttextArea}>
                             <textarea
                                 placeholder="write a message"
                                 value={auditorComment}
                                 onChange={handleComment}
+                                style={{
+                                    fontSize: '14px',
+                                    color: 'var(--Text-Black, #080F1A)',
+                                    fontFamily: `"Outfit", sans-serif`,
+                                }}
                             />
                         </Box>
                         <Box className={styles.auditorCommentButtons}>
@@ -1244,7 +1289,20 @@ const AuditSinglePageDetail = (props: Props) => {
                                     </CustomToggleButton>
                                 </ToggleButtonGroup>
                             </Box>
-                            <Box className={styles.add_comment}>Add Comment</Box>
+                            <Box>
+                                <button
+                                    className={styles.add_comment}
+                                    disabled={!isAuditorDisable}
+                                    onClick={handleAuditorComments}
+                                    style={{
+                                        backgroundColor: !isAuditorDisable ? "#F6F7F9" : "#0566FF",
+                                        color: !isAuditorDisable ? "#647491" : "#FFF",
+                                        // marginLeft: "10px"
+                                    }}
+                                >
+                                    Add Comment
+                                </button>
+                            </Box>
                         </Box>
                     </Box>
                 </Box>

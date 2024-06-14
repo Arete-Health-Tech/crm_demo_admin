@@ -103,12 +103,21 @@ export interface opinionData {
   _id: string;
 }
 
+export interface iAuditorcomment {
+  _id: string;
+  comments: string;
+  ratings: number;
+  ticketid: string;
+  result: string;
+}
+
 export interface iTicket {
   _id: string;
   consumer: iConsumer[];
   prescription: iPrescription[];
   estimate: iEstimate[];
   creator: string;
+  auditorcomment: iAuditorcomment[];
   assigned: iAssigned[];
   date: string;
   stage: string;

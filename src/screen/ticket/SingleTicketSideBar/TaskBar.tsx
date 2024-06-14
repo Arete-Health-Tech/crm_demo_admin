@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Button, Menu, MenuItem, Modal, Stack, Typography } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
 import commentHeader from "../../../assets/commentHeader.svg"
@@ -9,14 +9,33 @@ import "../singleTicket.css";
 import useTicketStore from "../../../store/ticketStore";
 import StarIcon from '../../../assets/star.svg'
 import EmptyStarIcon from '../../../assets/EmptyStar.svg'
+import NotFoundIcon from '../../../assets/NotFoundTask.svg';
+import { iTicket } from "../../../types/store/ticket";
+import { useParams } from "react-router-dom";
+import { getTicketHandler } from "../../../api/ticket/ticketHandler";
+import { UNDEFINED } from "../../../constantUtils/constant";
 
 const TaskBar = () => {
+
+    const { ticketID } = useParams();
+    const {
+        tickets,
+        filterTickets
+    } = useTicketStore();
     const { isModalOpenCall, setIsModalOpenCall } = useTicketStore();
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedOption, setSelectedOption] = useState(null);
     const [reminderModalOpen, setReminderModalOpen] = useState(false);
     const [auditorCommentsOpen, setAuditorCommentsOpen] = useState(false);
     // const [reschedulerModalOpen, setReschedulerModalOpen] = useState(false);
+    const [currentTicket, setCurrentTicket] = useState<iTicket>();
+    useEffect(() => {
+        const getTicketInfo = (ticketID: string | undefined) => {
+            const fetchTicket = tickets.find((element) => ticketID === element._id);
+            setCurrentTicket(fetchTicket);
+        }
+        getTicketInfo(ticketID);
+    }, [ticketID, tickets])
 
     const handleButtonClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -96,6 +115,10 @@ const TaskBar = () => {
         color: '#FFF',
         fontSize: '0.8rem',
         fontWeight: 500
+    }
+
+    const getTicketAuditorComments = async () => {
+        await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
     }
 
     const [rating, setRating] = useState(0)
@@ -204,84 +227,47 @@ const TaskBar = () => {
                         </Box>
                         <hr style={{ margin: '0rem 0rem' }} />
                         <Box className="commentsBox">
-                            <Box className="problemBox">
-                                <Box className="problemText">
-                                    No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                </Box>
-                                <Box className="problemBottomBox">
-                                    <Box className="problemBottomDate">
-                                        12 April 2024 09:30AM
+                            {currentTicket?.auditorcomment && currentTicket.auditorcomment.length > 0 ? (
+                                <>
+                                    {currentTicket.auditorcomment.map((item, index) => (
+                                        <Box className="problemBox" key={index}>
+                                            {item?.comments && <Box className="problemText">
+                                                {item?.comments}
+                                            </Box>}
+                                            <Box className="problemBottomBox">
+                                                <Box className="problemBottomDate">
+                                                    12 April 2024 09:30AM
+                                                </Box>
+                                                {item?.result && <Box
+                                                    // className={styles.problemBottomChip}
+                                                    className={
+                                                        item?.result === "problem"
+                                                            ? "problemBottomChip"
+                                                            : "solutionBottomChip"
+                                                    }
+                                                >
+                                                    {item?.result}
+                                                </Box>}
+                                            </Box>
+                                        </Box>
+                                    ))}
+                                </>
+                            ) : (
+                                <>
+                                    <Box className="NotFound-Page">
+                                        <img src={NotFoundIcon} />
+                                        <Box textAlign={'center'} sx={{
+                                            font: "bold",
+                                            fontSize: "24px",
+                                            fontFamily: "Outfit,sans-serif"
+                                        }}>
+                                            No Audit Comments
+                                        </Box>
+
                                     </Box>
-                                    <Box className="problemBottomChip">
-                                        Problem
-                                    </Box>
-                                </Box>
-                            </Box>
-                            <Box className="problemBox">
-                                <Box className="problemText">
-                                    No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                </Box>
-                                <Box className="problemBottomBox">
-                                    <Box className="problemBottomDate">
-                                        12 April 2024 09:30AM
-                                    </Box>
-                                    <Box className="solutionBottomChip">
-                                        Solution
-                                    </Box>
-                                </Box>
-                            </Box>
-                            <Box className="problemBox">
-                                <Box className="problemText">
-                                    No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                </Box>
-                                <Box className="problemBottomBox">
-                                    <Box className="problemBottomDate">
-                                        12 April 2024 09:30AM
-                                    </Box>
-                                    <Box className="problemBottomChip">
-                                        Problem
-                                    </Box>
-                                </Box>
-                            </Box>
-                            <Box className="problemBox">
-                                <Box className="problemText">
-                                    No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                </Box>
-                                <Box className="problemBottomBox">
-                                    <Box className="problemBottomDate">
-                                        12 April 2024 09:30AM
-                                    </Box>
-                                    <Box className="solutionBottomChip">
-                                        Solution
-                                    </Box>
-                                </Box>
-                            </Box>
-                            <Box className="problemBox">
-                                <Box className="problemText">
-                                    No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                </Box>
-                                <Box className="problemBottomBox">
-                                    <Box className="problemBottomDate">
-                                        12 April 2024 09:30AM
-                                    </Box>
-                                    <Box className="problemBottomChip">
-                                        Problem
-                                    </Box>
-                                </Box>
-                            </Box>
-                            <Box className="problemBox">
-                                <Box className="problemText">
-                                    No follow-up after the patient reported acetaminophen not helping on April 12th. The ticket was marked 'WON' without resolving the patient's concerns, leading to potential dissatisfaction and health risks.
-                                </Box>
-                                <Box className="problemBottomBox">
-                                    <Box className="problemBottomDate">
-                                        12 April 2024 09:30AM
-                                    </Box>
-                                    <Box className="solutionBottomChip">
-                                        Solution
-                                    </Box>
-                                </Box>
-                            </Box>
+                                </>
+                            )}
+
                         </Box>
 
                         <Box className="Rating">
@@ -289,40 +275,48 @@ const TaskBar = () => {
                             <Stack className="Rating_star">
                                 {[1, 2, 3, 4, 5].map((star) => {
                                     return (
-                                        <Stack sx={{
-                                            display: 'flex',
-                                            flexDirection: "row",
-                                            gap: "4px",
-                                            justifyContent: "left",
-                                        }}
+                                        <Stack
+                                            key={star} // Add a key to avoid React warning
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: "row",
+                                                gap: "4px",
+                                                justifyContent: "left",
+                                            }}
                                         >
-                                            {rating >= star ? (
-                                                <>
-                                                    <Stack className="Star_icon"
-                                                        onClick={() => {
-                                                            setRating(star)
-                                                        }}>
+                                            {currentTicket?.auditorcomment && currentTicket?.auditorcomment?.length > 0 ? (
+                                                currentTicket.auditorcomment[currentTicket.auditorcomment.length - 1]?.ratings >= star ? (
+                                                    <Stack className="Star_icon">
                                                         <img src={StarIcon} alt='starIcon' />
                                                     </Stack>
-                                                </>)
-                                                :
-                                                (
-                                                    <>
-                                                        <Stack className="Star_icon"
-                                                            onClick={() => {
-                                                                setRating(star)
-                                                            }}>
-                                                            <img src={EmptyStarIcon} alt='EmptyStarIcon' />
-                                                        </Stack>
-                                                    </>)}
+                                                ) : (
+                                                    <Stack className="Star_icon">
+                                                        <img src={EmptyStarIcon} alt='EmptyStarIcon' />
+                                                    </Stack>
+                                                )
+                                            ) : (
+                                                0 >= star ? (
+                                                    <Stack className="Star_icon">
+                                                        <img src={StarIcon} alt='starIcon' />
+                                                    </Stack>
+                                                ) : (
+                                                    <Stack className="Star_icon">
+                                                        <img src={EmptyStarIcon} alt='EmptyStarIcon' />
+                                                    </Stack>
+                                                )
+                                            )}
                                         </Stack>
-                                    )
-                                })}</Stack>
+                                    );
+                                })}
+                            </Stack>
                         </Box>
 
                     </Box>
                     <Box
-                        onClick={() => setAuditorCommentsOpen(true)}
+                        onClick={() => {
+                            setAuditorCommentsOpen(true)
+                            getTicketAuditorComments();
+                        }}
                         sx={auditorButton}
                     >
                         <img src={commentHeader} alt="" />

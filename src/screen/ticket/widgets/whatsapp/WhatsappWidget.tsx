@@ -368,7 +368,7 @@ const MessagingWidget = (props: Props) => {
                   className={sendMessage ? styles.sendButtonActive : styles.sendButton}
                   onClick={handleSendMessage}
                 >
-                  <Typography className={sendMessage ? styles.sendButtonTextActive : styles.sendButtonText}>
+                  <Typography sx={{ cursor: "pointer" }} className={sendMessage ? styles.sendButtonTextActive : styles.sendButtonText}>
                     Send
                   </Typography>
                 </Box>

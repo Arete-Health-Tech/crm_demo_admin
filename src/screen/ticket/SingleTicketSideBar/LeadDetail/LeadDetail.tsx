@@ -67,11 +67,11 @@ const LeadDetail: React.FC<MyComponentProps> = ({ isLeadDetail }) => {
                 <Box className='additional-detail-Head'>
                     <Stack className='additional-detail-Heading'>Additional Detail</Stack>
                 </Box>
-                {createdByName() && <Box className='additional-detail-Head'>
+                {/* {createdByName() && <Box className='additional-detail-Head'>
                     <Stack className='additional-detail-title'>Created By:</Stack>
                     <Stack component='div' className='additional-detail-data' sx={{ textTransform: "capitalize" }}>{createdByName()}
                     </Stack>
-                </Box>}
+                </Box>} */}
                 <Box className='additional-detail-Head'>
                     <Stack className='additional-detail-title'>Created On:</Stack>
                     <Stack component='div' className='additional-detail-data'>{formatDate()}</Stack>

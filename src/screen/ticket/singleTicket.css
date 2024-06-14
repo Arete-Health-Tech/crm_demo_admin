@@ -1345,7 +1345,7 @@
   border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
   background: var(--Background-White, #fff);
   min-width: 5.5vw;
-  height: 6vh;
+  height: 5.8vh;
   padding: 3px;
   cursor: pointer;
 }

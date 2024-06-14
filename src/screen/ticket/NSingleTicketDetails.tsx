@@ -954,20 +954,20 @@ const NSingleTicketDetails = (props: Props) => {
                             {/* probability end */}
                             {/* Lead Assignee */}
 
-                            <Box
+                            <Box height={'100%'}
                                 className="Box-assignee"
                                 onClick={() => {
                                     setVisible(!visible);
                                     setOp(false);
                                 }}
                             >
-                                <Stack direction="row" alignItems="center">
+                                <Stack direction="row" alignItems="center" marginTop={'3px'}>
                                     <span className="avatar">
                                         {' '}
                                         <Avatar
                                             sx={{
-                                                width: '2.5vw',
-                                                height: '5vh',
+                                                width: '100%',
+                                                height: '105%',
                                                 fontSize: '12px',
                                                 bgcolor: 'orange',
                                                 textTransform: 'uppercase',
@@ -982,8 +982,8 @@ const NSingleTicketDetails = (props: Props) => {
                                         {' '}
                                         <Avatar
                                             sx={{
-                                                width: '2.5vw',
-                                                height: '5vh',
+                                                width: '100%',
+                                                height: '105%',
                                                 fontSize: '12px',
                                                 bgcolor: 'orange',
                                                 textTransform: 'uppercase',
@@ -994,7 +994,9 @@ const NSingleTicketDetails = (props: Props) => {
                                             {representative?.filter((item) => item.role === 'REPRESENTATIVE')[1]?.firstName[0]}{representative?.filter((item) => item.role === 'REPRESENTATIVE')[1]?.lastName[0]}
                                         </Avatar>
                                     </span>
-                                    <span className="DropDownArrow">
+                                    <span
+                                    // className="DropDownArrow"
+                                    >
                                         <img src={DropDownArrow} alt="" />
                                     </span>
                                 </Stack>

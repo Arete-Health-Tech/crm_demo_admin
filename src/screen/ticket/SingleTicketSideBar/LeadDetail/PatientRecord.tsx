@@ -511,7 +511,7 @@ const PatientRecord = ({ isPatient }) => {
             ) : null}
 
 
-            {currentTicket?.prescription?.[0]?.diagnostics?.length > 0 ?
+            {currentTicket?.prescription?.[0]?.diagnostics?.length > 0 && currentTicket?.prescription?.[0]?.diagnostics[0] !== null ?
                 <Stack className="gray-border">
                     {/* Borders */}
                 </Stack> : (<></>)}

@@ -44,6 +44,7 @@ const MessagingWidget = (props: Props) => {
   const [id, setId] = useState('');
   const [messages, setMessages] = useState<DocumentData[]>([]);
   const [sendMessage, setSendMessage] = useState('');
+  const [isDisabled, setIsDisabled] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   // const { user, setUser } = useUserStore();
   function getConsumerIdByDataId(dataArray, dataIdToMatch) {
@@ -112,16 +113,19 @@ const MessagingWidget = (props: Props) => {
   }, [ticketID]);
 
 
-  const handleKeyPress = (e) => {
+  const handleKeyPress = (e: any) => {
     if (e.key === 'Enter' && sendMessage.trim() !== '') {
       // console.log('press enter');
+      setIsDisabled(true)
       handleSendMessage();
     }
   };
   console.log(messages.length, "this is message for whatsapp")
   const handleSendMessage = async () => {
+    setIsDisabled(true)
     await sendTextMessage(sendMessage, consumerId, ticketID as string);
     setSendMessage('');
+    setIsDisabled(false)
   };
 
   const handleImageUpload = () => {
@@ -361,12 +365,12 @@ const MessagingWidget = (props: Props) => {
                       )}px`;
                     }
                   }}
-                  onKeyPress={handleKeyPress}
+                  onKeyPress={(e) => { if (!isDisabled) { handleKeyPress(e) } }}
                   placeholder="Enter a Message"
                 />
                 <Box
                   className={sendMessage ? styles.sendButtonActive : styles.sendButton}
-                  onClick={handleSendMessage}
+                  onClick={() => { if (!isDisabled) { handleSendMessage() } }}
                 >
                   <Typography sx={{ cursor: "pointer" }} className={sendMessage ? styles.sendButtonTextActive : styles.sendButtonText}>
                     Send

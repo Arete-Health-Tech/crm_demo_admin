@@ -965,10 +965,17 @@ const AuditSinglePageDetail = (props: Props) => {
                                         <TabList
                                             onChange={handleChange}
                                             aria-label="lab API tabs example"
-                                            style={{ width: '95%' }}
-                                        // variant="scrollable"
-                                        // scrollButtons="auto"
-                                        // aria-label="scrollable auto tabs example"
+                                            style={{ width: '100%' }}
+                                            sx={{
+                                                '& .MuiTabs-indicator': {
+                                                    display: 'none'
+                                                },
+                                                '.Mui-selected': {
+                                                    // backgroundColor: "#0566FF !important",
+                                                    color: '#FFFFFF',
+                                                    borderBottom: '2px solid #0566FF'
+                                                }
+                                            }}
                                         >
                                             <Tab
                                                 label="Activities"
@@ -1049,13 +1056,13 @@ const AuditSinglePageDetail = (props: Props) => {
                                                     value == '5' ? styles.selectedTab : styles.tabsLabel
                                                 }
                                             />
-                                            <Tab
+                                            {/* <Tab
                                                 label="Query Resolution"
                                                 value="6"
                                                 className={
                                                     value == '6' ? styles.selectedTab : styles.tabsLabel
                                                 }
-                                            />
+                                            /> */}
                                             <Tab
                                                 label="Notes"
                                                 value="7"

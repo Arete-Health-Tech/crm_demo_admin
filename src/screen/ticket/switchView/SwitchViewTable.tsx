@@ -23,7 +23,7 @@ import LowPr from '../../../assets/LowPr.svg'
 import HighPr from '../../../assets/HighPr.svg'
 import DefaultPr from '../../../assets/DefaultPr.svg'
 import AuditFilterIcon from '../../../assets/commentHeader.svg'
-import SortArrowIcon from '../../../assets/SortArrow.svg'
+import NotFoundIcon from '../../../assets/NotFoundTask.svg'
 import ActiveToggleIcon from '../../../assets/ActiveToggle.svg'
 import TicketFilter from "../widgets/TicketFilter";
 import CustomPagination from "../../../container/layout/CustomPagination";
@@ -808,108 +808,121 @@ function SwitchViewTable() {
               '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#555' }
             }}>
               <tbody>
-                {tickets.map(item => (
-                  <tr key={item._id} className={styles.SwitchView_table_body}
-                    onClick={() => navigate(`${item._id}`)}>
+                {tickets.length > 0 ?
+                  (<>
+                    {tickets.map(item => (
+                      <tr key={item._id} className={styles.SwitchView_table_body}
+                        onClick={() => navigate(`${item._id}`)}>
 
-                    {/* Lead */}
-                    <td className={`${styles.SwitchView_table_body_item}`}>
-                      <Stack display={'flex'} flexDirection={'row'} gap={'8px'}>
-                        <Stack className={styles.SwitchView_name} sx={{ textTransform: "capitalize !important" }}>
-                          {/* {patientName(item)} */}
-                          {`${item?.consumer?.[0]?.firstName ?? ''} ${item?.consumer?.[0]?.lastName ?? ''}`}
-                        </Stack>
-                        <Stack className={styles.SwitchView_GenAge}>
-                          {item.consumer[0]?.gender && <Stack className={styles.SwitchView_Gen}>{item.consumer[0]?.gender}</Stack>}
-                          {item.consumer[0]?.age && <Stack className={styles.SwitchView_Age}> {item.consumer[0]?.age}</Stack>}
-                        </Stack>
-                      </Stack>
-                      <Stack className={styles.SwitchView_uhid}>
-                        #{item.consumer[0]?.uid}
-                      </Stack>
-                    </td>
-
-                    {/* Lead Age */}
-                    <td className={`${styles.SwitchView_table_body_item}  ${styles.Switch_body_item2}`}  >
-                      <Stack className={styles.SwitchView_last_date}>
-                        {calculatedDate(item.date)}
-                      </Stack>
-                    </td>
-
-                    {/* Doctor Name */}
-                    <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item3}`} >
-                      <Stack className={styles.SwitchView_last_date} sx={{ textTransform: "capitalize !important" }}>
-                        {doctorSetter(item?.prescription[0]?.doctor)}
-                      </Stack>
-                    </td>
-
-                    {/* Department */}
-                    <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item4}`} >
-                      <Stack className={styles.SwitchView_last_date} sx={{ textTransform: "capitalize !important" }}>
-                        {departmentSetter(item.prescription[0].departments[0])}
-                      </Stack>
-                    </td>
-
-
-                    {/* LeadStatus */}
-                    <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item6}`} >
-                      <Stack sx={stageStyles[getStageName(item)]}> {getStageName(item)}</Stack>
-                    </td>
-
-                    {/* Services */}
-                    <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item5}`} >
-
-                      <Box className="ticket-card-line3">
-                        {item.prescription[0].admission ? (<>
-                          <Stack className='ticket-card-line3-tag'>{item.prescription[0].admission}</Stack>
-                        </>
-                        )
-                          :
-                          (<></>)
-                        }
-                        {item.prescription[0].diagnostics.length > 0 ? (<>
-                          <Stack className='ticket-card-line3-tag'>Diagonstic</Stack>
-                        </>
-                        )
-                          :
-                          (<></>)
-                        }
-                      </Box>
-
-                    </td>
-
-
-                    {/* Probabilty */}
-                    <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`} >
-                      <Stack className={styles.SwitchView_Prob}
-                        sx={{
-                          color: getColor(item?.Probability),
-                          backgroundColor: getBackgroundColor(item?.Probability),
-                        }}
-                      >{!item?.Probability ? 0 : item?.Probability}%</Stack>
-                    </td>
-
-                    {/* Priority */}
-                    <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`} >
-                      {estimateData[item._id] == 0 ? (<>
-                        <Stack className="Priority-tag"> <img src={DefaultPr} alt="DefaultPr" /><span style={{ fontSize: "12px" }}>N/A</span></Stack>
-                      </>) : (
-                        <>
-                          <Stack className="Priority-tag">{estimateData[item._id] > 15000 ?
-                            (<><img src={HighPr} alt="" />High</>)
-                            :
-                            (estimateData[item._id] < 15000) && 4550 < (estimateData[item._id])
-                              ? (<><img src={MediumPr} alt="" />Medium</>)
-                              : (<><img src={LowPr} alt="" />Low</>)}
+                        {/* Lead */}
+                        <td className={`${styles.SwitchView_table_body_item}`}>
+                          <Stack display={'flex'} flexDirection={'row'} gap={'8px'}>
+                            <Stack className={styles.SwitchView_name} sx={{ textTransform: "capitalize !important" }}>
+                              {/* {patientName(item)} */}
+                              {`${item?.consumer?.[0]?.firstName ?? ''} ${item?.consumer?.[0]?.lastName ?? ''}`}
+                            </Stack>
+                            <Stack className={styles.SwitchView_GenAge}>
+                              {item.consumer[0]?.gender && <Stack className={styles.SwitchView_Gen}>{item.consumer[0]?.gender}</Stack>}
+                              {item.consumer[0]?.age && <Stack className={styles.SwitchView_Age}> {item.consumer[0]?.age}</Stack>}
+                            </Stack>
                           </Stack>
+                          <Stack className={styles.SwitchView_uhid}>
+                            #{item.consumer[0]?.uid}
+                          </Stack>
+                        </td>
 
-                        </>)
-                      }
-                    </td>
+                        {/* Lead Age */}
+                        <td className={`${styles.SwitchView_table_body_item}  ${styles.Switch_body_item2}`}  >
+                          <Stack className={styles.SwitchView_last_date}>
+                            {calculatedDate(item.date)}
+                          </Stack>
+                        </td>
+
+                        {/* Doctor Name */}
+                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item3}`} >
+                          <Stack className={styles.SwitchView_last_date} sx={{ textTransform: "capitalize !important" }}>
+                            {doctorSetter(item?.prescription[0]?.doctor)}
+                          </Stack>
+                        </td>
+
+                        {/* Department */}
+                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item4}`} >
+                          <Stack className={styles.SwitchView_last_date} sx={{ textTransform: "capitalize !important" }}>
+                            {departmentSetter(item.prescription[0].departments[0])}
+                          </Stack>
+                        </td>
 
 
-                  </tr>
-                ))}
+                        {/* LeadStatus */}
+                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item6}`} >
+                          <Stack sx={stageStyles[getStageName(item)]}> {getStageName(item)}</Stack>
+                        </td>
+
+                        {/* Services */}
+                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item5}`} >
+
+                          <Box className="ticket-card-line3">
+                            {item.prescription[0].admission ? (<>
+                              <Stack className='ticket-card-line3-tag'>{item.prescription[0].admission}</Stack>
+                            </>
+                            )
+                              :
+                              (<></>)
+                            }
+                            {item.prescription[0].diagnostics.length > 0 ? (<>
+                              <Stack className='ticket-card-line3-tag'>Diagonstic</Stack>
+                            </>
+                            )
+                              :
+                              (<></>)
+                            }
+                          </Box>
+
+                        </td>
+
+
+                        {/* Probabilty */}
+                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`} >
+                          <Stack className={styles.SwitchView_Prob}
+                            sx={{
+                              color: getColor(item?.Probability),
+                              backgroundColor: getBackgroundColor(item?.Probability),
+                            }}
+                          >{!item?.Probability ? 0 : item?.Probability}%</Stack>
+                        </td>
+
+                        {/* Priority */}
+                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`} >
+                          {estimateData[item._id] == 0 ? (<>
+                            <Stack className="Priority-tag"> <img src={DefaultPr} alt="DefaultPr" /><span style={{ fontSize: "12px" }}>N/A</span></Stack>
+                          </>) : (
+                            <>
+                              <Stack className="Priority-tag">{estimateData[item._id] > 15000 ?
+                                (<><img src={HighPr} alt="" />High</>)
+                                :
+                                (estimateData[item._id] < 15000) && 4550 < (estimateData[item._id])
+                                  ? (<><img src={MediumPr} alt="" />Medium</>)
+                                  : (<><img src={LowPr} alt="" />Low</>)}
+                              </Stack>
+
+                            </>)
+                          }
+                        </td>
+
+
+                      </tr>
+                    ))}
+                  </>) :
+                  (<>
+                    <Box className="NotFound-Page" sx={{
+                      width: "90.5vw",
+                      height: '30vh'
+                    }}>
+                      <img src={NotFoundIcon} />
+                      <Stack className='NotFound-text'>No Ticket Available</Stack>
+                      <Stack className='NotFound-subtext'>No Data Found</Stack>
+                    </Box></>)}
+
               </tbody>
             </Box>
 

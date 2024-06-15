@@ -34,6 +34,7 @@ import { getRepresntativesHandler } from '../../api/representive/representativeH
 import useReprentativeStore from '../../store/representative';
 import useServiceStore from '../../store/serviceStore';
 import AuditFilters from './AuditFilters';
+import NotFoundIcon from '../../assets/NotFoundTask.svg';
 
 
 const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
@@ -417,222 +418,233 @@ const Audit: React.FC = () => {
               '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#555' }
             }}>
               <tbody>
-                {tickets.map(item => (
-                  <tr key={item._id} className={styles.Audit_table_body}
-                    onClick={() => {
-                      setIsAuditor(true);
-                      // navigate(`/auditSingleTicketDetail/${"6652bf7accee77aaeaf8afb2"}`);
-                      navigate(`/auditSingleTicketDetail/${item._id}`);
-                    }}>
+                {tickets.length > 0 ?
+                  (<>{tickets.map(item => (
+                    <tr key={item._id} className={styles.Audit_table_body}
+                      onClick={() => {
+                        setIsAuditor(true);
+                        // navigate(`/auditSingleTicketDetail/${"6652bf7accee77aaeaf8afb2"}`);
+                        navigate(`/auditSingleTicketDetail/${item._id}`);
+                      }}>
 
-                    {/* Lead */}
-                    <td className={`${styles.Audit_table_body_item}`}>
+                      {/* Lead */}
+                      <td className={`${styles.Audit_table_body_item}`}>
 
-                      <Stack display={'flex'} flexDirection={'row'} gap={'8px'}>
-                        <Stack className={styles.Audit_name} sx={{ textTransform: "capitalize !important" }}>
-                          {`${item?.consumer?.[0]?.firstName ?? ''} ${item?.consumer?.[0]?.lastName ?? ''}`}
-                        </Stack>
-                        <Stack className={styles.Audit_GenAge}>
-                          {item.consumer[0]?.gender && <Stack className={styles.Audit_Gen}>{item.consumer[0]?.gender}</Stack>}
-                          {item.consumer[0]?.age && <Stack className={styles.Audit_Age}> {item.consumer[0]?.age}</Stack>}
-                        </Stack>
-                      </Stack>
-                      <Stack className={styles.Audit_uhid}>
-                        #{item.consumer[0]?.uid}
-                      </Stack>
-
-                    </td>
-
-                    {/* Stage */}
-                    <td className={`${styles.Audit_table_body_item} ${styles.body_item2}`}>
-                      <Stack className={styles.Audit_stage}>
-                        {handleStage(item.stage)}
-                      </Stack>
-                      <Stack sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: '4px'
-                      }}
-                      >
-                        <Stack className={styles.Audit_connectorIcon}>
-                          <img src={ConnectorIcon} />
-                        </Stack>
-                        <Stack className={styles.Audit_substage}>
-                          {/* {item.subStage} */}
-                          {handleSubStage(item?.subStageCode?.code)}
-                        </Stack>
-                      </Stack>
-                    </td>
-
-                    {/* Last Contacted */}
-                    <td className={`${styles.Audit_table_body_item} ${styles.body_item3}`}>
-                      <Stack className={styles.Audit_last_date}>
-                        {/* {item.lastContactedDate} */}
-                        23 April 2023
-                      </Stack>
-                    </td>
-
-                    {/* Calls */}
-                    <td className={`${styles.Audit_table_body_item} ${styles.body_item4}`}>
-                      <Stack display={"flex"} flexDirection={"row"} gap={"16px"}>
-                        <LightTooltip
-                          title="Total Calls"
-
-                          disableInteractive
-                          placement="top"
-                          TransitionComponent={Zoom}
-                        >
-                          <Stack className={styles.Audit_CallValues}>
-                            <Stack className={styles.Audit_CallIcon}><img src={TotalCallIcon} /></Stack>
-                            <Stack className={styles.Audit_call_value}>{item?.phoneData?.length ?? 0}</Stack>
+                        <Stack display={'flex'} flexDirection={'row'} gap={'8px'}>
+                          <Stack className={styles.Audit_name} sx={{ textTransform: "capitalize !important" }}>
+                            {`${item?.consumer?.[0]?.firstName ?? ''} ${item?.consumer?.[0]?.lastName ?? ''}`}
                           </Stack>
-                        </LightTooltip>
-                        <LightTooltip
-                          title="Recieved Calls"
-                          disableInteractive
-                          placement="top"
-                          TransitionComponent={Zoom}
-                        >
-                          <Stack className={styles.Audit_CallValues}>
-                            <Stack className={styles.Audit_CallIcon}><img src={TotalRecievedCallIcon} /></Stack>
-                            <Stack className={styles.Audit_call_value}>{calculateRecivedCall(item?.phoneData)}</Stack>
+                          <Stack className={styles.Audit_GenAge}>
+                            {item.consumer[0]?.gender && <Stack className={styles.Audit_Gen}>{item.consumer[0]?.gender}</Stack>}
+                            {item.consumer[0]?.age && <Stack className={styles.Audit_Age}> {item.consumer[0]?.age}</Stack>}
                           </Stack>
-                        </LightTooltip>
-                        <LightTooltip
-                          title="Audit Calls"
-                          disableInteractive
-                          placement="top"
-                          TransitionComponent={Zoom}
-                        >
-                          <Stack className={styles.Audit_CallValues}>
-                            <Stack className={styles.Audit_CallIcon}><img src={AuditCallIcon} /></Stack>
-                            <Stack className={styles.Audit_call_value}>
-                              {/* {item.totalNumberOfAuditCall} */}
-                              0
-                            </Stack>
-                          </Stack>
-                        </LightTooltip>
-                      </Stack>
-                    </td>
+                        </Stack>
+                        <Stack className={styles.Audit_uhid}>
+                          #{item.consumer[0]?.uid}
+                        </Stack>
 
-                    {/* Probabilty */}
-                    <td className={`${styles.Audit_table_body_item} ${styles.body_item5}`}>
+                      </td>
 
-                      <Stack className={styles.Audit_Prob}
-                        sx={{
-                          color: getColor(item?.Probability ?? 0),
-                          backgroundColor: getBackgroundColor(item?.Probability ?? 0),
+                      {/* Stage */}
+                      <td className={`${styles.Audit_table_body_item} ${styles.body_item2}`}>
+                        <Stack className={styles.Audit_stage}>
+                          {handleStage(item.stage)}
+                        </Stack>
+                        <Stack sx={{
+                          display: "flex",
+                          flexDirection: "row",
+                          alignItems: "center",
+                          gap: '4px'
                         }}
-                      > {item?.Probability ?? 0}%</Stack>
-                    </td>
+                        >
+                          <Stack className={styles.Audit_connectorIcon}>
+                            <img src={ConnectorIcon} />
+                          </Stack>
+                          <Stack className={styles.Audit_substage}>
+                            {/* {item.subStage} */}
+                            {handleSubStage(item?.subStageCode?.code)}
+                          </Stack>
+                        </Stack>
+                      </td>
 
-                    {/* Comments */}
-                    <td className={`${styles.Audit_table_body_item} ${styles.body_item6}`}>
-                      <Stack className={styles.Audit_commentValue}>
-                        <Stack className={styles.Audit_call_value}>{item?.auditorcomment?.length ?? '0'}</Stack>
-                        <Stack className={styles.Audit_CallIcon}><img src={CommentIcon} /></Stack>
-                      </Stack>
-                    </td>
+                      {/* Last Contacted */}
+                      <td className={`${styles.Audit_table_body_item} ${styles.body_item3}`}>
+                        <Stack className={styles.Audit_last_date}>
+                          {/* {item.lastContactedDate} */}
+                          23 April 2023
+                        </Stack>
+                      </td>
 
-                    {/* Audit Value */}
-                    <td className={`${styles.Audit_table_body_item} ${styles.body_item7}`}>
-                      <Stack className={styles.Audit_Audit_value}>
-                        {[1, 2, 3, 4, 5].map((star) => {
-                          return (
-                            <Stack
-                              key={star} // Add a key to avoid React warning
-                              sx={{
-                                display: 'flex',
-                                flexDirection: "row",
-                                gap: "4px",
-                                justifyContent: "left",
-                              }}
-                            >
-                              {item?.auditorcomment?.length > 0 ? (
-                                item.auditorcomment[item.auditorcomment.length - 1]?.ratings >= star ? (
-                                  <Stack className={styles.Star_icon}>
-                                    <img src={StarIcon} alt='starIcon' />
-                                  </Stack>
-                                ) : (
-                                  <Stack className={styles.Star_icon}>
-                                    <img src={EmptyStarIcon} alt='EmptyStarIcon' />
-                                  </Stack>
-                                )
-                              ) : (
-                                0 >= star ? (
-                                  <Stack className={styles.Star_icon}>
-                                    <img src={StarIcon} alt='starIcon' />
-                                  </Stack>
-                                ) : (
-                                  <Stack className={styles.Star_icon}>
-                                    <img src={EmptyStarIcon} alt='EmptyStarIcon' />
-                                  </Stack>
-                                )
-                              )}
+                      {/* Calls */}
+                      <td className={`${styles.Audit_table_body_item} ${styles.body_item4}`}>
+                        <Stack display={"flex"} flexDirection={"row"} gap={"16px"}>
+                          <LightTooltip
+                            title="Total Calls"
+
+                            disableInteractive
+                            placement="top"
+                            TransitionComponent={Zoom}
+                          >
+                            <Stack className={styles.Audit_CallValues}>
+                              <Stack className={styles.Audit_CallIcon}><img src={TotalCallIcon} /></Stack>
+                              <Stack className={styles.Audit_call_value}>{item?.phoneData?.length ?? 0}</Stack>
                             </Stack>
-                          );
-                        })}
-                      </Stack>
-                    </td>
+                          </LightTooltip>
+                          <LightTooltip
+                            title="Recieved Calls"
+                            disableInteractive
+                            placement="top"
+                            TransitionComponent={Zoom}
+                          >
+                            <Stack className={styles.Audit_CallValues}>
+                              <Stack className={styles.Audit_CallIcon}><img src={TotalRecievedCallIcon} /></Stack>
+                              <Stack className={styles.Audit_call_value}>{calculateRecivedCall(item?.phoneData)}</Stack>
+                            </Stack>
+                          </LightTooltip>
+                          <LightTooltip
+                            title="Audit Calls"
+                            disableInteractive
+                            placement="top"
+                            TransitionComponent={Zoom}
+                          >
+                            <Stack className={styles.Audit_CallValues}>
+                              <Stack className={styles.Audit_CallIcon}><img src={AuditCallIcon} /></Stack>
+                              <Stack className={styles.Audit_call_value}>
+                                {/* {item.totalNumberOfAuditCall} */}
+                                0
+                              </Stack>
+                            </Stack>
+                          </LightTooltip>
+                        </Stack>
+                      </td>
 
+                      {/* Probabilty */}
+                      <td className={`${styles.Audit_table_body_item} ${styles.body_item5}`}>
 
-                    {/* Assignee */}
-                    <td className={`${styles.Audit_table_body_item} ${styles.body_item8}`}>
-                      <Stack className={styles.Audit_assigne_avatar}>
-                        {handleAssigne(item?.assigned).map((i, index) => {
-                          if (index === 0) {
-                            return (<>
+                        <Stack className={styles.Audit_Prob}
+                          sx={{
+                            color: getColor(item?.Probability ?? 0),
+                            backgroundColor: getBackgroundColor(item?.Probability ?? 0),
+                          }}
+                        > {item?.Probability ?? 0}%</Stack>
+                      </td>
 
+                      {/* Comments */}
+                      <td className={`${styles.Audit_table_body_item} ${styles.body_item6}`}>
+                        <Stack className={styles.Audit_commentValue}>
+                          <Stack className={styles.Audit_call_value}>{item?.auditorcomment?.length ?? '0'}</Stack>
+                          <Stack className={styles.Audit_CallIcon}><img src={CommentIcon} /></Stack>
+                        </Stack>
+                      </td>
 
-                              <Avatar
+                      {/* Audit Value */}
+                      <td className={`${styles.Audit_table_body_item} ${styles.body_item7}`}>
+                        <Stack className={styles.Audit_Audit_value}>
+                          {[1, 2, 3, 4, 5].map((star) => {
+                            return (
+                              <Stack
+                                key={star} // Add a key to avoid React warning
                                 sx={{
-                                  width: '35px',
-                                  height: '35px',
-                                  fontSize: '10px',
-                                  bgcolor: 'orange',
-                                  textTransform: 'uppercase',
-                                  marginTop: '2px'
+                                  display: 'flex',
+                                  flexDirection: "row",
+                                  gap: "4px",
+                                  justifyContent: "left",
                                 }}
                               >
-                                {i}
-                              </Avatar>
+                                {item?.auditorcomment?.length > 0 ? (
+                                  item.auditorcomment[item.auditorcomment.length - 1]?.ratings >= star ? (
+                                    <Stack className={styles.Star_icon}>
+                                      <img src={StarIcon} alt='starIcon' />
+                                    </Stack>
+                                  ) : (
+                                    <Stack className={styles.Star_icon}>
+                                      <img src={EmptyStarIcon} alt='EmptyStarIcon' />
+                                    </Stack>
+                                  )
+                                ) : (
+                                  0 >= star ? (
+                                    <Stack className={styles.Star_icon}>
+                                      <img src={StarIcon} alt='starIcon' />
+                                    </Stack>
+                                  ) : (
+                                    <Stack className={styles.Star_icon}>
+                                      <img src={EmptyStarIcon} alt='EmptyStarIcon' />
+                                    </Stack>
+                                  )
+                                )}
+                              </Stack>
+                            );
+                          })}
+                        </Stack>
+                      </td>
 
-                            </>)
-                          }
 
-                          return null;
+                      {/* Assignee */}
+                      <td className={`${styles.Audit_table_body_item} ${styles.body_item8}`}>
+                        <Stack className={styles.Audit_assigne_avatar}>
+                          {handleAssigne(item?.assigned).map((i, index) => {
+                            if (index === 0) {
+                              return (<>
 
-                        })}
-                        {handleAssigne(item?.assigned).map((i, index) => {
-                          if (index === 1) {
-                            return (<>
-                              <Avatar
-                                sx={{
-                                  width: '35px',
-                                  height: '35px',
-                                  fontSize: '10px',
-                                  bgcolor: '#0096FF',
-                                  textTransform: 'uppercase',
-                                  marginTop: '2px',
-                                  position: 'relative',
-                                  right: "14px"
-                                }}
-                              >
-                                {i}
-                              </Avatar>
 
-                            </>)
-                          }
+                                <Avatar
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    fontSize: '10px',
+                                    bgcolor: 'orange',
+                                    textTransform: 'uppercase',
+                                    marginTop: '2px'
+                                  }}
+                                >
+                                  {i}
+                                </Avatar>
 
-                          return null;
+                              </>)
+                            }
 
-                        })}
-                      </Stack >
-                    </td>
+                            return null;
 
-                  </tr>
-                ))}
+                          })}
+                          {handleAssigne(item?.assigned).map((i, index) => {
+                            if (index === 1) {
+                              return (<>
+                                <Avatar
+                                  sx={{
+                                    width: '35px',
+                                    height: '35px',
+                                    fontSize: '10px',
+                                    bgcolor: '#0096FF',
+                                    textTransform: 'uppercase',
+                                    marginTop: '2px',
+                                    position: 'relative',
+                                    right: "14px"
+                                  }}
+                                >
+                                  {i}
+                                </Avatar>
+
+                              </>)
+                            }
+
+                            return null;
+
+                          })}
+                        </Stack >
+                      </td>
+
+                    </tr>
+                  ))}
+                  </>) : (<>
+                    <Box className="NotFound-Page" sx={{
+                      width: "90.5vw"
+                    }}>
+                      <img src={NotFoundIcon} />
+                      <Stack className='NotFound-text'>No Ticket Available</Stack>
+                      <Stack className='NotFound-subtext'>No Data Found</Stack>
+                    </Box>
+                  </>)}
+
               </tbody>
             </Box>
 

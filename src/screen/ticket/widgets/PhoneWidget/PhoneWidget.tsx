@@ -59,7 +59,7 @@ const PhoneWidget = () => {
                 )}
 
                 {/* Box for showing audio */}
-                <Box className={styles.phoneBox}>
+                <Box className={!isAuditor ? styles.phoneBox : styles.AuditorphoneBox}>
                     {currentTicket?.phoneData?.map((item, index) => {
                         if (item) {
                             return (

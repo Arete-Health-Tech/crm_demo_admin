@@ -511,13 +511,13 @@ const PatientRecord = ({ isPatient }) => {
             ) : null}
 
 
-            {currentTicket?.prescription?.[0]?.diagnostics?.length > 0 ?
+            {currentTicket?.prescription?.[0]?.diagnostics?.length > 0 && currentTicket?.prescription?.[0]?.diagnostics[0] !== null ?
                 <Stack className="gray-border">
                     {/* Borders */}
                 </Stack> : (<></>)}
 
             {/* Diagnostics Test */}
-            {currentTicket?.prescription?.[0]?.diagnostics?.length > 0 ? (
+            {currentTicket?.prescription?.[0]?.diagnostics?.length > 0 && currentTicket?.prescription?.[0]?.diagnostics[0] !== null ? (
                 <Box className="Patient-records">
                     <Box className='Patient-records-Head'>
                         <Stack className='Patient-records-Heading'>Diagnostics Test</Stack>

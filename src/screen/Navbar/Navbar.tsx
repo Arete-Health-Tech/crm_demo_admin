@@ -29,14 +29,22 @@ import ticketIcon from '../../assets/ticket_icon.svg';
 import Dashboard from '../../assets/Dashboard.svg';
 import pharmacy from '../../assets/Pharmacy.svg';
 import departmentIcon from '../../assets/departmentIcon.svg';
+import departmentDeafultIcon from '../../assets/departmentIconDefault.svg';
 import UploadFileIcon from '../../assets/UploadFileIcon.svg';
 import scriptIcon from '../../assets/scriptIcon.svg';
+import scriptIconDefault from '../../assets/scriptIconDefault.svg';
 import stageIcon from '../../assets/stageIcon.svg';
+import stageIconDefault from '../../assets/stageIconDefault.svg';
 import whtsappFlowIcon from '../../assets/whtsappFlowIcon.svg';
+import whtsappFlowIconDefault from '../../assets/whtsappFlowIconDefault.svg';
 import addNodeIcon from '../../assets/addNodeIcon.svg';
+import addNodeIconDefault from '../../assets/addNodeIconDefault.svg';
 import addNodeListIcon from '../../assets/addNodeListIcon.svg';
+import addNodeListIconDefault from '../../assets/addNodeListIconDefault.svg';
 import nodeConnectorIcon from '../../assets/nodeConnectorIcon.svg';
+import nodeConnectorIconDefault from '../../assets/nodeConnectorIconDefault.svg';
 import tagIcon from '../../assets/tagIcon.svg';
+import tagIconDefault from '../../assets/tagIconDefault.svg';
 import Logo from '../../assets/Logo.svg';
 import styles from './Navbar.module.css';
 import Logout from '../login/Logout';
@@ -45,8 +53,11 @@ import NonActiveTicket from '../../assets/NonActiveTickets.svg';
 import ActivePharmacyIcon from '../../assets/ActivePharmacy.svg';
 import SettingActive from '../../assets/ActiveSetting.svg';
 import doctorIcon from '../../assets/doctorIcon.svg';
+import doctorIconDefault from '../../assets/doctorIconDefault.svg';
 import wardIcon from '../../assets/wardIcon.svg';
+import wardIconDeault from '../../assets/wardIconDeault.svg';
 import serviceIcon from '../../assets/serviceIcon.svg';
+import serviceIconDefault from '../../assets/serviceIconDefault.svg';
 import TaskActiveIcon from '../../assets/ActiveTask.svg';
 import DomainAddIcon from '@mui/icons-material/DomainAdd';
 import GroupsIcon from '@mui/icons-material/Groups';
@@ -170,72 +181,73 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
 const sidebarMenu = [
     {
         title: 'Department',
-        icon: departmentIcon,
-        icon1: <DomainAddIcon />,
+        icon: departmentDeafultIcon,
+        icon1: departmentIcon,
         link: '/department',
         submenu: [
             {
                 title: 'Doctors',
-                icon: doctorIcon,
-                icon1: <GroupsIcon />,
+                icon: doctorIconDefault,
+                icon1: doctorIcon,
                 link: '/doctors'
             },
             {
                 title: 'Wards',
-                icon: wardIcon,
-                icon1: <LocalHospitalIcon />,
+                icon: wardIconDeault,
+                icon1: wardIcon,
                 link: '/wards'
             }
         ]
     },
     {
         title: 'Services',
-        icon: serviceIcon,
-        icon1: <BackupTableIcon />,
+        icon: serviceIconDefault,
+        icon1: serviceIcon,
         link: '/services',
         submenu: [
             {
                 title: 'Tags',
-                icon: tagIcon,
-                icon1: <DataObjectOutlinedIcon />,
+                icon: tagIconDefault,
+                icon1: tagIcon,
                 link: '/tags'
             },
             {
                 title: 'Scripts',
-                icon: scriptIcon,
-                icon1: <DocumentScannerOutlined />,
+                icon: scriptIconDefault,
+                icon1: scriptIcon,
+
                 link: '/scripts'
             }
         ]
     },
-    {
-        title: 'Stages',
-        icon: stageIcon,
-        icon1: <AccountTreeOutlined />,
-        link: '/stages'
-    },
+    // {
+    //     title: 'Stages',
+    //     icon: stageIconDefault,
+    //     icon1: stageIcon,
+    //     link: '/stages'
+    // },
     {
         title: 'WhatsappFlow',
-        icon: whtsappFlowIcon,
-        icon1: <SchemaOutlined />,
+        icon: whtsappFlowIconDefault,
+        icon1: whtsappFlowIcon,
         link: '/flow',
         submenu: [
             {
                 title: 'Add Node Replies',
-                icon: addNodeIcon,
-                icon1: <QuickreplyOutlined />,
+                icon: addNodeIconDefault,
+                icon1: addNodeIcon,
                 link: '/node-replies'
             },
             {
                 title: 'Add Node Lists',
-                icon: addNodeListIcon,
-                icon1: <FormatListNumberedOutlined />,
+                icon: addNodeListIconDefault,
+                icon1: addNodeListIcon,
                 link: '/node-lists'
             },
             {
                 title: 'Node Connector',
-                icon: nodeConnectorIcon,
-                icon1: <CloudSyncOutlined />,
+                icon: nodeConnectorIconDefault,
+                icon1: nodeConnectorIcon,
                 link: '/connector'
             }
         ]
@@ -296,7 +308,7 @@ const Navbar = ({ children }) => {
                         // bgcolor={'#F6F7F9'}
                         sx={{ display: 'flex', flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
 
-                        <Box display={'flex'} flexDirection={'column'} gap={"10px"} justifyContent={"center"} sx={{ alignItems: "center" }} >
+                        <Box display={'flex'} flexDirection={'column'} gap={"10px !important"} justifyContent={"center"} sx={{ alignItems: "center" }} >
                             <Stack sx={{
                                 display: "flex",
                                 height: "54px",
@@ -308,7 +320,7 @@ const Navbar = ({ children }) => {
                                 <img src={Logo} alt="Logo" />
                             </Stack>
                             <Box className={styles.navbarItem}>
-                                <Stack >
+                                <Stack className={styles.nav_Icon}>
                                     <Stack
                                         onClick={() => goToPage('/')}
                                         sx={{
@@ -316,8 +328,8 @@ const Navbar = ({ children }) => {
                                             justifyContent: "center",
                                             alignItems: "center",
                                             gap: "24px",
-                                            width: "3.5vw",
-                                            height: "7vh",
+                                            width: "3.3vw",
+                                            height: "6.8vh",
                                             borderRadius: "8px",
                                             cursor: 'pointer',
                                             backgroundColor: location.pathname === '/' ? '#DAE8FF' : 'transparent',
@@ -335,7 +347,7 @@ const Navbar = ({ children }) => {
                                         </LightTooltip>
                                     </Stack>
                                 </Stack>
-                                <Stack>
+                                <Stack className={styles.nav_Icon}>
                                     <Stack
                                         // onClick={() => goToPage('/ticket')}
                                         onClick={() => { handleGoToTicket() }}
@@ -346,8 +358,8 @@ const Navbar = ({ children }) => {
                                             justifyContent: "center",
                                             alignItems: "center",
                                             gap: "24px",
-                                            width: "3.5vw",
-                                            height: "7vh",
+                                            width: "3.3vw",
+                                            height: "6.8vh",
                                             borderRadius: "8px",
                                             cursor: 'pointer',
                                             backgroundColor: location.pathname.includes('/ticket') || location.pathname.includes('/switchView') ? '#DAE8FF' : 'transparent',
@@ -369,9 +381,9 @@ const Navbar = ({ children }) => {
 
                                 {/* this stack is for doctors,department,WhatsappFlow starts */}
 
-                                {/* <Stack>
+                                <Stack className={styles.nav_Icon}>
                                     {sidebarMenu.map((item) => (
-                                        <Stack key={item.title}>
+                                        <Stack key={item.title} >
                                             <Stack
                                                 onClick={() => handleMenuClick(item.title)}
                                                 sx={{
@@ -379,13 +391,15 @@ const Navbar = ({ children }) => {
                                                     justifyContent: "center",
                                                     alignItems: "center",
                                                     gap: "24px",
-                                                    width: "3.5vw",
-                                                    height: "7vh",
+                                                    width: "3.3vw",
+                                                    height: "6.8vh",
                                                     borderRadius: "8px",
                                                     cursor: 'pointer',
                                                     backgroundColor: location.pathname.includes(item.link) ? '#DAE8FF' : 'transparent',
+                                                    // color: location.pathname.includes(item.link) ? '#080F1A' : '#647491',
                                                     '&:hover': {
-                                                        background: '#E1E6EE'
+                                                        background: '#E1E6EE',
+                                                        // color: '#080F1A'
                                                     }
                                                 }}
                                             >
@@ -394,62 +408,67 @@ const Navbar = ({ children }) => {
                                                     disableInteractive
                                                     placement="right"
                                                     TransitionComponent={Zoom}
+
                                                 >
                                                     {location.pathname.includes(item.link) ? (
-                                                        item?.icon1
+                                                        <img className={styles.imgClass} src={item.icon1} alt="departmentIcon" />
                                                     ) : (
-                                                        <img src={item.icon} alt="departmentIcon" />
+                                                        <img className={styles.imgClass} src={item.icon} alt="departmentIcon" />
                                                     )}
                                                 </LightTooltip>
                                             </Stack>
                                             {expandedMenu === item.title && item.submenu && item.submenu.map((subItem) => (
-                                                <Stack
-                                                    key={subItem.title}
-                                                    onClick={() => goToPage(subItem.link)}
-                                                    sx={{
-                                                        display: "flex",
-                                                        justifyContent: "center",
-                                                        alignItems: "center",
-                                                        gap: "24px",
-                                                        width: "3.5vw",
-                                                        height: "7vh",
-                                                        borderRadius: "8px",
-                                                        cursor: 'pointer',
-                                                        backgroundColor: location.pathname.includes(subItem.link) ? '#DAE8FF' : 'transparent',
-                                                        '&:hover': {
-                                                            background: '#E1E6EE'
-                                                        }
-                                                    }}
-                                                >
-                                                    <LightTooltip
-                                                        title={subItem.title}
-                                                        disableInteractive
-                                                        placement="right"
-                                                        TransitionComponent={Zoom}
+                                                <Stack className={styles.navSub_Icon}>
+                                                    <Stack
+                                                        key={subItem.title}
+                                                        onClick={() => goToPage(subItem.link)}
+                                                        sx={{
+                                                            display: "flex",
+                                                            justifyContent: "center",
+                                                            alignItems: "center",
+                                                            gap: "24px",
+                                                            width: "3vw",
+                                                            height: "6.5vh",
+                                                            borderRadius: "8px",
+                                                            cursor: 'pointer',
+                                                            backgroundColor: location.pathname.includes(subItem.link) ? '#DAE8FF' : 'transparent',
+                                                            // color: location.pathname.includes(subItem.link) ? '#080F1A' : '#647491',
+                                                            '&:hover': {
+                                                                background: '#E1E6EE',
+                                                                // color: "#080F1A"
+                                                            }
+                                                        }}
                                                     >
-                                                        {location.pathname.includes(subItem.link) ? (
-                                                            subItem.icon1
-                                                        ) : (
-                                                            <img src={subItem.icon} alt="departmentIcon" />
-                                                        )}
-                                                    </LightTooltip>
+                                                        <LightTooltip
+                                                            title={subItem.title}
+                                                            disableInteractive
+                                                            placement="right"
+                                                            TransitionComponent={Zoom}
+                                                        >
+                                                            {location.pathname.includes(subItem.link) ? (
+                                                                <img className={styles.imgClass} src={subItem.icon1} alt="departmentIcon" />
+                                                            ) : (
+                                                                <img className={styles.imgClass} src={subItem.icon} alt="departmentIcon" />
+                                                            )}
+                                                        </LightTooltip>
+                                                    </Stack>
                                                 </Stack>
                                             ))}
                                         </Stack>
                                     ))}
-                                </Stack> */}
+                                </Stack>
 
                                 {/* this stack is for doctors,department,WhatsappFlow end */}
 
-                                {/* <Stack >
+                                {/* <Stack className={styles.nav_Icon}>
                                     <Stack onClick={() => goToPage('/OrderList')}
                                         sx={{
                                             display: "flex",
                                             justifyContent: "center",
                                             alignItems: "center",
                                             gap: "24px",
-                                            width: "3.5vw",
-                                            height: "7vh",
+                                             width: "3.3vw",
+                                            height: "6.8vh",
                                             borderRadius: "8px",
                                             cursor: 'pointer',
                                             backgroundColor: location.pathname.includes('/OrderList') ? '#DAE8FF' : 'transparent',
@@ -468,15 +487,15 @@ const Navbar = ({ children }) => {
                                         </LightTooltip>
                                     </Stack>
                                 </Stack> */}
-                                {/* <Stack>
+                                {/* <Stack className={styles.nav_Icon}>
                                     <Stack onClick={() => goToPage('/Tasks')}
                                         sx={{
                                             display: "flex",
                                             justifyContent: "center",
                                             alignItems: "center",
                                             gap: "24px",
-                                            width: "3.5vw",
-                                            height: "7vh",
+                                              width: "3.3vw",
+                                            height: "6.8vh",
                                             borderRadius: "8px",
                                             cursor: 'pointer',
                                             backgroundColor: location.pathname.includes('/Tasks') ? '#DAE8FF' : 'transparent',
@@ -492,17 +511,17 @@ const Navbar = ({ children }) => {
                                             {location.pathname.includes('/Tasks') ? (<img src={TaskActiveIcon} alt="Tasks" />) : (<img src={Tasks} alt="Tasks" />)}
                                         </LightTooltip>
                                     </Stack>
-                                </Stack> 
+                                </Stack>
                                 */}
-                                <Stack>
+                                <Stack className={styles.nav_Icon}>
                                     <Stack onClick={() => goToPage('/upload-file')}
                                         sx={{
                                             display: "flex",
                                             justifyContent: "center",
                                             alignItems: "center",
                                             gap: "24px",
-                                            width: "3.5vw",
-                                            height: "7vh",
+                                            width: "3.3vw",
+                                            height: "6.8vh",
                                             borderRadius: "8px",
                                             cursor: 'pointer',
                                             backgroundColor: location.pathname.includes('/upload-file') ? '#DAE8FF' : 'transparent',

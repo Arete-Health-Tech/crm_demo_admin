@@ -4,6 +4,7 @@
 .main {
   width: 100%;
 }
+
 .columnBox {
   /* display: flex; */
   /* flex-flow: column; */
@@ -61,18 +62,40 @@ button.MuiButtonBase-root.MuiButton-root.MuiButton-text.MuiButton-textPrimary.Mu
 .css-2modrb-MuiTypography-root {
   padding-left: 50px;
 }
-.navbarItem{
+
+.navbarItem {
   height: 74vh;
+  margin-left: 5px;
   overflow: scroll;
 }
+
 .navbarItem::-webkit-scrollbar {
-  width: 5px; /* width of the entire scrollbar */
+  width: 5px;
+  /* width of the entire scrollbar */
 }
+
+.nav_Icon {
+  margin-bottom: 7px;
+}
+
+.navSub_Icon {
+  margin-top: 3.5px;
+  margin-bottom: 3.5px;
+  margin-left: 3px;
+}
+
 /* .navbarItem::-webkit-scrollbar-track { */
 /* background: whitesmoke;  */
 /* color of the tracking area */
 /* } */
 .navbarItem::-webkit-scrollbar-thumb {
-  background-color: rgb(163, 165, 167); /* color of the scroll thumb */
-  border-radius: 20px; /* roundness of the scroll thumb */
+  background-color: rgb(163, 165, 167);
+  /* color of the scroll thumb */
+  border-radius: 20px;
+  /* roundness of the scroll thumb */
+}
+
+.imgClass {
+  width: 20px;
+  height: 20px;
 }

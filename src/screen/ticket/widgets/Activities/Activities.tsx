@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import styles from './Activities.module.css';
 import ArrowUp from '../../../../assets/ArrowUp.svg';
@@ -14,17 +13,15 @@ type Activity = {
 };
 
 const Activities = () => {
-    const { isAuditor, tickets, reminders, callRescheduler, estimates } =
-        useTicketStore();
+    const { isAuditor, tickets, reminders, callRescheduler, estimates } = useTicketStore();
     const { ticketID } = useParams();
     const [activities, setActivities] = useState<Activity>({});
+    const [expandedMessages, setExpandedMessages] = useState<boolean[]>([]);
 
     // Initialize expandedMessages based on activities length
     useEffect(() => {
         setExpandedMessages(Array(Object.entries(activities).length).fill(true));
     }, [activities]);
-
-    const [expandedMessages, setExpandedMessages] = useState<boolean[]>([]);
 
     const handleToggle = (index: number) => {
         const newExpandedMessages = [...expandedMessages];
@@ -55,16 +52,17 @@ const Activities = () => {
 
     return (
         <div className={!isAuditor ? styles.activity : styles.auditActivity}>
-            {activities !== null && activities !== undefined && Object.entries(activities).map(([key, value], index) => (
+            {activities && Object.entries(activities).map(([key, value], index) => (
                 <div key={key}>
-
-                    {(handleCheckKey(key) !== 'ticketid' && handleCheckKey(key) !== '') && <div
-                        className={styles.accordionTypeheader}
-                        onClick={() => handleToggle(index)}
-                    >
-                        <span className={styles.accordionTypeTime}>{'26/11/2008'}</span>
-                        <img src={expandedMessages[index] ? ArrowDown : ArrowUp} alt="" />
-                    </div>}
+                    {(handleCheckKey(key) !== 'ticketid' && handleCheckKey(key) !== '') && (
+                        <div
+                            className={styles.accordionTypeheader}
+                            onClick={() => handleToggle(index)}
+                        >
+                            <span className={styles.accordionTypeTime}>{'26/11/2008'}</span>
+                            <img src={expandedMessages[index] ? ArrowDown : ArrowUp} alt="" />
+                        </div>
+                    )}
                     {handleCheckKey(key) === 'ticketcreated' ? (
                         <div
                             style={
@@ -281,153 +279,7 @@ const Activities = () => {
                                 <div className={styles.time}>{extractDateTime(value)}</div>
                             </div>
                         </div>
-                    ) : handleCheckKey(key) === 'Estimate' ? (
-                        <div
-                            style={
-                                expandedMessages[index]
-                                    ? {
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }
-                                    : {
-                                        height: 0,
-                                        display: 'none',
-                                        marginLeft: 60
-                                    }
-                            }
-                        >
-                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                            <div className={styles.otherContent}>{value}</div>
-                        </div>
-                    ) : handleCheckKey(key) === 'ticketUpdated' ? (
-                        <div
-                            style={
-                                expandedMessages[index]
-                                    ? {
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }
-                                    : {
-                                        height: 0,
-                                        display: 'none',
-                                        marginLeft: 60
-                                    }
-                            }
-                        >
-                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                            <div className={styles.otherContent}>
-                                {value}
-                                <div className={styles.time}>{extractDateTime(value)}</div>
-                            </div>
-                        </div>
-                    ) : handleCheckKey(key) === 'Service' ? (
-                        <div
-                            style={
-                                expandedMessages[index]
-                                    ? {
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }
-                                    : {
-                                        height: 0,
-                                        display: 'none',
-                                        marginLeft: 60
-                                    }
-                            }
-                        >
-                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                            <div className={styles.otherContent}>
-                                {value}
-                                <div className={styles.time}>{extractDateTime(value)}</div>
-                            </div>
-                        </div>
-                    ) : handleCheckKey(key) === 'reminder' ? (
-                        <div
-                            style={
-                                expandedMessages[index]
-                                    ? {
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }
-                                    : {
-                                        height: 0,
-                                        display: 'none',
-                                        marginLeft: 60
-                                    }
-                            }
-                        >
-                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                            <div className={styles.otherContent}>
-                                {value}
-                                <div className={styles.time}>{extractDateTime(value)}</div>
-                            </div>
-                        </div>
-                    ) : handleCheckKey(key) === 'Rescheduler' ? (
-                        <div
-                            style={
-                                expandedMessages[index]
-                                    ? {
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }
-                                    : {
-                                        height: 0,
-                                        display: 'none',
-                                        marginLeft: 60
-                                    }
-                            }
-                        >
-                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                            <div className={styles.otherContent}>
-                                {value}
-                                <div className={styles.time}>{extractDateTime(value)}</div>
-                            </div>
-                        </div>
-                    ) : handleCheckKey(key) === 'Document' ? (
-                        <div
-                            style={
-                                expandedMessages[index]
-                                    ? {
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }
-                                    : {
-                                        height: 0,
-                                        display: 'none',
-                                        marginLeft: 60
-                                    }
-                            }
-                        >
-                            <img src={smsIcon} alt="" style={{ marginRight: 4 }} />
-                            <div className={styles.content}>
-                                {value}
-                                <div className={styles.time}>{extractDateTime(value)}</div>
-                            </div>
-                        </div>
-                    ) : (
-                        <></>
-                    )}
-                    <div
-                        className={expandedMessages[index] ? '' : styles.forSpacingDiv}
-                    ></div>
+                    ) : null}
                 </div>
             ))}
         </div>

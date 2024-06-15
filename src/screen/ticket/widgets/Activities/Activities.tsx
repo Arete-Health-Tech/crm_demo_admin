@@ -55,7 +55,7 @@ const Activities = () => {
 
     return (
         <div className={!isAuditor ? styles.activity : styles.auditActivity}>
-            {Object.entries(activities).map(([key, value], index) => (
+            {activities !== null && activities !== undefined && Object.entries(activities).map(([key, value], index) => (
                 <div key={key}>
 
                     {(handleCheckKey(key) !== 'ticketid' && handleCheckKey(key) !== '') && <div

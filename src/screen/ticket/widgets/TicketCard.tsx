@@ -262,7 +262,6 @@ const TicketCard = (props: Props) => {
           setTotalEstimateValue(0);
         }
       } catch (error) {
-        console.error("Error fetching estimate data:", error);
         setTotalEstimateValue(0); // Optionally reset state on error
       }
     };

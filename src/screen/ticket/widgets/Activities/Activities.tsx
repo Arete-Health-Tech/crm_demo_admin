@@ -1,67 +1,30 @@
-import React, { useState } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import React, { useEffect, useState } from 'react';
 import styles from './Activities.module.css';
 import ArrowUp from '../../../../assets/ArrowUp.svg';
 import ArrowDown from '../../../../assets/ArrowDown.svg';
-import smsIcon from "../../../../assets/smsIcon.svg";
+import activityIcon from '../../../../assets/activityIcon.svg';
+import smsIcon from '../../../../assets/smsIcon.svg';
 import useTicketStore from '../../../../store/ticketStore';
+import { useParams } from 'react-router-dom';
+import { getActivityData } from '../../../../api/ticket/ticket';
 
-type Message = {
-    id: number;
-    time: string;
-    content: string;
+type Activity = {
+    [key: string]: string;
 };
 
 const Activities = () => {
-    const { isAuditor } = useTicketStore();
-    const messages: Message[] = [
-        {
-            id: 1,
-            time: '09:30AM',
-            content: "Hi, I'm not feeling well and would like some advice on what to do."
-        },
-        {
-            id: 2,
-            time: '09:30AM',
-            content: "Hello John, I'm sorry to hear that you're not feeling well. Could you please describe your symptoms in more detail?"
-        },
-        {
-            id: 3,
-            time: '09:30AM',
-            content: 'Jenny Wilson added Marvin McKinney to the ticket.'
-        },
-        {
-            id: 4,
-            time: '09:30AM',
-            content: "I've been having a headache and a fever since yesterday evening."
-        },
-        {
-            id: 5,
-            time: '09:30AM',
-            content: "I've been having a headache and a fever since yesterday evening."
-        },
-        {
-            id: 6,
-            time: '09:30AM',
-            content: "I've been having a headache and a fever since yesterday evening."
-        },
-        {
-            id: 7,
-            time: '09:30AM',
-            content: "I've been having a headache and a fever since yesterday evening."
-        },
-        {
-            id: 8,
-            time: '09:30AM',
-            content: "I've been having a headache and a fever since yesterday evening."
-        },
-        {
-            id: 9,
-            time: '09:30AM',
-            content: "I've been having a headache and a fever since yesterday evening."
-        },
-    ];
+    const { isAuditor, tickets, reminders, callRescheduler, estimates } =
+        useTicketStore();
+    const { ticketID } = useParams();
+    const [activities, setActivities] = useState<Activity>({});
 
-    const [expandedMessages, setExpandedMessages] = useState<boolean[]>(Array(messages.length).fill(true));
+    // Initialize expandedMessages based on activities length
+    useEffect(() => {
+        setExpandedMessages(Array(Object.entries(activities).length).fill(true));
+    }, [activities]);
+
+    const [expandedMessages, setExpandedMessages] = useState<boolean[]>([]);
 
     const handleToggle = (index: number) => {
         const newExpandedMessages = [...expandedMessages];
@@ -69,71 +32,402 @@ const Activities = () => {
         setExpandedMessages(newExpandedMessages);
     };
 
+    const handleActivityData = async () => {
+        const ticketId = ticketID;
+        const res = await getActivityData(ticketId);
+        setActivities(res.data);
+    };
+
+    useEffect(() => {
+        handleActivityData();
+    }, [ticketID, tickets, reminders, callRescheduler, estimates]);
+
+    const handleCheckKey = (key: string) => {
+        console.log(key.split('_')[0]);
+        return key.split('_')[0];
+    };
+
+    const extractDateTime = (message: string): string | null => {
+        const regex = /on (.*? \d{2}:\d{2}:\d{2} GMT[+-]\d{4} \(.*?\))/;
+        const match = message.match(regex);
+        return match ? match[1] : null;
+    };
+
     return (
         <div className={!isAuditor ? styles.activity : styles.auditActivity}>
-            {messages.map((item, index) => (
-                <div key={item.id}>
-                    <div
+            {Object.entries(activities).map(([key, value], index) => (
+                <div key={key}>
+
+                    {(handleCheckKey(key) !== 'ticketid' && handleCheckKey(key) !== '') && <div
                         className={styles.accordionTypeheader}
                         onClick={() => handleToggle(index)}
                     >
-                        <span className={styles.accordionTypeTime}>{item.time}</span>
+                        <span className={styles.accordionTypeTime}>{'26/11/2008'}</span>
                         <img src={expandedMessages[index] ? ArrowDown : ArrowUp} alt="" />
-                    </div>
-                    <div
-                        style={
-                            expandedMessages[index]
-                                ? {
-                                    display: 'flex',
-                                    height: 'auto',
-                                    // display: 'block',
-                                    padding: '1rem 0 1rem 2rem',
-                                    marginLeft: '2rem',
-                                    borderLeft: '1px solid #d4dbe5'
-                                }
-                                : {
-                                    height: 0,
-                                    display: 'none',
-                                    marginLeft: 60
-                                }
-                        }
-                    >
-                        <img src={smsIcon} alt="" style={{ marginRight: 4 }} />
-                        <div className={styles.content}>
-                            {item.content}
-                            <div className={styles.time}>
-                                {item.time}
+                    </div>}
+                    {handleCheckKey(key) === 'ticketcreated' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.otherContent}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
                             </div>
                         </div>
-                    </div>
-                    <div
-                        style={
-                            expandedMessages[index]
-                                ? {
-                                    display: 'flex',
-                                    justifyContent: 'end',
-                                    height: 'auto',
-                                    // display: 'block',
-                                    padding: '1rem 0 1rem 2rem',
-                                    marginLeft: '2rem',
-                                    borderLeft: '1px solid #d4dbe5'
-                                }
-                                : {
-                                    height: 0,
-                                    display: 'none',
-                                    marginLeft: 60
-                                }
-                        }
-                    >
-                        <div className={styles.content}>
-                            {item.content}
-                            <div className={styles.time}>
-                                {item.time}
+                    ) : handleCheckKey(key) === 'WhatappSend' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={smsIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.content}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
                             </div>
                         </div>
-                        <img src={smsIcon} alt="" style={{ marginLeft: 4 }} />
-                    </div>
-                    <div className={expandedMessages[index] ? "" : styles.forSpacingDiv}></div>
+                    ) : handleCheckKey(key) === 'Probability' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.otherContent}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : handleCheckKey(key) === 'SkipEstimate' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.otherContent}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : handleCheckKey(key) === 'changedSubStage' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.otherContent}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : handleCheckKey(key) === 'Service' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.otherContent}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : handleCheckKey(key) === 'OutboundCall' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={smsIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.content}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : handleCheckKey(key) === 'note' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={smsIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.content}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : handleCheckKey(key) === 'assingne' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.otherContent}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : handleCheckKey(key) === 'Estimate' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.otherContent}>{value}</div>
+                        </div>
+                    ) : handleCheckKey(key) === 'ticketUpdated' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.otherContent}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : handleCheckKey(key) === 'Service' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.otherContent}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : handleCheckKey(key) === 'reminder' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.otherContent}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : handleCheckKey(key) === 'Rescheduler' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.otherContent}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : handleCheckKey(key) === 'Document' ? (
+                        <div
+                            style={
+                                expandedMessages[index]
+                                    ? {
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }
+                                    : {
+                                        height: 0,
+                                        display: 'none',
+                                        marginLeft: 60
+                                    }
+                            }
+                        >
+                            <img src={smsIcon} alt="" style={{ marginRight: 4 }} />
+                            <div className={styles.content}>
+                                {value}
+                                <div className={styles.time}>{extractDateTime(value)}</div>
+                            </div>
+                        </div>
+                    ) : (
+                        <></>
+                    )}
+                    <div
+                        className={expandedMessages[index] ? '' : styles.forSpacingDiv}
+                    ></div>
                 </div>
             ))}
         </div>

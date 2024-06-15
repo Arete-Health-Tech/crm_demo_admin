@@ -59,12 +59,12 @@ export default function ResponsiveDrawer(props: Props) {
         {
           title: 'Doctors',
           icon: <GroupsIcon />,
-          link: '/department/doctors'
+          link: '/doctors'
         },
         {
           title: 'Wards',
           icon: <LocalHospitalIcon />,
-          link: '/department/wards'
+          link: '/wards'
         }
       ]
     },
@@ -104,17 +104,17 @@ export default function ResponsiveDrawer(props: Props) {
         {
           title: 'Add Node Replies',
           icon: <QuickreplyOutlined />,
-          link: '/flow/node-replies'
+          link: '/node-replies'
         },
         {
           title: 'Add Node Lists',
           icon: <FormatListNumberedOutlined />,
-          link: '/flow/node-lists'
+          link: '/node-lists'
         },
         {
           title: 'Node Connector',
           icon: <CloudSyncOutlined />,
-          link: '/flow/connector'
+          link: '/connector'
         }
       ]
     },

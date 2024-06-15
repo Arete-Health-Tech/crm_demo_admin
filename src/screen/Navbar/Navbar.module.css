@@ -61,3 +61,18 @@ button.MuiButtonBase-root.MuiButton-root.MuiButton-text.MuiButton-textPrimary.Mu
 .css-2modrb-MuiTypography-root {
   padding-left: 50px;
 }
+.navbarItem{
+  height: 74vh;
+  overflow: scroll;
+}
+.navbarItem::-webkit-scrollbar {
+  width: 5px; /* width of the entire scrollbar */
+}
+/* .navbarItem::-webkit-scrollbar-track { */
+/* background: whitesmoke;  */
+/* color of the tracking area */
+/* } */
+.navbarItem::-webkit-scrollbar-thumb {
+  background-color: rgb(163, 165, 167); /* color of the scroll thumb */
+  border-radius: 20px; /* roundness of the scroll thumb */
+}

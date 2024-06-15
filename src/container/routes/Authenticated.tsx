@@ -38,18 +38,17 @@ const Authenticated = (props: Props) => {
               <Route index element={<Dashboard />} />
               <Route path="department" element={<DepartmentLayout />}>
                 <Route index element={<Department />} />
-                <Route path="doctors" element={<Doctor />} />
-                <Route path="wards" element={<Wards />} />
               </Route>
+              <Route path="doctors" element={<Doctor />} />
+              <Route path="wards" element={<Wards />} />
               <Route path="services" element={<Services />} />
               <Route path="scripts" element={<Script />} />
               <Route path="tags" element={<Tags />} />
               <Route path="stages" element={<Stage />} />
-              <Route path="flow" element={<Flow />}>
-                <Route path="connector" element={<NodeConnector />} />
-                <Route path="node-replies" element={<NodeReplies />} />
-                <Route path="node-lists" element={<NodeList />} />
-              </Route>
+              <Route path="flow" element={<Flow />} />
+              <Route path="connector" element={<NodeConnector />} />
+              <Route path="node-replies" element={<NodeReplies />} />
+              <Route path="node-lists" element={<NodeList />} />
             </Route>
             <Route path="ticket" element={<TicketLayout />}>
               {/* <Route path=":ticketID" element={<SingleTicketDetails />} /> */}

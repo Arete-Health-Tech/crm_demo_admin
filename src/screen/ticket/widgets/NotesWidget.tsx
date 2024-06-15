@@ -114,6 +114,7 @@ const NotesWidget = (props: Props) => {
     const noteId = { ticketId: notesClickedData._id };
     try {
       await deleteNotes(noteId);
+      setDeleteModal(false)
     } catch (error) {
       toast.error("something went wrong Please try again later")
     }
@@ -134,7 +135,6 @@ const NotesWidget = (props: Props) => {
     setNote('');
     setNotesModal(false);
   }
-
   console.log(note);
 
   useEffect(() => {
@@ -178,6 +178,7 @@ const NotesWidget = (props: Props) => {
                   key={note._id}
                   display={'flex'}
                   padding={'0rem 1rem 0rem 1rem'}
+                  height={'14vh'}
                 >
                   <Box className={styles.noteIcon}>
                     <img src={NotesIcon} alt="" />
@@ -293,7 +294,7 @@ const NotesWidget = (props: Props) => {
               </div>}
             </Box>
             <Box className={styles.ClickedNoteText}>
-              <Box>{ReactHtmlParser(notesClickedData.text)}</Box>
+              <Box className={styles.insideNoteText}>{ReactHtmlParser(notesClickedData.text)}</Box>
               <Box className={styles.notesDate}>
                 {dayjs(notesClickedData.createdAt).format(
                   'DD MMM YYYY hh:mm A'

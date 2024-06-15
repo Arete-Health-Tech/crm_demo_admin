@@ -81,9 +81,22 @@ const CustomModal = () => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
     setCurrentTicket(fetchTicket);
   }, [])
+  useEffect(() => {
+    if (currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) {
+      setSecondOpinion(prevState => ({
+        ...prevState,
+        type: currentTicket?.opinion[0]?.type,
+        hospital: currentTicket?.opinion[0]?.hospital,
+        doctor: currentTicket?.opinion[0]?.doctor,
+        additionalInfo: currentTicket?.opinion[0]?.additionalInfo
+      }))
+      setChallengeSelected(currentTicket?.opinion[0]?.challengeSelected
+      )
+    }
+  }, [currentTicket])
 
 
-  console.log({ challengeSelected })
+  console.log({ currentTicket })
 
   const startTimer = async () => {
     const returnedData = await callAgent(currentTicket?.consumer[0]?.phone)
@@ -235,13 +248,13 @@ const CustomModal = () => {
     'Financial constraints'
   ];
   const handleChallenge = (challenges) => {
-    if (challengeSelected.includes(challenges)) {
-      const filteredData = challengeSelected.filter(
+    if (challengeSelected?.includes(challenges)) {
+      const filteredData = challengeSelected?.filter(
         (challenge) => challenge !== challenges
       );
       setChallengeSelected(filteredData);
     } else {
-      setChallengeSelected((prevChallenges) => [...prevChallenges, challenges]);
+      setChallengeSelected((prevChallenges) => (prevChallenges ? [...prevChallenges, challenges] : [challenges]));
     }
   };
 
@@ -366,7 +379,7 @@ const CustomModal = () => {
           }
         }}
         anchor="right"
-        open={showForm}
+        open={showForm}//showForm
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
       >
@@ -398,7 +411,7 @@ const CustomModal = () => {
                 className="call-modal-title"
                 sx={{ fontSize: '18px !important' }}
               >
-                Call with Himanshu Singh Kalkat
+                Call with {currentTicket?.consumer[0]?.firstName} {currentTicket?.consumer[0]?.lastName}
               </Stack>
             </Stack>
             <Box
@@ -492,7 +505,11 @@ const CustomModal = () => {
                         >
                           <FormControlLabel
                             value="considering"
-                            control={<Radio />}
+                            control={
+                              <Radio
+                                checked={secondOpinion.type === "Considering Consultation"}
+                              />
+                            }
                             label="Considering Consultation"
                             onClick={() => setSecondOpinion(prevState => ({
                               ...prevState,
@@ -501,11 +518,28 @@ const CustomModal = () => {
                           />
                           < FormControlLabel
                             value="consulted"
-                            control={<Radio />}
+                            control={
+                              <Radio
+                                checked={secondOpinion.type === "consulted"}
+                              />
+                            }
                             label="Consulted"
                             onClick={() => setSecondOpinion(prevState => ({
                               ...prevState,
                               type: "consulted"
+                            }))}
+                          />
+                          < FormControlLabel
+                            value="we are second opinon"
+                            control={
+                              <Radio
+                                checked={secondOpinion.type === "we are second opinon"}
+                              />
+                            }
+                            label="we are second opinon"
+                            onClick={() => setSecondOpinion(prevState => ({
+                              ...prevState,
+                              type: "we are second opinon"
                             }))}
                           />
                         </RadioGroup>
@@ -577,7 +611,7 @@ const CustomModal = () => {
                             label={challenge}
                             onDelete={() => handleChallenge(challenge)}
                             deleteIcon={
-                              challengeSelected.includes(challenge) ? (
+                              challengeSelected && challengeSelected?.includes(challenge) ? (
                                 <div style={{ backgroundColor: 'white', padding: '5px', borderRadius: '50%' }}>
                                   <img src={CloseModalIcon1} alt="" />
                                 </div>
@@ -588,7 +622,7 @@ const CustomModal = () => {
                               )
                             }
                             style={{
-                              backgroundColor: challengeSelected.includes(challenge)
+                              backgroundColor: challengeSelected && challengeSelected.includes(challenge)
                                 ? '#DAE8FF'
                                 : '#F6F7F9',
                               fontSize: '0.875rem',

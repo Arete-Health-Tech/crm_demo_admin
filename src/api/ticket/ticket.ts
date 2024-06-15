@@ -291,3 +291,8 @@ export const setReminderCompleted = async (taskData: object) => {
   const data = await apiClient.put(`/task/updateTaskReminder`, taskData);
   return Promise.resolve(data);
 };
+
+export const getActivityData = async (ticketId: string | undefined) => {
+  const data = await apiClient.get(`/activity/getActivity/${ticketId}`);
+  return Promise.resolve(data);
+};

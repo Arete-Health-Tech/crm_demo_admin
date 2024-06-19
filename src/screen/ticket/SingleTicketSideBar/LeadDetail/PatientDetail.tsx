@@ -126,7 +126,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 ...prevData,
                 uhid: `${fetchTicket?.consumer?.[0]?.uid}`,
                 name: `${fetchTicket?.consumer?.[0]?.firstName ?? ''} ${fetchTicket?.consumer?.[0]?.lastName ?? ''}`,
-                age: `${fetchTicket?.consumer?.[0]?.age}`,
+                age: `${fetchTicket?.consumer?.[0]?.age && fetchTicket?.consumer?.[0]?.age}`,
                 gender: (fetchTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (fetchTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
                 doctor: `${fetchTicket?.prescription?.[0]?.doctor}`,
                 department: `${fetchTicket?.prescription[0]?.departments[0]}`

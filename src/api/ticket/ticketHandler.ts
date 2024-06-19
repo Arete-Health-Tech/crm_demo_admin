@@ -17,7 +17,8 @@ import {
   getAllRescheduler,
   createTimer,
   getPharmacyTickets,
-  getAllTaskCount
+  getAllTaskCount,
+  getAuditTickets
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -74,6 +75,33 @@ export const getTicketHandler = async (
   setTickets(sortedTickets);
   setLoaderOn(false);
 };
+
+export const getAuditTicketsHandler = async () => {
+  const {
+    setTickets,
+    setTicketCount,
+    setTicketCache,
+    ticketCache,
+    setEmptyDataText,
+    setDownloadTickets,
+    setLoaderOn
+  } = useTicketStore.getState();
+  const data = await getAuditTickets();
+  console.log(data, "auditData");
+  const sortedTickets = data.data.tickets;
+  const count = data.data.count;
+
+  if (sortedTickets.length < 1) {
+    setEmptyDataText('No Data Found');
+  } else {
+    setEmptyDataText('');
+  }
+
+  setTicketCount(count);
+  setTickets(sortedTickets);
+  setLoaderOn(false);
+};
+
 export const customTicketHandler = async (
   name: string,
   pageNumber: number = 1,
@@ -301,6 +329,10 @@ export const getAllTaskCountHandler = async () => {
   const allTaskCount = await getAllTaskCount();
   setAllTaskCount(allTaskCount);
 };
+
+
+
+
 
 export const createTimerHandler = async (
   timerData: iTimer,

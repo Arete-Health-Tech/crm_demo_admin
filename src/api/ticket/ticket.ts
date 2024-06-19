@@ -16,7 +16,8 @@ export const getTicket = async (
   fetchUpdated: boolean = false,
   phone?: any,
   won?: any,
-  lose?: any
+  lose?: any,
+
 ) => {
   const params = new URLSearchParams(selectedFilters).toString();
   // const timestamp = new Date().getTime();
@@ -296,3 +297,10 @@ export const getActivityData = async (ticketId: string | undefined) => {
   const data = await apiClient.get(`/activity/getActivity/${ticketId}`);
   return Promise.resolve(data);
 };
+
+export const getAuditTickets = async () => {
+  const data = await apiClient.get(`/ticket/getAuditComments`);
+  return Promise.resolve(data);
+};
+
+

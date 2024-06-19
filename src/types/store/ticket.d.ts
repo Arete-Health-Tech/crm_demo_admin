@@ -109,6 +109,7 @@ export interface iAuditorcomment {
   ratings: number;
   ticketid: string;
   result: string;
+  Date?: Date | null | undefined;
 }
 
 export interface iTicket {
@@ -226,6 +227,8 @@ export interface iTicketStore {
   setIsAuditor: (isAuditor: boolean) => void;
   isSwitchView: boolean;
   setIsSwitchView: (isSwitchView: boolean) => void;
+  isAuditorFilterOn: boolean;
+  setIsAuditorFilterOn: (isAuditorFilterOn: boolean) => void;
   isEstimateUpload: boolean;
   setIsEstimateUpload: (isEstimateUpload: boolean) => void;
   allTaskCount: iTaskCount[];

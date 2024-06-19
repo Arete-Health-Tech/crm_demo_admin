@@ -88,6 +88,8 @@ import { UNDEFINED } from '../../../constantUtils/constant';
 import { customTicketHandler } from '../../../api/ticket/ticketHandler';
 import { getTicket } from '../../../api/ticket/ticket';
 import useReprentativeStore from '../../../store/representative';
+import { format } from 'date-fns';
+
 interface iConsumer {
     uid: string;
     firstName: string;
@@ -641,6 +643,11 @@ const AuditSinglePageDetail = (props: Props) => {
         }, []);
     };
 
+
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return format(date, 'dd MMMM yyyy hh:mm a');
+    };
     // console.log(handleAssigne(currentTicket?.assigned), "Assigiii data");
 
     return (
@@ -1159,7 +1166,7 @@ const AuditSinglePageDetail = (props: Props) => {
                                                 </Box>
                                                 <Box className={styles.problemBottomBox}>
                                                     <Box className={styles.problemBottomDate}>
-                                                        12 April 2024 09:30AM
+                                                        {item?.Date ? formatDate(item.Date) : 'No date available'}
                                                     </Box>
                                                     {item?.result && <Box
                                                         // className={styles.problemBottomChip}

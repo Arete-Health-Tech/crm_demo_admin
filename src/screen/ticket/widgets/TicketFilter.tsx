@@ -33,11 +33,13 @@ import {
 } from '../ticketStateReducers/filter';
 import { filterActions } from '../ticketStateReducers/actions/filterAction';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
-import { getTicketHandler } from '../../../api/ticket/ticketHandler';
+import { getAuditTicketsHandler, getTicketHandler } from '../../../api/ticket/ticketHandler';
 import useUserStore from '../../../store/userStore';
 import { apiClient } from '../../../api/apiClient';
 import { validateTicket } from '../../../api/ticket/ticket';
 import '../singleTicket.css';
+import AuditFilterIcon from "../../../assets/commentHeader.svg";
+import { Tooltip, TooltipProps, Zoom, tooltipClasses } from '@mui/material';
 
 const drawerWidth = 450;
 export const ticketFilterCount = (
@@ -82,6 +84,29 @@ const TicketFilter = (props: {
       backgroundColor: "#0566FF"
     }
   }));
+  const ClearBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      right: -0,
+      top: 7,
+      // border: `2px solid ${theme.palette.background.paper}`,
+      padding: '0 4px',
+      color: "#FFFFFF",
+      backgroundColor: "red"
+    }
+  }));
+  const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+    <Tooltip {...props} arrow classes={{ popper: className }} />
+  ))(({ theme }) => ({
+    [`& .${tooltipClasses.tooltip}`]: {
+      backgroundColor: '#0566FF',
+      color: '#ffffff',
+      fontSize: 10,
+      fontFamily: `"Outfit",sans-serif`
+    },
+    [`& .${tooltipClasses.arrow}`]: {
+      color: '#0566FF',
+    }
+  }));
 
   const initialFilters: ticketFilterTypes = {
     stageList: [],
@@ -93,7 +118,7 @@ const TicketFilter = (props: {
     status: []
   };
 
-  const { setFilterTickets, setPageNumber, isSwitchView, } = useTicketStore();
+  const { setFilterTickets, setPageNumber, isSwitchView, isAuditorFilterOn, setIsAuditorFilterOn } = useTicketStore();
 
   // const [ticketFilters, setTicketFilters] = useState<iTicketFilter>({
   //   stageList: [],
@@ -383,18 +408,62 @@ const TicketFilter = (props: {
     setResult(newValue);
   };
 
+  // const [isAuditorFilterOn, setIsAuditorFilterOn] = useState(false);
+  const handleAuditorFilter = async () => {
+    await getAuditTicketsHandler();
+    setIsAuditorFilterOn(true);
+  }
+  const handleClearAuditorFilter = async () => {
+
+    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    setIsAuditorFilterOn(false);
+  }
+
 
   return (
     <Box>
-      <IconButton onClick={handleFilterOpen}>
-        <StyledBadge
-          invisible={filterCount <= 0}
-          badgeContent={filterCount}
-        // color="primary"
-        >
-          <FilterList sx={{ color: "#080F1A" }} />
-        </StyledBadge>
-      </IconButton>
+      <Stack display={"flex"} flexDirection={"row"} gap={"10px"}>
+        <Stack className="AuditorFilterIcon">
+          {
+            isAuditorFilterOn ? (
+              <LightTooltip
+                title="Clear Audit Filter"
+                disableInteractive
+                placement="top"
+                TransitionComponent={Zoom}
+              >
+                <ClearBadge
+                  badgeContent={"x"}
+                  color="error"
+                >
+                  <img src={AuditFilterIcon} alt="Audit Filter" onClick={handleClearAuditorFilter} />
+                </ClearBadge>
+              </LightTooltip>
+            )
+              :
+              (
+                <LightTooltip
+                  title="Apply Audit Filter"
+                  disableInteractive
+                  placement="top"
+                  TransitionComponent={Zoom}
+                >
+                  <img src={AuditFilterIcon} onClick={handleAuditorFilter} alt="Audit Filter" />
+                </LightTooltip>)
+          }
+
+        </Stack>
+        <IconButton onClick={handleFilterOpen}>
+          <StyledBadge
+            invisible={filterCount <= 0}
+            badgeContent={filterCount}
+          // color="primary"
+          >
+            <FilterList sx={{ color: "#080F1A" }} />
+          </StyledBadge>
+        </IconButton>
+
+      </Stack>
 
       <Drawer
         open={isFilterOpen}

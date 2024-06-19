@@ -12,15 +12,18 @@ import EmptyStarIcon from '../../../assets/EmptyStar.svg'
 import NotFoundIcon from '../../../assets/NotFoundTask.svg';
 import { iTicket } from "../../../types/store/ticket";
 import { useParams } from "react-router-dom";
-import { getTicketHandler } from "../../../api/ticket/ticketHandler";
+import { getAuditTicketsHandler, getTicketHandler } from "../../../api/ticket/ticketHandler";
 import { UNDEFINED } from "../../../constantUtils/constant";
+import { format } from 'date-fns';
 
 const TaskBar = () => {
 
     const { ticketID } = useParams();
     const {
         tickets,
-        filterTickets
+        filterTickets,
+        isAuditorFilterOn,
+        setIsAuditorFilterOn
     } = useTicketStore();
     const { isModalOpenCall, setIsModalOpenCall } = useTicketStore();
     const [anchorEl, setAnchorEl] = useState(null);
@@ -118,9 +121,18 @@ const TaskBar = () => {
     }
 
     const getTicketAuditorComments = async () => {
-        await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+        if (!isAuditorFilterOn) {
+            await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+        } else {
+            await getAuditTicketsHandler();
+        }
+
     }
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return format(date, 'dd MMMM yyyy hh:mm a');
+    };
     const [rating, setRating] = useState(0)
 
     return (
@@ -236,7 +248,7 @@ const TaskBar = () => {
                                             </Box>}
                                             <Box className="problemBottomBox">
                                                 <Box className="problemBottomDate">
-                                                    12 April 2024 09:30AM
+                                                    {item?.Date ? formatDate(item.Date) : 'No date available'}
                                                 </Box>
                                                 {item?.result && <Box
                                                     // className={styles.problemBottomChip}

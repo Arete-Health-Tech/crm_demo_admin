@@ -2230,3 +2230,11 @@
   align-items: flex-start;
   gap: var(--4px, 4px);
 }
+
+.AuditorFilterIcon {
+  margin-top: 10px;
+  margin-right: -10px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}

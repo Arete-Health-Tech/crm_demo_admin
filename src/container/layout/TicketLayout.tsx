@@ -756,7 +756,7 @@ const Ticket = () => {
                     onKeyDown={handleSearchKeyPress}
                   />
                 </Stack>
-                <Stack
+                {/* <Stack
                   sx={{
                     marginTop: '10px',
                     marginRight: '-10px',
@@ -765,7 +765,7 @@ const Ticket = () => {
                   }}
                 >
                   <img src={AuditFilterIcon} alt="Audit Filter" />
-                </Stack>
+                </Stack> */}
                 <Stack marginRight={'-10px'}>
                   <TicketFilter setPage={setPage} />
                 </Stack>

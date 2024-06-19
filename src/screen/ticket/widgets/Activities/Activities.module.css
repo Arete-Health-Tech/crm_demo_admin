@@ -95,7 +95,7 @@
 }
 .otherContent {
   display: flex;
-  max-width: 22.5rem;
+  max-width: 40rem;
   padding: 0.5rem;
   flex-direction: column;
   justify-content: center;
@@ -103,7 +103,7 @@
   gap: 0.25rem;
   border-radius: 0.5rem;
   color: #080f1a;
-
+  word-break: break-all;
   /* Body/Medium */
   font-family: Outfit, sans-serif;
   font-size: 0.875rem;
@@ -121,4 +121,35 @@
   font-weight: 400;
   line-height: 150%;
   /* 0.9375rem */
+}
+.notestextArea {
+  display: flex;
+  padding: 0.5rem;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1 0 0;
+  border-radius: 0.5rem;
+  border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
+  background: var(--Icons-White, #fff);
+  margin: 0 0 0.5rem 0.1rem;
+}
+.callContent {
+  display: flex;
+  max-width: 22.5rem;
+  padding: 0.5rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 0.25rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d4dbe5;
+  color: #080f1a;
+
+  /* Body/Medium */
+  font-family: Outfit, sans-serif;
+  font-size: 0.875rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+  /* 1.3125rem */
 }

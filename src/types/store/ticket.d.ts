@@ -137,6 +137,7 @@ export interface iTicket {
   phoneData: phoneData[];
   opinion: opinionData[];
   Probability: number;
+  status: string;
 }
 
 export interface iPharmcyTicket {

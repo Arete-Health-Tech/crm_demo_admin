@@ -57,6 +57,8 @@ const TicketCard = (props: Props) => {
     child: []
   });
 
+  console.log(props)
+
   const { tickets, filterTickets, setIsAuditor, allTaskCount, viewEstimates,
     setViewEstimates, isEstimateUpload, setIsEstimateUpload } = useTicketStore();
   const navigate = useNavigate();
@@ -319,11 +321,11 @@ const TicketCard = (props: Props) => {
             </>)
           }
 
-          <Stack sx={{
+          {props?.patientData.status === "dnp" && <Stack sx={{
             width: "18px",
             height: "18px"
           }}
-          ><img src={DnpIcon} /></Stack>
+          ><img src={DnpIcon} /></Stack>}
           {/* <Stack><img src={DNP} /></Stack> */}
 
         </Stack>
@@ -473,9 +475,9 @@ const TicketCard = (props: Props) => {
           {calculatedDate(props.patientData?.date)}
         </Stack>
         <Stack sx={{ display: "flex", flexDirection: "row !important", gap: "5px" }}>
-          <Stack className='task-pending'><img src={NotifyAudit} /></Stack>
-          <Stack className='task-pending'>{taskPendingCount} Tasks Pending </Stack>
-          <Stack className='ticket-card-notification'>2</Stack>
+          {/* <Stack className='task-pending'><img src={NotifyAudit} alt="" /></Stack> */}
+          {taskPendingCount > 0 && <Stack className='task-pending'>{taskPendingCount} Tasks Pending </Stack>}
+          {/* <Stack className='ticket-card-notification'>2</Stack> */}
         </Stack>
       </Stack>
 

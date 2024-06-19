@@ -4,9 +4,14 @@ import ArrowUp from '../../../../assets/ArrowUp.svg';
 import ArrowDown from '../../../../assets/ArrowDown.svg';
 import activityIcon from '../../../../assets/activityIcon.svg';
 import smsIcon from '../../../../assets/smsIcon.svg';
+import whtsappIcon from '../../../../assets/whtsappIcon.svg';
+import NotesIcon from '../../../../assets/NotesIcon.svg';
+import phoneIcon from '../../../../assets/phoneIcon.svg';
 import useTicketStore from '../../../../store/ticketStore';
 import { useParams } from 'react-router-dom';
 import { getActivityData } from '../../../../api/ticket/ticket';
+import ReactHtmlParser from 'html-react-parser';
+import { Box, Typography } from '@mui/material';
 
 type ActivitiesType = Record<string, Record<string, string>>;
 
@@ -49,10 +54,21 @@ const Activities = () => {
         return match ? match[1] : null;
     };
 
+    const hanleEstimateText = (value: string) => {
+        const urlMatch = value.match(/href="([^"]*)"/);
+        const url = urlMatch ? urlMatch[1] : '';
+
+        // Remove the HTML tags
+        const textWithoutTags = value.replace(/<\/?a[^>]*>/g, '');
+
+        // Replace the URL in the original text with the extracted URL
+        return textWithoutTags.replace(/https:\/\/[^ ]*/, url);
+    }
+
     return (
         <div className={!isAuditor ? styles.activity : styles.auditActivity}>
-            {activities !== null && Object.entries(activities).map(([date, messages], index) => (
-                <div key={date}>
+            {activities !== null ? Object.entries(activities).reverse().map(([date, messages], index) => (
+                <div key={date} style={{ marginTop: 5 }}>
                     {(handleCheckKey(date) !== 'ticketid' && handleCheckKey(date) !== '') && (
                         <div
                             className={styles.accordionTypeheader}
@@ -62,7 +78,7 @@ const Activities = () => {
                             <img src={expandedMessages[index] ? ArrowDown : ArrowUp} alt="" />
                         </div>
                     )}
-                    {expandedMessages[index] && Object.entries(messages).map(([key, value]) => (
+                    {expandedMessages[index] && Object.entries(messages).reverse().map(([key, value]) => (
                         <div key={key}>
                             {handleCheckKey(key) === 'ticketcreated' && (
                                 <div
@@ -82,21 +98,49 @@ const Activities = () => {
                                 </div>
                             )}
                             {handleCheckKey(key) === 'WhatappSend' && (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }}
-                                >
-                                    <img src={smsIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.content}>
-                                        {value}
-                                        <div className={styles.time}>{extractDateTime(value)}</div>
-                                    </div>
-                                </div>
+                                // <div
+                                //     style={{
+                                //         display: 'flex',
+                                //         height: 'auto',
+                                //         padding: '1rem 0 1rem 2rem',
+                                //         marginLeft: '2rem',
+                                //         borderLeft: '1px solid #d4dbe5'
+                                //     }}
+                                // >
+                                //     <img src={smsIcon} alt="" style={{ marginRight: 4 }} />
+                                //     <div className={styles.content}>
+                                //         {value}
+                                //         <div className={styles.time}>{extractDateTime(value)}</div>
+                                //     </div>
+                                // </div>
+                                <Box display={'flex'} height={'auto'} padding={"1rem 0 1rem 0rem"} marginLeft={'2rem'} borderLeft={'1px solid #d4dbe5'}>
+                                    <img src={whtsappIcon} alt="" style={{ marginLeft: 22, marginTop: '-1.5rem' }} />
+                                    <Box
+                                        border={'1px solid #25D366'}
+                                        boxShadow=" 0 1px .5px rgba(11,20,26,.13)"
+                                        my={2}
+                                        marginLeft={0.5}
+                                        maxWidth="50%"
+                                        p={1}
+                                        bgcolor="var(--Communication-Color-Whatsapp-Bg, #DEF8E8)"
+                                        borderRadius="10px"
+                                    >
+                                        {value && (
+                                            <Typography
+                                                color="var(--Text-Black, #080F1A)"
+                                                fontFamily={'Outfit,sans-serif'}
+                                                fontSize={'0.875rem'}
+                                                fontWeight={400}
+                                            >
+                                                {value}
+                                            </Typography>
+                                        )}
+                                        {/* <div className={styles.content}> */}
+                                            {/* {value} */}
+                                            <div className={styles.time}>{extractDateTime(value)}</div>
+                                        {/* </div> */}
+                                    </Box>
+                                </Box>
                             )}
                             {handleCheckKey(key) === 'Probability' && (
                                 <div
@@ -176,8 +220,8 @@ const Activities = () => {
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
-                                    <img src={smsIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.content}>
+                                    <img src={phoneIcon} alt="" style={{ marginRight: 4 }} />
+                                    <div className={styles.callContent}>
                                         {value}
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
@@ -189,13 +233,14 @@ const Activities = () => {
                                         display: 'flex',
                                         height: 'auto',
                                         padding: '1rem 0 1rem 2rem',
-                                        marginLeft: '2rem',
+                                        marginLeft: '1.8rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
-                                    <img src={smsIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.content}>
-                                        {value}
+                                    <img src={NotesIcon} alt="" style={{ marginRight: 4 }} />
+                                    <div className={styles.notestextArea}>
+                                        {ReactHtmlParser(value)}
+                                        {/* {value} */}
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
                                 </div>
@@ -217,10 +262,62 @@ const Activities = () => {
                                     </div>
                                 </div>
                             )}
+                            {handleCheckKey(key) === 'Estimate' && (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }}
+                                >
+                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                                    <div className={styles.otherContent}>
+                                        {hanleEstimateText(value)}
+                                        <div className={styles.time}>{extractDateTime(value)}</div>
+                                    </div>
+                                </div>
+                            )}
+                            {handleCheckKey(key) === 'reminder' && (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }}
+                                >
+                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                                    <div className={styles.otherContent}>
+                                        {value}
+                                        <div className={styles.time}>{extractDateTime(value)}</div>
+                                    </div>
+                                </div>
+                            )}
+                            {handleCheckKey(key) === 'Rescheduler' && (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 1rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }}
+                                >
+                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                                    <div className={styles.otherContent}>
+                                        {value}
+                                        <div className={styles.time}>{extractDateTime(value)}</div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
-            ))}
+            ))
+                : "No Activity available"}
         </div>
     );
 };

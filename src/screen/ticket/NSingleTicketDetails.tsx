@@ -1232,25 +1232,26 @@ const NSingleTicketDetails = (props: Props) => {
                                         }
                                     />
                                     <Tab
-                                        label={
-                                            <Badge
-                                                badgeContent={2}
-                                                sx={{
-                                                    '& .MuiBadge-badge': {
-                                                        color: '#FFF',
-                                                        backgroundColor: '#F94839',
-                                                        margin: '-3px',
-                                                        fontSize: '9px',
+                                        // label={
+                                        //     <Badge
+                                        //         badgeContent={2}
+                                        //         sx={{
+                                        //             '& .MuiBadge-badge': {
+                                        //                 color: '#FFF',
+                                        //                 backgroundColor: '#F94839',
+                                        //                 margin: '-3px',
+                                        //                 fontSize: '9px',
 
-                                                        height: '20px',
-                                                        // borderRadius: '80%',
-                                                        padding: -8
-                                                    }
-                                                }}
-                                            >
-                                                Whatsapp
-                                            </Badge>
-                                        }
+                                        //                 height: '20px',
+                                        //                 // borderRadius: '80%',
+                                        //                 padding: -8
+                                        //             }
+                                        //         }}
+                                        //     >
+                                        //         Whatsapp
+                                        //     </Badge>
+                                        // }
+                                        label="Whatsapp"
                                         value="2"
                                         className={
                                             value == '2' ? styles.selectedTab : styles.tabsLabel
@@ -1263,47 +1264,49 @@ const NSingleTicketDetails = (props: Props) => {
                                         value == '3' ? styles.selectedTab : styles.tabsLabel
                                     }
                                 /> */}
-                                    <Tab
-                                        label={
-                                            <Badge
-                                                badgeContent={8}
-                                                sx={{
-                                                    '& .MuiBadge-badge': {
-                                                        color: '#FFF',
-                                                        backgroundColor: '#F94839',
-                                                        margin: '-3.6px -4.5px',
-                                                        fontSize: '10px'
-                                                    }
-                                                }}
-                                            >
-                                                SMS
-                                            </Badge>
-                                        }
+                                    {/* <Tab
+                                        // label={
+                                        //     <Badge
+                                        //         badgeContent={8}
+                                        //         sx={{
+                                        //             '& .MuiBadge-badge': {
+                                        //                 color: '#FFF',
+                                        //                 backgroundColor: '#F94839',
+                                        //                 margin: '-3.6px -4.5px',
+                                        //                 fontSize: '10px'
+                                        //             }
+                                        //         }}
+                                        //     >
+                                        //         SMS
+                                        //     </Badge>
+                                        // }
+                                        label="SMS"
                                         value="4"
                                         className={
                                             value == '4' ? styles.selectedTab : styles.tabsLabel
                                         }
-                                    />
+                                    /> */}
                                     <Tab
-                                        label={
-                                            <Badge
-                                                badgeContent={4}
-                                                sx={{
-                                                    '& .MuiBadge-badge': {
-                                                        color: '#FFF',
-                                                        backgroundColor: '#F94839',
-                                                        margin: '-3px',
-                                                        fontSize: '9px',
+                                        // label={
+                                        //     <Badge
+                                        //         badgeContent={4}
+                                        //         sx={{
+                                        //             '& .MuiBadge-badge': {
+                                        //                 color: '#FFF',
+                                        //                 backgroundColor: '#F94839',
+                                        //                 margin: '-3px',
+                                        //                 fontSize: '9px',
 
-                                                        height: '20px',
-                                                        // borderRadius: '80%',
-                                                        padding: -8
-                                                    }
-                                                }}
-                                            >
-                                                Phone Calls
-                                            </Badge>
-                                        }
+                                        //                 height: '20px',
+                                        //                 // borderRadius: '80%',
+                                        //                 padding: -8
+                                        //             }
+                                        //         }}
+                                        //     >
+                                        //         Phone Calls
+                                        //     </Badge>
+                                        // }
+                                        label="Phone Calls"
                                         value="5"
                                         className={
                                             value == '5' ? styles.selectedTab : styles.tabsLabel

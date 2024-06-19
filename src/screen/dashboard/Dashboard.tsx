@@ -11,11 +11,12 @@ import useTicketStore from '../../store/ticketStore';
 import { getAllStageCountHandler, getAllTimerStatusHandlerCallCompleted, getAllTimerStatusHandlerDnd, getAllTimerStatusHandlerPending, getAllTimerStatusHandlerRescheduledCall, getAllTimerStatusHandlerTodaysTask, getAllWonAndLossHandler } from '../../api/dashboard/dashboardHandler';
 import { Pie } from 'react-chartjs-2';
 import PieChart from './widgets/PieChart';
+import useServiceStore from '../../store/serviceStore';
 
 type Props = {};
 
 const Dashboard = (props: Props) => {
-
+  const { stages } = useServiceStore();
   const [dnd, setDnd] = useState(0);
   const [pending, setPending] = useState(0);
   const [todaysTask, setTodaysTask] = useState(0);
@@ -124,19 +125,20 @@ const Dashboard = (props: Props) => {
           timerData.ticketsCountByStage.forEach((item) => {
             // Check the stage value of each item and set the corresponding state variable
             switch (item.stage) {
-              case '6494196d698ecd9a9db95e3a':
+              case stages[0]._id:
+                console.log(stages[0], "new lead data")
                 setNewLead(item.count);
                 break;
-              case '649598d9586b137ea9086788':
+              case stages[1]._id:
                 setContacted(item.count);
                 break;
-              case '649ace47bda0ea4d79a1ec38':
+              case stages[2]._id:
                 setWorking(item.count);
                 break;
-              case '649acdbbbda0ea4d79a1ec36':
+              case stages[3]._id:
                 setOrientation(item.count);
                 break;
-              case '649ace20bda0ea4d79a1ec37':
+              case stages[4]._id:
                 setNurturing(item.count);
                 break;
               default:

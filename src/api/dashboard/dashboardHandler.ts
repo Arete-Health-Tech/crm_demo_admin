@@ -47,6 +47,7 @@ export const getAllTimerStatusHandlerRescheduledCall = async () => {
 export const getAllWonAndLossHandler = async () => {
 
   const timers = await getAllWonAndLoss();
+  console.log("nndfd")
   return timers;
 };
 

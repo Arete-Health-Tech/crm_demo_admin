@@ -722,14 +722,14 @@ function SwitchViewTable() {
 
 
           {/* Filter Component */}
-          <Stack sx={{
+          {/* <Stack sx={{
             marginTop: "10px",
             marginRight: '-10px',
             width: "24px",
             height: "24px"
           }}>
             <img src={AuditFilterIcon} alt="Audit Filter" />
-          </Stack>
+          </Stack> */}
           <Stack marginRight={'-10px'}>
             <TicketFilter setPage={setPage} />
           </Stack>

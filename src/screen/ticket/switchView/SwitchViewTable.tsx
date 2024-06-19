@@ -500,6 +500,7 @@ function SwitchViewTable() {
           timerData.ticketsCountByStage.forEach((item) => {
             switch (item.stage) {
               case stages[0]._id:
+                console.log(stages[0], "new lead data")
                 setNewLead(item.count);
                 break;
               case stages[1]._id:
@@ -559,30 +560,6 @@ function SwitchViewTable() {
       color: '#f7c0bb'
     }
   ];
-
-  const patientName = (ticket) => {
-    if (!ticket || !ticket.consumer || ticket.consumer.length === 0) {
-      return '';
-    }
-
-    const firstName = ticket.consumer[0]?.firstName;
-    const lastName = ticket.consumer[0]?.lastName;
-
-    let patientName = '';
-    if (firstName && lastName) {
-      const capitalizedFirstName =
-        firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-      const capitalizedLastName =
-        lastName.charAt(0).toUpperCase() + lastName.slice(1).toLowerCase();
-      patientName = capitalizedFirstName + ' ' + capitalizedLastName;
-    } else if (firstName) {
-      patientName =
-        firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-    }
-
-    return patientName;
-  };
-
   const calculatedDate = (date: any) => {
     const creationDate = new Date(date);
 
@@ -623,12 +600,6 @@ function SwitchViewTable() {
 
       return 'Unknown Stage';
     }
-  }
-
-  const [dates, setDates] = useState([null, null]);
-
-  const handleDateRange = (dates, dateStrings) => {
-    setDates(dateStrings);
   }
 
   const [estimateData, setEstimateData] = useState({});

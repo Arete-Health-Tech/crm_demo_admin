@@ -32,6 +32,7 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
 
 const DownloadAllTickets = (props: Props) => {
   const { doctors, departments, stages, allNotes } = useServiceStore();
+
   const { representative } = useReprentativeStore();
   const { filterTickets } = useTicketStore();
   const [disable, setDisable] = useState(false);
@@ -53,6 +54,33 @@ const DownloadAllTickets = (props: Props) => {
     const foundItems = allNotes.filter(item => item.ticket === id);
     const notesArray = foundItems.map(item => item.text);
     return notesArray.length > 0 ? notesArray : [];
+  };
+  const handleAssigne = (assignees: any) => {
+    if (!Array.isArray(assignees)) {
+      return [];
+    }
+    let result: string[] = [];
+
+    for (let i = 0; i <= assignees.length; i++) {
+      const rep = representative.find(rep => rep._id === assignees[i]);
+      if (rep) {
+        // const initials = `${rep.firstName.charAt(0)}${rep.lastName.charAt(0)}`;
+        const fullName = `${rep.firstName} ${rep.lastName}`;
+        result.push(fullName);
+      }
+    }
+    return result
+
+    // return assignees.reduce((result: fullName: string[], assigneeId: string) => {
+    //     const rep = representative.find(rep => rep._id === assigneeId);
+    //     if (rep) {
+    //         // const initials = `${rep.firstName.charAt(0)}${rep.lastName.charAt(0)}`;
+    //         const fullName = `${rep.firstName} ${rep.lastName}`;
+    //         result.push(fullName );
+    //     }
+    //     console.log(result,"result")
+    //     return result;
+    // }, []);
   };
 
   function subStageName(code: number): string {
@@ -100,7 +128,7 @@ const DownloadAllTickets = (props: Props) => {
           ? ticket.prescription[0].service.name
           : 'No Advised',
         isPharmacy: ticket?.prescription[0]?.isPharmacy ? 'Advised' : 'No Advised',
-        assigned: assigneSetter(ticket.assigned)?.firstName + '' + assigneSetter(ticket.assigned)?.lastName,
+        assigned: handleAssigne(ticket.assigned).join(" "),
         CTScan: ticket?.prescription[0]?.diagnostics.includes('CT-Scan')
           ? 'Yes'
           : 'No',
@@ -123,14 +151,32 @@ const DownloadAllTickets = (props: Props) => {
         ).format('DD/MMM/YYYY , HHMM ')} hrs`,
         prescriptionLink: ticket?.prescription[0]?.image,
         prescriptionLink1: ticket?.prescription[0]?.image1,
-        result: ticket ? (ticket.result === "65991601a62baad220000001" ? "won" : (ticket.result === "65991601a62baad220000002" ? "loss" : null)) : null,
+        Lead_disposition: ticket ? (ticket.result === "65991601a62baad220000001" ? "won" : (ticket.result === "65991601a62baad220000002" ? "loss" : null)) : null,
         pharmacyStatus: ticket?.pharmacyStatus,
         date: ticket?.date,
         subStageName: subStageName(ticket?.subStageCode?.code),
         status: ticket?.status,
-        notes: noteSetter(ticket._id)
+        notes: noteSetter(ticket._id),
+        Second_opinion_hospital: ticket?.opinion[0]?.hospital,
+        Considering_Consultation: ticket?.opinion[0]?.type === "Considering Consultation" ? "Yes" : "No",
+        Consulted: ticket?.opinion[0]?.type === "consulted" ? "Yes" : "No",
+        we_are_second_opinion: ticket?.opinion[0]?.type === "we are second opinon" ? "Yes" : "No",
+        Second_opinion_doctor: ticket?.opinion[0]?.doctor,
+        Second_opinion_add_info: ticket?.opinion[0]?.additionalInfo,
+        Awaiting_test_results: ticket?.opinion[0]?.challengeSelected?.includes("Awaiting test results") ? "Yes" : "No",
+        Awaiting_TPA_approvals: ticket?.opinion[0]?.challengeSelected?.includes('Awaiting TPA approvals') ? 'Yes' : 'No',
+        Bad_Experience: ticket?.opinion[0]?.challengeSelected?.includes('Bad Experience') ? 'Yes' : 'No',
+        Under_MM: ticket?.opinion[0]?.challengeSelected?.includes('Under MM') ? 'Yes' : 'No',
+        Financial_constatints: ticket?.opinion[0]?.challengeSelected?.includes('Financial constatints') ? 'Yes' : 'No',
+        Not_happy_with_doctor: ticket?.opinion[0]?.challengeSelected?.includes('Not happy with doctor') ? 'Yes' : 'No',
+        Lead_Probability: `${ticket?.Probability}%`,
+        Lead_Rating: ticket?.auditorcomment[ticket?.auditorcomment.length - 1]?.ratings,
+        Call_disposition: ticket?.status === "dnp" || ticket?.status === "dnd" || ticket?.status === "CallCompleted" || ticket?.status === "CallRescheduler" ? ticket?.status : "N/A",
+        Call_Recording: ticket?.phoneData[ticket?.phoneData.length - 1]?.time || "Not Contacted yet",
+        Last_Activity_Date: ticket?.lastActivity,
       };
     });
+    // console.log(data," data")
     const csv = Papa.unparse(data);
     const csvBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     FileSaver.saveAs(

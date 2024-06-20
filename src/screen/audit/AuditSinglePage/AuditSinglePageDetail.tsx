@@ -993,19 +993,19 @@ const AuditSinglePageDetail = (props: Props) => {
                                             />
                                             <Tab
                                                 label={
-                                                    <Badge
-                                                        badgeContent={4}
-                                                        sx={{
-                                                            '& .MuiBadge-badge': {
-                                                                color: '#FFF',
-                                                                backgroundColor: '#F94839',
-                                                                margin: '-3px',
-                                                                fontSize: '10px'
-                                                            }
-                                                        }}
-                                                    >
-                                                        Whatsapp
-                                                    </Badge>
+                                                    // <Badge
+                                                    //     badgeContent={4}
+                                                    //     sx={{
+                                                    //         '& .MuiBadge-badge': {
+                                                    //             color: '#FFF',
+                                                    //             backgroundColor: '#F94839',
+                                                    //             margin: '-3px',
+                                                    //             fontSize: '10px'
+                                                    //         }
+                                                    //     }}
+                                                    // >
+                                                    "Whatsapp"
+                                                    // </Badge>
                                                 }
                                                 value="2"
                                                 className={
@@ -1019,7 +1019,7 @@ const AuditSinglePageDetail = (props: Props) => {
                                         value == '3' ? styles.selectedTab : styles.tabsLabel
                                     }
                                 /> */}
-                                            <Tab
+                                            {/* <Tab
                                                 label={
                                                     <Badge
                                                         badgeContent={8}
@@ -1041,22 +1041,22 @@ const AuditSinglePageDetail = (props: Props) => {
                                                 className={
                                                     value == '4' ? styles.selectedTab : styles.tabsLabel
                                                 }
-                                            />
+                                            /> */}
                                             <Tab
                                                 label={
-                                                    <Badge
-                                                        badgeContent={4}
-                                                        sx={{
-                                                            '& .MuiBadge-badge': {
-                                                                color: '#FFF',
-                                                                backgroundColor: '#F94839',
-                                                                margin: '-3px',
-                                                                fontSize: '10px'
-                                                            }
-                                                        }}
-                                                    >
-                                                        Phone Calls
-                                                    </Badge>
+                                                    // <Badge
+                                                    //     badgeContent={4}
+                                                    //     sx={{
+                                                    //         '& .MuiBadge-badge': {
+                                                    //             color: '#FFF',
+                                                    //             backgroundColor: '#F94839',
+                                                    //             margin: '-3px',
+                                                    //             fontSize: '10px'
+                                                    //         }
+                                                    //     }}
+                                                    // >
+                                                    "Phone Calls"
+                                                    // </Badge> 
                                                 }
                                                 value="5"
                                                 className={

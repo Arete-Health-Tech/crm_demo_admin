@@ -1,4 +1,4 @@
-import { Avatar, Box, MenuItem, Pagination, Stack, Tooltip, TooltipProps, Zoom, styled, tooltipClasses } from '@mui/material';
+import { Avatar, Badge, BadgeProps, Box, MenuItem, Pagination, Stack, Tooltip, TooltipProps, Zoom, styled, tooltipClasses } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import ReactPaginate from 'react-paginate';
 import styles from "./audit.module.css";
@@ -20,7 +20,7 @@ import { DatePicker } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import useTicketStore from '../../store/ticketStore';
 import { UNDEFINED } from '../../constantUtils/constant';
-import { customTicketHandler, getTicketHandler } from '../../api/ticket/ticketHandler';
+import { customTicketHandler, getAuditTicketsHandler, getTicketHandler } from '../../api/ticket/ticketHandler';
 import { getAllNotesWithoutTicketId } from '../../api/notes/allNote';
 import { getStagesHandler, getSubStagesHandler } from '../../api/stages/stagesHandler';
 import { getDoctorsHandler } from '../../api/doctor/doctorHandler';
@@ -35,7 +35,7 @@ import useReprentativeStore from '../../store/representative';
 import useServiceStore from '../../store/serviceStore';
 import AuditFilters from './AuditFilters';
 import NotFoundIcon from '../../assets/NotFoundTask.svg';
-
+import AuditFilterIcon from "../../assets/commentHeader.svg";
 
 const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
@@ -69,6 +69,16 @@ const getBackgroundColor = (probability) => {
   return 'grey';
 };
 
+const ClearBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+  '& .MuiBadge-badge': {
+    right: -0,
+    top: 7,
+    // border: `2px solid ${theme.palette.background.paper}`,
+    padding: '0 4px',
+    color: "#FFFFFF",
+    backgroundColor: "red"
+  }
+}));
 
 
 const Audit: React.FC = () => {
@@ -91,6 +101,8 @@ const Audit: React.FC = () => {
     loaderOn,
     pageNumber,
     setPageNumber,
+    isAuditorFilterOn,
+    setIsAuditorFilterOn
   } = useTicketStore();
   const { representative } = useReprentativeStore();
   const redirectTicket = () => {
@@ -336,6 +348,15 @@ const Audit: React.FC = () => {
     }, []);
   };
 
+  const handleAuditorFilter = async () => {
+    await getAuditTicketsHandler();
+    setIsAuditorFilterOn(true);
+  }
+  const handleClearAuditorFilter = async () => {
+
+    await customTicketHandler(UNDEFINED, 1, 'false', initialFilters);
+    setIsAuditorFilterOn(false);
+  }
 
   return (
     <Box className={styles.Audit_container}>
@@ -350,36 +371,69 @@ const Audit: React.FC = () => {
           <AuditFilters setPage={setPage} />
         </Box>
 
-        <Box display={'flex'} flexDirection={'column'}>
-          <Box
-            display={'flex'}
-            flexDirection={'row'}
-            justifyContent={'space-between'}
-            gap={'10px'}
-          >
-            <Stack width={'95%'} position={'relative'}>
-              <span className="search-icon">
-                {' '}
-                <SearchIcon />
-              </span>
-              <input
-                type="text"
-                className="search-input"
-                placeholder=" Search..."
-                onKeyDown={handleSearchKeyPress}
-              />
-            </Stack>
+        <Box display={'flex'} flexDirection={'row'} gap={'5px'} >
+          <Box display={'flex'} flexDirection={'column'}>
+            <Box
+              display={'flex'}
+              flexDirection={'row'}
+              justifyContent={'space-between'}
+              gap={'10px'}
+            >
+              <Stack width={'95%'} position={'relative'}>
+                <span className="search-icon">
+                  {' '}
+                  <SearchIcon />
+                </span>
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder=" Search..."
+                  onKeyDown={handleSearchKeyPress}
+                />
+              </Stack>
+            </Box>
+            <Box
+              sx={{
+                fontFamily: `Outfit,sanserif`,
+                fontSize: '13px',
+                color: '#647491'
+              }}
+            >
+              {searchError && <div>{searchError}</div>}
+            </Box>
           </Box>
-          <Box
-            sx={{
-              fontFamily: `Outfit,sanserif`,
-              fontSize: '13px',
-              color: '#647491'
-            }}
-          >
-            {searchError && <div>{searchError}</div>}
-          </Box>
+          <Stack className="AuditorFilterIcon">
+            {
+              isAuditorFilterOn ? (
+                <LightTooltip
+                  title="Clear Audit Filter"
+                  disableInteractive
+                  placement="top"
+                  TransitionComponent={Zoom}
+                >
+                  <ClearBadge
+                    badgeContent={"x"}
+                    color="error"
+                  >
+                    <img src={AuditFilterIcon} alt="Audit Filter" onClick={handleClearAuditorFilter} />
+                  </ClearBadge>
+                </LightTooltip>
+              )
+                :
+                (
+                  <LightTooltip
+                    title="Apply Audit Filter"
+                    disableInteractive
+                    placement="top"
+                    TransitionComponent={Zoom}
+                  >
+                    <img src={AuditFilterIcon} onClick={handleAuditorFilter} alt="Audit Filter" />
+                  </LightTooltip>)
+            }
+
+          </Stack>
         </Box>
+
 
       </Box>
 

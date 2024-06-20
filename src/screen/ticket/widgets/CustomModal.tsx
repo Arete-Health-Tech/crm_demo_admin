@@ -95,16 +95,11 @@ const CustomModal = () => {
     }
   }, [currentTicket])
 
-
-  console.log({ currentTicket })
-
   const startTimer = async () => {
     const returnedData = await callAgent(currentTicket?.consumer[0]?.phone)
     // const returnedData = await callAgent(currentTicket?.consumer[0]?.phone)
-    console.log({ returnedData })
     if (returnedData.status == "Agent is not available") {
       toast.error("Agent is not loggedIn")
-      console.log("iinside the not login condition")
       setAgentLogin(true)
     } else if (returnedData.status == "queued successfully") {
       if (timerRef.current !== null) {
@@ -133,13 +128,11 @@ const CustomModal = () => {
   };
 
   const handleFormSubmit = async () => {
-    // console.log("this is results")
     try {
       setFormData((prevData) => ({
         ...prevData,
         stoppedTimer: stoppedTimer
       }));
-      // console.log("this is next one")
       const sachin: any = ticketID;
 
       //This function is for handle the time 
@@ -170,18 +163,15 @@ const CustomModal = () => {
       }
 
       // on submit button click after 1 second the ticket data will call 
-      setTimeout(() => {
-        (async () => {
-          await getTicketHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            filterTickets
-          );
-        })();
-      }, 1000);
+      (async () => {
+        await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          filterTickets
+        );
+      })();
 
-      // console.log(result, " this is call button")
       // Check if result is truthy (not undefined or null)
       if (result !== undefined && result !== null) {
         setFormData({ select: '' });
@@ -196,13 +186,6 @@ const CustomModal = () => {
           additionalInfo: ''
         })
         setChallengeSelected([])
-        // console.log(
-        //   'Form submitted with stopped timer:',
-        //   stoppedTimer,
-        //   'and data:',
-        //   result
-        // );
-        // console.log(result1, " this is result one")
       }
     } catch (error) {
       console.log(error);
@@ -224,7 +207,6 @@ const CustomModal = () => {
       select: buttonName,
       stoppedTimer: stoppedTimer
     }));
-    // console.log(`Button ${buttonName} clicked`);
   };
 
   const handleClose = () => {

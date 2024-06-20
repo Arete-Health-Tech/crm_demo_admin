@@ -14,7 +14,8 @@ import { apiClient } from '../../../../api/apiClient';
 
 interface patientData {
     uhid: string;
-    name: string;
+    firstName: string;
+    lastName: string;
     age: string;
     gender: string;
     doctor: string;
@@ -57,7 +58,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     // console.log(doctors[0].departments[0], 'doctors');
     const initialPatientData: patientData = {
         uhid: '',
-        name: '',
+        firstName: '',
+        lastName: '',
         age: '',
         gender: '',
         doctor: '',
@@ -68,7 +70,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     const [isEditing, setIsEditing] = React.useState(false);
     const [showAlert, setShowAlert] = useState(false);
 
-    const [name, setName] = React.useState('');
+    const [firstName, setFirstName] = React.useState('');
+    const [lastName, setLastName] = React.useState('');
 
 
     useEffect(() => {
@@ -103,7 +106,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
 
     const patientData = [
         { id: 'uhid', label: 'UHID', value: `#${PatientData.uhid}` },
-        { id: 'name', label: 'Name', value: `${PatientData.name}`, setValue: setPatientData },
+        { id: 'Name', label: 'Name', value: `${PatientData.firstName} ${PatientData.lastName}`, setValue: setPatientData },
         { id: 'age', label: 'Age', value: PatientData.age, setValue: setPatientData },
         {
             id: 'gender',
@@ -125,7 +128,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             setPatientData(prevData => ({
                 ...prevData,
                 uhid: `${fetchTicket?.consumer?.[0]?.uid}`,
-                name: `${fetchTicket?.consumer?.[0]?.firstName ?? ''} ${fetchTicket?.consumer?.[0]?.lastName ?? ''}`,
+                firstName: `${fetchTicket?.consumer?.[0]?.firstName ?? ''}`,
+                lastName: `${fetchTicket?.consumer?.[0]?.lastName ?? ''}`,
                 age: `${fetchTicket?.consumer?.[0]?.age && fetchTicket?.consumer?.[0]?.age}`,
                 gender: (fetchTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (fetchTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
                 doctor: `${fetchTicket?.prescription?.[0]?.doctor}`,
@@ -140,7 +144,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         // console.log('Form submitted with name:', PatientData);
         const updatedData = {
             "consumer": {
-                "firstName": PatientData.name,
+                "firstName": PatientData.firstName,
+                "lastName": PatientData.lastName,
                 "gender": PatientData.gender === "Male" ? "M" : PatientData.gender === "Female" ? "F" : "",
                 "age": PatientData.age,
             },
@@ -220,19 +225,44 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                     <Stack component='div' className='Patient-detail-data'>#{PatientData.uhid}</Stack>
                                 </Box>
                                 <Box className='Patient-detail-Head'>
-                                    <Stack className='Patient-detail-title'>Name</Stack>
+                                    <Stack className='Patient-detail-title'>First Name</Stack>
                                     <Stack component='div' className='Patient-detail-data'>
                                         <TextField
-                                            id="name"
+                                            id="firstName"
                                             type="text"
-                                            label="Name"
+                                            label="First Name"
                                             variant="outlined"
                                             size="small"
                                             inputProps={{ style: { fontSize: '14px' } }}
-                                            value={PatientData.name}
+                                            value={PatientData.firstName}
                                             onChange={(e) => setPatientData(prev => ({
                                                 ...prev,
-                                                name: e.target.value,
+                                                firstName: e.target.value,
+                                            }))}
+                                            InputProps={{
+                                                style: {
+                                                    textTransform: 'capitalize',
+                                                    fontSize: '14px',
+                                                    fontFamily: 'Outfit,sans-serif'
+                                                },
+                                            }}
+                                        />
+                                    </Stack>
+                                </Box>
+                                <Box className='Patient-detail-Head'>
+                                    <Stack className='Patient-detail-title'>Last Name</Stack>
+                                    <Stack component='div' className='Patient-detail-data'>
+                                        <TextField
+                                            id="lastName"
+                                            type="text"
+                                            label="Last Name"
+                                            variant="outlined"
+                                            size="small"
+                                            inputProps={{ style: { fontSize: '14px' } }}
+                                            value={PatientData.lastName}
+                                            onChange={(e) => setPatientData(prev => ({
+                                                ...prev,
+                                                lastName: e.target.value,
                                             }))}
                                             InputProps={{
                                                 style: {

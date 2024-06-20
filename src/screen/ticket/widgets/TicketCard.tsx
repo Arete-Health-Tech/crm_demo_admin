@@ -57,8 +57,6 @@ const TicketCard = (props: Props) => {
     child: []
   });
 
-  console.log(props)
-
   const { tickets, filterTickets, setIsAuditor, allTaskCount, viewEstimates,
     setViewEstimates, isEstimateUpload, setIsEstimateUpload } = useTicketStore();
   const navigate = useNavigate();
@@ -82,7 +80,6 @@ const TicketCard = (props: Props) => {
 
   // const { tickets, setTickets } = useTicketStore();
 
-  // console.log(tickets);
 
   useEffect(() => {
     setIsNewTicket(props.patientData.isNewTicket);
@@ -90,7 +87,6 @@ const TicketCard = (props: Props) => {
 
   useEffect(() => {
     props.patientData.isNewTicket = true;
-    // console.log("-----------------------", props.patientData.isNewTicket, props.patientData.subStageCode.active);
     const stageDetail: any = stages?.find(
       ({ _id }) => props.patientData?.stage === _id
     );
@@ -98,15 +94,6 @@ const TicketCard = (props: Props) => {
     const { setStages } = useServiceStore.getState();
     setStages(stages);
   }, [stages]);
-  // console.log(props.patientData, ' this is props patient data');
-  // console.log(
-  //   dayjs(props.patientData.createdAt)
-  //     .tz('Asia/Kolkata')
-  //     .format('DD/MMM/YYYY , HH:mm'),
-  //   ' thui sis patient data '
-
-
-  // );
 
   const showTicket = () => {
 
@@ -197,7 +184,6 @@ const TicketCard = (props: Props) => {
       const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
       const minuteDifference = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
       const formattedTimeDifference = `${hourDifference.toString().padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
-      // console.log(formattedTimeDifference)
       return `${formattedTimeDifference} hrs ago`
     } else {
       return `${dayDifference} days ago`

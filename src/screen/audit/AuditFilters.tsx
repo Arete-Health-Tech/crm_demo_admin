@@ -270,7 +270,7 @@ const AuditFilters = (props: {
         setSelectedStatus("");
         setSelectedRepresentativeName("");
         // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-        await customTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+        // await customTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
 
 
     };

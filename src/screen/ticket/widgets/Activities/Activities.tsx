@@ -53,7 +53,7 @@ const Activities = () => {
     const extractDateTime = (message: string): string | null => {
         const regex = /on (.*? \d{2}:\d{2}:\d{2} GMT[+-]\d{4} \(.*?\))/;
         const match = message.match(regex);
-        return match ? match[1] : null;
+        return match ? new Date(match[1]).toDateString() : null;
     };
 
     const hanleEstimateText = (value: string) => {
@@ -87,14 +87,14 @@ const Activities = () => {
                                     style={{
                                         display: 'flex',
                                         height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
+                                        padding: '1rem 0 0rem 2rem',
                                         marginLeft: '2rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
                                     <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
                                     <div className={styles.otherContent}>
-                                        {value}
+                                        {value.split('on')[0]}
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
                                 </div>
@@ -115,7 +115,7 @@ const Activities = () => {
                                 //         <div className={styles.time}>{extractDateTime(value)}</div>
                                 //     </div>
                                 // </div>
-                                <Box display={'flex'} height={'auto'} padding={"1rem 0 1rem 0rem"} marginLeft={'2rem'} borderLeft={'1px solid #d4dbe5'}>
+                                <Box display={'flex'} height={'auto'} padding={"1rem 0 0rem 0rem"} marginLeft={'2rem'} borderLeft={'1px solid #d4dbe5'}>
                                     <img src={whtsappIcon} alt="" style={{ marginLeft: 22, marginTop: '-1.5rem' }} />
                                     <Box
                                         border={'1px solid #25D366'}
@@ -134,7 +134,7 @@ const Activities = () => {
                                                 fontSize={'0.875rem'}
                                                 fontWeight={400}
                                             >
-                                                {value}
+                                                {value.split('on')[0]}
                                             </Typography>
                                         )}
                                         {/* <div className={styles.content}> */}
@@ -149,14 +149,14 @@ const Activities = () => {
                                     style={{
                                         display: 'flex',
                                         height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
+                                        padding: '1rem 0 0rem 2rem',
                                         marginLeft: '2rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
                                     <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
                                     <div className={styles.otherContent}>
-                                        {value}
+                                        {value.split('on')[0]}
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
                                 </div>
@@ -166,14 +166,14 @@ const Activities = () => {
                                     style={{
                                         display: 'flex',
                                         height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
+                                        padding: '1rem 0 0rem 2rem',
                                         marginLeft: '2rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
                                     <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
                                     <div className={styles.otherContent}>
-                                        {value}
+                                        {value.split('on')[0]}
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
                                 </div>
@@ -183,14 +183,14 @@ const Activities = () => {
                                     style={{
                                         display: 'flex',
                                         height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
+                                        padding: '1rem 0 0rem 2rem',
                                         marginLeft: '2rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
                                     <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
                                     <div className={styles.otherContent}>
-                                        {value}
+                                        {value.split('on')[0]}
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
                                 </div>
@@ -200,14 +200,14 @@ const Activities = () => {
                                     style={{
                                         display: 'flex',
                                         height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
+                                        padding: '1rem 0 0rem 2rem',
                                         marginLeft: '2rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
                                     <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
                                     <div className={styles.otherContent}>
-                                        {value}
+                                        {value.split('on')[0]}
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
                                 </div>
@@ -217,14 +217,14 @@ const Activities = () => {
                                     style={{
                                         display: 'flex',
                                         height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
+                                        padding: '1rem 0 0rem 2rem',
                                         marginLeft: '2rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
                                     <img src={phoneIcon} alt="" style={{ marginRight: 4 }} />
                                     <div className={styles.callContent}>
-                                        {value}
+                                        {value.split('on')[0]}
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
                                 </div>
@@ -234,7 +234,7 @@ const Activities = () => {
                                     style={{
                                         display: 'flex',
                                         height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
+                                        padding: '1rem 0 0rem 2rem',
                                         marginLeft: '1.8rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
@@ -252,14 +252,14 @@ const Activities = () => {
                                     style={{
                                         display: 'flex',
                                         height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
+                                        padding: '1rem 0 0rem 2rem',
                                         marginLeft: '2rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
                                     <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
                                     <div className={styles.otherContent}>
-                                        {value}
+                                        {value.split('on')[0]}
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
                                 </div>
@@ -269,7 +269,7 @@ const Activities = () => {
                                     style={{
                                         display: 'flex',
                                         height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
+                                        padding: '1rem 0 0rem 2rem',
                                         marginLeft: '2rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
@@ -286,14 +286,14 @@ const Activities = () => {
                                     style={{
                                         display: 'flex',
                                         height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
+                                        padding: '1rem 0 0rem 2rem',
                                         marginLeft: '2rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
                                     <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
                                     <div className={styles.otherContent}>
-                                        {value}
+                                        {value.split('on')[0]}
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
                                 </div>
@@ -303,14 +303,14 @@ const Activities = () => {
                                     style={{
                                         display: 'flex',
                                         height: 'auto',
-                                        padding: '1rem 0 1rem 2rem',
+                                        padding: '1rem 0 0rem 2rem',
                                         marginLeft: '2rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
                                     <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
                                     <div className={styles.otherContent}>
-                                        {value}
+                                        {value.split('on')[0]}
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
                                 </div>

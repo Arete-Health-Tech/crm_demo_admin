@@ -784,6 +784,7 @@ const NSingleTicketDetails = (props: Props) => {
 
     // This function is for calling the api of delete lead
     const handleLeadDelete = async () => {
+        setDeleteModal(false)
         await deleteTicket(ticketID);
         getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
         await validateTicket(ticketID);
@@ -1178,8 +1179,8 @@ const NSingleTicketDetails = (props: Props) => {
                                 {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     Initate RFA
                                 </MenuItem> */}
-                                {/* <MenuItem sx={menuItemStyles} onClick={()=>setDeleteModal(true)}> */}
-                                <MenuItem sx={menuItemStyles} onClick={handleLeadDelete}>
+                                <MenuItem sx={menuItemStyles} onClick={() => setDeleteModal(true)}>
+                                    {/* <MenuItem sx={menuItemStyles} onClick={handleLeadDelete}> */}
                                     Delete Lead
                                 </MenuItem>
                             </Stack>
@@ -1554,6 +1555,7 @@ const NSingleTicketDetails = (props: Props) => {
                     </Box>
                 </Box>
             </Modal>
+
             {/* MODAL for Delete the notes */}
 
             <Modal
@@ -1569,7 +1571,7 @@ const NSingleTicketDetails = (props: Props) => {
                         display="flex"
                         alignItems="center"
                     >
-                        <Stack>Delete Note</Stack>
+                        <Stack>Delete Lead</Stack>
                         <Stack
                             className={styles.modal_close}
                             onClick={() => setDeleteModal(false)}
@@ -1596,6 +1598,7 @@ const NSingleTicketDetails = (props: Props) => {
                     </Box>
                 </Box>
             </Modal>
+
             {/* Add Surgery modal End */}
         </>
     );

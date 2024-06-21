@@ -1,6 +1,7 @@
 import {
   Box,
   Chip,
+  CircularProgress,
   IconButton,
   Menu,
   MenuItem,
@@ -38,6 +39,7 @@ import { Avatar } from '@mui/material';
 import useUserStore from '../../../store/userStore';
 import { deleteNotes, updateNotes } from '../../../api/ticket/ticket';
 import { toast } from 'react-toastify';
+import NotFoundIcon from '../../../assets/NotFoundTask.svg';
 
 type Props = { setTicketUpdateFlag: any };
 
@@ -161,7 +163,10 @@ const NotesWidget = (props: Props) => {
     <>
       <Box height="95%" position="relative" bgcolor="white" p={1}>
         {loading ? (
-          <Box height="36vh">Loading... </Box>
+          // <Box height="36vh">Loading... </Box>
+          <Box height="36vh" className="NotFound-Page">
+            <CircularProgress />
+          </Box>
         ) : notes.length > 0 && notesClickedData === null ? (
           <Box
             height={isAuditor ? "56vh" : "36vh"}
@@ -220,17 +225,44 @@ const NotesWidget = (props: Props) => {
             })}
           </Box>
         ) : notesClickedData === null ? (
-          <Stack
+          // <Stack
+          //   height="36vh"
+          //   display="flex"
+          //   justifyContent="center"
+          //   alignItems="center"
+          // >
+          //   <NoResultFoundSVG />
+          //   <Typography color="gray" variant="caption" mt={1}>
+          //     No notes available.
+          //   </Typography>
+          // </Stack>
+          <Box
+            // className="NotFound-Page"
+            display={'flex'}
+            flexDirection={'column'}
+            justifyContent={'center'}
             height="36vh"
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
+            sx={{
+              borderBottomLeftRadius: "20px",
+              borderBottomRightRadius: "20px"
+            }}
           >
-            <NoResultFoundSVG />
-            <Typography color="gray" variant="caption" mt={1}>
-              No notes available.
-            </Typography>
-          </Stack>
+            <Stack sx={{
+              alignItems: "center",
+              textAlign: "center",
+              // marginTop: "30px",
+
+            }}><img width={'200px'} height={'200px'} src={NotFoundIcon} />
+            </Stack>
+            <Box textAlign={'center'} sx={{
+              font: "bold",
+              fontSize: "24px",
+              fontFamily: "Outfit,sans-serif"
+            }}>
+              No Notes Available
+            </Box>
+
+          </Box>
         ) : (
           <Box
             height={"36vh"}

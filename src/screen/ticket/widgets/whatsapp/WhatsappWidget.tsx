@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import { Send } from '@mui/icons-material';
-import { Box, Stack, Typography, TextField, Button } from '@mui/material';
+import { Box, Stack, Typography, TextField, Button, CircularProgress } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { database } from '../../../../utils/firebase';
 import {
@@ -28,6 +28,7 @@ import Attachment from '../../../../assets/Attachment.svg';
 import expandIcon from '../../../../assets/expandIcon.svg';
 import collapseIcon from '../../../../assets/collapseIcon.svg';
 import CloseModalIcon from '../../../../assets/CloseModalIcon.svg';
+import NotFoundIcon from '../../../../assets/NotFoundTask.svg';
 import { Avatar } from '@mui/material';
 import { io } from 'socket.io-client';
 import { markAsRead } from '../../../../api/flow/flow';
@@ -319,8 +320,34 @@ const MessagingWidget = (props: Props) => {
                     )}
                   </Stack>
                 ))
-                : 'No Messages Available'
-              : 'Loading ...'
+                : (<>
+                  {/* No Messages Available */}
+                  <Box
+                    // className="NotFound-Page"
+                    display={'flex'}
+                    flexDirection={'column'}
+                    justifyContent={'center'}
+                  >
+                    <Stack sx={{
+                      alignItems: "center",
+                      textAlign: "center",
+                      marginTop: "30px",
+
+                    }}><img width={'200px'} height={'200px'} src={NotFoundIcon} />
+                    </Stack>
+                    <Box textAlign={'center'} sx={{
+                      font: "bold",
+                      fontSize: "24px",
+                      fontFamily: "Outfit,sans-serif"
+                    }}>
+                      No Message Available
+                    </Box>
+
+                  </Box>
+                </>)
+              : (<Box className="NotFound-Page">
+                <CircularProgress />
+              </Box>)
             }
           </Box>
 

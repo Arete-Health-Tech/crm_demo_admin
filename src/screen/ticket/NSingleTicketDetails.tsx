@@ -297,7 +297,7 @@ const NSingleTicketDetails = (props: Props) => {
         }
     };
 
-    console.log({ representative });
+    // console.log({ representative });
 
     const handelUploadType = async () => {
         setDisableButton(true);
@@ -749,7 +749,7 @@ const NSingleTicketDetails = (props: Props) => {
     const [messages, setMessages] = useState<storeMessage[]>([]);
 
     useEffect(() => {
-        console.log('useEffect is running in NsingleticketCard'); // Check if this logs
+        // console.log('useEffect is running in NsingleticketCard'); // Check if this logs
 
         // Check if socket is connected
         if (socket.connected) {
@@ -1479,7 +1479,8 @@ const NSingleTicketDetails = (props: Props) => {
                                 </FormControl>
                             </Stack>
                         ) : (
-                            prescription.admission !== 'none' && (
+                            // prescription.admission !== 'none' &&
+                            prescription.admission === 'Surgery' ? (
                                 <Box my={1.5}>
                                     <Autocomplete
                                         size="small"
@@ -1523,7 +1524,7 @@ const NSingleTicketDetails = (props: Props) => {
                                         {validations.service.message}
                                     </FormHelperText>
                                 </Box>
-                            )
+                            ) : (<></>)
                         )}
                     </Box>
 

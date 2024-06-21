@@ -446,7 +446,7 @@ const PatientRecord = ({ isPatient }) => {
                                             </FormControl>
                                         </Stack>
                                     ) : (
-                                        prescription.admission !== 'none' && (
+                                        prescription.admission === 'Surgery' ? (
                                             <Box my={1.5}>
                                                 <Autocomplete
                                                     size="small"
@@ -490,7 +490,7 @@ const PatientRecord = ({ isPatient }) => {
                                                     {validations.service.message}
                                                 </FormHelperText>
                                             </Box>
-                                        )
+                                        ) : (<></>)
                                     )}
                                 </Box>
                             </Box>

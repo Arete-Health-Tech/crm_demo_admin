@@ -358,6 +358,24 @@ const Audit: React.FC = () => {
     setIsAuditorFilterOn(false);
   }
 
+  const formateLastActivity = (item: any) => {
+    if (item == null) {
+      return null;
+    }
+    const timestamp = item;
+    const date = new Date(timestamp);
+    const monthNames = [
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
+    ];
+    const day = date.getUTCDate();
+    const month = monthNames[date.getUTCMonth()];
+    const year = date.getUTCFullYear();
+
+    const formattedDate = `${day} ${month} ${year}`;
+    return formattedDate;
+  }
+
   return (
     <Box className={styles.Audit_container}>
 
@@ -525,7 +543,8 @@ const Audit: React.FC = () => {
                       <td className={`${styles.Audit_table_body_item} ${styles.body_item3}`}>
                         <Stack className={styles.Audit_last_date}>
                           {/* {item.lastContactedDate} */}
-                          23 April 2023
+                          {/* 23 April 2023 */}
+                          {item?.lastActivity ? formateLastActivity(item?.lastActivity) : "Not Contacted"}
                         </Stack>
                       </td>
 
@@ -555,7 +574,8 @@ const Audit: React.FC = () => {
                               <Stack className={styles.Audit_call_value}>{calculateRecivedCall(item?.phoneData)}</Stack>
                             </Stack>
                           </LightTooltip>
-                          <LightTooltip
+                          {/* Audit Call */}
+                          {/* <LightTooltip
                             title="Audit Calls"
                             disableInteractive
                             placement="top"
@@ -564,11 +584,11 @@ const Audit: React.FC = () => {
                             <Stack className={styles.Audit_CallValues}>
                               <Stack className={styles.Audit_CallIcon}><img src={AuditCallIcon} /></Stack>
                               <Stack className={styles.Audit_call_value}>
-                                {/* {item.totalNumberOfAuditCall} */}
+                                
                                 0
                               </Stack>
                             </Stack>
-                          </LightTooltip>
+                          </LightTooltip> */}
                         </Stack>
                       </td>
 

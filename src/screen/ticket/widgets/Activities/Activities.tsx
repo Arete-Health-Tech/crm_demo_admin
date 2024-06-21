@@ -7,11 +7,12 @@ import smsIcon from '../../../../assets/smsIcon.svg';
 import whtsappIcon from '../../../../assets/whtsappIcon.svg';
 import NotesIcon from '../../../../assets/NotesIcon.svg';
 import phoneIcon from '../../../../assets/phoneIcon.svg';
+import NotFoundIcon from '../../../../assets/NotFoundTask.svg';
 import useTicketStore from '../../../../store/ticketStore';
 import { useParams } from 'react-router-dom';
 import { getActivityData } from '../../../../api/ticket/ticket';
 import ReactHtmlParser from 'html-react-parser';
-import { Box, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 
 type ActivitiesType = Record<string, Record<string, string>>;
 
@@ -37,6 +38,7 @@ const Activities = () => {
 
     const handleActivityData = async () => {
         const res = await getActivityData(ticketID);
+        console.log(res, "activity data")
         setActivities(res !== null ? res.data : null);
     };
 
@@ -136,8 +138,8 @@ const Activities = () => {
                                             </Typography>
                                         )}
                                         {/* <div className={styles.content}> */}
-                                            {/* {value} */}
-                                            <div className={styles.time}>{extractDateTime(value)}</div>
+                                        {/* {value} */}
+                                        <div className={styles.time}>{extractDateTime(value)}</div>
                                         {/* </div> */}
                                     </Box>
                                 </Box>
@@ -317,7 +319,31 @@ const Activities = () => {
                     ))}
                 </div>
             ))
-                : "No Activity available"}
+                : (
+                    <Box
+                        // className="NotFound-Page"
+                        display={'flex'}
+                        flexDirection={'column'}
+                        justifyContent={'center'}
+                    >
+                        <Stack sx={{
+                            alignItems: "center",
+                            textAlign: "center",
+                            marginTop: "30px",
+
+                        }}><img width={'200px'} height={'200px'} src={NotFoundIcon} />
+                        </Stack>
+                        <Box textAlign={'center'} sx={{
+                            font: "bold",
+                            fontSize: "24px",
+                            fontFamily: "Outfit,sans-serif"
+                        }}>
+                            No Activity Available
+                        </Box>
+
+                    </Box>
+                )
+            }
         </div>
     );
 };

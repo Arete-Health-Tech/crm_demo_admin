@@ -10,6 +10,7 @@ import CloseModalIcon from '../../../../assets/CloseModalIcon.svg';
 import useUserStore from '../../../../store/userStore';
 import { iTicket } from '../../../../types/store/ticket';
 import { useParams } from 'react-router-dom';
+import NotFoundIcon from '../../../../assets/NotFoundTask.svg';
 
 const PhoneWidget = () => {
     const { ticketID } = useParams();
@@ -87,8 +88,34 @@ const PhoneWidget = () => {
 
                 <Box className={!isAuditor ? styles.phoneBox : styles.AuditorphoneBox}>
                     {!hasRecording ? (
-                        <Box className={styles.noData}>
-                            No data available
+                        // <Box className={styles.noData}>
+                        //     No data available
+                        // </Box>
+                        <Box
+                            // className="NotFound-Page"
+                            display={'flex'}
+                            flexDirection={'column'}
+                            justifyContent={'center'}
+                            sx={{
+                                borderBottomLeftRadius: "20px",
+                                borderBottomRightRadius: "20px"
+                            }}
+                        >
+                            <Stack sx={{
+                                alignItems: "center",
+                                textAlign: "center",
+                                marginTop: "30px",
+
+                            }}><img width={'200px'} height={'200px'} src={NotFoundIcon} />
+                            </Stack>
+                            <Box textAlign={'center'} sx={{
+                                font: "bold",
+                                fontSize: "24px",
+                                fontFamily: "Outfit,sans-serif"
+                            }}>
+                                No Data Available
+                            </Box>
+
                         </Box>
                     ) : (
                         currentTicket?.phoneData?.map((item, index) => {

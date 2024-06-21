@@ -83,9 +83,9 @@ const StageCard = (props: Props) => {
   const [disableLostButton, setDisableLostButton] = useState(true);
   const [disableWonButton, setDisableWonButton] = useState(true);
 
-  console.log({
-    currentTicket, stages, subStages, currentStage, nextStage, changeStageName, validStageList
-  })
+  // console.log({
+  //   currentTicket, stages, subStages, currentStage, nextStage, changeStageName, validStageList
+  // })
 
   const [steps, setSteps] = useState([
     {

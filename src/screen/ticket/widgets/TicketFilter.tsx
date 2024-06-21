@@ -157,6 +157,7 @@ const TicketFilter = (props: {
     // console.log('val', value);
     if (selectedFilters.stageList.includes(value)) {
       const modifiedStageList = selectedFilters.stageList;
+      console.log('modifiedStageList', modifiedStageList)
       modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
 
       dispatchFilter({
@@ -170,6 +171,10 @@ const TicketFilter = (props: {
       payload: [...selectedFilters.stageList, value]
     });
   };
+
+  useEffect(() => {
+    console.log('  selectedFilters stageList', selectedFilters.stageList)
+  }, [selectedFilters.stageList]);
 
   const handleRepresentative = (e: any) => {
     const value = e.target.value;
@@ -337,19 +342,16 @@ const TicketFilter = (props: {
 
     setIsFilterOpen(false);
     setPageNumber(1);
+    setFilterTickets(selectedFilters);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType));
-
-
-
-    setFilterTickets(selectedFilters);
 
     props.setPage(1);
     if (ticketID) {
       await validateTicket(ticketID);
       navigate(NAVIGATE_TO_TICKET);
     }
-    // console.log('filter dtata', selectedFilters);
+    console.log('filter dtata', selectedFilters);
   };
 
 
@@ -374,7 +376,8 @@ const TicketFilter = (props: {
     setDiagnosticsType((prev) => []);
     setDateRange(["", ""]);
 
-    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+
     // setTicketFilters({
     //   stageList: [],
     //   admissionType: [],

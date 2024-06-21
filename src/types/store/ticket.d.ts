@@ -92,6 +92,7 @@ export interface phoneData {
   ticketid: string;
   time: string;
   _id: string;
+  Date?: Date | null | undefined;
 }
 export interface opinionData {
   additionalInfo: string;
@@ -137,6 +138,7 @@ export interface iTicket {
   pharmacyStatus: string;
   phoneData: phoneData[];
   opinion: opinionData[];
+  lastActivity: string | null;
   Probability: number;
   status: string;
 }

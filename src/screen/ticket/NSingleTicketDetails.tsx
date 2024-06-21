@@ -215,7 +215,7 @@ const NSingleTicketDetails = (props: Props) => {
     >([]);
 
     const [open, setOpen] = useState(false);
-
+    const [deleteModal, setDeleteModal] = useState(false);
     const theme = useTheme();
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [activeStep, setActiveStep] = useState(0);
@@ -319,7 +319,7 @@ const NSingleTicketDetails = (props: Props) => {
             }, ticketId);
             setDisableButton(false);
             setAmissionTypeClicked(true);
-            getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+            getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
 
             // const url = ticketID !== undefined ? `/ticket/${ticketID}` : `/ticket`;
             // window.location.href = url;
@@ -778,13 +778,14 @@ const NSingleTicketDetails = (props: Props) => {
     const handleProbability = async (value) => {
         await updateTicketProbability(value, ticketID);
         setProbabilityModal(false);
-        getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+        getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+        navigate(`/ticket/${ticketID}`);
     };
 
     // This function is for calling the api of delete lead
     const handleLeadDelete = async () => {
         await deleteTicket(ticketID);
-        getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+        getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
         await validateTicket(ticketID);
         navigate(NAVIGATE_TO_TICKET);
     };
@@ -793,14 +794,16 @@ const NSingleTicketDetails = (props: Props) => {
     const handleAddAssigne = async (assigneeId: string) => {
         console.log(assigneeId);
         const res = await assignedToTicket(ticketID, assigneeId);
-        getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+        getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+        navigate(`/ticket/${ticketID}`);
     };
 
     //This function is for remove assigne ticket from the representative
     const handleRemoveAssigne = async (assigneeId: string) => {
         console.log(assigneeId);
         const res = await removeFromTicket(ticketID, assigneeId);
-        getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+        getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+        navigate(`/ticket/${ticketID}`);
     };
 
     return (
@@ -1175,6 +1178,7 @@ const NSingleTicketDetails = (props: Props) => {
                                 {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     Initate RFA
                                 </MenuItem> */}
+                                {/* <MenuItem sx={menuItemStyles} onClick={()=>setDeleteModal(true)}> */}
                                 <MenuItem sx={menuItemStyles} onClick={handleLeadDelete}>
                                     Delete Lead
                                 </MenuItem>
@@ -1549,7 +1553,48 @@ const NSingleTicketDetails = (props: Props) => {
                     </Box>
                 </Box>
             </Modal>
+            {/* MODAL for Delete the notes */}
 
+            <Modal
+                open={deleteModal}
+                aria-labelledby="parent-modal-title"
+                aria-describedby="parent-modal-description"
+            >
+                <Box className={styles.deleteOpenedModal}>
+                    <Stack
+                        className={styles.delete_reminder_modal_title}
+                        direction="row"
+                        spacing={1}
+                        display="flex"
+                        alignItems="center"
+                    >
+                        <Stack>Delete Note</Stack>
+                        <Stack
+                            className={styles.modal_close}
+                            onClick={() => setDeleteModal(false)}
+                        >
+                            <img src={CloseModalIcon} alt="" />
+                        </Stack>
+                    </Stack>
+                    <Box className={styles.deleteNoteText}>
+                        Are you sure want to delete this permanently.
+                    </Box>
+                    <Box className={styles.DeleteNotesFooter}>
+                        <Box
+                            className={styles.Cancel}
+                            onClick={() => setDeleteModal(false)}
+                        >
+                            Cancel
+                        </Box>
+                        <Box
+                            className={styles.DeleteNoteButton}
+                            onClick={handleLeadDelete}
+                        >
+                            Delete
+                        </Box>
+                    </Box>
+                </Box>
+            </Modal>
             {/* Add Surgery modal End */}
         </>
     );

@@ -255,6 +255,10 @@ export const createSecondOpinion = async (opinion: any) => {
   const data = await apiClient.post(`/task/opinion`, opinion);
   return Promise.resolve(data);
 };
+export const createPhoneData = async (phoneData: any) => {
+  const data = await apiClient.post(`/ticket/CreatePhoneData`, phoneData);
+  return Promise.resolve(data);
+};
 
 export const updateNotes = async (updatedNoteData: any) => {
   const data = await apiClient.put(`/ticket/updateNotes`, updatedNoteData);

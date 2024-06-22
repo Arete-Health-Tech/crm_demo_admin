@@ -38,7 +38,7 @@ import '../singleTicket.css';
 import useTicketStore from '../../../store/ticketStore';
 import LeadDetail from '../SingleTicketSideBar/LeadDetail/LeadDetail';
 import ReactQuill from 'react-quill';
-import { callAgent, createSecondOpinion } from '../../../api/ticket/ticket';
+import { callAgent, createPhoneData, createSecondOpinion } from '../../../api/ticket/ticket';
 import { toast } from 'react-toastify';
 
 const CustomModal = () => {
@@ -148,7 +148,7 @@ const CustomModal = () => {
         await createNotesHandler(data);
         setNote('');
       }
-
+      // This is for second opinion start
       const opinion = {
         ...secondOpinion,
         challengeSelected,
@@ -156,6 +156,17 @@ const CustomModal = () => {
       };
 
       await createSecondOpinion(opinion)
+      // This is for second opinion end
+      // This is for creating phone data recording properly start
+      const phoneData = {
+        totalTime: timer,
+        ucid: ucid,
+        ticket: ticketID
+      }
+      await createPhoneData(phoneData)
+      // This is for creating phone data recording properly end
+
+
 
       //This if condition is for checking that what disposition we have selected 
       if (formData.select === "Rescheduled Call") {

@@ -811,14 +811,14 @@ function SwitchViewTable() {
 
                         {/* Doctor Name */}
                         <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item3}`} >
-                          <Stack className={styles.SwitchView_last_date} sx={{ textTransform: "capitalize !important" }}>
+                          <Stack className={styles.SwitchView_doc} sx={{ textTransform: "capitalize !important" }}>
                             {doctorSetter(item?.prescription[0]?.doctor)}
                           </Stack>
                         </td>
 
                         {/* Department */}
                         <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item4}`} >
-                          <Stack className={styles.SwitchView_last_date} sx={{ textTransform: "capitalize !important" }}>
+                          <Stack className={styles.SwitchView_dep} sx={{ textTransform: "capitalize !important" }}>
                             {departmentSetter(item.prescription[0].departments[0])}
                           </Stack>
                         </td>

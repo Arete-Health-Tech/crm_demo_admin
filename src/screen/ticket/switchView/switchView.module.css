@@ -200,6 +200,37 @@
     line-height: 150%;
 }
 
+.SwitchView_doc {
+    display: -webkit-box;
+    max-width: 160px;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    color: #000;
+    text-overflow: ellipsis;
+    /* Body/Large */
+    font-family: Outfit, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
+
+.SwitchView_dep {
+    display: -webkit-box;
+    max-width: 195px;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 1;
+    overflow: hidden;
+    color: #000;
+    text-overflow: ellipsis;
+    /* Body/Large */
+    font-family: Outfit, sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+}
 
 .SwitchView_GenAge {
     display: flex;
@@ -425,13 +456,13 @@
 }
 
 .Switch_body_item3 {
-    width: 180px !important;
+    width: 160px !important;
     white-space: nowrap;
 
 }
 
 .Switch_body_item4 {
-    width: 180px !important;
+    width: 200px !important;
     white-space: nowrap;
 }
 

@@ -1,11 +1,14 @@
 import { Box, Button, IconButton, MenuItem, Modal, Stack, TextField, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import { apiClient } from '../../../api/apiClient';
 import { useParams } from 'react-router-dom';
 import useTicketStore from '../../../store/ticketStore';
 import CloseModalIcon from "../../../assets/Group 48095853.svg"
+import UploadFileIcon from "../../../assets/UploadFileIcon.svg";
+import CheckedActiveIcon from "../../../assets/NotActive.svg"
+import documentIcon from "../../../assets/document-text.svg"
 
 
 function UploadEstimate() {
@@ -19,6 +22,7 @@ function UploadEstimate() {
   } = useTicketStore();
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
+  const [uploadFileName, setUploadFileName] = useState("");
   const [noteTextValue, setNoteTextValue] = useState('');
   const [disabled, setDisabled] = useState(true);
 
@@ -42,11 +46,26 @@ function UploadEstimate() {
     setOpen(false);
     setNoteTextValue('');
     setFile(null);
+    setUploadFileName("");
   };
 
-  const handleFileChange = (event: any) => {
-    setFile(event.target.files[0]);
+  // const handleFileChange = (event: any) => {
+  //   setFile(event.target.files[0]);
+  //   setFileName(event.target.file[0].name)
+  //   console.log(event.target.file[0].name, "estimate file name");
 
+  // };
+
+
+  const handleFileChange = (event) => {
+    const files = event.target.files && event.target.files;
+    if (files && files.length > 0) {
+      // console.log(files[0], "asasdsdaas");
+      setFile(files[0]);
+      setUploadFileName(`${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`);
+    } else {
+      console.error('No file selected.');
+    }
   };
 
   const handleNoteTextChange = (event: any) => {
@@ -120,10 +139,16 @@ function UploadEstimate() {
     fontWeight: "400",
     lineHeight: "150%",
   };
-
+  const uploadFileRef = useRef<HTMLInputElement>(null);
   return (
     <>
-
+      <input
+        id="file-upload"
+        style={{ display: 'none' }}
+        ref={uploadFileRef}
+        type="file"
+        onChange={handleFileChange}
+      />{' '}
       <MenuItem sx={menuItemStyles} onClick={handleButtonClick} ><Stack >Upload Estimate</Stack></MenuItem>
 
       <Modal
@@ -142,6 +167,7 @@ function UploadEstimate() {
             <Stack className="Add-Surgery-title">
               Upload Estimate
             </Stack>
+
             <Stack
               className='modal-close'
               onClick={handleClose}
@@ -151,7 +177,29 @@ function UploadEstimate() {
           </Stack>
           <Box display={"flex"} flexDirection={"column"} gap={"20px"}>
             <Stack>
-              <TextField
+              <Box className="file-upload" onClick={() => uploadFileRef.current?.click()}>
+                <Stack className="file-upload-title">
+                  <label htmlFor="file-upload" style={{ display: "flex", flexDirection: "row" }}> <img className='img-upload' src={UploadFileIcon} alt='' /> Upload Receipt sent by hospital</label>
+                </Stack>
+                <Stack className="file-upload-Sub" marginTop="12px">Upload one .txt, .doc, .pdf, .docx, .png, .jpg</Stack>
+                <Stack className="file-upload-Sub">Max file size 5mb</Stack>
+              </Box>
+              {file ? (
+                <Box className="Uploaded-file">
+                  <Stack display={"flex"} flexDirection={'row'} justifyContent={"flex-start"}>
+                    <Stack className='Uploaded-Box'><img src={documentIcon} alt='' /></Stack>
+                    <Box>
+                      <Stack className="file-upload-Sub">{uploadFileName}</Stack>
+                      {/* <Stack p={'3px'} className="file-upload-Sub">File Uploaded Successfully</Stack> */}
+                    </Box>
+                  </Stack>
+                  <Stack p={1} sx={{ marginLeft: "250px" }}><img src={CheckedActiveIcon} alt='' /></Stack>
+                </Box>
+              ) : (
+                <>
+                </>
+              )}
+              {/* <TextField
                 type="file"
                 onChange={handleFileChange}
                 fullWidth
@@ -170,7 +218,7 @@ function UploadEstimate() {
                     fontFamily: `"Outfit",sans-serif`,
                   }
                 }}
-              />{' '}
+              />{' '} */}
             </Stack>
             <Stack>
               <TextField

@@ -161,7 +161,7 @@ const TaskBar = () => {
                             },
                         }}
                     >
-                        <Stack display={'flex'} flexDirection={'row'} gap={'3px'}><Stack> + </Stack><Stack>New Task</Stack></Stack>
+                        <Stack display={'flex'} flexDirection={'row'} gap={'3px'}><Stack> + </Stack><Stack sx={{ whiteSpace: "nowrap" }}>New Task</Stack></Stack>
                     </Button>
                     <div style={{ borderRadius: '20px', overflow: 'hidden' }}>
                         <Menu

@@ -107,12 +107,13 @@ const PatientRecord = ({ isPatient }) => {
 
 
 
-    const handleAdmissionSubmit = async (event) => {
+    const handleAdmissionSubmit = async (event, item) => {
         event.preventDefault();
+        // setAdmissionType(item);
         const updatedData = {
             "consumer": {},
             "prescription": {
-                "admission": admissionType
+                "admission": item
             }
         }
         await updateConusmerData(updatedData, ticketID)
@@ -326,16 +327,18 @@ const PatientRecord = ({ isPatient }) => {
 
                                     }}
                                         onClick={() => {
-                                            changePrescriptionValue('admission', 'none');
+                                            // changePrescriptionValue('admission', 'none');
                                             setIsEditing(false);
-                                            setSelectedInternalRef('');
-                                        }}>
+                                            // setSelectedInternalRef('');
+                                        }}
+                                    >
                                         Cancel
                                     </button>
                                     <button
                                         className='save-btn'
                                         disabled={disableButton}
-                                        onClick={handelUploadType}
+                                        // onClick={handelUploadType}
+                                        onClick={(event) => handleAdmissionSubmit(event, admissionType)}
                                         style={{
                                             backgroundColor: disableButton ? '#F6F7F9' : '#0566FF',
                                             color: disableButton ? '#647491' : '#FFF',
@@ -380,6 +383,25 @@ const PatientRecord = ({ isPatient }) => {
                             </Stack> */}
                             <Box display={"flex"} flexDirection="column">
                                 <Box display={`${isEditing}` ? "block" : "none"}>
+                                    <Stack flexWrap={'wrap'} flexDirection="row" gap={'14px'}>
+                                        {['none', 'Surgery', 'Radiation', 'MM', 'DC'].map((item) => (
+                                            <button
+                                                key={item}
+                                                className="call-Button"
+                                                style={{
+                                                    backgroundColor: admissionType === item ? '#DAE8FF' : '#F6F7F9',
+                                                    fontSize: '12px',
+                                                }}
+                                                onClick={() => {
+                                                    setAdmissionType(item);
+                                                }}
+                                            >
+                                                {item}
+                                            </button>
+                                        ))}
+                                    </Stack>
+                                </Box>
+                                {/* <Box display={`${isEditing}` ? "block" : "none"}>
                                     <Stack flexWrap={'wrap'} flexDirection="row" gap={'14px'}>
                                         {[
                                             'none',
@@ -492,7 +514,7 @@ const PatientRecord = ({ isPatient }) => {
                                             </Box>
                                         ) : (<></>)
                                     )}
-                                </Box>
+                                </Box> */}
                             </Box>
                         </Box>
                     ) : (

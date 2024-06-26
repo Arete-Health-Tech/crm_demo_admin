@@ -124,6 +124,7 @@ const PatientRecord = ({ isPatient }) => {
             filterTickets
         );
         setIsEditing(false);
+        setAdmissionType('');
     };
 
     const handleEditDiagonsticTest = async (event) => {

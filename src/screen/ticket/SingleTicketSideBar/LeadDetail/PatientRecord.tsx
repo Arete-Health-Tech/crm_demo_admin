@@ -389,7 +389,7 @@ const PatientRecord = ({ isPatient }) => {
                                                 key={item}
                                                 className="call-Button"
                                                 style={{
-                                                    backgroundColor: admissionType === item ? '#DAE8FF' : '#F6F7F9',
+                                                    backgroundColor: admissionType == item ? '#DAE8FF' : '#F6F7F9',
                                                     fontSize: '12px',
                                                 }}
                                                 onClick={() => {

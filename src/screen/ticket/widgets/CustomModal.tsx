@@ -344,7 +344,7 @@ const CustomModal = () => {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={handleFormSubmit}
+            onClick={() => { stopTimer(); handleFormSubmit; }}
             disabled={!formData.select}
             variant="contained"
           >

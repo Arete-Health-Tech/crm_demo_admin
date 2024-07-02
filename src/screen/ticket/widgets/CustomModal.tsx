@@ -127,6 +127,16 @@ const CustomModal = () => {
     setShowForm(true);
   };
 
+  useEffect(() => {
+    if (showForm && stoppedTimer !== null) {
+      setFormData({
+        select: '',
+        stoppedTimer: stoppedTimer
+      });
+      handleFormSubmit();
+    }
+  }, [showForm, stoppedTimer]);
+
   const handleFormSubmit = async () => {
     try {
       setFormData((prevData) => ({
@@ -143,7 +153,8 @@ const CustomModal = () => {
         const data: iNote = {
           text: note,
           ticket: sachin,
-          ucid: ucid
+          ucid: ucid,
+          stoppedTimer: stoppedTimer
         };
         await createNotesHandler(data);
         setNote('');
@@ -344,7 +355,7 @@ const CustomModal = () => {
         </DialogContent>
         <DialogActions>
           <Button
-            onClick={() => { stopTimer(); handleFormSubmit(); }}
+            onClick={stopTimer}
             disabled={!formData.select}
             variant="contained"
           >

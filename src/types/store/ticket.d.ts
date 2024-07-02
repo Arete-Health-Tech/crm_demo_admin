@@ -246,6 +246,7 @@ export interface iNote {
   creator?: string;
   ucid?: string;
   _id?: string;
+  stoppedTimer?: number | null;
 }
 
 export interface iTimer {

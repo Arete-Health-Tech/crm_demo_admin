@@ -90,7 +90,7 @@ const MessagingWidget = (props: Props) => {
 
   useEffect(() => {
     handleMarkAsRead(ticketID)
-  }, [])
+  }, [ticketID])
 
 
   useEffect(() => {

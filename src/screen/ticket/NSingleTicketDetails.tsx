@@ -792,7 +792,7 @@ const NSingleTicketDetails = (props: Props) => {
                 return setWhtsappNotificationCount(0); // or any default value you prefer
             }
         }
-    }, [allWhtsappCount])
+    }, [allWhtsappCount, ticketID])
 
     return (
         <>

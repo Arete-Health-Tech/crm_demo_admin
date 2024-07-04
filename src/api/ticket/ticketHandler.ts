@@ -18,7 +18,8 @@ import {
   createTimer,
   getPharmacyTickets,
   getAllTaskCount,
-  getAuditTickets
+  getAuditTickets,
+  getAllWhatsAppCount
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -328,6 +329,12 @@ export const getAllTaskCountHandler = async () => {
   const { setAllTaskCount } = useTicketStore.getState();
   const allTaskCount = await getAllTaskCount();
   setAllTaskCount(allTaskCount);
+};
+
+export const getAllWhtsappCountHandler = async () => {
+  const { setAllWhtsappCount } = useTicketStore.getState();
+  const allWhtsappCount = await getAllWhatsAppCount();
+  setAllWhtsappCount(allWhtsappCount);
 };
 
 

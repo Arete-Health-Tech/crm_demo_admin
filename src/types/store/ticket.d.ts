@@ -222,7 +222,7 @@ export interface iTicketStore {
   noteModal: boolean;
   setNoteModal: (noteModal: boolean) => void;
   ticketUpdateFlag: object;
-  setTicketUpdateFlag: (noteModal: object) => void;
+  setTicketUpdateFlag: (ticketUpdateFlag: object) => void;
   isModalOpenCall: boolean;
   setIsModalOpenCall: (isModalOpenCall: boolean) => void;
   isAuditor: boolean;
@@ -237,6 +237,8 @@ export interface iTicketStore {
   setAllTaskCount: (allTaskCount: iTaskCount[]) => void;
   agentLogin: boolean;
   setAgentLogin: (agentLogin: boolean) => void;
+  allWhtsappCount: object;
+  setAllWhtsappCount: (allWhtsappCount: object) => void;
 }
 
 export interface iNote {

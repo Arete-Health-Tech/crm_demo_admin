@@ -20,6 +20,7 @@ import { useEffect, useState, useRef, useReducer } from 'react';
 import {
   getAllReminderHandler,
   getAllTaskCountHandler,
+  getAllWhtsappCountHandler,
   getTicketHandler
 } from '../../api/ticket/ticketHandler';
 import useTicketStore from '../../store/ticketStore';
@@ -73,6 +74,13 @@ import {
 // .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
 
+interface storeMessage {
+  message: string;
+  ticket: string;
+  unreadCount: number;
+
+  // Add other fields as needed
+}
 const Ticket = () => {
   const { ticketID } = useParams();
   const {
@@ -94,7 +102,7 @@ const Ticket = () => {
     isSwitchView,
     setIsSwitchView,
     setIsAuditor,
-    viewEstimates
+    viewEstimates,
   } = useTicketStore();
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
@@ -667,6 +675,45 @@ const Ticket = () => {
       return 0;
     }
   };
+
+  //This function call the api to get all the ticket id with their whtsapp message count 
+  const getAllWhtsappMsgCount = async () => {
+    await getAllWhtsappCountHandler();
+  }
+  useEffect(() => {
+    getAllWhtsappMsgCount()
+  }, [])
+
+  //For getting the whtsapp message instant
+
+  const [messages, setMessages] = useState<storeMessage[]>([]);
+
+  useEffect(() => {
+    // console.log('useEffect is running in NsingleticketCard'); // Check if this logs
+
+    // Check if socket is connected
+    if (socket.connected) {
+      console.log('Socket connected successfully in NsingleticketCard');
+    } else {
+      console.log('Socket not connected, attempting to connect...');
+      socket.connect();
+    }
+
+    const handleNewMessage = (data) => {
+      console.log('Received new message in ticketLayout', data);
+      setMessages((prevMessages) => [...prevMessages, data.message]);
+      getAllWhtsappMsgCount()
+    };
+
+    // Listen for the 'newMessage' event
+    socket.on('newMessage', handleNewMessage);
+
+    // Clean up the socket connection on component unmount
+    return () => {
+      socket.off('newMessage', handleNewMessage); // Remove the event listener
+      socket.disconnect();
+    };
+  }, []);
 
   return (
     <>

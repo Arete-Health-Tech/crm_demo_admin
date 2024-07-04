@@ -45,8 +45,10 @@ dayjs.extend(timezone);
 const TicketCard = (props: Props) => {
   const { ticketID } = useParams();
   const { doctors, departments, allServices, stages } = useServiceStore();
+  const { allWhtsappCount } = useTicketStore();
   const [isNewTicket, setIsNewTicket] = useState(true);
   const [taskPendingCount, setTaskPendingCount] = useState(0);
+  const [whtsappNotificationCount, setWhtsappNotificationCount] = useState(0);
 
   const [currentStage, setCurrentStage] = useState<iStage>({
     _id: '',
@@ -258,6 +260,15 @@ const TicketCard = (props: Props) => {
     setIsEstimateUpload(false);
   }, [props.patientData._id, isEstimateUpload]);
 
+  // In this function it will return the value of the ticket which we pass
+  useEffect(() => {
+    if (allWhtsappCount.hasOwnProperty(props.patientData._id)) {
+      return setWhtsappNotificationCount(allWhtsappCount[props.patientData._id]);
+    } else {
+      return setWhtsappNotificationCount(0); // or any default value you prefer
+    }
+  }, [props.patientData._id])
+
   return (
     <Box
       p={2}
@@ -463,7 +474,7 @@ const TicketCard = (props: Props) => {
         <Stack sx={{ display: "flex", flexDirection: "row !important", gap: "5px" }}>
           {/* <Stack className='task-pending'><img src={NotifyAudit} alt="" /></Stack> */}
           {taskPendingCount > 0 && <Stack className='task-pending'>{taskPendingCount} Tasks Pending </Stack>}
-          {/* <Stack className='ticket-card-notification'>2</Stack> */}
+          {whtsappNotificationCount > 0 && <Stack className='ticket-card-notification'>{whtsappNotificationCount}</Stack>}
         </Stack>
       </Stack>
 

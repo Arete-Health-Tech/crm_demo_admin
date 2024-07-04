@@ -69,6 +69,12 @@ const MessagingWidget = (props: Props) => {
 
   const handleMarkAsRead = async (ticketID: string | undefined) => {
     await markAsRead(ticketID)
+    await getTicketHandler(
+      UNDEFINED,
+      pageNumber,
+      'false',
+      filterTickets
+    );
   }
 
   useEffect(() => {

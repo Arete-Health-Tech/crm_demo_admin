@@ -5,7 +5,7 @@ const config: CapacitorConfig = {
   appName: 'IVY-CRM',
   webDir: 'build',
   server: {
-    url: "https://arete.demo.aretehealth.tech/prod/api/v1/"
+    url: "https://crm-demo-admin.vercel.app"
     // url: "http://localhost:3000/prod/api/v1/"
   }
 };

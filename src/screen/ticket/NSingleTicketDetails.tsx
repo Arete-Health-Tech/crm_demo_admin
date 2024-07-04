@@ -140,6 +140,7 @@ import {
 } from 'firebase/firestore';
 import { database } from '../../utils/firebase';
 import useReprentativeStore from '../../store/representative';
+import { markAsRead } from '../../api/flow/flow';
 interface iConsumer {
     uid: string;
     firstName: string;
@@ -251,6 +252,9 @@ const NSingleTicketDetails = (props: Props) => {
     const defaultValidation = { message: '', value: false };
     const [selectedInternalRef, setSelectedInternalRef] = useState('');
     const [inputSearch, setInputSearch] = useState('');
+
+    const [messages, setMessages] = useState<storeMessage[]>([]);
+
 
     const handleInternalRefChange = (event) => {
         const value = event.target.value;
@@ -746,34 +750,6 @@ const NSingleTicketDetails = (props: Props) => {
         };
     }, []);
 
-    const [messages, setMessages] = useState<storeMessage[]>([]);
-
-    useEffect(() => {
-        // console.log('useEffect is running in NsingleticketCard'); // Check if this logs
-
-        // Check if socket is connected
-        if (socket.connected) {
-            console.log('Socket connected successfully in NsingleticketCard');
-        } else {
-            console.log('Socket not connected, attempting to connect...');
-            socket.connect();
-        }
-
-        const handleNewMessage = (data) => {
-            console.log('Received new message ', data);
-            setMessages((prevMessages) => [...prevMessages, data.message]);
-        };
-
-        // Listen for the 'newMessage' event
-        socket.on('newMessage', handleNewMessage);
-
-        // Clean up the socket connection on component unmount
-        return () => {
-            socket.off('newMessage', handleNewMessage); // Remove the event listener
-            socket.disconnect();
-        };
-    }, []);
-
     // console.log({ messages })
     const handleProbability = async (value) => {
         await updateTicketProbability(value, ticketID);
@@ -806,6 +782,33 @@ const NSingleTicketDetails = (props: Props) => {
         getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
         navigate(`/ticket/${ticketID}`);
     };
+
+
+    const handleMarkAsRead = async (ticketID: string | undefined) => {
+        await markAsRead(ticketID)
+    }
+
+    useEffect(() => {
+        console.log("Initializing socket connection...");
+
+        // Listen for the 'newMessage' event
+        socket.on('newMessage', (data) => {
+            console.log('Received new message inNsingleTicketDetail:', data);
+            setMessages((prevMessages) => [...prevMessages, data.message]);
+            handleMarkAsRead(ticketID)
+        });
+
+        // Clean up the socket connection on component unmount
+        return () => {
+            socket.off('newMessage'); // Remove the event listener
+            socket.disconnect();
+        };
+    }, []);
+
+    useEffect(() => {
+        handleMarkAsRead(ticketID)
+    }, [])
+
 
     return (
         <>

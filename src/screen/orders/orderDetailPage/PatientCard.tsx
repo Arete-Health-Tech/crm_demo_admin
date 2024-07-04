@@ -6,7 +6,7 @@ import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
 import { iTicket } from '../../../types/store/ticket';
 import useTicketStore from '../../../store/ticketStore';
-import { Stack } from 'react-bootstrap';
+import { Stack } from '@mui/material';
 
 interface PatientData {
     patientTicket: iTicket[];

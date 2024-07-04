@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Chip, Stack, Typography } from '@mui/material';
 import MaleIcon from '@mui/icons-material/Male';
 import { iReminder, iTicket } from '../../../types/store/ticket';
@@ -21,6 +22,7 @@ import DefaultPr from '../../../../src/assets/DefaultPr.svg'
 import NotifyAudit from '../../../../src/assets/NotifyAudit.svg'
 import '../singleTicket.css'
 import { apiClient, socket } from '../../../api/apiClient';
+import { getAllWhtsappCountHandler } from '../../../api/ticket/ticketHandler';
 
 // import { updateIsNewTicket } from '../../../api/ticket/ticket';
 
@@ -268,6 +270,50 @@ const TicketCard = (props: Props) => {
       return setWhtsappNotificationCount(0); // or any default value you prefer
     }
   }, [props.patientData._id])
+
+
+
+  //This function call the api to get all the ticket id with their whtsapp message count 
+  const getAllWhtsappMsgCount = async () => {
+    await getAllWhtsappCountHandler();
+  }
+  useEffect(() => {
+    getAllWhtsappMsgCount()
+  }, [])
+
+  //For getting the whtsapp message instant
+
+  const [messages, setMessages] = useState<storeMessage[]>([]);
+
+  useEffect(() => {
+    // console.log('useEffect is running in ticketCard'); // Check if this logs
+
+    // Check if socket is connected
+    if (socket.connected) {
+      console.log('Socket connected successfully in ticketCard');
+    } else {
+      console.log('Socket not connected, attempting to connect...');
+      socket.connect();
+    }
+
+    const handleNewMessage = (data) => {
+      console.log('Received new message in ticketCard', data);
+      setMessages((prevMessages) => [...prevMessages, data.message]);
+      getAllWhtsappMsgCount()
+    };
+
+    // Listen for the 'newMessage' event
+    socket.on('newMessage', handleNewMessage);
+
+    // Clean up the socket connection on component unmount
+    return () => {
+      socket.off('newMessage', handleNewMessage); // Remove the event listener
+      socket.disconnect();
+    };
+  }, []);
+
+
+
 
   return (
     <Box

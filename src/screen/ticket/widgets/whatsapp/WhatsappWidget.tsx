@@ -78,14 +78,7 @@ const MessagingWidget = (props: Props) => {
     socket.on('newMessage', async (data) => {
       // console.log('Received new message:', data);
       setMessages((prevMessages) => [...prevMessages, data.message]);
-      await getAllWhtsappCountHandler();
       handleMarkAsRead(ticketID)
-      await getTicketHandler(
-        UNDEFINED,
-        pageNumber,
-        'false',
-        filterTickets
-      );
     });
 
     // Clean up the socket connection on component unmount
@@ -97,15 +90,6 @@ const MessagingWidget = (props: Props) => {
 
   useEffect(() => {
     handleMarkAsRead(ticketID)
-    const ticketHandler = async () => {
-      await getTicketHandler(
-        UNDEFINED,
-        pageNumber,
-        'false',
-        filterTickets
-      );
-    }
-    ticketHandler()
   }, [])
 
 

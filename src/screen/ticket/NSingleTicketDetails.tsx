@@ -195,7 +195,8 @@ const NSingleTicketDetails = (props: Props) => {
         callRescheduler,
         estimates,
         isSwitchView,
-        setIsSwitchView
+        setIsSwitchView,
+        allWhtsappCount
     } = useTicketStore();
     const { doctors, departments, stages } = useServiceStore();
     const { representative } = useReprentativeStore();
@@ -246,6 +247,7 @@ const NSingleTicketDetails = (props: Props) => {
     const defaultValidation = { message: '', value: false };
     const [selectedInternalRef, setSelectedInternalRef] = useState('');
     const [inputSearch, setInputSearch] = useState('');
+    const [whtsappNotificationCount, setWhtsappNotificationCount] = useState(0);
 
     const handleInternalRefChange = (event) => {
         const value = event.target.value;
@@ -782,6 +784,15 @@ const NSingleTicketDetails = (props: Props) => {
     //     handleMarkAsRead(ticketID)
     // }, [])
 
+    useEffect(() => {
+        if (ticketID !== undefined) {
+            if (allWhtsappCount.hasOwnProperty(ticketID)) {
+                return setWhtsappNotificationCount(allWhtsappCount[ticketID]);
+            } else {
+                return setWhtsappNotificationCount(0); // or any default value you prefer
+            }
+        }
+    }, [allWhtsappCount])
 
     return (
         <>
@@ -1214,8 +1225,8 @@ const NSingleTicketDetails = (props: Props) => {
                                     />
                                     <Tab
                                         label={
-                                            <Badge
-                                                badgeContent={2}
+                                            whtsappNotificationCount > 0 ? <Badge
+                                                badgeContent={whtsappNotificationCount}
                                                 sx={{
                                                     '& .MuiBadge-badge': {
                                                         color: '#FFF',
@@ -1230,13 +1241,12 @@ const NSingleTicketDetails = (props: Props) => {
                                                 }}
                                             >
                                                 Whatsapp
-                                            </Badge>
+                                            </Badge> : "Whatsapp"
                                         }
-                                    // label="Whatsapp"
-                                    // value="2"
-                                    // className={
-                                    //     value == '2' ? styles.selectedTab : styles.tabsLabel
-                                    // }
+                                        value="2"
+                                        className={
+                                            value == '2' ? styles.selectedTab : styles.tabsLabel
+                                        }
                                     />
                                     {/* <Tab
                                     label="Email"

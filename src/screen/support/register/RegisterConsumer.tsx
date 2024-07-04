@@ -94,7 +94,8 @@ const RegisterConsumer = () => {
   const validationsChecker = () => {
     const firstNameValid = consumer.firstName.trim() !== '';
     const phoneValid = consumer.phone.length === 10;
-    const uidValid = /^[a-zA-Z0-9]{13}$/.test(consumer.uid.trim());
+    // const uidValid = /^[a-zA-Z0-9]$/.test(consumer.uid.trim());
+    const uidValid = /^[a-zA-Z0-9]+$/.test(consumer.uid.trim());
 
     setValidations((prev) => ({
       ...prev,
@@ -266,7 +267,7 @@ const RegisterConsumer = () => {
           onBlur={fetchConsumerDataByUhid}
           error={validations.uid.value}
           helperText={validations.uid.message}
-          inputProps={{ maxLength: 13, pattern: "\\d{0,12}" }}
+        // inputProps={{ maxLength: 13, pattern: "\\d{0,12}" }}
         />
         <Stack direction="row" spacing={2}>
           <TextField

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import { Send } from '@mui/icons-material';
 import { Box, Stack, Typography, TextField, Button, CircularProgress } from '@mui/material';
@@ -40,7 +41,7 @@ const MessagingWidget = (props: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ticketID } = useParams();
   const { user } = useUserStore();
-  const { tickets, filterTickets, setWhtsappExpanded, whtsappExpanded, isAuditor, pageNumber } =
+  const { tickets, filterTickets, setWhtsappExpanded, whtsappExpanded, isAuditor, pageNumber, allWhtsappCount } =
     useTicketStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState(null);
@@ -69,6 +70,7 @@ const MessagingWidget = (props: Props) => {
 
   const handleMarkAsRead = async (ticketID: string | undefined) => {
     await markAsRead(ticketID)
+    await getAllWhtsappCountHandler();
     await getTicketHandler(
       UNDEFINED,
       pageNumber,
@@ -96,7 +98,7 @@ const MessagingWidget = (props: Props) => {
 
   useEffect(() => {
     handleMarkAsRead(ticketID)
-  }, [ticketID])
+  }, [ticketID, allWhtsappCount])
 
 
   useEffect(() => {

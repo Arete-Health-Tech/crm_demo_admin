@@ -82,6 +82,7 @@ import ShowPrescription from './widgets/ShowPrescriptionModal';
 import {
     assignedToTicket,
     deleteTicket,
+    getAllWhatsAppCount,
     removeFromTicket,
     updateService,
     updateTicketProbability,
@@ -774,6 +775,16 @@ const NSingleTicketDetails = (props: Props) => {
             socket.disconnect();
         };
     }, []);
+
+    const getWhtsappCount = async () => {
+        const whtsappCount = await getAllWhatsAppCount();
+        console.log("getAllWhatsAppCount", whtsappCount)
+    }
+
+    useEffect(() => {
+        getWhtsappCount()
+    }, [ticketID])
+
 
     // console.log({ messages })
     const handleProbability = async (value) => {

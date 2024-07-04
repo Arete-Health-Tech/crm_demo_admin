@@ -307,4 +307,9 @@ export const getAuditTickets = async () => {
   return Promise.resolve(data);
 };
 
+export const getAllWhatsAppCount = async () => {
+  const data = await apiClient.get(`/flow/getAllWhatsAppCount`);
+  return Promise.resolve(data);
+};
+
 

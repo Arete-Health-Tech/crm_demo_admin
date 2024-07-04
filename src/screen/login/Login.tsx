@@ -96,7 +96,8 @@ const Login = () => {
               <img src={MailIcon} alt='mail' />
             </Stack>
             <Stack className={styles.mailId}>
-              help@aretehealth.tech
+              {/* help@aretehealth.tech */}
+              anoopkumar@aretehealth.tech
             </Stack>
           </Stack>
         </Box>

@@ -1213,30 +1213,30 @@ const NSingleTicketDetails = (props: Props) => {
                                         }
                                     />
                                     <Tab
-                                        // label={
-                                        //     <Badge
-                                        //         badgeContent={2}
-                                        //         sx={{
-                                        //             '& .MuiBadge-badge': {
-                                        //                 color: '#FFF',
-                                        //                 backgroundColor: '#F94839',
-                                        //                 margin: '-3px',
-                                        //                 fontSize: '9px',
+                                        label={
+                                            <Badge
+                                                badgeContent={2}
+                                                sx={{
+                                                    '& .MuiBadge-badge': {
+                                                        color: '#FFF',
+                                                        backgroundColor: '#F94839',
+                                                        margin: '-3px',
+                                                        fontSize: '9px',
 
-                                        //                 height: '20px',
-                                        //                 // borderRadius: '80%',
-                                        //                 padding: -8
-                                        //             }
-                                        //         }}
-                                        //     >
-                                        //         Whatsapp
-                                        //     </Badge>
-                                        // }
-                                        label="Whatsapp"
-                                        value="2"
-                                        className={
-                                            value == '2' ? styles.selectedTab : styles.tabsLabel
+                                                        height: '20px',
+                                                        // borderRadius: '80%',
+                                                        padding: -8
+                                                    }
+                                                }}
+                                            >
+                                                Whatsapp
+                                            </Badge>
                                         }
+                                    // label="Whatsapp"
+                                    // value="2"
+                                    // className={
+                                    //     value == '2' ? styles.selectedTab : styles.tabsLabel
+                                    // }
                                     />
                                     {/* <Tab
                                     label="Email"

@@ -32,13 +32,15 @@ import NotFoundIcon from '../../../../assets/NotFoundTask.svg';
 import { Avatar } from '@mui/material';
 import { io } from 'socket.io-client';
 import { markAsRead } from '../../../../api/flow/flow';
+import { getAllWhtsappCountHandler, getTicketHandler } from '../../../../api/ticket/ticketHandler';
+import { UNDEFINED } from '../../../../constantUtils/constant';
 type Props = {};
 
 const MessagingWidget = (props: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ticketID } = useParams();
   const { user } = useUserStore();
-  const { tickets, filterTickets, setWhtsappExpanded, whtsappExpanded, isAuditor } =
+  const { tickets, filterTickets, setWhtsappExpanded, whtsappExpanded, isAuditor, pageNumber } =
     useTicketStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState(null);
@@ -73,10 +75,17 @@ const MessagingWidget = (props: Props) => {
     console.log("Initializing socket connection...");
 
     // Listen for the 'newMessage' event
-    socket.on('newMessage', (data) => {
+    socket.on('newMessage', async (data) => {
       // console.log('Received new message:', data);
       setMessages((prevMessages) => [...prevMessages, data.message]);
+      await getAllWhtsappCountHandler();
       handleMarkAsRead(ticketID)
+      await getTicketHandler(
+        UNDEFINED,
+        pageNumber,
+        'false',
+        filterTickets
+      );
     });
 
     // Clean up the socket connection on component unmount
@@ -88,6 +97,15 @@ const MessagingWidget = (props: Props) => {
 
   useEffect(() => {
     handleMarkAsRead(ticketID)
+    const ticketHandler = async () => {
+      await getTicketHandler(
+        UNDEFINED,
+        pageNumber,
+        'false',
+        filterTickets
+      );
+    }
+    ticketHandler()
   }, [])
 
 

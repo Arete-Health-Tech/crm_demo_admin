@@ -35,7 +35,7 @@ import { io } from 'socket.io-client';
 import { markAsRead } from '../../../../api/flow/flow';
 import { getAllWhtsappCountHandler, getTicketHandler } from '../../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../../constantUtils/constant';
-type Props = {};
+type Props = { ticketId: string | undefined };
 
 const MessagingWidget = (props: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -79,14 +79,31 @@ const MessagingWidget = (props: Props) => {
     );
   }
 
+  //This function call the api to get all the ticket id with their whtsapp message count 
+  const getAllWhtsappMsgCount = async () => {
+    await getAllWhtsappCountHandler();
+    await getTicketHandler(
+      UNDEFINED,
+      pageNumber,
+      'false',
+      filterTickets
+    );
+  }
   useEffect(() => {
     console.log("Initializing socket connection...");
-
+    // Check if socket is connected
+    if (socket.connected) {
+      console.log('Socket connected successfully in ticketCard');
+    } else {
+      console.log('Socket not connected, attempting to connect...');
+      socket.connect();
+    }
     // Listen for the 'newMessage' event
     socket.on('newMessage', async (data) => {
       // console.log('Received new message:', data);
       setMessages((prevMessages) => [...prevMessages, data.message]);
-      handleMarkAsRead(ticketID)
+      getAllWhtsappMsgCount()
+      handleMarkAsRead(props.ticketId)
     });
 
     // Clean up the socket connection on component unmount

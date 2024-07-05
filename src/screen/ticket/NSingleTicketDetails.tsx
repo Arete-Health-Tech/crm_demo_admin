@@ -1376,7 +1376,7 @@ const NSingleTicketDetails = (props: Props) => {
                                     <Activities />
                                 </TabPanel>
                                 <TabPanel value="2" style={{ padding: 0 }}>
-                                    <MessagingWidget />
+                                    <MessagingWidget ticketId={ticketID}/>
                                 </TabPanel>
                                 {/* <TabPanel value="3" style={{ padding: 0 }}>
                                 <QueryResolutionWidget />

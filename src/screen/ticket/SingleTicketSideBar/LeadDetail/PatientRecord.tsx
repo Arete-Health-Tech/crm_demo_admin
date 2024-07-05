@@ -385,7 +385,7 @@ const PatientRecord = ({ isPatient }) => {
                             <Box display={"flex"} flexDirection="column">
                                 <Box display={`${isEditing}` ? "block" : "none"}>
                                     <Stack flexWrap={'wrap'} flexDirection="row" gap={'14px'}>
-                                        {['none', 'Surgery', 'Radiation', 'MM', 'DC'].map((item) => (
+                                        {[ 'Surgery', 'Radiation', 'MM', 'DC'].map((item) => (
                                             <button
                                                 key={item}
                                                 className="call-Button"

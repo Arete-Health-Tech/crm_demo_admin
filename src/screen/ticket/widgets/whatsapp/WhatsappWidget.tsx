@@ -111,7 +111,7 @@ const MessagingWidget = (props: Props) => {
       socket.off('newMessage'); // Remove the event listener
       socket.disconnect();
     };
-  }, []);
+  });
 
   useEffect(() => {
     handleMarkAsRead(ticketID)

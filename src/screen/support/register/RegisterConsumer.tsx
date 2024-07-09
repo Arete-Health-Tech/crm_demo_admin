@@ -206,8 +206,8 @@ const RegisterConsumer = () => {
         // updateConsumerState('age', response.data[0].age);
         updateConsumerState('gender', response.data[0].Gender === "Female" ? "F" : response.data[0].Gender === "Male" ? "M" : "O"
         );
-        setConsumerId(response.data[0].PatientId);
-        setExistingData(true);
+        // setConsumerId(response.data[0].PatientId);
+        // setExistingData(true);
       }
     } catch (error) {
       try {
@@ -222,8 +222,8 @@ const RegisterConsumer = () => {
           updateConsumerState('phone', response.data.phone);
           updateConsumerState('age', response.data.age);
           updateConsumerState('gender', response.data.gender);
-          setConsumerId(response.data._id);
-          setExistingData(true);
+          // setConsumerId(response.data._id);
+          // setExistingData(true);
         }
       } catch (error) {
         updateConsumerState('firstName', '');

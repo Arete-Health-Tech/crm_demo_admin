@@ -207,8 +207,7 @@ const RegisterConsumer = () => {
         updateConsumerState('gender', response.data[0].Gender === "Female" ? "F" : response.data[0].Gender === "Male" ? "M" : "O"
         );
         setConsumerId(response.data[0].PatientId);
-        navigate(`/consumer/${response.data[0].PatientId}`);
-        // setExistingData(true);
+        setExistingData(true);
       }
     } catch (error) {
       try {

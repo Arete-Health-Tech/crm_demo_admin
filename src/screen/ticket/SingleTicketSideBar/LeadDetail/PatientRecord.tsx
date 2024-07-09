@@ -376,21 +376,24 @@ const PatientRecord = ({ isPatient }) => {
                             <Box display={"flex"} flexDirection="column">
                                 <Box display={`${isEditing}` ? "block" : "none"}>
                                     <Stack flexWrap={'wrap'} flexDirection="row" gap={'14px'}>
-                                        {['Surgery', 'Radiation', 'MM', 'DC'].map((item) => (
-                                            <button
-                                                key={item}
-                                                className="call-Button"
-                                                style={{
-                                                    backgroundColor: admissionType == item ? '#DAE8FF' : '#F6F7F9',
-                                                    fontSize: '12px',
-                                                }}
-                                                onClick={() => {
-                                                    setAdmissionType(item);
-                                                }}
-                                            >
-                                                {item}
-                                            </button>
-                                        ))}
+                                        {['Surgery',
+                                            // 'Radiation',
+                                            'MM',
+                                            'DC'].map((item) => (
+                                                <button
+                                                    key={item}
+                                                    className="call-Button"
+                                                    style={{
+                                                        backgroundColor: admissionType == item ? '#DAE8FF' : '#F6F7F9',
+                                                        fontSize: '12px',
+                                                    }}
+                                                    onClick={() => {
+                                                        setAdmissionType(item);
+                                                    }}
+                                                >
+                                                    {item}
+                                                </button>
+                                            ))}
                                     </Stack>
                                 </Box>
                                 {/* <Box display={`${isEditing}` ? "block" : "none"}>
@@ -585,12 +588,10 @@ const PatientRecord = ({ isPatient }) => {
                                         >
                                             <MenuItem value="MRI" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>MRI</MenuItem>
                                             <MenuItem value="PET-CT" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>PET-CT</MenuItem>
-                                            <MenuItem value="CT SCAN" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>CT SCAN</MenuItem>
+                                            <MenuItem value="CT-SCAN" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>CT SCAN</MenuItem>
                                             <MenuItem value="Lab" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>Lab</MenuItem>
-                                            <MenuItem value="EEG" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>EEG</MenuItem>
                                             <MenuItem value="USG" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>USG</MenuItem>
                                             <MenuItem value="X-RAY" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>X-RAY</MenuItem>
-                                            <MenuItem value="EMG" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>EMG</MenuItem>
                                         </Select>
                                         <IconButton onClick={() => removeDiagnosticTest(index)}>
                                             <DeleteIcon sx={{ color: 'red' }} />

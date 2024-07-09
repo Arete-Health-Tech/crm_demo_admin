@@ -1019,7 +1019,8 @@ const CreatePrescription = () => {
               {[
                 'none',
                 'Surgery',
-                'MM'
+                'MM',
+                'DC'
               ].map((item) => (
                 <Button
                   size="small"
@@ -1055,7 +1056,7 @@ const CreatePrescription = () => {
                 ))}
               </Stack>
             ) : (
-              prescription.admission !== 'none' && (
+              prescription.admission !== 'none' && prescription.admission !== 'MM' && prescription.admission !== 'DC' && (
                 <Box my={1.5}>
                   <Autocomplete
                     size="small"
@@ -1166,30 +1167,37 @@ const CreatePrescription = () => {
               >
                 None
               </Button>
-              {['CT-Scan', 'EEG', 'EMG', 'MRI', 'Lab', 'X-RAY', 'USG'].map(
-                (item) => (
-                  <Button
-                    size="small"
-                    sx={{ m: 0.4 }}
-                    key={item}
-                    onClick={() => {
-                      const diag = new Set(diagnostics);
-                      if (diag.has(item)) {
-                        diag.delete(item);
-                      } else {
-                        diag.add(item);
+              {['CT-Scan',
+                'PET-CT',
+                // 'EEG',
+                // 'EMG',
+                'MRI',
+                'Lab',
+                'X-RAY',
+                'USG'].map(
+                  (item) => (
+                    <Button
+                      size="small"
+                      sx={{ m: 0.4 }}
+                      key={item}
+                      onClick={() => {
+                        const diag = new Set(diagnostics);
+                        if (diag.has(item)) {
+                          diag.delete(item);
+                        } else {
+                          diag.add(item);
+                        }
+                        setDiagnostics(Array.from(diag));
+                        changePrescriptionValue('diagnostics', Array.from(diag))
+                      }}
+                      variant={
+                        new Set(diagnostics).has(item) ? 'contained' : 'outlined'
                       }
-                      setDiagnostics(Array.from(diag));
-                      changePrescriptionValue('diagnostics', Array.from(diag))
-                    }}
-                    variant={
-                      new Set(diagnostics).has(item) ? 'contained' : 'outlined'
-                    }
-                  >
-                    {item}
-                  </Button>
-                )
-              )}
+                    >
+                      {item}
+                    </Button>
+                  )
+                )}
             </Stack>
           </Box>
           <Box my={1.5}>

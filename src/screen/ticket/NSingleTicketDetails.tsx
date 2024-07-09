@@ -1455,7 +1455,7 @@ const NSingleTicketDetails = (props: Props) => {
                             {[
                                 'none',
                                 'Surgery',
-                                'Radiation',
+                                // 'Radiation',
                                 'MM',
                                 'DC',
                                 // 'Internal Reference'

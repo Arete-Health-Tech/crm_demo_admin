@@ -110,13 +110,25 @@ const PatientRecord = ({ isPatient }) => {
     const handleAdmissionSubmit = async (event, item) => {
         event.preventDefault();
         // setAdmissionType(item);
-        const updatedData = {
-            "consumer": {},
-            "prescription": {
-                "admission": item
+        if (item == "Surgery") {
+            const updatedData = {
+                "consumer": {},
+                "prescription": {
+                    "admission": item
+                }
             }
+            await updateConusmerData(updatedData, ticketID)
+        } else {
+            const updatedData = {
+                "consumer": {},
+                "prescription": {
+                    "admission": item,
+                    "service": null
+                }
+            }
+            await updateConusmerData(updatedData, ticketID)
         }
-        await updateConusmerData(updatedData, ticketID)
+
         await getTicketHandler(
             searchByName,
             pageNumber,
@@ -246,12 +258,12 @@ const PatientRecord = ({ isPatient }) => {
         try {
             if (query.length <= 3) return;
             const { data } = await apiClient.get(`/service/search?search=${query}`);
+
             setFoundServices(data);
         } catch (error) {
             console.log(error);
         }
     };
-
     const handelUploadType = async () => {
         setDisableButton(true);
         const validationCheck = validation();
@@ -293,27 +305,6 @@ const PatientRecord = ({ isPatient }) => {
 
     return (
         <>
-
-            {/* Diagnosis */}
-            {/* <Box className="Patient-records">
-                <Box className='Patient-records-Head'>
-                    <Stack className='Patient-records-Heading'>Diagnosis</Stack>
-
-                </Box>
-                <Box className='Patient-records-Head'>
-                    <Stack className='dot-list'>
-                        <span>&#8226;</span>
-                    </Stack>
-                    <Stack className='Patient-records-data'>Suspected renal impairment or monitoring of known kidney disease</Stack>
-                </Box>
-            </Box>
-
-            <Stack className="gray-border">
-           
-            </Stack> */}
-
-
-
 
             {/* Admission Details */}
             {currentTicket?.prescription[0]?.admission ? (
@@ -385,7 +376,7 @@ const PatientRecord = ({ isPatient }) => {
                             <Box display={"flex"} flexDirection="column">
                                 <Box display={`${isEditing}` ? "block" : "none"}>
                                     <Stack flexWrap={'wrap'} flexDirection="row" gap={'14px'}>
-                                        {[ 'Surgery', 'Radiation', 'MM', 'DC'].map((item) => (
+                                        {['Surgery', 'Radiation', 'MM', 'DC'].map((item) => (
                                             <button
                                                 key={item}
                                                 className="call-Button"

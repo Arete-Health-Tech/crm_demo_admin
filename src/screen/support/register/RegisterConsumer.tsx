@@ -207,34 +207,35 @@ const RegisterConsumer = () => {
         updateConsumerState('gender', response.data[0].Gender === "Female" ? "F" : response.data[0].Gender === "Male" ? "M" : "O"
         );
         setConsumerId(response.data[0].PatientId);
+        // setExistingData(true);
+      }
+    } catch (error) {
+      console.log("gfggf")
+    }
+    try {
+      const response = await apiClient.get(
+        '/consumer/findConsumer?',
+        { params: { search: consumer.uid } }
+      );
+      // console.log(response.data)
+      if (response.status == 200) {
+        updateConsumerState('firstName', response.data.firstName);
+        updateConsumerState('lastName', response.data.lastName);
+        updateConsumerState('phone', response.data.phone);
+        updateConsumerState('age', response.data.age);
+        updateConsumerState('gender', response.data.gender);
+        setConsumerId(response.data._id);
         setExistingData(true);
       }
     } catch (error) {
-      try {
-        const response = await apiClient.get(
-          '/consumer/findConsumer?',
-          { params: { search: consumer.uid } }
-        );
-        // console.log(response.data)
-        if (response.status == 200) {
-          updateConsumerState('firstName', response.data.firstName);
-          updateConsumerState('lastName', response.data.lastName);
-          updateConsumerState('phone', response.data.phone);
-          updateConsumerState('age', response.data.age);
-          updateConsumerState('gender', response.data.gender);
-          setConsumerId(response.data._id);
-          setExistingData(true);
-        }
-      } catch (error) {
-        updateConsumerState('firstName', '');
-        updateConsumerState('lastName', '');
-        updateConsumerState('phone', '');
-        updateConsumerState('age', '');
-        updateConsumerState('gender', '');
-        setConsumerId('');
+      updateConsumerState('firstName', '');
+      updateConsumerState('lastName', '');
+      updateConsumerState('phone', '');
+      updateConsumerState('age', '');
+      updateConsumerState('gender', '');
+      setConsumerId('');
 
-        setExistingData(false);
-      }
+      setExistingData(false);
     }
   };
 

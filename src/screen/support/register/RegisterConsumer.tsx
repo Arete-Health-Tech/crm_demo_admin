@@ -204,7 +204,7 @@ const RegisterConsumer = () => {
         updateConsumerState('lastName', response.data[0].PatientName.split(' ')[1]);
         updateConsumerState('phone', response.data[0].MobileNo);
         // updateConsumerState('age', response.data[0].age);
-        updateConsumerState('gender', response.data[0].Gender
+        updateConsumerState('gender', response.data[0].Gender === "Female" ? "F" : response.data[0].Gender === "Male" ? "M" : "O"
         );
         // setConsumerId(response.data[0]._id);
         // setExistingData(true);

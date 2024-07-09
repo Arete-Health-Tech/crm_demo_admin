@@ -195,21 +195,37 @@ const RegisterConsumer = () => {
   const fetchConsumerDataByUhid = async () => {
     try {
       const response = await apiClient.get(
-        '/consumer/findConsumer?',
+        '/consumer/UhidData?',
         { params: { search: consumer.uid } }
       );
-      // console.log(response.data)
+      console.log("response just after api call ", response)
       if (response.data) {
-        updateConsumerState('firstName', response.data.firstName);
-        updateConsumerState('lastName', response.data.lastName);
-        updateConsumerState('phone', response.data.phone);
-        updateConsumerState('age', response.data.age);
-        updateConsumerState('gender', response.data.gender);
-        setConsumerId(response.data._id);
-        setExistingData(true);
-      } else {
-        // setConsumer(initialConsumerFields);
-
+        updateConsumerState('firstName', response.data[0].PatientName.split(' ')[0]);
+        updateConsumerState('lastName', response.data[0].PatientName.split(' ')[1]);
+        updateConsumerState('phone', response.data[0].MobileNo);
+        // updateConsumerState('age', response.data[0].age);
+        updateConsumerState('gender', response.data[0].Gender
+        );
+        // setConsumerId(response.data[0]._id);
+        // setExistingData(true);
+      }
+    } catch (error) {
+      try {
+        const response = await apiClient.get(
+          '/consumer/findConsumer?',
+          { params: { search: consumer.uid } }
+        );
+        // console.log(response.data)
+        if (response.status == 200) {
+          updateConsumerState('firstName', response.data.firstName);
+          updateConsumerState('lastName', response.data.lastName);
+          updateConsumerState('phone', response.data.phone);
+          updateConsumerState('age', response.data.age);
+          updateConsumerState('gender', response.data.gender);
+          setConsumerId(response.data._id);
+          setExistingData(true);
+        }
+      } catch (error) {
         updateConsumerState('firstName', '');
         updateConsumerState('lastName', '');
         updateConsumerState('phone', '');
@@ -219,14 +235,12 @@ const RegisterConsumer = () => {
 
         setExistingData(false);
       }
-    } catch (error) {
-      alert(error);
     }
   };
 
-  useEffect(() => {
-    fetchConsumerDataByUhid();
-  }, [consumer.uid]);
+  // useEffect(() => {
+  //   fetchConsumerDataByUhid();
+  // }, [consumer.uid]);
 
   return (
     <Box>
@@ -280,6 +294,7 @@ const RegisterConsumer = () => {
             label="First Name"
             error={validations.firstName.value}
             helperText={validations.firstName.message}
+            disabled={consumer.uid ? false : true}
           />
           <TextField
             value={consumer.lastName}
@@ -290,6 +305,7 @@ const RegisterConsumer = () => {
             placeholder="Doe"
             label="Last Name (optional)"
             error={validations.lastName.value}
+            disabled={consumer.uid ? false : true}
             helperText={validations.lastName.message}
           />
         </Stack>
@@ -313,6 +329,7 @@ const RegisterConsumer = () => {
           placeholder="8979XXXXXX"
           label="Phone Number"
           error={validations.phone.value}
+          disabled={consumer.uid ? false : true}
           helperText={validations.phone.message}
         />
         {/* <TextField
@@ -335,6 +352,7 @@ const RegisterConsumer = () => {
           placeholder="32"
           label="Age  (optional)"
           error={validations.age.value}
+          disabled={consumer.uid ? false : true}
           helperText={validations.age.message}
         />
         {/* <Typography color="GrayText">Select Gender</Typography>
@@ -377,6 +395,7 @@ const RegisterConsumer = () => {
                   variant={
                     item.value === consumer.gender ? 'contained' : 'outlined'
                   }
+                  disabled={consumer.uid ? false : true}
                   onClick={() => updateConsumerState('gender', item.value)}
                 >
                   {item.label}

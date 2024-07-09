@@ -220,7 +220,8 @@ const TaskBar = () => {
                         </Menu>
                     </div>
                 </Box>
-                <Box>
+                {/* Audit Comments */}
+                {/* <Box>
                     <Box sx={auditorOpenCss}>
                         <Box
                             style={{
@@ -339,7 +340,7 @@ const TaskBar = () => {
                             3
                         </Stack>
                     </Box>
-                </Box>
+                </Box> */}
             </Box>
             <AddReminderWidget isModalOpen={reminderModalOpen} setIsModalOpen={setReminderModalOpen} />
             <AddCallRescheduler />

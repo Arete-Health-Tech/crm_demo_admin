@@ -426,7 +426,7 @@ const TicketFilter = (props: {
   return (
     <Box>
       <Stack display={"flex"} flexDirection={"row"} gap={"10px"}>
-        <Stack className="AuditorFilterIcon">
+        {/* <Stack className="AuditorFilterIcon">
           {
             isAuditorFilterOn ? (
               <LightTooltip
@@ -455,7 +455,7 @@ const TicketFilter = (props: {
                 </LightTooltip>)
           }
 
-        </Stack>
+        </Stack> */}
         <IconButton onClick={handleFilterOpen}>
           <StyledBadge
             invisible={filterCount <= 0}

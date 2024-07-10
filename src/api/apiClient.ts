@@ -30,7 +30,7 @@ export const socket = io(BACKEND_URL, {
 socket.on('connect_error', (err) => {
   console.log(`connect_error due to ${err.message}`);
 });
-console.log("api")
+
 
 // We can use the following function to inject the JWT token through an interceptor
 // We get the `accessToken` from the localStorage that we set when we authenticate

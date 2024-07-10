@@ -299,6 +299,7 @@ const NSingleTicketDetails = (props: Props) => {
             const { data } = await apiClient.get(`/service/search?search=${query}`);
             setFoundServices(data);
         } catch (error) {
+
             console.log(error);
         }
     };
@@ -316,16 +317,24 @@ const NSingleTicketDetails = (props: Props) => {
                 service: prescription?.service?._id
 
             };
-            const ticketId = ticketID;
-            const respose = await updateService({
+            try {
+                const ticketId = ticketID;
+                const respose = await updateService({
 
-                admission: prescription.admission,
-                service: prescription?.service?._id
+                    admission: prescription.admission,
+                    service: prescription?.service?._id
 
-            }, ticketId);
-            setDisableButton(false);
-            setAmissionTypeClicked(true);
-            getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+                }, ticketId);
+                setDisableButton(false);
+                setAmissionTypeClicked(true);
+                getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+
+            } catch (error) {
+                setDisableButton(false);
+                setAmissionTypeClicked(true);
+                getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+                console.error('Error occurred:', error);
+            }
 
             // const url = ticketID !== undefined ? `/ticket/${ticketID}` : `/ticket`;
             // window.location.href = url;

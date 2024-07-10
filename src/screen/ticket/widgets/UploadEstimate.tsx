@@ -126,6 +126,19 @@ function UploadEstimate() {
       setOpen(false);
 
     } catch (error) {
+      (async () => {
+        const result = await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          filterTickets,
+
+        );
+        // setTicketUpdateFlag(result);
+      })()
+      setNoteTextValue('');
+      setFile(null);
+      setOpen(false);
       console.error('Error occurred:', error);
     }
   };

@@ -46,6 +46,7 @@ const RegisterConsumer = () => {
   const [existingData, setExistingData] = useState(false);
   const { setSnacks } = useEventStore();
   const navigate = useNavigate();
+  let existingBIData=false
 
   // const validationsChecker = () => {
   //   const firstName = consumer.firstName === initialConsumerFields.firstName;
@@ -207,7 +208,7 @@ const RegisterConsumer = () => {
         updateConsumerState('gender', response.data[0].Gender === "Female" ? "F" : response.data[0].Gender === "Male" ? "M" : "O"
         );
         setConsumerId(response.data[0].PatientId);
-        // setExistingData(true);
+        existingBIData=true;
       }
     } catch (error) {
       console.log("gfggf")
@@ -217,7 +218,7 @@ const RegisterConsumer = () => {
         '/consumer/findConsumer?',
         { params: { search: consumer.uid } }
       );
-      // console.log(response.data)
+      console.log(response.data)
       if (response.status == 200) {
         updateConsumerState('firstName', response.data.firstName);
         updateConsumerState('lastName', response.data.lastName);
@@ -228,14 +229,16 @@ const RegisterConsumer = () => {
         setExistingData(true);
       }
     } catch (error) {
-      updateConsumerState('firstName', '');
-      updateConsumerState('lastName', '');
-      updateConsumerState('phone', '');
-      updateConsumerState('age', '');
-      updateConsumerState('gender', '');
-      setConsumerId('');
+      if (!existingBIData) {
+        updateConsumerState('firstName', '');
+        updateConsumerState('lastName', '');
+        updateConsumerState('phone', '');
+        updateConsumerState('age', '');
+        updateConsumerState('gender', '');
+        setConsumerId('');
 
-      setExistingData(false);
+        setExistingData(false);
+      }
     }
   };
 

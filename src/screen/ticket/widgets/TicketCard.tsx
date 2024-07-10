@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Chip, Stack, Typography } from '@mui/material';
 import MaleIcon from '@mui/icons-material/Male';
 import { iReminder, iTicket } from '../../../types/store/ticket';
@@ -22,7 +21,6 @@ import DefaultPr from '../../../../src/assets/DefaultPr.svg'
 import NotifyAudit from '../../../../src/assets/NotifyAudit.svg'
 import '../singleTicket.css'
 import { apiClient, socket } from '../../../api/apiClient';
-import { getAllWhtsappCountHandler } from '../../../api/ticket/ticketHandler';
 
 // import { updateIsNewTicket } from '../../../api/ticket/ticket';
 
@@ -47,10 +45,8 @@ dayjs.extend(timezone);
 const TicketCard = (props: Props) => {
   const { ticketID } = useParams();
   const { doctors, departments, allServices, stages } = useServiceStore();
-  const { allWhtsappCount } = useTicketStore();
   const [isNewTicket, setIsNewTicket] = useState(true);
   const [taskPendingCount, setTaskPendingCount] = useState(0);
-  const [whtsappNotificationCount, setWhtsappNotificationCount] = useState(0);
 
   const [currentStage, setCurrentStage] = useState<iStage>({
     _id: '',
@@ -62,7 +58,7 @@ const TicketCard = (props: Props) => {
   });
 
   const { tickets, filterTickets, setIsAuditor, allTaskCount, viewEstimates,
-    setViewEstimates, isEstimateUpload, setIsEstimateUpload } = useTicketStore();
+    setViewEstimates, isEstimateUpload, setIsEstimateUpload, reminders, callRescheduler } = useTicketStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -201,7 +197,7 @@ const TicketCard = (props: Props) => {
     } else {
       setTaskPendingCount(0);
     }
-  }, [props.patientData._id, allTaskCount]);
+  }, [props.patientData._id, allTaskCount, reminders, callRescheduler]);
 
 
   const isSelected = ticketID === props.patientData._id;
@@ -260,16 +256,7 @@ const TicketCard = (props: Props) => {
 
     fetchEstimateData();
     setIsEstimateUpload(false);
-  }, [props.patientData._id, isEstimateUpload]);
-
-  // In this function it will return the value of the ticket which we pass
-  useEffect(() => {
-    if (allWhtsappCount.hasOwnProperty(props.patientData._id)) {
-      return setWhtsappNotificationCount(allWhtsappCount[props.patientData._id]);
-    } else {
-      return setWhtsappNotificationCount(0); // or any default value you prefer
-    }
-  }, [allWhtsappCount])
+  }, [props?.patientData._id, isEstimateUpload]);
 
   return (
     <Box
@@ -329,30 +316,30 @@ const TicketCard = (props: Props) => {
 
         </Stack>
 
-        <Stack className='ticketCard-Uhid'>#{props.patientData.consumer[0].uid}</Stack>
+        {props.patientData?.consumer[0]?.uid && <Stack className='ticketCard-Uhid'>#{props?.patientData?.consumer[0]?.uid}</Stack>}
 
       </Box>
 
       {/* Line 2 */}
 
       <Box className="ticket-card-line1 line2">
-        <Stack className='ticket-card-name'>
-          {props.patientData.consumer[0].firstName}{' '}
-          {props.patientData.consumer[0].lastName &&
-            props.patientData.consumer[0].lastName}
-        </Stack>
+        {props?.patientData?.consumer[0]?.firstName && <Stack className='ticket-card-name'>
+          {props?.patientData?.consumer[0]?.firstName}{' '}
+          {props?.patientData?.consumer[0]?.lastName &&
+            props?.patientData?.consumer[0]?.lastName}
+        </Stack>}
 
         <Stack className='ticket-cardline2-right'>
-          {props.patientData.consumer[0].gender ? (<>
+          {props?.patientData?.consumer[0]?.gender ? (<>
             <Stack className="ticket-card-Gender">
-              {props.patientData.consumer[0].gender}
+              {props?.patientData?.consumer[0]?.gender}
             </Stack>
           </>) : (<>
           </>
           )}
 
-          {props.patientData.consumer[0].age
-            ? (<><Stack>{props.patientData.consumer[0].age}</Stack></>)
+          {props?.patientData?.consumer[0]?.age
+            ? (<><Stack>{props?.patientData?.consumer[0]?.age}</Stack></>)
             : (<></>)
           }
         </Stack>
@@ -361,10 +348,10 @@ const TicketCard = (props: Props) => {
       {/* ------- */}
 
       <Stack className="docName" marginTop={'5px'}>
-        {doctorSetter(props.patientData.prescription[0].doctor)}
+        {doctorSetter(props?.patientData?.prescription[0]?.doctor)}
       </Stack>
       <Stack className="docName">
-        {departmentSetter(props.patientData.prescription[0].departments[0])}
+        {departmentSetter(props?.patientData?.prescription[0]?.departments[0])}
       </Stack>
       <Stack className="docName">
         {props.patientData.estimate[0]?.service[0]?.name}
@@ -373,14 +360,14 @@ const TicketCard = (props: Props) => {
       {/* Line 3 */}
 
       <Box className="ticket-card-line3">
-        {props.patientData.prescription[0].admission ? (<>
-          <Stack className='ticket-card-line3-tag'>{props.patientData.prescription[0].admission}</Stack>
+        {props?.patientData?.prescription[0]?.admission ? (<>
+          <Stack className='ticket-card-line3-tag'>{props?.patientData?.prescription[0]?.admission}</Stack>
         </>
         )
           :
           (<></>)
         }
-        {props.patientData.prescription[0].diagnostics.length > 0 ? (<>
+        {props?.patientData?.prescription[0]?.diagnostics.length > 0 ? (<>
           <Stack className='ticket-card-line3-tag'>Diagonstic</Stack>
         </>
         )
@@ -388,13 +375,13 @@ const TicketCard = (props: Props) => {
           (<></>)
         }
 
-        {props.patientData.estimate.length > 0 ? (
+        {props?.patientData?.estimate?.length > 0 ? (
           <>
-            {props.patientData.estimate[0]?.paymentType === 0
+            {props?.patientData?.estimate[0]?.paymentType === 0
               ? <Stack className='ticket-card-line3-tag'>Cash</Stack>
-              : props.patientData.estimate[0]?.paymentType === 1
+              : props?.patientData?.estimate[0]?.paymentType === 1
                 ? <Stack className='ticket-card-line3-tag'>Insurance</Stack>
-                : props.patientData.estimate[0]?.paymentType === 2
+                : props?.patientData?.estimate[0]?.paymentType === 2
                   ? <Stack className='ticket-card-line3-tag'>CGHS | ECHS</Stack>
                   : ''}
           </>
@@ -476,7 +463,7 @@ const TicketCard = (props: Props) => {
         <Stack sx={{ display: "flex", flexDirection: "row !important", gap: "5px" }}>
           {/* <Stack className='task-pending'><img src={NotifyAudit} alt="" /></Stack> */}
           {taskPendingCount > 0 && <Stack className='task-pending'>{taskPendingCount} Tasks Pending </Stack>}
-          {whtsappNotificationCount > 0 && <Stack className='ticket-card-notification'>{whtsappNotificationCount}</Stack>}
+          {/* <Stack className='ticket-card-notification'>2</Stack> */}
         </Stack>
       </Stack>
 

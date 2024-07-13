@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, MenuItem, Modal, Stack, TextField, Typography } from '@mui/material';
+import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
@@ -25,6 +25,7 @@ function UploadEstimate() {
   const [uploadFileName, setUploadFileName] = useState("");
   const [noteTextValue, setNoteTextValue] = useState('');
   const [disabled, setDisabled] = useState(true);
+  const [selectedOption, setSelectedOption] = useState('');
 
   const checkIsEmpty = () => {
     if (
@@ -45,6 +46,7 @@ function UploadEstimate() {
   const handleClose = () => {
     setOpen(false);
     setNoteTextValue('');
+    setSelectedOption("");
     setFile(null);
     setUploadFileName("");
   };
@@ -56,6 +58,9 @@ function UploadEstimate() {
 
   // };
 
+  const handlePaymentType = (event) => {
+    setSelectedOption(event.target.value)
+  }
 
   const handleFileChange = (event) => {
     const files = event.target.files && event.target.files;
@@ -91,6 +96,9 @@ function UploadEstimate() {
     if (noteTextValue) {
       formdata.append('total', noteTextValue);
     }
+    // if (selectedOption) {
+    //   formdata.append('paymentType', selectedOption);
+    // }
 
     try {
       // console.log("this is inside")
@@ -255,6 +263,49 @@ function UploadEstimate() {
                 }}
               />
             </Stack>
+            <FormControl fullWidth>
+              <InputLabel id="demo-simple-select-label" sx={{
+                fontSize: '14px',
+                color: 'rgba(128, 128, 128, 0.744)',
+                fontFamily: `"Outfit",sans-serif`,
+              }}>Payment Type</InputLabel>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={selectedOption}
+                onChange={handlePaymentType}
+                label="Payment Type"
+                fullWidth
+                sx={{
+                  fontSize: '14px',
+                  color: '#080F1A',
+                  fontFamily: `"Outfit",sans-serif`,
+                }}
+              >
+                <MenuItem className="reason-option" value="Cash" sx={{
+                  fontSize: '14px',
+                  color: '#080F1A',
+                  fontFamily: `"Outfit",sans-serif`,
+                }}>
+                  Cash
+                </MenuItem>
+                <MenuItem className="reason-option" value="Insurance/TPA" sx={{
+                  fontSize: '14px',
+                  color: '#080F1A',
+                  fontFamily: `"Outfit",sans-serif`,
+                }}>Insurance/TPA</MenuItem>
+                <MenuItem className="reason-option" value="ECHS" sx={{
+                  fontSize: '14px',
+                  color: '#080F1A',
+                  fontFamily: `"Outfit",sans-serif`,
+                }}>ECHS</MenuItem>
+                <MenuItem className="reason-option" value="Corporate" sx={{
+                  fontSize: '14px',
+                  color: '#080F1A',
+                  fontFamily: `"Outfit",sans-serif`,
+                }}>Corporate</MenuItem>
+              </Select>
+            </FormControl>
 
           </Box>
           <Box

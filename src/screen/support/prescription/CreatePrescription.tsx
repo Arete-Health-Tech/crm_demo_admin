@@ -747,7 +747,9 @@ import {
   FormHelperText,
   Checkbox,
   FormGroup,
-  FormControlLabel
+  FormControlLabel,
+  Alert,
+  Snackbar
 } from '@mui/material';
 import { Stack } from '@mui/system';
 import { useEffect, useRef, useState } from 'react';
@@ -817,7 +819,7 @@ const CreatePrescription = () => {
 
   const [selectedPharmacy, setSelectedPharmacy] = useState('Pharmacy Advised');
   const [scannedResult, setScannedResult] = useState(null);
-
+  const [popUp, setPopUp] = useState(false);
 
   const findService = async (query: string) => {
     try {
@@ -876,22 +878,22 @@ const CreatePrescription = () => {
 
     setValidations((prev) => {
       prev.department = department
-        ? { message: 'Invalid Value', value: true }
+        ? { message: ' Department is required ', value: true }
         : defaultValidation;
       // prev.subDepartment = subDepartment
       //   ? { message: 'Invalid Value', value: true }
       //   : defaultValidation;
       prev.doctor = doctor
-        ? { message: 'Invalid Value', value: true }
+        ? { message: ' Doctor is required ', value: true }
         : defaultValidation;
       prev.admission = admission
-        ? { message: 'Invalid Value', value: true }
+        ? { message: ' Admission Type is required', value: true }
         : defaultValidation;
       // prev.followUp = followUp
       //   ? { message: 'Invalid Value', value: true }
       //   : defaultValidation;
       prev.image = image
-        ? { message: 'Invalid Value', value: true }
+        ? { message: ' Presccription Image required', value: true }
         : defaultValidation;
 
       // prev.service = service
@@ -931,6 +933,7 @@ const CreatePrescription = () => {
       navigate('/');
     } else {
       setDisableButton(false);
+      setPopUp(true);
     }
   };
 
@@ -1010,6 +1013,28 @@ const CreatePrescription = () => {
             <FormHelperText error={validations.doctor.value}>
               {validations.doctor.message}
             </FormHelperText>
+            {popUp && (
+
+              <Snackbar
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                open={popUp}
+                autoHideDuration={4000} onClose={() => setPopUp(false)}
+              >
+                <Alert severity="warning" >
+                  <Stack display={'flex'} flexDirection={"column"}>
+                    <Stack>
+                      {validations.department.message}
+                    </Stack>
+                    <Stack>{validations.doctor.message}</Stack>
+                    <Stack>
+                      {validations.image.message}
+                    </Stack>
+
+                  </Stack>
+                </Alert>
+              </Snackbar>
+            )
+            }
           </Box>
           <Box my={1.5}>
             <Typography color="gray" id="demo-simple-select-label">
@@ -1077,6 +1102,14 @@ const CreatePrescription = () => {
                   <FormHelperText error={validations.service.value}>
                     {validations.service.message}
                   </FormHelperText>
+                  <TextField
+                    label="Remark"
+                    size="small"
+                    // value={value} //
+                    // onChange={(event) => changePrescriptionValue('service', event.target.value)}
+                    fullWidth
+                    sx={{ marginTop: "10px" }}
+                  />
                 </Box>
               )
             )}

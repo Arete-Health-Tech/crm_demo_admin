@@ -46,7 +46,7 @@ const RegisterConsumer = () => {
   const [existingData, setExistingData] = useState(false);
   const { setSnacks } = useEventStore();
   const navigate = useNavigate();
-  let existingBIData=false
+  let existingBIData = false
 
   // const validationsChecker = () => {
   //   const firstName = consumer.firstName === initialConsumerFields.firstName;
@@ -192,6 +192,28 @@ const RegisterConsumer = () => {
     navigate(`/consumer/${consumerId}`);
   };
 
+  const calculateAge = (dob) => {
+    if (!dob) {
+      return "";
+    }
+
+    const birthDate = new Date(dob);
+
+    // Check if the date is valid
+    if (isNaN(birthDate.getTime())) {
+      throw new Error('Invalid date format');
+    }
+
+    const today = new Date();
+    let age = today.getFullYear() - birthDate.getFullYear();
+    const monthDifference = today.getMonth() - birthDate.getMonth();
+
+    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+      age--;
+    }
+
+    return age;
+  }
 
   const fetchConsumerDataByUhid = async () => {
     try {
@@ -204,11 +226,11 @@ const RegisterConsumer = () => {
         updateConsumerState('firstName', response.data[0].PatientName.split(' ')[0]);
         updateConsumerState('lastName', response.data[0].PatientName.split(' ')[1]);
         updateConsumerState('phone', response.data[0].MobileNo);
-        // updateConsumerState('age', response.data[0].age);
+        updateConsumerState('age', calculateAge(response.data[0].dob));
         updateConsumerState('gender', response.data[0].Gender === "Female" ? "F" : response.data[0].Gender === "Male" ? "M" : "O"
         );
         setConsumerId(response.data[0].PatientId);
-        existingBIData=true;
+        existingBIData = true;
       }
     } catch (error) {
       console.log("gfggf")
@@ -223,7 +245,7 @@ const RegisterConsumer = () => {
         updateConsumerState('firstName', response.data.firstName);
         updateConsumerState('lastName', response.data.lastName);
         updateConsumerState('phone', response.data.phone);
-        updateConsumerState('age', response.data.age);
+        updateConsumerState('age', calculateAge(response.data.dob));
         updateConsumerState('gender', response.data.gender);
         setConsumerId(response.data._id);
         setExistingData(true);
@@ -242,9 +264,21 @@ const RegisterConsumer = () => {
     }
   };
 
-  // useEffect(() => {
-  //   fetchConsumerDataByUhid();
-  // }, [consumer.uid]);
+  useEffect(() => {
+    if (consumer.uid.length > 5) {
+      fetchConsumerDataByUhid();
+    } else {
+      updateConsumerState('firstName', '');
+      updateConsumerState('lastName', '');
+      updateConsumerState('phone', '');
+      updateConsumerState('age', '');
+      updateConsumerState('gender', '');
+      setConsumerId('');
+
+      setExistingData(false);
+    }
+
+  }, [consumer.uid]);
 
   return (
     <Box>
@@ -282,7 +316,7 @@ const RegisterConsumer = () => {
           type="text"
           placeholder="33XXX"
           label="UHID"
-          onBlur={fetchConsumerDataByUhid}
+          // onBlur={fetchConsumerDataByUhid}
           error={validations.uid.value}
           helperText={validations.uid.message}
         // inputProps={{ maxLength: 13, pattern: "\\d{0,12}" }}

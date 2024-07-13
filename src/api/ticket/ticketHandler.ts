@@ -216,6 +216,7 @@ export type iCreateTicket = {
   medicines: string[];
   followUp: Date | number;
   image: string[];
+  remark:string;
   consumer: string;
   isPharmacy: string;
   service?: { _id: string; label: string };
@@ -246,7 +247,9 @@ export const createTicketHandler = async (prescription: iCreateTicket) => {
   prescriptionData.append(
     'diagnostics',
     JSON.stringify(prescription.diagnostics)
+    
   );
+  prescriptionData.append("remark",prescription.remark);
   prescription.service &&
     prescriptionData.append('service', prescription.service._id);
   // console.log('file log', prescription);

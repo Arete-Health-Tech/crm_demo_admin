@@ -773,6 +773,7 @@ type iPrescription = {
   // subDepartment: string;
   doctor: string;
   admission: null | string;
+  remark:string;
   symptoms: string | null;
   condition: string | null;
   medicines: string[];
@@ -791,6 +792,7 @@ const initialPrescription = {
   doctor: '',
   admission: 'Surgery',
   symptoms: null,
+  remark:" ",
   condition: null,
   medicines: [],
   followUp: new Date(),
@@ -1105,8 +1107,8 @@ const CreatePrescription = () => {
                   <TextField
                     label="Remark"
                     size="small"
-                    // value={value} //
-                    // onChange={(event) => changePrescriptionValue('service', event.target.value)}
+                    // value={value} 
+                    onChange={(event) => changePrescriptionValue('remark', event.target.value)}
                     fullWidth
                     sx={{ marginTop: "10px" }}
                   />

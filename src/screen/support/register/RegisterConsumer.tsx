@@ -193,6 +193,7 @@ const RegisterConsumer = () => {
   };
 
   const calculateAge = (dob) => {
+    console.log(dob,"dob")
     if (!dob) {
       return "";
     }
@@ -226,7 +227,7 @@ const RegisterConsumer = () => {
         updateConsumerState('firstName', response.data[0].PatientName.split(' ')[0]);
         updateConsumerState('lastName', response.data[0].PatientName.split(' ')[1]);
         updateConsumerState('phone', response.data[0].MobileNo);
-        updateConsumerState('age', calculateAge(response.data[0].dob));
+        updateConsumerState('age', calculateAge(response.data[0].DOB));
         updateConsumerState('gender', response.data[0].Gender === "Female" ? "F" : response.data[0].Gender === "Male" ? "M" : "O"
         );
         setConsumerId(response.data[0].PatientId);

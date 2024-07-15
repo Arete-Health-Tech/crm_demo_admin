@@ -119,7 +119,7 @@ function UploadEstimate() {
       );
       setIsEstimateUpload(true);
       // console.log(data, "uploaded estimate successfully");
-      toast.success('Uploaded estimate successfully!');
+      toast.success('Uploaded Estimate Successfully!');
       // try {
       //   const { data } = await apiClient.get(`ticket/uploadestimateData/${ticketID}`);
       //   setViewEstimates(data)

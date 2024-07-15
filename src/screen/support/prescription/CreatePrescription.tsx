@@ -1104,7 +1104,11 @@ const CreatePrescription = () => {
                   <FormHelperText error={validations.service.value}>
                     {validations.service.message}
                   </FormHelperText>
-                  <TextField
+                 
+                </Box>
+              )
+            )}
+             <TextField
                     label="Remark"
                     size="small"
                     // value={value} 
@@ -1112,9 +1116,6 @@ const CreatePrescription = () => {
                     fullWidth
                     sx={{ marginTop: "10px" }}
                   />
-                </Box>
-              )
-            )}
           </Box>
           {/* <Box my={1.5}>
             <TextField

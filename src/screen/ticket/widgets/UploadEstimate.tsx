@@ -7,8 +7,11 @@ import { useParams } from 'react-router-dom';
 import useTicketStore from '../../../store/ticketStore';
 import CloseModalIcon from "../../../assets/Group 48095853.svg"
 import UploadFileIcon from "../../../assets/UploadFileIcon.svg";
-import CheckedActiveIcon from "../../../assets/NotActive.svg"
-import documentIcon from "../../../assets/document-text.svg"
+import CheckedActiveIcon from "../../../assets/NotActive.svg";
+import documentIcon from "../../../assets/document-text.svg";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 function UploadEstimate() {
@@ -99,6 +102,9 @@ function UploadEstimate() {
     // if (selectedOption) {
     //   formdata.append('paymentType', selectedOption);
     // }
+    if (selectedOption) {
+      formdata.append('paymentType', selectedOption);
+    }
 
     try {
       // console.log("this is inside")
@@ -112,7 +118,8 @@ function UploadEstimate() {
         }
       );
       setIsEstimateUpload(true);
-      console.log(data, "uploaded estimate successfully");
+      // console.log(data, "uploaded estimate successfully");
+      toast.success('Uploaded estimate successfully!');
       // try {
       //   const { data } = await apiClient.get(`ticket/uploadestimateData/${ticketID}`);
       //   setViewEstimates(data)
@@ -130,6 +137,7 @@ function UploadEstimate() {
         // setTicketUpdateFlag(result);
       })()
       setNoteTextValue('');
+      setSelectedOption(" ")
       setFile(null);
       setOpen(false);
 
@@ -145,9 +153,11 @@ function UploadEstimate() {
         // setTicketUpdateFlag(result);
       })()
       setNoteTextValue('');
+      setSelectedOption(" ")
       setFile(null);
       setOpen(false);
-      console.error('Error occurred:', error);
+      // console.error('Error occurred:', error);
+      toast.error('Error occurred while uploading estimate.'); 
     }
   };
 
@@ -304,6 +314,11 @@ function UploadEstimate() {
                   color: '#080F1A',
                   fontFamily: `"Outfit",sans-serif`,
                 }}>Corporate</MenuItem>
+                  <MenuItem className="reason-option" value="Corporate" sx={{
+                  fontSize: '14px',
+                  color: '#080F1A',
+                  fontFamily: `"Outfit",sans-serif`,
+                }}>CGHS</MenuItem>
               </Select>
             </FormControl>
 

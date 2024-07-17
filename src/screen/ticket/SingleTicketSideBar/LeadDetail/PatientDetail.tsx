@@ -20,6 +20,7 @@ interface patientData {
     gender: string;
     doctor: string;
     department: string;
+    remarks:string;
 }
 
 const EditIcon = () => (
@@ -64,6 +65,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         gender: '',
         doctor: '',
         department: '',
+        remarks:" "
     };
     const [PatientData, setPatientData] = React.useState<patientData>(initialPatientData)
     const [currentTicket, setCurrentTicket] = React.useState<iTicket>();
@@ -114,6 +116,9 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             value: PatientData.gender,
             setValue: setPatientData
         }, {
+id:'remarks',label:"Remark",value:PatientData.remarks,setValue:setPatientData
+        },
+        {
             id: 'department', label: 'Department', value: PatientData.department, setValue: setPatientData
         },
         { id: 'doctor', label: 'Doctor', value: PatientData.doctor, setValue: setPatientData }
@@ -130,10 +135,12 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 uhid: `${fetchTicket?.consumer?.[0]?.uid}`,
                 firstName: `${fetchTicket?.consumer?.[0]?.firstName ?? ''}`,
                 lastName: `${fetchTicket?.consumer?.[0]?.lastName ?? ''}`,
+                remarks:`${fetchTicket?.prescription[0]?.remarks}`,
                 age: `${fetchTicket?.consumer?.[0]?.age && fetchTicket?.consumer?.[0]?.age}`,
                 gender: (fetchTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (fetchTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
                 doctor: `${fetchTicket?.prescription?.[0]?.doctor}`,
                 department: `${fetchTicket?.prescription[0]?.departments[0]}`
+
             }));
         };
         getTicketInfo(ticketID);
@@ -148,10 +155,12 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 "lastName": PatientData.lastName,
                 "gender": PatientData.gender === "Male" ? "M" : PatientData.gender === "Female" ? "F" : "",
                 "age": PatientData.age,
+               
             },
             "prescription": {
                 doctor: PatientData.doctor,
                 departments: [PatientData.department]
+            
             }
         }
         await updateConusmerData(updatedData, ticketID)
@@ -249,6 +258,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                         />
                                     </Stack>
                                 </Box>
+                               
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Last Name</Stack>
                                     <Stack component='div' className='Patient-detail-data'>
@@ -368,6 +378,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
 
                                     </Stack>
                                 </Box>
+                              
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Doctor</Stack>
                                     <Stack component='div' className='Patient-detail-data'>

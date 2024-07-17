@@ -773,7 +773,7 @@ type iPrescription = {
   // subDepartment: string;
   doctor: string;
   admission: null | string;
-  remark:string;
+  remarks:string;
   symptoms: string | null;
   condition: string | null;
   medicines: string[];
@@ -792,7 +792,7 @@ const initialPrescription = {
   doctor: '',
   admission: 'Surgery',
   symptoms: null,
-  remark:" ",
+  remarks:" ",
   condition: null,
   medicines: [],
   followUp: new Date(),
@@ -1112,7 +1112,7 @@ const CreatePrescription = () => {
                     label="Remark"
                     size="small"
                     // value={value} 
-                    onChange={(event) => changePrescriptionValue('remark', event.target.value)}
+                    onChange={(event) => changePrescriptionValue('remarks', event.target.value)}
                     fullWidth
                     sx={{ marginTop: "10px" }}
                   />

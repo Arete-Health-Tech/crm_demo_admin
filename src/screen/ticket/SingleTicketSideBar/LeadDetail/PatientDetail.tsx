@@ -105,7 +105,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         return departments.find((department: iDepartment) => department._id === id)
             ?.name;
     };
-
+console.log(PatientData.remarks,"PatientData.remarks")
     const patientData = [
         { id: 'uhid', label: 'UHID', value: `#${PatientData.uhid}` },
         { id: 'Name', label: 'Name', value: `${PatientData.firstName} ${PatientData.lastName}`, setValue: setPatientData },
@@ -232,6 +232,10 @@ id:'remarks',label:"Remark",value:PatientData.remarks,setValue:setPatientData
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>UHID</Stack>
                                     <Stack component='div' className='Patient-detail-data'>#{PatientData.uhid}</Stack>
+                                </Box>
+                                <Box className='Patient-detail-Head'>
+                                    <Stack className='Patient-detail-title'>Remark</Stack>
+                                    <Stack component='div' className='Patient-detail-data'>{PatientData.remarks}</Stack>
                                 </Box>
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>First Name</Stack>

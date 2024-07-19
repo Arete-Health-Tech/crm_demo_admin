@@ -766,7 +766,12 @@ const NSingleTicketDetails = (props: Props) => {
         await updateTicketProbability(value, ticketID);
         setProbabilityModal(false);
         getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
-        navigate(`/ticket/${ticketID}`);
+        if (isSwitchView) {
+            navigate(`/switchView/${ticketID}`);
+        } else {
+            navigate(`/ticket/${ticketID}`);
+        }
+
     };
 
     // This function is for calling the api of delete lead
@@ -1089,7 +1094,7 @@ const NSingleTicketDetails = (props: Props) => {
                                     </div>
                                 </Stack>
                                 <Stack className='ticket-asssignee-container'>
-                                    {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
+                                    {/* <MenuItem onClick={handleKebabClose}>
                                     <Stack className="Ticket-Assignee-item" >
                                         <Stack className="Ticket-Assignee-subItem" >
                                             <Stack className="Ticket-Assignee-avatar"><img src={NewAvatar} alt="User 2" /></Stack>

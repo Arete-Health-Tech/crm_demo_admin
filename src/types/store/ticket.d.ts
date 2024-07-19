@@ -85,6 +85,7 @@ export interface iPrescrition {
   image: string;
   image1: string;
   symptoms: string;
+  remark: string | "";
 }
 
 export interface phoneData {

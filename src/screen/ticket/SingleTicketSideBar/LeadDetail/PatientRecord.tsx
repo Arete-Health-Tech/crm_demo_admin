@@ -514,13 +514,22 @@ const PatientRecord = ({ isPatient }) => {
                         </Box>
                     ) : (
                         <>
-                            {getServiceName() &&
+                            {getServiceName() && <>
                                 <Stack display={'flex'} flexDirection={'row'}>
                                     <Stack className='dot-list'  >
                                         <span>&#8226;</span>
                                     </Stack>
                                     <Stack className='Patient-records-data'>{getServiceName()}</Stack>
-                                </Stack>}
+                                </Stack>
+                            </>}
+                            {currentTicket?.prescription[0].remarks &&
+                                <Stack display={'flex'} flexDirection={'row'}>
+                                    <Stack className='dot-list'  >
+                                        <span>&#8226;</span>
+                                    </Stack>
+                                    <Stack className='Patient-records-data'>{currentTicket?.prescription[0].remarks}</Stack>
+                                </Stack>
+                            }
                             <Box className="record-tag pharmacy-tag">{currentTicket?.prescription[0]?.admission}</Box>
                         </>
                     )}

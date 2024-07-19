@@ -765,7 +765,7 @@ import { iService } from '../../../types/store/service';
 import { createTicketHandler } from '../../../api/ticket/ticketHandler';
 import { Camera, FACING_MODES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
-
+import { toast, ToastContainer } from 'react-toastify';
 
 type iPrescription = {
   department: string;
@@ -773,7 +773,7 @@ type iPrescription = {
   // subDepartment: string;
   doctor: string;
   admission: null | string;
-  remarks:string;
+  remarks: string;
   symptoms: string | null;
   condition: string | null;
   medicines: string[];
@@ -792,7 +792,7 @@ const initialPrescription = {
   doctor: '',
   admission: 'Surgery',
   symptoms: null,
-  remarks:" ",
+  remarks: " ",
   condition: null,
   medicines: [],
   followUp: new Date(),
@@ -933,6 +933,7 @@ const CreatePrescription = () => {
       setDisableButton(false);
 
       navigate('/');
+      toast.success('Prescription Uploaded Successfully!');
     } else {
       setDisableButton(false);
       setPopUp(true);
@@ -1104,18 +1105,18 @@ const CreatePrescription = () => {
                   <FormHelperText error={validations.service.value}>
                     {validations.service.message}
                   </FormHelperText>
-                 
+
                 </Box>
               )
             )}
-             <TextField
-                    label="Remark"
-                    size="small"
-                    // value={value} 
-                    onChange={(event) => changePrescriptionValue('remarks', event.target.value)}
-                    fullWidth
-                    sx={{ marginTop: "10px" }}
-                  />
+            <TextField
+              label="Remark"
+              size="small"
+              // value={value} 
+              onChange={(event) => changePrescriptionValue('remarks', event.target.value)}
+              fullWidth
+              sx={{ marginTop: "10px" }}
+            />
           </Box>
           {/* <Box my={1.5}>
             <TextField
@@ -1437,7 +1438,7 @@ const CreatePrescription = () => {
             idealResolution={{ width: 1280, height: 720 }} // Set higher resolution
             isImageMirror={false}
             imageCompression={0.97} // Adjust JPEG quality (0.97 is high quality)
-            onTakePhoto={(dataUri) => (changePrescriptionValue('image', dataUri), setOpenCamera(false))}
+            onTakePhoto={(dataUri) => (changePrescriptionValue('image', dataUri), setOpenCamera(false), toast.success('Photo Clicked Successfully!'))}
             imageType="jpg" // Specify image type (optional, default is 'png')
             // imageCompressionFactor={0.8} // Specify image compression factor (optional, default is 0.92)
             isMaxResolution={false}

@@ -33,7 +33,8 @@ function UploadEstimate() {
   const checkIsEmpty = () => {
     if (
       file !== null &&
-      noteTextValue.length > 0
+      noteTextValue.length > 0 &&
+      selectedOption !== ''
 
     ) {
       setDisabled((_) => false);
@@ -83,7 +84,7 @@ function UploadEstimate() {
   useEffect(() => {
     checkIsEmpty();
 
-  }, [noteTextValue, file])
+  }, [noteTextValue, file, selectedOption])
 
 
   const handleSubmit = async () => {
@@ -157,7 +158,7 @@ function UploadEstimate() {
       setFile(null);
       setOpen(false);
       // console.error('Error occurred:', error);
-      toast.error('Error occurred while uploading estimate.'); 
+      toast.error('Error occurred while uploading estimate.');
     }
   };
 
@@ -314,7 +315,7 @@ function UploadEstimate() {
                   color: '#080F1A',
                   fontFamily: `"Outfit",sans-serif`,
                 }}>Corporate</MenuItem>
-                  <MenuItem className="reason-option" value="Corporate" sx={{
+                <MenuItem className="reason-option" value="Corporate" sx={{
                   fontSize: '14px',
                   color: '#080F1A',
                   fontFamily: `"Outfit",sans-serif`,

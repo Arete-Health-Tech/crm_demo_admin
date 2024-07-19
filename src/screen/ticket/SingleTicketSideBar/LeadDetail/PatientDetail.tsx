@@ -20,7 +20,7 @@ interface patientData {
     gender: string;
     doctor: string;
     department: string;
-    remarks:string;
+    remarks: string | "";
 }
 
 const EditIcon = () => (
@@ -65,7 +65,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         gender: '',
         doctor: '',
         department: '',
-        remarks:" "
+        remarks: ""
     };
     const [PatientData, setPatientData] = React.useState<patientData>(initialPatientData)
     const [currentTicket, setCurrentTicket] = React.useState<iTicket>();
@@ -105,7 +105,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         return departments.find((department: iDepartment) => department._id === id)
             ?.name;
     };
-console.log(PatientData.remarks,"PatientData.remarks")
+    console.log(PatientData.remarks, "PatientData.remarks")
     const patientData = [
         { id: 'uhid', label: 'UHID', value: `#${PatientData.uhid}` },
         { id: 'Name', label: 'Name', value: `${PatientData.firstName} ${PatientData.lastName}`, setValue: setPatientData },
@@ -116,7 +116,7 @@ console.log(PatientData.remarks,"PatientData.remarks")
             value: PatientData.gender,
             setValue: setPatientData
         }, {
-id:'remarks',label:"Remark",value:PatientData.remarks,setValue:setPatientData
+            id: 'remarks', label: "Remark", value: PatientData.remarks, setValue: setPatientData
         },
         {
             id: 'department', label: 'Department', value: PatientData.department, setValue: setPatientData
@@ -135,7 +135,7 @@ id:'remarks',label:"Remark",value:PatientData.remarks,setValue:setPatientData
                 uhid: `${fetchTicket?.consumer?.[0]?.uid}`,
                 firstName: `${fetchTicket?.consumer?.[0]?.firstName ?? ''}`,
                 lastName: `${fetchTicket?.consumer?.[0]?.lastName ?? ''}`,
-                remarks:`${fetchTicket?.prescription[0]?.remarks}`,
+                remarks: `${fetchTicket?.prescription[0]?.remarks}`,
                 age: `${fetchTicket?.consumer?.[0]?.age && fetchTicket?.consumer?.[0]?.age}`,
                 gender: (fetchTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (fetchTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
                 doctor: `${fetchTicket?.prescription?.[0]?.doctor}`,
@@ -155,12 +155,12 @@ id:'remarks',label:"Remark",value:PatientData.remarks,setValue:setPatientData
                 "lastName": PatientData.lastName,
                 "gender": PatientData.gender === "Male" ? "M" : PatientData.gender === "Female" ? "F" : "",
                 "age": PatientData.age,
-               
+
             },
             "prescription": {
                 doctor: PatientData.doctor,
                 departments: [PatientData.department]
-            
+
             }
         }
         await updateConusmerData(updatedData, ticketID)
@@ -233,10 +233,10 @@ id:'remarks',label:"Remark",value:PatientData.remarks,setValue:setPatientData
                                     <Stack className='Patient-detail-title'>UHID</Stack>
                                     <Stack component='div' className='Patient-detail-data'>#{PatientData.uhid}</Stack>
                                 </Box>
-                                <Box className='Patient-detail-Head'>
+                                {PatientData.remarks && PatientData.remarks !== "" && < Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Remark</Stack>
                                     <Stack component='div' className='Patient-detail-data'>{PatientData.remarks}</Stack>
-                                </Box>
+                                </Box>}
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>First Name</Stack>
                                     <Stack component='div' className='Patient-detail-data'>
@@ -262,7 +262,7 @@ id:'remarks',label:"Remark",value:PatientData.remarks,setValue:setPatientData
                                         />
                                     </Stack>
                                 </Box>
-                               
+
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Last Name</Stack>
                                     <Stack component='div' className='Patient-detail-data'>
@@ -382,7 +382,7 @@ id:'remarks',label:"Remark",value:PatientData.remarks,setValue:setPatientData
 
                                     </Stack>
                                 </Box>
-                              
+
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Doctor</Stack>
                                     <Stack component='div' className='Patient-detail-data'>
@@ -441,55 +441,61 @@ id:'remarks',label:"Remark",value:PatientData.remarks,setValue:setPatientData
                         </>
                     )}
 
-                </Stack>
-            </Box>
+                </Stack >
+            </Box >
 
             <Stack className="gray-border">
                 {/* Borders */}
             </Stack>
 
-            {(currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) && <Box className="Patient-records">
-                <Box className='additional-detail-Head'>
-                    <Stack className='additional-detail-Heading'>SECOND OPINIONS</Stack>
+            {
+                (currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) && <Box className="Patient-records">
+                    <Box className='additional-detail-Head'>
+                        <Stack className='additional-detail-Heading'>SECOND OPINIONS</Stack>
+                    </Box>
+                    <Box className='additional-detail-Head'>
+                        <Stack className='additional-detail-title'>Hospital</Stack>
+                        <Stack component='div' className='additional-detail-data' sx={{ textTransform: "capitalize" }}> {currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.hospital ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.hospital : "No Data Available"}
+                        </Stack>
+                    </Box>
+                    <Box className='additional-detail-Head'>
+                        <Stack className='additional-detail-title'>Doctor Name</Stack>
+                        <Stack component='div' className='additional-detail-data'>{currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.doctor ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.doctor : "No Data Available"}</Stack>
+                    </Box>
+                    <Box className='additional-detail-Head'>
+                        <Stack className='additional-detail-title'>Remark</Stack>
+                        <Stack component='div' className='additional-detail-data'>{currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.additionalInfo ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.additionalInfo : "No Data Available"}</Stack>
+                    </Box>
                 </Box>
-                <Box className='additional-detail-Head'>
-                    <Stack className='additional-detail-title'>Hospital</Stack>
-                    <Stack component='div' className='additional-detail-data' sx={{ textTransform: "capitalize" }}> {currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.hospital ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.hospital : "No Data Available"}
-                    </Stack>
-                </Box>
-                <Box className='additional-detail-Head'>
-                    <Stack className='additional-detail-title'>Doctor Name</Stack>
-                    <Stack component='div' className='additional-detail-data'>{currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.doctor ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.doctor : "No Data Available"}</Stack>
-                </Box>
-                <Box className='additional-detail-Head'>
-                    <Stack className='additional-detail-title'>Remark</Stack>
-                    <Stack component='div' className='additional-detail-data'>{currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.additionalInfo ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]?.additionalInfo : "No Data Available"}</Stack>
-                </Box>
-            </Box>}
+            }
 
-            {(currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) && <Stack className="gray-border">
-                {/* Borders */}
-            </Stack>}
-            {(currentTicket?.opinion && currentTicket?.opinion?.length !== 0) ? (<>
-                {(currentTicket?.opinion[0]?.challengeSelected?.length !== 0) ? (<>
-                    <Box className="Patient-records">
-                        <Box className='additional-detail-Head'>
-                            <Stack className='additional-detail-Heading'>CONVERSION CHALLENGES</Stack>
-                        </Box>
-                        {currentTicket?.opinion[0]?.challengeSelected?.map((item) => (
-                            <Box className='additional-detail-Head' key={item}>
-                                <Stack className='record-tag pharmacy-tag' width={'10.2vw'} sx={{ color: "#080F1A" }}>
-                                    {item}
-                                </Stack>
+            {
+                (currentTicket?.opinion !== undefined && currentTicket?.opinion?.length > 0) && <Stack className="gray-border">
+                    {/* Borders */}
+                </Stack>
+            }
+            {
+                (currentTicket?.opinion && currentTicket?.opinion?.length !== 0) ? (<>
+                    {(currentTicket?.opinion[0]?.challengeSelected?.length !== 0) ? (<>
+                        <Box className="Patient-records">
+                            <Box className='additional-detail-Head'>
+                                <Stack className='additional-detail-Heading'>CONVERSION CHALLENGES</Stack>
                             </Box>
-                        ))}
-                    </Box >
-                    <Stack className="gray-border">
-                        {/* Borders */}
-                    </Stack>
-                </>) : (<></>)}
+                            {currentTicket?.opinion[0]?.challengeSelected?.map((item) => (
+                                <Box className='additional-detail-Head' key={item}>
+                                    <Stack className='record-tag pharmacy-tag' width={'10.2vw'} sx={{ color: "#080F1A" }}>
+                                        {item}
+                                    </Stack>
+                                </Box>
+                            ))}
+                        </Box >
+                        <Stack className="gray-border">
+                            {/* Borders */}
+                        </Stack>
+                    </>) : (<></>)}
 
-            </>) : (<></>)}
+                </>) : (<></>)
+            }
 
 
             <Box className="Payment-detail">
@@ -500,6 +506,9 @@ id:'remarks',label:"Remark",value:PatientData.remarks,setValue:setPatientData
                     <Box className="Payment-detail-data">
                         {/* <Stack className='Payment-value'>{'\u20B9'} {currentTicket?.estimate[0]?.total}</Stack> */}
                         <Stack className='Payment-value'>{'\u20B9'} {viewEstimates[viewEstimates.length - 1]?.total}</Stack>
+                        <Stack className='ticket-card-line3-tag'>
+                            {viewEstimates[viewEstimates.length - 1]?.paymentType}
+                        </Stack>
                         {/* <Chip
                             label={
                                 currentTicket?.estimate[0]?.paymentType === 0

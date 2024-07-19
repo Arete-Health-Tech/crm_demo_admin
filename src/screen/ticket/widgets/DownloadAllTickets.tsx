@@ -13,6 +13,7 @@ import { ageSetter } from '../../../utils/ageReturn';
 import { UNDEFINED } from '../../../constantUtils/constant';
 import useReprentativeStore from '../../../store/representative';
 import DownloadAllFileIcon from '../../../../src/assets/DownloadAllFiles.svg';
+import { apiClient } from '../../../api/apiClient';
 
 type Props = {};
 
@@ -34,12 +35,77 @@ const DownloadAllTickets = (props: Props) => {
   const { doctors, departments, stages, allNotes } = useServiceStore();
 
   const { representative } = useReprentativeStore();
-  const { filterTickets } = useTicketStore();
+  const { filterTickets, tickets } = useTicketStore();
   const [disable, setDisable] = useState(false);
   const doctorSetter = (id: string) => {
     return doctors.find((element) => element._id === id)?.name;
   };
+  const [estimateData, setEstimateData] = useState({});
+  const [estimateDataPaymentType, setEstimateDataPaymentType] = useState({});
 
+  useEffect(() => {
+    const fetchAllEstimateData = async () => {
+      const estimates = {};
+      for (const item of tickets) {
+        const estimate = await fetchEstimateData(item._id);
+        estimates[item._id] = estimate;
+      }
+      setEstimateData(estimates);
+    };
+
+    fetchAllEstimateData();
+  }, [tickets]);
+  useEffect(() => {
+    const fetchAllEstimatePaymentType = async () => {
+      const estimates = {};
+      for (const item of tickets) {
+        const estimate = await fetchEstimatePaymentTypeData(item._id);
+        estimates[item._id] = estimate;
+      }
+      setEstimateDataPaymentType(estimates);
+    };
+
+    fetchAllEstimatePaymentType();
+  }, [tickets]);
+
+  const fetchEstimateData = async (ticketId: any): Promise<number> => {
+    if (!ticketId) {
+      console.error("Ticket ID is undefined.");
+      return 0;
+    }
+
+    try {
+      const response = await apiClient.get(`ticket/uploadestimateData/${ticketId}`);
+      const data = response.data;
+      if (data?.length && data[data.length - 1]?.ticket === ticketId) {
+        return data[data.length - 1]?.total || 0;
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      console.error("Error fetching estimate data:", error);
+      return 0;
+    }
+  };
+  const fetchEstimatePaymentTypeData = async (ticketId: any): Promise<number> => {
+    if (!ticketId) {
+      console.error("Ticket ID is undefined.");
+      return 0;
+    }
+
+    try {
+      const response = await apiClient.get(`ticket/uploadestimateData/${ticketId}`);
+      const data = response.data;
+      if (data?.length && data[data.length - 1]?.ticket === ticketId) {
+        return data[data.length - 1]?.paymentType || "Not Mentioned";
+      } else {
+        return 0;
+      }
+    } catch (error) {
+      console.error("Error fetching estimate data:", error);
+      return 0;
+    }
+  };
 
   const departmentSetter = (id: string) => {
     return departments.find((element) => element._id === id)?.name;
@@ -144,15 +210,16 @@ const DownloadAllTickets = (props: Props) => {
         followUpDate: ticket.prescription[0].followUp
           ? dayjs(ticket.prescription[0].followUp).format('DD/MMM/YYYY')
           : 'No Follow Up',
-        // capturedBy:
-        //   ticket?.creator[0]?.firstName + ' ' + ticket?.creator[0]?.lastName,
+        capturedBy: ticket?.creator[0]?.firstName + ' ' + ticket?.creator[0]?.lastName,
         prescriptionCreatedAt: `${dayjs(
           ticket.prescription[0].createdAt
         ).format('DD/MMM/YYYY , HHMM ')} hrs`,
         prescriptionLink: ticket?.prescription[0]?.image,
         prescriptionLink1: ticket?.prescription[0]?.image1,
         Lead_disposition: ticket ? (ticket.result === "65991601a62baad220000001" ? "won" : (ticket.result === "65991601a62baad220000002" ? "loss" : null)) : null,
-        pharmacyStatus: ticket?.pharmacyStatus,
+        // pharmacyStatus: ticket?.pharmacyStatus,
+        estimateValue: estimateData[ticket._id],
+        PaymentType: estimateDataPaymentType[ticket._id],
         date: ticket?.date,
         subStageName: subStageName(ticket?.subStageCode?.code),
         status: ticket?.status,

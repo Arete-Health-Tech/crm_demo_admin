@@ -23,6 +23,7 @@ import {
   StepIcon
 } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { toast, ToastContainer } from 'react-toastify';
 import useServiceStore from '../../../store/serviceStore';
 import { iStage, iSubStage } from '../../../types/store/service';
 import { iTicket } from '../../../types/store/ticket';
@@ -252,6 +253,32 @@ const StageCard = (props: Props) => {
     // console.log('redirect to ticket ?', currentTicket?.subStageCode.code + 1);
   };
 
+  const handleStagesNotFound = (name: string) => {
+    if (changeStageName !== name) {
+      if (changeStageName === "Contacted") {
+        if (name !== "New Lead" && name !== "contacted") {
+          toast.warning(`Complete all Sub Stage in ${changeStageName} Stage!`);
+        }
+      } else if (changeStageName === "Working") {
+        if (name !== "New Lead" && name !== "Contacted") {
+          toast.warning(`Complete all Sub Stage in ${changeStageName} Stage!`);
+        }
+      } else if (changeStageName === "Orientation") {
+        if (name !== "New Lead" && name !== "Contacted" && name !== "Working") {
+          toast.warning(`Complete all Sub Stage in ${changeStageName} Stage!`);
+        }
+      } else if (changeStageName === "Nurturing") {
+        if (name !== "New Lead" && name !== "Contacted" && name !== "Working" && name !== "Orientation") {
+          toast.warning(`Complete all Sub Stage in ${changeStageName} Stage!`);
+        }
+      } else {
+        if (name !== "New Lead") {
+          toast.warning(`Complete all Sub Stage in ${changeStageName} Stage!`);
+        }
+      }
+    }
+  };
+
   const handleOpen = () => {
     // console.log('Open Modal');
     setOpen(true);
@@ -454,6 +481,8 @@ const StageCard = (props: Props) => {
                     onClick={() => {
                       if (isNextStage) {
                         handleStages(name);
+                      } else {
+                        handleStagesNotFound(name);
                       }
                     }}
                   >

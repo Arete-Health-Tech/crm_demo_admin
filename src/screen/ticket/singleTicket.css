@@ -1618,6 +1618,8 @@
   padding-left: 15px;
 }
 
+
+
 .steps ul li div::before {
   content: ' ';
   border-top: 50px solid transparent;

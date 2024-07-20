@@ -766,6 +766,7 @@ import { createTicketHandler } from '../../../api/ticket/ticketHandler';
 import { Camera, FACING_MODES } from 'react-html5-camera-photo';
 import 'react-html5-camera-photo/build/css/index.css';
 import { toast, ToastContainer } from 'react-toastify';
+import UploadIcon from '@mui/icons-material/Upload';
 
 type iPrescription = {
   department: string;
@@ -950,6 +951,18 @@ const CreatePrescription = () => {
   const handleInternal = (item: string) => {
     console.log('this is response');
     setButtonVariant(item);
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        changePrescriptionValue('image', reader.result);
+        toast.success("Photo Uploaded From Gallary Successfully");
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -1330,14 +1343,34 @@ const CreatePrescription = () => {
                     </Typography>
                     <Stack spacing={0.5}>
                       {prescription.image.length < 2 && (
-                        <Button
-                          onClick={() => setOpenCamera(true)}
-                          fullWidth
-                          variant="outlined"
-                          startIcon={prescription.image.length == 0 ? <CameraAltIcon /> : <AddIcon />}
-                        >
-                          {prescription.image.length == 0 ? "Capture" : "Add More"}
-                        </Button>
+                        <Stack display={'flex'} flexDirection={"column"} gap={"5px"}>
+                          <Button
+                            onClick={() => setOpenCamera(true)}
+                            fullWidth
+                            variant="outlined"
+                            startIcon={prescription.image.length == 0 ? <CameraAltIcon /> : <AddIcon />}
+                          >
+                            {prescription.image.length == 0 ? "Capture" : "Add More"}
+                          </Button>
+                          {/* Upload Button */}
+
+                          {/* <Button
+                            variant="outlined"
+                            component="label"
+                            startIcon={<UploadIcon />}
+                            fullWidth
+                          >
+                            Upload
+                            <input
+                              type="file"
+                              hidden
+                              accept="image/*"
+                              onChange={handleFileChange}
+                            />
+                          </Button> */}
+
+                          {/* ------ */}
+                        </Stack>
                       )}
                       {prescription.image.length > 0 && (
                         <>

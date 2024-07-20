@@ -193,7 +193,7 @@ const RegisterConsumer = () => {
   };
 
   const calculateAge = (dob) => {
-    console.log(dob,"dob")
+    console.log(dob, "dob")
     if (!dob) {
       return "";
     }
@@ -266,7 +266,7 @@ const RegisterConsumer = () => {
   };
 
   useEffect(() => {
-    if (consumer.uid.length > 5) {
+    if (consumer.uid.length > 4) {
       fetchConsumerDataByUhid();
     } else {
       updateConsumerState('firstName', '');

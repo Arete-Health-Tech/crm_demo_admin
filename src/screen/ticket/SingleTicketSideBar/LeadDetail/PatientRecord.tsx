@@ -522,7 +522,7 @@ const PatientRecord = ({ isPatient }) => {
                                     <Stack className='Patient-records-data'>{getServiceName()}</Stack>
                                 </Stack>
                             </>}
-                            {currentTicket?.prescription[0].remarks &&
+                            {currentTicket?.prescription[0].remarks && currentTicket?.prescription[0].remarks !== " " &&
                                 <Stack display={'flex'} flexDirection={'row'}>
                                     <Stack className='dot-list'  >
                                         <span>&#8226;</span>

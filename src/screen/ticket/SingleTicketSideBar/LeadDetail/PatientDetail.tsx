@@ -135,7 +135,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 uhid: `${fetchTicket?.consumer?.[0]?.uid}`,
                 firstName: `${fetchTicket?.consumer?.[0]?.firstName ?? ''}`,
                 lastName: `${fetchTicket?.consumer?.[0]?.lastName ?? ''}`,
-                remarks: `${fetchTicket?.prescription[0]?.remarks}`,
+                remarks: `${fetchTicket?.prescription[0]?.remarks == " " ? "No Remark" : fetchTicket?.prescription[0]?.remarks}`,
                 age: `${fetchTicket?.consumer?.[0]?.age && fetchTicket?.consumer?.[0]?.age}`,
                 gender: (fetchTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (fetchTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
                 doctor: `${fetchTicket?.prescription?.[0]?.doctor}`,
@@ -233,10 +233,10 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                     <Stack className='Patient-detail-title'>UHID</Stack>
                                     <Stack component='div' className='Patient-detail-data'>#{PatientData.uhid}</Stack>
                                 </Box>
-                                {PatientData.remarks && PatientData.remarks !== "" && < Box className='Patient-detail-Head'>
+                                {PatientData?.remarks !== "No" ? < Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Remark</Stack>
                                     <Stack component='div' className='Patient-detail-data'>{PatientData.remarks}</Stack>
-                                </Box>}
+                                </Box> : <></>}
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>First Name</Stack>
                                     <Stack component='div' className='Patient-detail-data'>

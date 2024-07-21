@@ -1354,20 +1354,20 @@ const CreatePrescription = () => {
                           </Button>
                           {/* Upload Button */}
 
-                          {/* <Button
+                          <Button
                             variant="outlined"
                             component="label"
                             startIcon={<UploadIcon />}
                             fullWidth
                           >
-                            Upload
+                            Front Upload
                             <input
                               type="file"
                               hidden
                               accept="image/*"
                               onChange={handleFileChange}
                             />
-                          </Button> */}
+                          </Button>
 
                           {/* ------ */}
                         </Stack>
@@ -1381,6 +1381,20 @@ const CreatePrescription = () => {
                             onClick={() => (changePrescriptionValue('image', []), setOpenCamera(true))}
                           >
                             Retake
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            component="label"
+                            startIcon={<UploadIcon />}
+                            fullWidth
+                          >
+                            Back Upload
+                            <input
+                              type="file"
+                              hidden
+                              accept="image/*"
+                              onChange={handleFileChange}
+                            />
                           </Button>
                           <Button
                             fullWidth

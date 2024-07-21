@@ -965,6 +965,8 @@ const CreatePrescription = () => {
     }
   };
 
+  const [isUploaded, setIsUploaded] = useState(false);
+  const [isCaptured, setIsCaptured] = useState(false);
   return (
     <>
       <Box display={openCamera ? 'none' : 'block'}>
@@ -1344,65 +1346,64 @@ const CreatePrescription = () => {
                     <Stack spacing={0.5}>
                       {prescription.image.length < 2 && (
                         <Stack display={'flex'} flexDirection={"column"} gap={"5px"}>
-                          <Button
-                            onClick={() => setOpenCamera(true)}
+                          {!isUploaded && <Button
+                            onClick={() => { setOpenCamera(true); setIsCaptured(true) }}
                             fullWidth
                             variant="outlined"
                             startIcon={prescription.image.length == 0 ? <CameraAltIcon /> : <AddIcon />}
                           >
                             {prescription.image.length == 0 ? "Capture" : "Add More"}
-                          </Button>
+                          </Button>}
                           {/* Upload Button */}
 
-                          <Button
+                          {prescription.image.length == 0 && <Button
                             variant="outlined"
                             component="label"
                             startIcon={<UploadIcon />}
                             fullWidth
                           >
-                            Front Upload
+                            Upload
                             <input
                               type="file"
                               hidden
                               accept="image/*"
-                              onChange={handleFileChange}
+                              onChange={(e) => { handleFileChange(e); setIsUploaded(true); }}
                             />
-                          </Button>
+                          </Button>}
 
                           {/* ------ */}
                         </Stack>
                       )}
                       {prescription.image.length > 0 && (
                         <>
-                          <Button
+                          {!isUploaded && <Button
                             fullWidth
                             variant="outlined"
                             startIcon={<Undo />}
                             onClick={() => (changePrescriptionValue('image', []), setOpenCamera(true))}
                           >
                             Retake
-                          </Button>
-                          <Button
+                          </Button>}
+                          {!isCaptured && prescription.image.length !== 2 && <Button
                             variant="outlined"
                             component="label"
                             startIcon={<UploadIcon />}
                             fullWidth
                           >
-                            Back Upload
+                            Upload Again
                             <input
                               type="file"
                               hidden
                               accept="image/*"
                               onChange={handleFileChange}
                             />
-                          </Button>
+                          </Button>}
                           <Button
                             fullWidth
                             variant="outlined"
                             color="error"
                             startIcon={<Delete />}
-                            onClick={() =>
-                              changePrescriptionValue('image', [])
+                            onClick={() => { changePrescriptionValue('image', []); setIsCaptured(false); setIsUploaded(false); }
                             }
                           >
                             Delete

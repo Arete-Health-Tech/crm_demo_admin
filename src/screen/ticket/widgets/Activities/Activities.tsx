@@ -315,6 +315,23 @@ const Activities = () => {
                                     </div>
                                 </div>
                             )}
+                             {handleCheckKey(key) === 'Status' && (
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        height: 'auto',
+                                        padding: '1rem 0 0rem 2rem',
+                                        marginLeft: '2rem',
+                                        borderLeft: '1px solid #d4dbe5'
+                                    }}
+                                >
+                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                                    <div className={styles.otherContent}>
+                                        {value.split('on')[0]}
+                                        <div className={styles.time}>{extractDateTime(value)}</div>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>

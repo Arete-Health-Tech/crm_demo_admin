@@ -222,7 +222,7 @@ const DownloadAllTickets = (props: Props) => {
         PaymentType: estimateDataPaymentType[ticket._id],
         date: ticket?.date,
         subStageName: subStageName(ticket?.subStageCode?.code),
-        status: ticket?.status,
+        status: ticket?.status !== "dnp" && ticket?.status !== "dnd" && ticket?.status !== "CallCompleted" && ticket?.status !== "RescheduledCall" ? ticket.status : "N/A",
         notes: noteSetter(ticket._id),
         Second_opinion_hospital: ticket?.opinion[0]?.hospital,
         Considering_Consultation: ticket?.opinion[0]?.type === "Considering Consultation" ? "Yes" : "No",
@@ -238,7 +238,7 @@ const DownloadAllTickets = (props: Props) => {
         Not_happy_with_doctor: ticket?.opinion[0]?.challengeSelected?.includes('Not happy with doctor') ? 'Yes' : 'No',
         Lead_Probability: `${ticket?.Probability}%`,
         Lead_Rating: ticket?.auditorcomment[ticket?.auditorcomment.length - 1]?.ratings,
-        Call_disposition: ticket?.status === "dnp" || ticket?.status === "dnd" || ticket?.status === "CallCompleted" || ticket?.status === "CallRescheduler" ? ticket?.status : "N/A",
+        Call_disposition: ticket?.status === "dnp" || ticket?.status === "dnd" || ticket?.status === "CallCompleted" || ticket?.status === "RescheduledCall" ? ticket?.status : "N/A",
         Call_Recording: ticket?.phoneData[ticket?.phoneData.length - 1]?.time || "Not Contacted yet",
         Last_Activity_Date: ticket?.lastActivity,
       };

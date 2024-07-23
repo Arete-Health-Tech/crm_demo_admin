@@ -142,6 +142,7 @@ import {
 } from 'firebase/firestore';
 import { database } from '../../utils/firebase';
 import useReprentativeStore from '../../store/representative';
+import useUserStore from '../../store/userStore';
 // import { markAsRead } from '../../api/flow/flow';
 interface iConsumer {
     uid: string;
@@ -208,6 +209,7 @@ const NSingleTicketDetails = (props: Props) => {
         allWhtsappCount
     } = useTicketStore();
     const { doctors, departments, stages } = useServiceStore();
+    const { user } = useUserStore();
     const { representative } = useReprentativeStore();
     const [currentTicket, setCurrentTicket] = useState<iTicket>();
     const [value, setValue] = useState('1');
@@ -1231,10 +1233,10 @@ const NSingleTicketDetails = (props: Props) => {
                                 {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     Initate RFA
                                 </MenuItem> */}
-                                <MenuItem sx={menuItemStyles} onClick={() => setDeleteModal(true)}>
+                                {user?.role === "ADMIN" && <MenuItem sx={menuItemStyles} onClick={() => setDeleteModal(true)}>
                                     {/* <MenuItem sx={menuItemStyles} onClick={handleLeadDelete}> */}
                                     Delete Lead
-                                </MenuItem>
+                                </MenuItem>}
                             </Stack>
 
                             {/* end kebab Menu */}

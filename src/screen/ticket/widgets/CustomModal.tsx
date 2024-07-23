@@ -92,6 +92,7 @@ const CustomModal = () => {
       }))
       setChallengeSelected(currentTicket?.opinion[0]?.challengeSelected
       )
+      setIsVisible(true);
     }
   }, [currentTicket])
 
@@ -183,7 +184,10 @@ const CustomModal = () => {
       if (formData.select === "Rescheduled Call") {
         setIsModalOpenCall(true)
       }
-
+      if (challengeSelected.includes('Awaiting test results' || 'Awaiting TPA approvals' ||
+        'Under MM')) {
+        setIsModalOpenCall(true)
+      }
       // on submit button click after 1 second the ticket data will call 
       (async () => {
         await getTicketHandler(
@@ -206,7 +210,8 @@ const CustomModal = () => {
           hospital: '',
           doctor: '',
           additionalInfo: ''
-        })
+        });
+        setIsVisible(false)
         setChallengeSelected([])
       }
     } catch (error) {

@@ -826,7 +826,6 @@ const CreatePrescription = () => {
 
   const findService = async (query: string) => {
     try {
-      if (query.length <= 3) return;
       const { data } = await apiClient.get(`/service/search?search=${query}`);
       setFoundServices(data);
     } catch (error) {

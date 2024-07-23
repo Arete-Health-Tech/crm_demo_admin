@@ -57,6 +57,7 @@ import { apiClient } from '../../../api/apiClient';
 import { toast } from 'react-toastify';
 import CloseModalIcon from "../../../assets/Group 48095853.svg"
 import UploadEstimate from './UploadEstimate';
+import useUserStore from '../../../store/userStore';
 
 
 type Props = { setTicketUpdateFlag: any };
@@ -65,6 +66,7 @@ const drawerWidth = 1100;
 
 const Estimate = (props: Props) => {
   const { tickets, isSwitchView } = useTicketStore();
+  const { user } = useUserStore();
   const { ticketID } = useParams();
   const ticket = tickets.find((element) => element._id === ticketID);
 
@@ -441,7 +443,7 @@ const Estimate = (props: Props) => {
       <>
         {/* <MenuItem sx={menuItemStyles} onClick={() => setIsEstimateOpen(true)} > <Stack >Create Estimation</Stack></MenuItem> */}
         <UploadEstimate />
-        <MenuItem sx={menuItemStyles} onClick={handleOpen} > Skip Estimate</MenuItem>
+        {user?.role !== "ADMIN" && <MenuItem sx={menuItemStyles} onClick={handleOpen} > Skip Estimate</MenuItem>}
         <MenuItem sx={{
           color: " #F94839",
           fontFamily: `"Outfit", sans-serif`,

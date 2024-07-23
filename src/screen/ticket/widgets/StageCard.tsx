@@ -848,6 +848,15 @@ const StageCard = (props: Props) => {
                       color: '#080F1A',
                       fontFamily: `"Outfit",sans-serif`,
                     }}
+                    value={"No Further Treatment Advised"}>
+                    No Further Treatment Advised
+                  </MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '14px',
+                      color: '#080F1A',
+                      fontFamily: `"Outfit",sans-serif`,
+                    }}
                     value={"Chose another hospital - Which Hospital"}>
                     Chose another hospital - Which Hospital ?
                     <TextField

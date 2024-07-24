@@ -136,6 +136,38 @@ const TicketCard = (props: Props) => {
     lineHeight: '18px',
   };
 
+  const baseWonStyle = {
+    fontFamily: 'Outfit, sans-serif',
+    color: '#fff',
+    padding: '0px 8px',
+    borderRadius: '10px',
+    height: '24px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 400,
+    fontSize: '12px',
+    gap: '4px',
+    lineHeight: '18px',
+    backgroundColor: '#08a742'
+  };
+
+  const baseLossStyle = {
+    fontFamily: 'Outfit, sans-serif',
+    color: '#fff',
+    padding: '0px 8px',
+    borderRadius: '10px',
+    height: '24px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 400,
+    fontSize: '12px',
+    gap: '4px',
+    lineHeight: '18px',
+    backgroundColor: '#f94839'
+  };
+
   const stageStyles = {
     'New Lead': {
       ...baseStyle,
@@ -165,6 +197,7 @@ const TicketCard = (props: Props) => {
   };
 
   const stageName = currentStage?.name;
+  console.log(stageName)
   const stageStyle = stageStyles[stageName] || {};
 
   const calculatedDate = (date: any) => {
@@ -290,7 +323,7 @@ const TicketCard = (props: Props) => {
       <Box className="ticket-card-line1" sx={{ marginTop: "2px" }}>
 
         <Stack className='ticket-card-line1-left'>
-          <Stack sx={stageStyle}> {stageName}</Stack>
+          <Stack sx={props.patientData.result === "65991601a62baad220000002" ? baseLossStyle : props.patientData.result === "65991601a62baad220000001" ? baseWonStyle : stageStyle}> {props.patientData.result === "65991601a62baad220000002" ? "Loss" : props.patientData.result === "65991601a62baad220000001" ? "Won" : stageName}</Stack>
           {totalEstimateValue == 0 ? (<>
             {/* <Stack className="Priority-tag"> <img src={DefaultPr} alt="DefaultPr" /><span style={{ fontSize: "12px" }}>N/A</span></Stack> */}
             <></>

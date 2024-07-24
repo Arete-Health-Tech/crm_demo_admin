@@ -85,7 +85,7 @@ export interface iPrescrition {
   image: string;
   image1: string;
   symptoms: string;
-  remark: string | "";
+  remark: string | '';
 }
 
 export interface phoneData {
@@ -133,6 +133,7 @@ export interface iTicket {
     active: boolean;
     code: number;
   };
+  result: string;
   modifiedDate: Date | string | null;
   won: string;
   loss: string;

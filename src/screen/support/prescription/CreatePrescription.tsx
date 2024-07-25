@@ -957,7 +957,7 @@ const CreatePrescription = () => {
     const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
     if (file && !validTypes.includes(file.type)) {
-      toast.success("format error, upload only jpeg, png, jpg ");
+      toast.error("format error, upload only jpeg, png, jpg ");
       setIsUploaded(false);
       return;
     }

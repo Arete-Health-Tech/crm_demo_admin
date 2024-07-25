@@ -954,14 +954,24 @@ const CreatePrescription = () => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
+    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+    if (file && !validTypes.includes(file.type)) {
+      toast.success("format error, upload only jpeg, png, jpg ");
+      setIsUploaded(false);
+      return;
+    }
+
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
         changePrescriptionValue('image', reader.result);
         toast.success("Photo Uploaded From Gallary Successfully");
+        setIsUploaded(true);
       };
       reader.readAsDataURL(file);
     }
+
   };
 
   const [isUploaded, setIsUploaded] = useState(false);
@@ -1365,8 +1375,8 @@ const CreatePrescription = () => {
                             <input
                               type="file"
                               hidden
-                              accept="image/*"
-                              onChange={(e) => { handleFileChange(e); setIsUploaded(true); }}
+                              accept="image/jpeg, image/png, image/jpg"
+                              onChange={(e) => { handleFileChange(e); }}
                             />
                           </Button>}
 

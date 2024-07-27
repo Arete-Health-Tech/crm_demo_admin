@@ -41,7 +41,7 @@ const MessagingWidget = (props: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ticketID } = useParams();
   const { user } = useUserStore();
-  const { tickets, filterTickets, setWhtsappExpanded, whtsappExpanded, isAuditor, pageNumber, allWhtsappCount } =
+  const { tickets, filterTickets, setWhtsappExpanded, whtsappExpanded, isAuditor, pageNumber, allWhtsappCount, searchByName } =
     useTicketStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState(null);
@@ -72,7 +72,7 @@ const MessagingWidget = (props: Props) => {
     await markAsRead(ticketID)
     await getAllWhtsappCountHandler();
     await getTicketHandler(
-      UNDEFINED,
+      searchByName,
       pageNumber,
       'false',
       filterTickets
@@ -83,7 +83,7 @@ const MessagingWidget = (props: Props) => {
   const getAllWhtsappMsgCount = async () => {
     await getAllWhtsappCountHandler();
     await getTicketHandler(
-      UNDEFINED,
+      searchByName,
       pageNumber,
       'false',
       filterTickets

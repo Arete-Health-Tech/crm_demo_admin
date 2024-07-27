@@ -16,13 +16,12 @@ export const getTicket = async (
   fetchUpdated: boolean = false,
   phone?: any,
   won?: any,
-  lose?: any,
-
+  lose?: any
 ) => {
   const params = new URLSearchParams(selectedFilters).toString();
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
-    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}`
+    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&specialty=""&specialtyforFilter=""&${params}`
   );
   return data;
 };
@@ -311,5 +310,3 @@ export const getAllWhatsAppCount = async () => {
   const data = await apiClient.get(`/flow/getAllWhatsAppCount`);
   return Promise.resolve(data.data);
 };
-
-

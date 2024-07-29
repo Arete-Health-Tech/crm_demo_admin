@@ -243,6 +243,8 @@ export interface iTicketStore {
   setAllWhtsappCount: (allWhtsappCount: object) => void;
   location: string;
   setLocation: (location: string) => void;
+  filteredLocation: string;
+  setFilteredLocation: (filteredLocation: string) => void;
 }
 
 export interface iNote {

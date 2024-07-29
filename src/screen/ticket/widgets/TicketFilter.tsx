@@ -47,7 +47,8 @@ export const ticketFilterCount = (
   admissionType: string[],
   diagnosticsType: string[],
   dateRange: string[],
-  statusType: string[]
+  statusType: string[],
+  filteredLocation: string
 ) => {
   const stageListCount = selectedFilters['stageList'].length;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
@@ -58,6 +59,7 @@ export const ticketFilterCount = (
 
   const resultCount = selectedFilters['results'] ? 1 : 0;
   const statusCount = statusType ? statusType.length : 0;
+  const locationCount = filteredLocation === "Amritsar" ? 1 : 0;
 
   // console.log(stageListCount, " this is stage list count");
   // console.log(admissionCount, " this is Admission Count")
@@ -66,7 +68,7 @@ export const ticketFilterCount = (
   // console.log(stageListCount, " this is stage list count");
   // console.log(resultCount, " this is result counnt")
 
-  const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount + statusCount;
+  const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount + statusCount + locationCount;
   return total;
 };
 const TicketFilter = (props: {
@@ -118,7 +120,7 @@ const TicketFilter = (props: {
     status: []
   };
 
-  const { setFilterTickets, setPageNumber, isSwitchView, isAuditorFilterOn, setIsAuditorFilterOn } = useTicketStore();
+  const { setFilterTickets, setPageNumber, isSwitchView, isAuditorFilterOn, setIsAuditorFilterOn, setFilteredLocation, filteredLocation } = useTicketStore();
 
   // const [ticketFilters, setTicketFilters] = useState<iTicketFilter>({
   //   stageList: [],
@@ -347,7 +349,7 @@ const TicketFilter = (props: {
     setPageNumber(1);
     setFilterTickets(selectedFilters);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation));
 
     props.setPage(1);
     if (ticketID) {
@@ -368,7 +370,7 @@ const TicketFilter = (props: {
     dispatchFilter({ type: filterActions.STATUS, payload: [] });
 
     setCurrentRepresentative('');
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation));
     setFilterCount(0);
     setPageNumber(1);
     setSelectedValue(null);
@@ -378,6 +380,7 @@ const TicketFilter = (props: {
     setStatusType((prev) => []);
     setDiagnosticsType((prev) => []);
     setDateRange(["", ""]);
+    setFilteredLocation("")
 
     // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
 
@@ -718,16 +721,16 @@ const TicketFilter = (props: {
             </Stack>
             <ToggleButtonGroup
               color="primary"
-              value={speciality}
-              onChange={handleDiagnosticsType}
+              value={filteredLocation}
+              onChange={() => setFilteredLocation('Amritsar')}
             >
-              <ToggleButton value="MRI"
+              <ToggleButton value="Amritsar"
                 sx={{
                   fontFamily: "Outfit,sans-serif",
                   fontSize: '12px',
                 }}
               >Amritsar</ToggleButton>
-            
+
             </ToggleButtonGroup>
           </Box>
 

@@ -87,8 +87,8 @@ interface storeMessage {
   // Add other fields as needed
 }
 const menuItemStyles = {
-  color: 'var(--Text-Black, #080F1A)',
-  fontFamily: `"Outfit", sans-serif`,
+  color: '#080F1A',
+  fontFamily: `Outfit, sans-serif`,
   fontSize: '14px',
   fontStyle: 'normal',
   fontWeight: '400',

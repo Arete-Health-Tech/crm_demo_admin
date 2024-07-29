@@ -15,15 +15,16 @@ export const getTicket = async (
   ticketId?: string | null,
   fetchUpdated: boolean = false,
   phone?: any,
-  location?: string | "",
+  location?: string | '',
+  filteredLocation?: string | '',
   won?: any,
-  lose?: any,
+  lose?: any
 ) => {
-  console.log("sahbdhabdhsabdhasbd",location)
+  console.log('sahbdhabdhsabdhasbd', location);
   const params = new URLSearchParams(selectedFilters).toString();
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
-    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&specialty=${location}&specialtyforFilter=${location}&${params}`
+    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&specialty=${location}&specialtyforFilter=${filteredLocation}&${params}`
   );
   return data;
 };

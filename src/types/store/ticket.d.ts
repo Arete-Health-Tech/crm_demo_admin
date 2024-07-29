@@ -241,6 +241,8 @@ export interface iTicketStore {
   setAgentLogin: (agentLogin: boolean) => void;
   allWhtsappCount: object;
   setAllWhtsappCount: (allWhtsappCount: object) => void;
+  location: string;
+  setLocation: (location: string) => void;
 }
 
 export interface iNote {

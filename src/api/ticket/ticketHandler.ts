@@ -30,7 +30,7 @@ export const getTicketHandler = async (
   downloadAll: 'true' | 'false' = 'false',
   selectedFilters: iTicketFilter | null,
   ticketId: string = UNDEFINED,
-  fetchUpdated: boolean = false
+  fetchUpdated: boolean = false,
 ) => {
   const {
     setTickets,
@@ -39,13 +39,13 @@ export const getTicketHandler = async (
     ticketCache,
     setEmptyDataText,
     setDownloadTickets,
-    setLoaderOn
+    setLoaderOn,
+    location
   } = useTicketStore.getState();
   const { user } = useUserStore.getState();
   const phone = user?.phone;
 
   setLoaderOn(true);
-  // console.log(selectedFilters," this is selected filters");
   const data = await getTicket(
     name,
     pageNumber,
@@ -53,7 +53,8 @@ export const getTicketHandler = async (
     selectedFilters,
     ticketId,
     fetchUpdated,
-    phone
+    phone,
+    location,
   );
   const sortedTickets = data.tickets;
   const count = data.count;
@@ -216,7 +217,7 @@ export type iCreateTicket = {
   medicines: string[];
   followUp: Date | number;
   image: string[];
-  remarks:string;
+  remarks: string;
   consumer: string;
   isPharmacy: string;
   service?: { _id: string; label: string };
@@ -247,9 +248,9 @@ export const createTicketHandler = async (prescription: iCreateTicket) => {
   prescriptionData.append(
     'diagnostics',
     JSON.stringify(prescription.diagnostics)
-    
+
   );
-  prescriptionData.append("remarks",prescription.remarks);
+  prescriptionData.append("remarks", prescription.remarks);
   prescription.service &&
     prescriptionData.append('service', prescription.service._id);
   // console.log('file log', prescription);

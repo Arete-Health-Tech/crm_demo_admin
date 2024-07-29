@@ -135,6 +135,9 @@ const TicketFilter = (props: {
   const [diagnosticsType, setDiagnosticsType] = React.useState<string[]>(
     () => []
   );
+  const [speciality, setSpeciality] = React.useState<string[]>(
+    () => []
+  );
   const [stagesLabel, setStagesLabels] = React.useState<any>([]);
   const [representativeLabel, setRepresentativeLabel] = React.useState<any>([]);
 
@@ -707,6 +710,24 @@ const TicketFilter = (props: {
                   fontSize: '12px',
                 }}
               >Lab</ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+          <Box p={1} px={3}>
+            <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
+              Speciality
+            </Stack>
+            <ToggleButtonGroup
+              color="primary"
+              value={speciality}
+              onChange={handleDiagnosticsType}
+            >
+              <ToggleButton value="MRI"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >Amritsar</ToggleButton>
+            
             </ToggleButtonGroup>
           </Box>
 

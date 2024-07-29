@@ -86,7 +86,9 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   agentLogin: false,
   setAgentLogin: (agentLogin) => set({ agentLogin }),
   allWhtsappCount: {},
-  setAllWhtsappCount: (allWhtsappCount) => set({ allWhtsappCount })
+  setAllWhtsappCount: (allWhtsappCount) => set({ allWhtsappCount }),
+  location: "",
+  setLocation: (location) => set({ location })
 }));
 
 export default useTicketStore;

@@ -4,6 +4,8 @@ import {
   Button,
   Chip,
   InputAdornment,
+  Menu,
+  MenuItem,
   Modal,
   Skeleton,
   Stack,
@@ -23,6 +25,8 @@ import {
   getAllWhtsappCountHandler,
   getTicketHandler
 } from '../../api/ticket/ticketHandler';
+import DropDownArrow from '../../assets/DropdownArror.svg';
+
 import useTicketStore from '../../store/ticketStore';
 import TicketCard from '../../screen/ticket/widgets/TicketCard';
 import { iCallRescheduler, iReminder, iTicket } from '../../types/store/ticket';
@@ -71,6 +75,7 @@ import {
   getAllServicesHandler
 } from '../../api/service/serviceHandler';
 
+
 // .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
 
@@ -81,6 +86,14 @@ interface storeMessage {
 
   // Add other fields as needed
 }
+const menuItemStyles = {
+  color: 'var(--Text-Black, #080F1A)',
+  fontFamily: `"Outfit", sans-serif`,
+  fontSize: '14px',
+  fontStyle: 'normal',
+  fontWeight: '400',
+  lineHeight: '150%',
+};
 const Ticket = () => {
   const { ticketID } = useParams();
   const {
@@ -103,6 +116,8 @@ const Ticket = () => {
     setIsSwitchView,
     setIsAuditor,
     viewEstimates,
+    location,
+    setLocation
   } = useTicketStore();
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
@@ -129,11 +144,19 @@ const Ticket = () => {
 
   const [pageCount, setPageCount] = useState<number>(1);
   const [showReminderModal, setShowReminderModal] = useState(false);
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [visible, setVisible] = useState(false);
+
   const [showCallReschedulerModal, setShowCallReschedulerModal] =
     useState(false);
 
   // const [pageNumber, setPageNumber] = useState<number>(1);
   const [page, setPage] = useState<number>(1);
+  const [selectedItem, setSelectedItem] = useState('Mohali');
+  const visibleRef = useRef<HTMLDivElement | null>(null);
+
+
   const navigate = useNavigate();
   const currentRoute = useMatch(NAVIGATE_TO_TICKET);
   const redirectTicket = () => {
@@ -183,6 +206,26 @@ const Ticket = () => {
     // console.log({ filterTickets }, "002");
     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   };
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (visibleRef.current && !visibleRef.current.contains(event.target)) {
+        setVisible(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const data = async () => {
+      await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+    }
+    data()
+  }, [location])
+
+  console.log(location)
 
   // const handleSeachName = (
   //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -676,6 +719,18 @@ const Ticket = () => {
     }
   };
 
+  const open = Boolean(anchorEl);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = (item) => {
+    if (item) {
+      setSelectedItem(item);
+    }
+    setAnchorEl(null);
+  };
 
 
   //This function call the api to get all the ticket id with their whtsapp message count 
@@ -758,6 +813,39 @@ const Ticket = () => {
               </Stack>
               <Stack display={'flex'} flexDirection={'row'}>
                 <Stack>
+                  <Box height="100%" className="Box-assignee" onClick={() => setVisible(!visible)}>
+                    <Stack direction="row" alignItems="center" marginTop="3px" paddingLeft="1rem">
+                      <span>{location == "" ? 'Mohali' : location}</span>
+                      <span>
+                        <img src={DropDownArrow} alt="" />
+                      </span>
+                    </Stack>
+                    <Stack
+                      ref={visibleRef}
+                      display={visible ? 'block' : 'none'}
+                      className="ticket-assigneemenu1"
+                      bgcolor="white"
+                      position="absolute"
+                      zIndex="1"
+                      boxShadow="0px 0px 10px rgba(0,0,0,0.1)"
+                    >
+                      <Stack className="ticket-asssignee-container-layout">
+                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), setLocation(""))}>
+                          <Box>
+                            Mohali
+                          </Box>
+                        </MenuItem>
+                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), setLocation("Amritsar"))}>
+                          <Box>
+                            Amritsar
+                          </Box>
+                        </MenuItem>
+                      </Stack>
+                    </Stack>
+                  </Box>
+
+                </Stack>
+                <Stack>
                   <DownloadAllTickets />
                 </Stack>
                 <Stack
@@ -779,16 +867,16 @@ const Ticket = () => {
                     }}
                   />
                 </Stack>
-                <Stack
+                {/* <Stack
                   sx={{
                     marginTop: '5px',
                     color: '#000',
                     fontFamily: 'Outfit,sanserif',
                     fontSize: '14px'
                   }}
-                >
+                > 
                   Switch view
-                </Stack>
+                </Stack> */}
               </Stack>
             </Box>
 

@@ -291,6 +291,10 @@ const TicketCard = (props: Props) => {
     setIsEstimateUpload(false);
   }, [props?.patientData._id, isEstimateUpload]);
 
+
+  const date = new Date(props.patientData.createdAt);
+  const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
+
   return (
     <Box
       p={2}
@@ -491,7 +495,7 @@ const TicketCard = (props: Props) => {
 
       <Stack className="ticket-card-line3" sx={{ justifyContent: "space-between" }}>
         <Stack className='Ticket-LeadAge' sx={{ fontSize: "12px !important", padding: "4px 0 0px 0" }}>
-          {calculatedDate(props.patientData?.date)}
+          {formattedDate}
         </Stack>
         <Stack sx={{ display: "flex", flexDirection: "row !important", gap: "5px" }}>
           {/* <Stack className='task-pending'><img src={NotifyAudit} alt="" /></Stack> */}

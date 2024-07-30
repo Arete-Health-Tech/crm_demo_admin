@@ -802,7 +802,7 @@ const Ticket = () => {
                       boxShadow="0px 0px 10px rgba(0,0,0,0.1)"
                     >
                       <Stack className="ticket-asssignee-container-layout">
-                      <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', " "))}>
+                      <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', ""))}>
                           All 
                         </MenuItem>
                         <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Mohali"))}>

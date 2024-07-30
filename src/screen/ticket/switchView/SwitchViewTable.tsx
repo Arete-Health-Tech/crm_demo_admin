@@ -181,8 +181,6 @@ function SwitchViewTable() {
   ) => {
     setPageNumber(pageNo)
     if (pageNo !== page) {
-      // console.log(pageNo)
-      // console.log(page)
       setTickets([]);
       // if (
       //   ticketCache[pageNo] &&
@@ -205,7 +203,6 @@ function SwitchViewTable() {
   useEffect(() => {
     setPageCount(Math.ceil(ticketCount / 10));
     setPage(pageNumber);
-    // console.log("ticket count",tickets )
   }, [tickets, searchByName]);
 
 
@@ -216,12 +213,10 @@ function SwitchViewTable() {
     // setTickets(ticketCache[1]);
     setPage(1);
     setPageNumber(1)
-    // console.log({ filterTickets }, "002");
     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   };
 
   const handleSearchKeyPress = async (e: any) => {
-    // console.log("e", e)
     const value = e.target?.value;
     if (value) {
       setSearchName(value);
@@ -235,7 +230,6 @@ function SwitchViewTable() {
         // redirectTicket()
         return;
       }
-      // console.log({ filterTickets }, "003");
       await getTicketHandler(value, 1, 'false', filterTickets);
       setSearchByName(value);
       setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
@@ -250,7 +244,6 @@ function SwitchViewTable() {
 
   useEffect(() => {
     (async function () {
-      // console.log({ filterTickets }, "006");
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
       await getAllNotesWithoutTicketId();
       await getStagesHandler();
@@ -298,7 +291,6 @@ function SwitchViewTable() {
   const clearAllInterval = (AllIntervals: any[]) => {
     AllIntervals?.forEach((interval) => {
       clearInterval(interval);
-      // console.log("HEY cleaning", interval)
     });
     AllIntervals = [];
   };
@@ -323,7 +315,6 @@ function SwitchViewTable() {
   }, [filterTickets, page, searchName]);
 
   useEffect(() => {
-    // console.log('gotham FULL', reminders, 'remindelist', reminderList);
     clearAllInterval(AllIntervals);
 
     reminders?.forEach((reminderDetail, index) => {
@@ -372,17 +363,14 @@ function SwitchViewTable() {
               // }
 
               // if (tiketIndex > -1) {
-              //   console.log('INDEX OF COLUMN 1:-', tiketIndex);
               //   let cacheList = ticketCache[1];
               //   let removedTicket = cacheList.splice(tiketIndex, 1);
-              //   console.log('removed ', removedTicket, 'cacheList', cacheList);
               //   setTicketCache({
               //     ...ticketCache,
               //     1: [...removedTicket, ...cacheList]
               //   });
               //   setTickets([...removedTicket, ...cacheList]);
               // } else {
-              //   console.log('data?.tickets[0]', data?.tickets[0]);
 
               //   setTickets([data?.tickets[0], ...ticketCache[1]]);
               //   setTicketCache({
@@ -414,7 +402,6 @@ function SwitchViewTable() {
   }, [reminders]);
 
   useEffect(() => {
-    // console.log('gotham FULL', reminders, 'remindelist', reminderList);
     clearAllInterval(AllIntervals);
     callRescheduler?.forEach((callRescheduleDetail, index) => {
       let alarmInterval: any;
@@ -478,7 +465,6 @@ function SwitchViewTable() {
     status: []
   };
 
-  // console.log(tickets, "switch view ")
 
   const backToDashboard = () => {
 
@@ -487,12 +473,10 @@ function SwitchViewTable() {
     // navigate('/')
     navigate('/ticket')
   }
-  // console.log(stages[0]._id), "stagesdata");
 
   useEffect(() => {
     getAllStageCountHandler()
       .then((timerData) => {
-        console.log(timerData, "continer card");
         if (timerData && timerData.tickets) {
           const data = timerData.tickets.length;
           setStageCount(data);
@@ -500,7 +484,6 @@ function SwitchViewTable() {
           timerData.ticketsCountByStage.forEach((item) => {
             switch (item.stage) {
               case stages[0]._id:
-                console.log(stages[0], "new lead data")
                 setNewLead(item.count);
                 break;
               case stages[1]._id:
@@ -577,7 +560,6 @@ function SwitchViewTable() {
       const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
       const minuteDifference = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
       const formattedTimeDifference = `${hourDifference.toString().padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
-      // console.log(formattedTimeDifference)
       return `${formattedTimeDifference} hrs ago`
     } else {
       return `${dayDifference} days ago`

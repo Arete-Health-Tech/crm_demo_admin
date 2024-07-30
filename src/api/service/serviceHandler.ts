@@ -45,7 +45,6 @@ export const getServicePackedHandler = async () => {
 
 export const getAllServiceFromDbHandler = async () => {
   const allService = await searchServiceAll();
-  // console.log(allService, "fbdfbdbfkdbfjk8889---------")
   const { setServices } = useServiceStore.getState();
   setServices(allService);
 };

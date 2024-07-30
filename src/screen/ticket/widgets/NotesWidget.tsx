@@ -56,7 +56,6 @@ const NotesWidget = (props: Props) => {
   const { ticketID } = useParams();
   const { user, setUser } = useUserStore();
 
-  console.log({ notesClickedData })
 
   const handleAddNewNote = async () => {
     if (note !== '<p><br></p>') {
@@ -137,7 +136,6 @@ const NotesWidget = (props: Props) => {
     setNote('');
     setNotesModal(false);
   }
-  console.log(note);
 
   useEffect(() => {
     const fetchNotes = async () => {

@@ -53,7 +53,6 @@ const QueryResolution = (props: Props) => {
       where('departmentId', '==', selectedDept),
       orderBy('createdAt', 'desc')
     );
-    // console.log(q);
     const unsub = onSnapshot(q, (snapshot) => {
       const queries: DocumentData[] = [];
       snapshot.forEach((doc) => {

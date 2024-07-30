@@ -31,7 +31,6 @@ const QueryRoom = ({ roomId, onRoomClose, roomName }: Props) => {
       snapshot.forEach((doc) => {
         messages.push(doc.data());
       });
-      // console.log(messages);
       setMessages((_) => messages);
     });
     return () => unsub();

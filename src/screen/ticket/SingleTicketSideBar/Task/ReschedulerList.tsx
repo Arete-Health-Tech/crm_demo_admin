@@ -4,7 +4,6 @@ import Accordion from './Accordion';
 import { Box } from '@mui/material';
 
 const ReschedulerList = ({ callReschedulerData }) => {
-    console.log(callReschedulerData, "indide rescheduler data")
 
     const separateDate = (timestamp) => {
         const monthNames = [

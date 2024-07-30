@@ -264,7 +264,7 @@ const NSingleTicketDetails = (props: Props) => {
         const value = event.target.value;
         setSelectedInternalRef(value);
         handleInternal(value);
-        console.log(value, 'Internal Ref Change ');
+
     };
 
     const changePrescriptionValue = (field: any, value: any) => {
@@ -291,7 +291,6 @@ const NSingleTicketDetails = (props: Props) => {
         return admission === false;
     };
     const handleInternal = (item: string) => {
-        console.log('this is response');
         setButtonVariant(item);
     };
 
@@ -306,7 +305,6 @@ const NSingleTicketDetails = (props: Props) => {
         }
     };
 
-    // console.log({ representative });
 
     const handelUploadType = async () => {
         setDisableButton(true);
@@ -358,9 +356,6 @@ const NSingleTicketDetails = (props: Props) => {
         }
     };
 
-    // console.log(currentTicket?.consumer[0]?.age,"this is current ticket")
-    // console.log(currentTicket,"this is current ticet")
-    // console.log(callRescheduler, ' this is call rescheduler ');
     // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
     // const handlePhoneCall = async (e: React.SyntheticEvent) => {
@@ -457,7 +452,6 @@ const NSingleTicketDetails = (props: Props) => {
 
     const getTicketInfo = (ticketID: string | undefined) => {
         const fetchTicket = tickets.find((element) => ticketID === element._id);
-        // console.log(fetchTicket," this is refetched dsfgsdgsdghsdhsdfh");
         setCurrentTicket(fetchTicket);
         return fetchTicket;
     };
@@ -550,7 +544,6 @@ const NSingleTicketDetails = (props: Props) => {
     useEffect(() => {
         (async function () {
             const ticketData = getTicketInfo(ticketID);
-            // console.log(ticketData," thi s is ticket Data")
             if (currentTicket) {
                 setSingleReminder([]);
                 setCallReschedule([]);
@@ -559,13 +552,11 @@ const NSingleTicketDetails = (props: Props) => {
                     currentTicket?.stage
                 );
                 reminders?.map((data) => {
-                    // console.log("maping", data?.ticket === ticketData?._id);
                     if (data?.ticket === ticketData?._id) {
                         setSingleReminder([...singleReminder, data]);
                     }
                 });
                 callRescheduler?.map((data) => {
-                    // console.log("maping", data?.ticket === ticketData?._id);
                     if (data?.ticket === ticketData?._id) {
                         setCallReschedule([...callReschedule, data]);
                     }
@@ -584,7 +575,6 @@ const NSingleTicketDetails = (props: Props) => {
                 });
 
                 const filteredData = data.filter((val) => val.ticket === ticketID);
-                // console.log(filteredData, "reminder ");
                 const sortedData = filteredData.sort(compareTimestamps).reverse();
                 setMatchedObjects(sortedData);
                 setModalOpenRemainder(true);
@@ -603,7 +593,6 @@ const NSingleTicketDetails = (props: Props) => {
                 });
 
                 const filteredData = data.filter((val) => val.ticket === ticketID);
-                // console.log(filteredData, "rescheduler data");
                 const sortedData = filteredData.sort(compareTimestamps).reverse();
                 setCallReschedulerData(sortedData);
                 setModalOpenRescheduler(true);
@@ -694,7 +683,6 @@ const NSingleTicketDetails = (props: Props) => {
             const formattedTimeDifference = `${hourDifference
                 .toString()
                 .padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
-            // console.log(formattedTimeDifference)
             return `${formattedTimeDifference} hrs ago`;
         } else {
             return `${dayDifference} days ago`;
@@ -763,7 +751,6 @@ const NSingleTicketDetails = (props: Props) => {
         };
     }, []);
 
-    // console.log({ messages })
     const handleProbability = async (value) => {
         await updateTicketProbability(value, ticketID);
         setProbabilityModal(false);
@@ -787,7 +774,6 @@ const NSingleTicketDetails = (props: Props) => {
 
     //This function is for assigne ticket to different representative
     const handleAddAssigne = async (assigneeId: string) => {
-        console.log(assigneeId);
         const res = await assignedToTicket(ticketID, assigneeId);
         getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
         navigate(`/ticket/${ticketID}`);
@@ -795,7 +781,6 @@ const NSingleTicketDetails = (props: Props) => {
 
     //This function is for remove assigne ticket from the representative
     const handleRemoveAssigne = async (assigneeId: string) => {
-        console.log(assigneeId);
         const res = await removeFromTicket(ticketID, assigneeId);
         getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
         navigate(`/ticket/${ticketID}`);
@@ -835,18 +820,13 @@ const NSingleTicketDetails = (props: Props) => {
     }
 
     useEffect(() => {
-        // console.log('useEffect is running in ticketCard'); // Check if this logs
 
         // Check if socket is connected
-        if (socket.connected) {
-            console.log('Socket connected successfully in ticketCard');
-        } else {
-            console.log('Socket not connected, attempting to connect...');
+        if (!socket.connected) {
             socket.connect();
         }
 
         const handleNewMessage = (data) => {
-            console.log('Received new message in ticketCard', data);
             setMessages((prevMessages) => [...prevMessages, data.message]);
             getAllWhtsappMsgCount()
         };

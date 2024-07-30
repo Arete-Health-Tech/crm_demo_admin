@@ -59,7 +59,6 @@ const MessagingWidget = (props: Props) => {
     }
     return null; // Return null if no matching dataId found in the data array
   }
-  console.log({ ticketID })
 
   const consumerId = getConsumerIdByDataId(tickets, ticketID);
 
@@ -100,7 +99,6 @@ const MessagingWidget = (props: Props) => {
     }
     // Listen for the 'newMessage' event
     socket.on('newMessage', async (data) => {
-      // console.log('Received new message:', data);
       setMessages((prevMessages) => [...prevMessages, data.message]);
       getAllWhtsappMsgCount()
       handleMarkAsRead(props.ticketId)
@@ -143,12 +141,10 @@ const MessagingWidget = (props: Props) => {
 
   const handleKeyPress = (e: any) => {
     if (e.key === 'Enter' && sendMessage.trim() !== '') {
-      // console.log('press enter');
       setIsDisabled(true)
       handleSendMessage();
     }
   };
-  console.log(messages.length, "this is message for whatsapp")
   const handleSendMessage = async () => {
     setIsDisabled(true)
     await sendTextMessage(sendMessage, consumerId, ticketID as string);
@@ -163,11 +159,9 @@ const MessagingWidget = (props: Props) => {
 
   const handleFileSelect = async (event) => {
     const selectedFile = event.target.files[0];
-    //  console.log(selectedFile,"thisi s selected file")
     const formData = new FormData();
 
     // Append each Blob to the FormData object
-    // console.log(consumerId, 'this is consimer id ');
     formData.append('images', selectedFile);
     formData.append('consumerId', consumerId);
     formData.append('ticketID', ticketID as string);
@@ -185,14 +179,11 @@ const MessagingWidget = (props: Props) => {
       );
 
       // Handle the API response
-      // console.log('API Response:', response);
     } catch (error) {
       // Handle any API errors
       console.error('API Error:', error);
     }
   };
-  // console.log(messages,"this is message for send whtasapp image")
-  // console.log(file,"thuis is file outsider")
   useEffect(() => {
     // Check if containerRef.current is not null before accessing properties
     if (containerRef.current) {

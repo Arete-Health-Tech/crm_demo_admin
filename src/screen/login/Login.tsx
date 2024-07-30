@@ -62,7 +62,6 @@ const Login = () => {
     } else {
       phoneNumber = phone;
     }
-    console.log({ phone })
     loginHandler(phoneNumber, password.secret);
     navigate('/');
     <Loader isOpen={false} />;

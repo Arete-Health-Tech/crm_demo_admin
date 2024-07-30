@@ -146,7 +146,6 @@ const AddReminderWidget = ({
       ...reminderData,
       ticket: ticketID
     });
-    // console.log('reminder created', result);
     setReminderData({
       date: 0,
       title: '',

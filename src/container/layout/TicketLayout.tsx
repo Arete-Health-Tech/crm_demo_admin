@@ -169,8 +169,6 @@ const Ticket = () => {
   ) => {
     setPageNumber(pageNo);
     if (pageNo !== page) {
-      // console.log(pageNo)
-      // console.log(page)
       setTickets([]);
       // if (
       //   ticketCache[pageNo] &&
@@ -193,7 +191,6 @@ const Ticket = () => {
   useEffect(() => {
     setPageCount(Math.ceil(ticketCount / 10));
     setPage(pageNumber);
-    // console.log("ticket count",tickets )
   }, [tickets, searchByName]);
 
   const fetchTicketsOnEmpthySearch = async () => {
@@ -203,7 +200,6 @@ const Ticket = () => {
     // setTickets(ticketCache[1]);
     setPage(1);
     setPageNumber(1);
-    // console.log({ filterTickets }, "002");
     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   };
   useEffect(() => {
@@ -219,13 +215,13 @@ const Ticket = () => {
   }, []);
 
   useEffect(() => {
+    setLocation(location)
     const data = async () => {
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
     }
     data()
   }, [location])
 
-  console.log(location)
 
   // const handleSeachName = (
   //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -240,7 +236,6 @@ const Ticket = () => {
   // };
 
   const handleSearchKeyPress = async (e: any) => {
-    // console.log("e", e)
     const value = e.target?.value;
     if (value) {
       setSearchName(value);
@@ -254,7 +249,6 @@ const Ticket = () => {
         redirectTicket();
         return;
       }
-      // console.log({ filterTickets }, "003");
       await getTicketHandler(value, 1, 'false', filterTickets);
       setSearchByName(value);
       setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
@@ -334,7 +328,6 @@ const Ticket = () => {
 
   useEffect(() => {
     (async function () {
-      // console.log({ filterTickets }, "006");
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
       await getAllNotesWithoutTicketId();
       await getStagesHandler();
@@ -490,16 +483,12 @@ const Ticket = () => {
   const clearAllInterval = (AllIntervals: any[]) => {
     AllIntervals?.forEach((interval) => {
       clearInterval(interval);
-      // console.log("HEY cleaning", interval)
     });
     AllIntervals = [];
   };
 
   // const refetchTickets = async () => {
   //   const copiedFilterTickets = { ...filterTickets };
-  //   console.log({ filterTickets: copiedFilterTickets }, "pahle");
-  //   console.log('Received request of refetch tickets from server');
-  //   console.log({ filterTickets: copiedFilterTickets }, "jbfusinds");
   //   await getTicketHandler(UNDEFINED, 1, 'false', copiedFilterTickets);
   // }
   useEffect(() => {
@@ -526,9 +515,6 @@ const Ticket = () => {
 
   // useEffect(() => {
   //   const refetchTickets = async () => {
-  //     console.log({filterTickets} ,"pahle");
-  //     console.log('Received request of refetch tickets from server');
-  //     console.log({filterTickets} ,"jbfusinds");
   //     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   //   }
 
@@ -540,7 +526,6 @@ const Ticket = () => {
   // }, []);
 
   useEffect(() => {
-    // console.log('gotham FULL', reminders, 'remindelist', reminderList);
     clearAllInterval(AllIntervals);
 
     reminders?.forEach((reminderDetail, index) => {
@@ -587,17 +572,14 @@ const Ticket = () => {
               // }
 
               // if (tiketIndex > -1) {
-              //   console.log('INDEX OF COLUMN 1:-', tiketIndex);
               //   let cacheList = ticketCache[1];
               //   let removedTicket = cacheList.splice(tiketIndex, 1);
-              //   console.log('removed ', removedTicket, 'cacheList', cacheList);
               //   setTicketCache({
               //     ...ticketCache,
               //     1: [...removedTicket, ...cacheList]
               //   });
               //   setTickets([...removedTicket, ...cacheList]);
               // } else {
-              //   console.log('data?.tickets[0]', data?.tickets[0]);
 
               //   setTickets([data?.tickets[0], ...ticketCache[1]]);
               //   setTicketCache({
@@ -633,7 +615,6 @@ const Ticket = () => {
   }, [showReminderModal]);
 
   useEffect(() => {
-    // console.log('gotham FULL', reminders, 'remindelist', reminderList);
     clearAllInterval(AllIntervals);
     callRescheduler?.forEach((callRescheduleDetail, index) => {
       let alarmInterval: any;
@@ -752,18 +733,13 @@ const Ticket = () => {
   const [messages, setMessages] = useState<storeMessage[]>([]);
 
   useEffect(() => {
-    // console.log('useEffect is running in ticketCard'); // Check if this logs
 
     // Check if socket is connected
-    if (socket.connected) {
-      console.log('Socket connected successfully in ticketCard');
-    } else {
-      console.log('Socket not connected, attempting to connect...');
+    if (!socket.connected) {
       socket.connect();
     }
 
     const handleNewMessage = (data) => {
-      console.log('Received new message in ticketCard', data);
       setMessages((prevMessages) => [...prevMessages, data.message]);
       getAllWhtsappMsgCount()
     };

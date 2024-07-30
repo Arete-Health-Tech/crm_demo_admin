@@ -72,7 +72,6 @@ export const getTicketHandler = async (
   if (downloadAll === 'true') {
     setDownloadTickets(sortedTickets);
     setLoaderOn(false);
-    // console.log("total download data",sortedTickets.length);
     return sortedTickets;
   }
   setTicketCount(count);
@@ -91,7 +90,6 @@ export const getAuditTicketsHandler = async () => {
     setLoaderOn
   } = useTicketStore.getState();
   const data = await getAuditTickets();
-  console.log(data, "auditData");
   const sortedTickets = data.data.tickets;
   const count = data.data.count;
 
@@ -127,7 +125,6 @@ export const customTicketHandler = async (
   const phone = 916397401855;
 
   setLoaderOn(true);
-  // console.log(selectedFilters," this is selected filters");
   const data = await getTicket(
     name,
     pageNumber,
@@ -151,7 +148,6 @@ export const customTicketHandler = async (
   if (downloadAll === 'true') {
     setDownloadTickets(sortedTickets);
     setLoaderOn(false);
-    // console.log("total download data",sortedTickets.length);
     return sortedTickets;
   }
   setTicketCount(count);
@@ -255,7 +251,6 @@ export const createTicketHandler = async (prescription: iCreateTicket) => {
   prescriptionData.append("remarks", prescription.remarks);
   prescription.service &&
     prescriptionData.append('service', prescription.service._id);
-  // console.log('file log', prescription);
   /* @ts-ignore */
   // const blob = await (await fetch(prescription.image)).blob();
   const imageBlobs: Blob[] = [];
@@ -275,7 +270,6 @@ export const createTicketHandler = async (prescription: iCreateTicket) => {
     prescriptionData.append(`image${index}`, blob, `image${index + 1}.jpg`);
   });
   // const formDataArray = Array.from(prescriptionData.entries());
-  // console.log(formDataArray);
   // prescriptionData.append('image', blob);
   return await createTicket(prescriptionData);
 };

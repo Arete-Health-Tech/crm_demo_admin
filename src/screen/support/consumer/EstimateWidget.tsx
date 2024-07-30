@@ -198,7 +198,6 @@ const EstimateWidget = (props: Props) => {
   };
 
   const handleCreateEstimate = () => {
-    // console.log(estimateFileds," this is in estimate widget")
     createEstimateHandler(estimateFileds);
 
   };

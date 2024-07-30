@@ -58,8 +58,6 @@ function UploadEstimate() {
   // const handleFileChange = (event: any) => {
   //   setFile(event.target.files[0]);
   //   setFileName(event.target.file[0].name)
-  //   console.log(event.target.file[0].name, "estimate file name");
-
   // };
 
   const handlePaymentType = (event) => {
@@ -69,7 +67,6 @@ function UploadEstimate() {
   const handleFileChange = (event) => {
     const files = event.target.files && event.target.files;
     if (files && files.length > 0) {
-      // console.log(files[0], "asasdsdaas");
       setFile(files[0]);
       setUploadFileName(`${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`);
     } else {
@@ -88,7 +85,6 @@ function UploadEstimate() {
 
 
   const handleSubmit = async () => {
-    // console.log(file, " thi sis file")
     const formdata = new FormData();
     if (ticketID !== undefined) {
       formdata.append('ticket', ticketID);
@@ -96,19 +92,14 @@ function UploadEstimate() {
     if (file) {
       formdata.append('estimate', file);
     }
-    // console.log(noteTextValue, 'noteTextValue');
     if (noteTextValue) {
       formdata.append('total', noteTextValue);
     }
-    // if (selectedOption) {
-    //   formdata.append('paymentType', selectedOption);
-    // }
     if (selectedOption) {
       formdata.append('paymentType', selectedOption);
     }
 
     try {
-      // console.log("this is inside")
       const { data } = await apiClient.post(
         `/ticket/${ticketID}/estimate/upload`,
         formdata,
@@ -119,14 +110,7 @@ function UploadEstimate() {
         }
       );
       setIsEstimateUpload(true);
-      // console.log(data, "uploaded estimate successfully");
       toast.success('Uploaded Estimate Successfully!');
-      // try {
-      //   const { data } = await apiClient.get(`ticket/uploadestimateData/${ticketID}`);
-      //   setViewEstimates(data)
-      // } catch (error) {
-      //   console.error("Error fetching estimate data:", error);
-      // }
       (async () => {
         const result = await getTicketHandler(
           searchByName,
@@ -135,7 +119,6 @@ function UploadEstimate() {
           filterTickets,
 
         );
-        // setTicketUpdateFlag(result);
       })()
       setNoteTextValue('');
       setSelectedOption(" ")
@@ -151,13 +134,11 @@ function UploadEstimate() {
           filterTickets,
 
         );
-        // setTicketUpdateFlag(result);
       })()
       setNoteTextValue('');
       setSelectedOption(" ")
       setFile(null);
       setOpen(false);
-      // console.error('Error occurred:', error);
       toast.error('Error occurred while uploading estimate.');
     }
   };

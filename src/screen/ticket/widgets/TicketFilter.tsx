@@ -61,13 +61,6 @@ export const ticketFilterCount = (
   const statusCount = statusType ? statusType.length : 0;
   const locationCount = filteredLocation === "Amritsar" ? 1 : 0;
 
-  // console.log(stageListCount, " this is stage list count");
-  // console.log(admissionCount, " this is Admission Count")
-  // console.log(diagnosticsCount, "this is diagnostic Count")
-  // console.log(DateCount, "this is Date Count")
-  // console.log(stageListCount, " this is stage list count");
-  // console.log(resultCount, " this is result counnt")
-
   const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount + statusCount + locationCount;
   return total;
 };
@@ -80,7 +73,6 @@ const TicketFilter = (props: {
     '& .MuiBadge-badge': {
       right: -3,
       top: 7,
-      // border: `2px solid ${theme.palette.background.paper}`,
       padding: '0 4px',
       color: "#FFFFFF",
       backgroundColor: "#0566FF"
@@ -90,7 +82,6 @@ const TicketFilter = (props: {
     '& .MuiBadge-badge': {
       right: -0,
       top: 7,
-      // border: `2px solid ${theme.palette.background.paper}`,
       padding: '0 4px',
       color: "#FFFFFF",
       backgroundColor: "red"
@@ -122,14 +113,6 @@ const TicketFilter = (props: {
 
   const { setFilterTickets, setPageNumber, isSwitchView, isAuditorFilterOn, setIsAuditorFilterOn, setFilteredLocation, filteredLocation } = useTicketStore();
 
-  // const [ticketFilters, setTicketFilters] = useState<iTicketFilter>({
-  //   stageList: [],
-  //   admissionType: [],
-  //   diagnosticType: [],
-  //   startDate: NaN,
-  //   endDate: NaN
-  // });
-
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const [admissionType, setAdmissionType] = React.useState<string[]>([]);
   const [statusType, setStatusType] = React.useState<string[]>([]);
@@ -159,10 +142,8 @@ const TicketFilter = (props: {
 
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    // console.log('val', value);
     if (selectedFilters.stageList.includes(value)) {
       const modifiedStageList = selectedFilters.stageList;
-      console.log('modifiedStageList', modifiedStageList)
       modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
 
       dispatchFilter({
@@ -176,10 +157,6 @@ const TicketFilter = (props: {
       payload: [...selectedFilters.stageList, value]
     });
   };
-
-  useEffect(() => {
-    console.log('  selectedFilters stageList', selectedFilters.stageList)
-  }, [selectedFilters.stageList]);
 
   const handleRepresentative = (e: any) => {
     const value = e.target.value;
@@ -246,12 +223,6 @@ const TicketFilter = (props: {
   };
 
 
-  // React.useEffect(() => {
-  //   console.log(" AdmissionType", admissionType);
-  //   console.log("diagnosticType", diagnosticsType);
-  //   console.log("Start Date", dateRange);
-
-  // }, [admissionType, diagnosticsType, dateRange, selectedFilters]);
 
   // const handleToggleChange = (event, newValue) => {
   //   setSelectedValue(newValue);
@@ -259,7 +230,6 @@ const TicketFilter = (props: {
 
   const handleResult = (e: any) => {
     const value = e.target.value;
-    // console.log(value);
 
     if (value === 'Won') {
       setResult(value);
@@ -334,9 +304,6 @@ const TicketFilter = (props: {
   }, []);
 
   const handleApplyFilter = async () => {
-    // console.log(startDate, 'Start');
-    // console.log(endDate, 'End');
-    // console.log(dayjs(endDate).diff(dayjs(startDate), 'days'), Difference);
     // setTicketFilters({
     //   stageList: selectedStageList,
     //   admissionType: admissionType,
@@ -381,28 +348,6 @@ const TicketFilter = (props: {
     setDiagnosticsType((prev) => []);
     setDateRange(["", ""]);
     setFilteredLocation("")
-
-    // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-
-    // setTicketFilters({
-    //   stageList: [],
-    //   admissionType: [],
-    //   diagnosticType: [],
-    //   startDate: 0,
-    //   endDate: 0
-    // });
-    // setSelectedStageList((prev) => []);
-
-
-
-    // setStartDate((prev) => '');
-    // setEndDate((prev) => '');
-
-    // console.log("clear AdmissionType  inside", admissionType);
-    // console.log("clear DiagnosticType inside", diagnosticsType);
-    // console.log("clear value Lost", selectedValueLost)
-    // console.log("clear DateRange inside", dateRange);
-
 
   };
 

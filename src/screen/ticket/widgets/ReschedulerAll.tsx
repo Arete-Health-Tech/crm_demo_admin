@@ -3,7 +3,6 @@ import dayjs from 'dayjs';
 import React from 'react'
 
 function ReschedulerAll({ data }) {
-  // console.log(data," this is data from call rescfdhfjhgjfgfgkkk")
   return (
     <div>
       <Table>

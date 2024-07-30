@@ -27,7 +27,6 @@ export const createServiceTag = async (tag: createTag) => {
 //   const { data } = await apiClient.get(
 //     `/service/search?search=${serviceName}${tagId ? `&tag=${tagId}` : ''}`
 //   );
-// console.log(data," from service ")
 //   return data;
 // };
 
@@ -35,7 +34,6 @@ export const searchService = async (serviceName: string, tagId?: string) => {
   const { data } = await apiClient.get(
     `/service/search?search=${serviceName}${tagId ? `&tag=${tagId}` : ''}`
   );
-  // console.log(data, ' from service ');
   return data;
 };
 
@@ -47,9 +45,9 @@ export const searchServicePck = async () => {
   return data;
 };
 
-export const searchServiceAll= async () => {
+export const searchServiceAll = async () => {
   const { data } = await apiClient.get('/service/searchService');
- 
+
   return data;
 };
 

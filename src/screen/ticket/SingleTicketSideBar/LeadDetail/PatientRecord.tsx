@@ -81,7 +81,6 @@ const PatientRecord = ({ isPatient }) => {
     } = useTicketStore();
     const { allServices, services } = useServiceStore();
     const { ticketID } = useParams();
-    // console.log(services, "servicee-------------------------------------");
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
@@ -95,13 +94,11 @@ const PatientRecord = ({ isPatient }) => {
 
         getTicketInfo(ticketID);
 
-        // console.log(diagonsticsTest, 'ncdbfndbfndbfn');
 
     }, [ticketID, tickets, diagonsticsTest])
 
     const getServiceName = () => {
         const service = services?.filter((elements) => currentTicket?.prescription?.[0]?.service === elements._id)
-        // console.log(service[0]?.name, "---xdfsd---------------------");
         return service[0]?.name
     }
 
@@ -173,7 +170,6 @@ const PatientRecord = ({ isPatient }) => {
         }
     };
 
-    // console.log(diagonstics)
 
 
     const addDiagnosticTest = () => {
@@ -222,7 +218,6 @@ const PatientRecord = ({ isPatient }) => {
         const value = event.target.value;
         setSelectedInternalRef(value);
         handleInternal(value);
-        // console.log(value, 'Internal Ref Change ');
     };
 
     const changePrescriptionValue = (field: any, value: any) => {
@@ -250,7 +245,6 @@ const PatientRecord = ({ isPatient }) => {
     };
 
     const handleInternal = (item: string) => {
-        // console.log('this is response');
         setButtonVariant(item);
     };
 

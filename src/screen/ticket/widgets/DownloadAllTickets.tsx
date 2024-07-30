@@ -144,7 +144,6 @@ const DownloadAllTickets = (props: Props) => {
     //         const fullName = `${rep.firstName} ${rep.lastName}`;
     //         result.push(fullName );
     //     }
-    //     console.log(result,"result")
     //     return result;
     // }, []);
   };
@@ -243,7 +242,6 @@ const DownloadAllTickets = (props: Props) => {
         Last_Activity_Date: ticket?.lastActivity,
       };
     });
-    // console.log(data," data")
     const csv = Papa.unparse(data);
     const csvBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     FileSaver.saveAs(

@@ -56,7 +56,6 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         isAuditor
     } = useTicketStore();
 
-    // console.log(doctors[0].departments[0], 'doctors');
     const initialPatientData: patientData = {
         uhid: '',
         firstName: '',
@@ -83,7 +82,6 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 try {
                     const { data } = await apiClient.get(`ticket/uploadestimateData/${ticketID}`);
                     setViewEstimates(data)
-                    // console.log(data, "uploadestimate----")
                 } catch (error) {
                     console.error("Error fetching estimate data:", error);
                 }
@@ -92,7 +90,6 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             }
         }
 
-        // console.log(estimates2, "fetchEstimateData");
         fetchEstimateData();
         setIsEstimateUpload(false);
     }, [ticketID, isEstimateUpload]);
@@ -105,7 +102,6 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         return departments.find((department: iDepartment) => department._id === id)
             ?.name;
     };
-    console.log(PatientData.remarks, "PatientData.remarks")
     const patientData = [
         { id: 'uhid', label: 'UHID', value: `#${PatientData.uhid}` },
         { id: 'Name', label: 'Name', value: `${PatientData.firstName} ${PatientData.lastName}`, setValue: setPatientData },
@@ -124,7 +120,6 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         { id: 'doctor', label: 'Doctor', value: PatientData.doctor, setValue: setPatientData }
     ];
 
-    // console.log(doctors, departments,)
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
@@ -148,7 +143,6 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        // console.log('Form submitted with name:', PatientData);
         const updatedData = {
             "consumer": {
                 "firstName": PatientData.firstName,

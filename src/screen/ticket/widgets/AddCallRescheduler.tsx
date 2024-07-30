@@ -151,7 +151,6 @@ const AddCallRescheduler = () => {
   };
 
   useEffect(() => {
-    // console.log("dsbdfkbdf", callReschedulerData)
     checkIsEmpty();
     setCallReschedulerData({
       ...callReschedulerData,
@@ -192,7 +191,6 @@ const AddCallRescheduler = () => {
   }
 
   const handleCheckboxChange = (label: string) => () => {
-    console.log(label, "selected option");
     const isSelected = callReschedulerData.selectedLabels.some(
       (selectedLabel) => selectedLabel.label === label
     )

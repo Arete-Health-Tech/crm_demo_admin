@@ -10,7 +10,6 @@ import dayjs from 'dayjs';
 import React from 'react';
 
 function RemainderAll({ data }) {
-  // console.log(data," this is remainder all")
   return (
     <div>
 

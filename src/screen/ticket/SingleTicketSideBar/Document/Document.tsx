@@ -68,7 +68,6 @@ const Document = () => {
     const handleFileChange = (event) => {
         const files = event.target.files && event.target.files;
         if (files && files.length > 0) {
-            // console.log(files[0], "asasdsdaas");
             setFile(files[0]);
             setUploadFileName(`${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`);
         } else {
@@ -82,7 +81,6 @@ const Document = () => {
     }
 
     const handleSectedOptionChange = (event) => {
-        // console.log(event.target.value);
         setSelectedOption(event.target.value);
     }
 
@@ -93,11 +91,9 @@ const Document = () => {
         try {
             const response = await getDocumentsData(ticketid);
             setUploadedFile(response.data.content)
-            // console.log(response.data.content,document);
             setLoading(false);
         } catch (error) {
             setUploadedFile([])
-            console.log("no data found")
         }
     }
 
@@ -107,14 +103,12 @@ const Document = () => {
                 console.error('File is null.');
                 return;
             }
-            // console.log(file, "inisde")
             const formData = new FormData();
             formData.append('document', file);
             formData.append('tag', selectedOption);
             formData.append('ticketid', `${ticketID}`);
 
             // const { data } = await apiClient.post('/task/uploadDocs', formData);
-            // console.log(data, "data");
             const { data } = await apiClient.post(
                 `/task/uploadDocs`,
                 formData,
@@ -126,7 +120,6 @@ const Document = () => {
             );
 
             if (data) {
-                console.log(data, 'document upload successful');
                 setIsUploaded(true);
                 documentsData()
                 handleClose();

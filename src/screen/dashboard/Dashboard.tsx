@@ -34,7 +34,6 @@ const Dashboard = (props: Props) => {
 
   getAllTimerStatusHandlerDnd()
     .then((timerData) => {
-      //  console.log(timerData.tickets.length, 'Dnd');
       const data = timerData.tickets.length;
       setDnd(data)
     }
@@ -45,11 +44,9 @@ const Dashboard = (props: Props) => {
       console.error('Error fetching timer data:', error);
       // Handle the error here
     });
-  // console.log("this is dnd number",dnd)
 
   getAllTimerStatusHandlerPending()
     .then((timerData) => {
-      //  console.log(timerData, 'Pending');
       const data = timerData.tickets.length;
       setPending(data)
     })
@@ -61,7 +58,6 @@ const Dashboard = (props: Props) => {
 
   getAllTimerStatusHandlerTodaysTask()
     .then((timerData) => {
-      // console.log(timerData, 'TodaysTask');
       const data = timerData.tickets.length;
       setTodaysTask(data)
       // Handle the timerData here
@@ -73,7 +69,6 @@ const Dashboard = (props: Props) => {
 
   getAllTimerStatusHandlerCallCompleted()
     .then((timerData) => {
-      // console.log(timerData, 'CallCompleted');
       const data = timerData.tickets.length;
       setCallCompleted(data)
       // Handle the timerData here
@@ -89,7 +84,6 @@ const Dashboard = (props: Props) => {
   //       const data = timerData.tickets.length;
 
   //     } else {
-  //       console.error('Invalid timer data:', timerData.wonCount);
   //       setWonCount(timerData.wonCount);
   //       setLossCount(timerData.lossCount);
   //     }
@@ -102,9 +96,7 @@ const Dashboard = (props: Props) => {
 
   getAllTimerStatusHandlerRescheduledCall()
     .then((timerData) => {
-      // console.log(timerData, 'RescheduledCall');
       const data = timerData.tickets.length;
-      console.log(data, "Call scheduled")
       setReschedule(data)
       // Handle the timerData here
     })
@@ -120,13 +112,10 @@ const Dashboard = (props: Props) => {
           const data = timerData.tickets.length;
           setStageCount(data);
         } else {
-          console.log('StageCount:', timerData);
-          console.log('StageCount:1', timerData.ticketsCountByStage[0].count);
           timerData.ticketsCountByStage.forEach((item) => {
             // Check the stage value of each item and set the corresponding state variable
             switch (item.stage) {
               case stages[0]._id:
-                console.log(stages[0], "new lead data")
                 setNewLead(item.count);
                 break;
               case stages[1]._id:

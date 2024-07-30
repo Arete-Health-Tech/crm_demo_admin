@@ -844,7 +844,6 @@ const CreatePrescription = () => {
   });
 
   const changePrescriptionValue = (field: any, value: any) => {
-    console.log({ field, value })
     setPrescription((prev: any) => {
       if (field == "image") {
         if (value.length > 0) {
@@ -859,7 +858,6 @@ const CreatePrescription = () => {
     });
   };
 
-  console.log(prescription.image)
   useEffect(() => {
     setPrescription(structuredClone(initialPrescription));
   }, []);
@@ -926,7 +924,6 @@ const CreatePrescription = () => {
       ticket.diagnostics = diagnostics;
 
       ticket.followup = ticket.followup ? ticket.followup : null;
-      console.log({ ticket })
       await createTicketHandler(ticket);
       setPrescription(structuredClone(initialPrescription));
       setDiagnostics([]);
@@ -948,7 +945,6 @@ const CreatePrescription = () => {
   }, []);
 
   const handleInternal = (item: string) => {
-    console.log('this is response');
     setButtonVariant(item);
   };
 

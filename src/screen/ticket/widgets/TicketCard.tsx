@@ -197,7 +197,6 @@ const TicketCard = (props: Props) => {
   };
 
   const stageName = currentStage?.name;
-  console.log(stageName)
   const stageStyle = stageStyles[stageName] || {};
 
   const calculatedDate = (date: any) => {
@@ -238,7 +237,6 @@ const TicketCard = (props: Props) => {
   // const [messages, setMessages] = useState<storeMessage[]>([]);
 
   // useEffect(() => {
-  //   console.log("useEffect is running in ticketCard"); // Check if this logs
 
   //   // Check if socket is connected
   //   if (socket.connected) {
@@ -249,7 +247,6 @@ const TicketCard = (props: Props) => {
   //   }
 
   //   const handleNewMessage = (data) => {
-  //     console.log('Received new message in ticketCard', data);
   //     setMessages((prevMessages) => [...prevMessages, data.message]);
   //   };
 

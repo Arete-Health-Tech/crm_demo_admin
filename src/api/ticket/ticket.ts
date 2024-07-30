@@ -20,7 +20,6 @@ export const getTicket = async (
   won?: any,
   lose?: any
 ) => {
-  console.log('sahbdhabdhsabdhasbd', location);
   const params = new URLSearchParams(selectedFilters).toString();
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
@@ -36,7 +35,6 @@ export const createTicket = async (prescription: any) => {
       'Content-Type': 'multipart/form-data'
     }
   });
-  console.log(data);
   // return data;
 };
 
@@ -149,7 +147,6 @@ export const getPharmacyTickets = async (
   const { data } = await apiClient.get(
     `/pharmacy/pharmacyTickets?page=${pageNumber}&search=${pharmacyOrderStatusFiltes}&date=${pharmacyDateFilter}&pharmacyStatus=${pharmacySearchFilter}`
   );
-  console.log(data);
   return data;
 };
 
@@ -161,7 +158,6 @@ export const updatePharmacyOrderStatus = async (
     ticketId: ticketId,
     pharmacyStatus: newValue
   });
-  console.log(data);
   return data;
 };
 
@@ -206,7 +202,6 @@ export const updateService = async (
   updatedData: Object,
   ticketId: string | undefined
 ) => {
-  console.log({ updatedData });
   const { data } = await apiClient.put(
     `/ticket/updateService/${ticketId}`,
     updatedData
@@ -268,7 +263,6 @@ export const updateNotes = async (updatedNoteData: any) => {
 };
 
 export const deleteNotes = async (noteId: any) => {
-  console.log(noteId);
   const data = await apiClient.delete(`/ticket/deleteNote`, { data: noteId });
   return Promise.resolve(data);
 };

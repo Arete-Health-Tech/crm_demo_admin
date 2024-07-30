@@ -3,7 +3,7 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import TicketCard from '../../screen/ticket/widgets/TicketCard';
 
-function SearchBar(props:any) {
+function SearchBar(props: any) {
   const { searchTerm, setSearchTerm } = props;
 
   // const [searchData, setSearchData] = useState('');
@@ -14,7 +14,6 @@ function SearchBar(props:any) {
   //     const response = await axios.get('http://localhost:3000/tickets', {
   //       params: { firstName: searchTerm }
   //     });
-  //     console.log(response)
   //     setFilteredTickets(response.data);
   //     setSearchData(response.data);
   //   };
@@ -25,8 +24,6 @@ function SearchBar(props:any) {
   //     setFilteredTickets([]);
   //   }
   // }, [searchTerm]);
-  // console.log(searchData);
-  // console.log(filteredTickets)
   const handleSearchTermChange = (event: any) => {
     setSearchTerm(event.target.value);
   };

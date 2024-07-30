@@ -20,9 +20,7 @@ function AccordionReminder(props) {
         pageNumber,
     } = useTicketStore();
 
-    // useEffect(() => {
-    //     console.log("Height for ", props.title, ": ", height);
-    // }, [height]);
+
 
     function toggleAccordion() {
         setActive(!active);

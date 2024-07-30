@@ -18,7 +18,6 @@ const LeadDetail: React.FC<MyComponentProps> = ({ isLeadDetail }) => {
     } = useTicketStore();
 
     const [currentTicket, setCurrentTicket] = useState<iTicket>();
-    // console.log(tickets, ticketID);
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {

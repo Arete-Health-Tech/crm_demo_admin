@@ -38,7 +38,6 @@ const Activities = () => {
 
     const handleActivityData = async () => {
         const res = await getActivityData(ticketID);
-        console.log(res, "activity data")
         setActivities(res !== null ? res.data : null);
     };
 
@@ -315,7 +314,7 @@ const Activities = () => {
                                     </div>
                                 </div>
                             )}
-                             {handleCheckKey(key) === 'Status' && (
+                            {handleCheckKey(key) === 'Status' && (
                                 <div
                                     style={{
                                         display: 'flex',

@@ -41,6 +41,7 @@ import NotActiveIcon from "../../../assets/ActiveIcon.svg"
 import CheckedActiveIcon from "../../../assets/NotActive.svg"
 import RightArrowIcon from "../../../assets/arrow-right.svg"
 import documentIcon from "../../../assets/document-text.svg"
+import "../singleTicket.css";
 type Props = {
   currentTicket: iTicket | any;
   setTicketUpdateFlag: any;
@@ -84,9 +85,6 @@ const StageCard = (props: Props) => {
   const [disableLostButton, setDisableLostButton] = useState(true);
   const [disableWonButton, setDisableWonButton] = useState(true);
 
-  // console.log({
-  //   currentTicket, stages, subStages, currentStage, nextStage, changeStageName, validStageList
-  // })
 
   const [steps, setSteps] = useState([
     {
@@ -136,14 +134,12 @@ const StageCard = (props: Props) => {
   //   const index = stages.findIndex(
   //     (stage) => stage._id === currentTicket?.stage
   //   );
-  //   console.log(index);
   //   setCurrentStageIndex(index);
   // };
 
   // useEffect(()=>{
   //   getCurrentStage();
   // },[])
-  // console.log(changeStageName);
 
   useEffect(() => {
     if (currentTicket && stages.length > 0 && subStages.length > 0) {
@@ -183,7 +179,6 @@ const StageCard = (props: Props) => {
 
       setProgressCount(stageDetail?.code * 20 || 0);
 
-      // console.log(stageDetail?.code, "code chnage");
 
       if (stageDetail?.code > 0) {
         const index = activeStep ? steps.findIndex((x) => x.key === activeStep.key) : -1;
@@ -197,8 +192,6 @@ const StageCard = (props: Props) => {
         }
       }
 
-      // console.log(activeStep, "active step");
-      // console.log(progressCount, "progressCount");
 
       if (activeStep > steps[0] && progressCount > 0) {
 
@@ -221,7 +214,6 @@ const StageCard = (props: Props) => {
   }, [currentTicket, stages, subStages, changeStageName, ticketID]);
 
   const handleStages = async (name: any) => {
-    // console.log('selected', e.target.value);
 
     setChangeStageName(name);
     const payload = {
@@ -248,9 +240,7 @@ const StageCard = (props: Props) => {
     }, 1000);
     if ((currentTicket?.subStageCode.code || 0) + 1 > 3) {
       redirectTicket();
-      // console.log('redirect to ticket');
     }
-    // console.log('redirect to ticket ?', currentTicket?.subStageCode.code + 1);
   };
 
   const handleStagesNotFound = (name: string) => {
@@ -280,7 +270,6 @@ const StageCard = (props: Props) => {
   };
 
   const handleOpen = () => {
-    // console.log('Open Modal');
     setOpen(true);
   };
 
@@ -372,7 +361,6 @@ const StageCard = (props: Props) => {
           setTicketUpdateFlag(result);
         })();
       }, 1000);
-      // console.log(formdata)
       setPaymentIDValue('');
       setNoteTextValue('');
       setOpenLose(false);
@@ -381,7 +369,6 @@ const StageCard = (props: Props) => {
       setFile(null);
       setLose('');
       redirectTicket();
-      // console.log('patient status res', data);
     }
 
     setOpen(false);

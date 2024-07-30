@@ -222,7 +222,6 @@ const RegisterConsumer = () => {
         '/consumer/UhidData?',
         { params: { search: consumer.uid } }
       );
-      console.log("response just after api call ", response)
       if (response.data) {
         updateConsumerState('firstName', response.data[0].PatientName.split(' ')[0]);
         updateConsumerState('lastName', response.data[0].PatientName.split(' ')[1]);
@@ -241,7 +240,6 @@ const RegisterConsumer = () => {
         '/consumer/findConsumer?',
         { params: { search: consumer.uid } }
       );
-      console.log(response.data)
       if (response.status == 200) {
         updateConsumerState('firstName', response.data.firstName);
         updateConsumerState('lastName', response.data.lastName);

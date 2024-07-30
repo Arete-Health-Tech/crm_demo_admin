@@ -787,7 +787,7 @@ const Ticket = () => {
                 <Stack>
                   <Box height="100%" className="Box-assignee" onClick={() => setVisible(!visible)}>
                     <Stack direction="row" alignItems="center" marginTop="3px" paddingLeft="1rem">
-                      <span>{localStorage.getItem('location') == "" ? 'Mohali' : localStorage.getItem('location')}</span>
+                      <span>{localStorage.getItem('location') == "" ? 'All' : localStorage.getItem('location')}</span>
                       <span>
                         <img src={DropDownArrow} alt="" />
                       </span>

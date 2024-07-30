@@ -168,6 +168,21 @@ const TicketCard = (props: Props) => {
     backgroundColor: '#f94839'
   };
 
+  const locationStyle = {
+    fontFamily: 'Outfit, sans-serif',
+    color: '#007BFF',
+    padding: '0px 8px',
+    borderRadius: '10px',
+    height: '24px',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    fontWeight: 400,
+    fontSize: '12px',
+    gap: '4px',
+    lineHeight: '18px',
+    backgroundColor: '#D9EBFF',
+  }
   const stageStyles = {
     'New Lead': {
       ...baseStyle,
@@ -380,10 +395,18 @@ const TicketCard = (props: Props) => {
       </Box>
 
       {/* ------- */}
+      <Stack display={"flex"} flexDirection={"row"} justifyContent={"space-between"} marginTop={'5px'} width={"100%"}>
+        <Stack className="docName" >
+          {doctorSetter(props?.patientData?.prescription[0]?.doctor)}
+        </Stack>
+        {props?.patientData?.specialty &&
+          <Stack sx={locationStyle}>
+            {props?.patientData?.specialty}
+          </Stack>
+        }
 
-      <Stack className="docName" marginTop={'5px'}>
-        {doctorSetter(props?.patientData?.prescription[0]?.doctor)}
       </Stack>
+
       <Stack className="docName">
         {departmentSetter(props?.patientData?.prescription[0]?.departments[0])}
       </Stack>

@@ -143,6 +143,7 @@ export interface iTicket {
   lastActivity: string | null;
   Probability: number;
   status: string;
+  specialty: string;
 }
 
 export interface iPharmcyTicket {

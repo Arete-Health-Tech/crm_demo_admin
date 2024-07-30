@@ -116,8 +116,6 @@ const Ticket = () => {
     setIsSwitchView,
     setIsAuditor,
     viewEstimates,
-    location,
-    setLocation
   } = useTicketStore();
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
@@ -215,13 +213,11 @@ const Ticket = () => {
   }, []);
 
   useEffect(() => {
-    setLocation(location)
     const data = async () => {
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
     }
     data()
-  }, [location])
-
+  }, [localStorage.getItem('location')])
 
   // const handleSeachName = (
   //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -791,7 +787,7 @@ const Ticket = () => {
                 <Stack>
                   <Box height="100%" className="Box-assignee" onClick={() => setVisible(!visible)}>
                     <Stack direction="row" alignItems="center" marginTop="3px" paddingLeft="1rem">
-                      <span>{location == "" ? 'Mohali' : location}</span>
+                      <span>{localStorage.getItem('location') == "" ? 'Mohali' : localStorage.getItem('location')}</span>
                       <span>
                         <img src={DropDownArrow} alt="" />
                       </span>
@@ -806,15 +802,11 @@ const Ticket = () => {
                       boxShadow="0px 0px 10px rgba(0,0,0,0.1)"
                     >
                       <Stack className="ticket-asssignee-container-layout">
-                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), setLocation(""))}>
-                          <Box>
-                            Mohali
-                          </Box>
+                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', ""))}>
+                          Mohali
                         </MenuItem>
-                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), setLocation("Amritsar"))}>
-                          <Box>
-                            Amritsar
-                          </Box>
+                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Amritsar"))}>
+                          Amritsar
                         </MenuItem>
                       </Stack>
                     </Stack>

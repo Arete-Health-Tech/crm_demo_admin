@@ -40,7 +40,6 @@ export const getTicketHandler = async (
     setEmptyDataText,
     setDownloadTickets,
     setLoaderOn,
-    location,
     filteredLocation
   } = useTicketStore.getState();
   const { user } = useUserStore.getState();
@@ -55,7 +54,6 @@ export const getTicketHandler = async (
     ticketId,
     fetchUpdated,
     phone,
-    location,
     filteredLocation
   );
   const sortedTickets = data.tickets;

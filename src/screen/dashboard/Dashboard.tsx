@@ -144,6 +144,9 @@ const Dashboard = (props: Props) => {
       });
   }, []);
 
+  useEffect(() => {
+    localStorage.getItem('location')
+  }, [])
 
 
 

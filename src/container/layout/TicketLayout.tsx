@@ -43,7 +43,7 @@ import handleClearFilter from '../../screen/ticket/widgets/TicketFilter';
 import DownloadAllTickets from '../../screen/ticket/widgets/DownloadAllTickets';
 import dayjs from 'dayjs';
 import CustomPagination from './CustomPagination';
-import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../constantUtils/constant';
+import { NAVIGATE_TO_SWITCHVIEW_TICKET, NAVIGATE_TO_TICKET, UNDEFINED } from '../../constantUtils/constant';
 import {
   getStagesHandler,
   getSubStagesHandler
@@ -52,7 +52,8 @@ import useServiceStore from '../../store/serviceStore';
 import './styles.css';
 import {
   getAllCallReschedulerHandler,
-  getTicket
+  getTicket,
+  validateTicket
 } from '../../api/ticket/ticket';
 import CustomSpinLoader from '../../components/CustomSpinLoader';
 import { socket } from '../../api/apiClient';
@@ -750,6 +751,18 @@ const Ticket = () => {
     };
   });
 
+  const handleOnClose = async () => {
+    if (ticketID) {
+      await validateTicket(ticketID);
+      if (!isSwitchView) {
+        navigate(NAVIGATE_TO_TICKET);
+      } else {
+        navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
+      }
+
+    }
+  };
+
   return (
     <>
       <Box height={'100vh'} display="flex" position="fixed" width="100%">
@@ -809,13 +822,13 @@ const Ticket = () => {
                       boxShadow="0px 0px 10px rgba(0,0,0,0.1)"
                     >
                       <Stack className="ticket-asssignee-container-layout">
-                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', ""))}>
+                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', ""), handleOnClose())}>
                           All
                         </MenuItem>
-                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Mohali"))}>
+                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Mohali"), handleOnClose())}>
                           Mohali
                         </MenuItem>
-                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Amritsar"))}>
+                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Amritsar"), handleOnClose())}>
                           Amritsar
                         </MenuItem>
 

@@ -70,7 +70,7 @@ const Logout = (props: Props) => {
     const { data } = await apiClient.post('/representative/logOut', { userId: user?._id });
     handleClose();
     cookie.remove('user');
-    localStorage.removeItem("")
+    localStorage.clear()
     setUser(null);
     navigate('/login');
   };

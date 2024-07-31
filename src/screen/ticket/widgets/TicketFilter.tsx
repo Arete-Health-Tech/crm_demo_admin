@@ -518,7 +518,7 @@ const TicketFilter = (props: {
           </Box>
           <Box px={3}>
             <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
-              Result
+              Result (This filter cannot be used in combination with any other filter, To be used independently only)
             </Stack>
             <ToggleButtonGroup
               color="primary"
@@ -662,7 +662,7 @@ const TicketFilter = (props: {
           </Box>
           <Box p={1} px={3}>
             <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
-              Speciality
+              Location
             </Stack>
             <ToggleButtonGroup
               color="primary"

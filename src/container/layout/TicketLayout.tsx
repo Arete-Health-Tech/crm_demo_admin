@@ -785,7 +785,14 @@ const Ticket = () => {
               </Stack>
               <Stack display={'flex'} flexDirection={'row'}>
                 <Stack>
-                  <Box height="100%" className="Box-assignee" onClick={() => setVisible(!visible)}>
+                  <Box height="100%"
+                    sx={{
+                      borderRadius: "var(--36px, 36px)",
+                      border: "1px solid var(--Borders-Light-Grey, #d4dbe5)",
+                      background: "var(--Background-White, #FFF)",
+                      cursor: "pointer"
+                    }}
+                    className="Box_location" onClick={() => setVisible(!visible)}>
                     <Stack direction="row" alignItems="center" marginTop="3px" paddingLeft="1rem">
                       <span>{localStorage.getItem('location') == "" ? 'All' : localStorage.getItem('location')}</span>
                       <span>
@@ -1114,7 +1121,7 @@ const Ticket = () => {
         </Box>
 
         {/* <CustomSpinLoader open={loaderOn} /> */}
-      </Box>
+      </Box >
       <ExpandedModal />
       <ExpandedSmsModal />
       <ExpandedPhoneModal />

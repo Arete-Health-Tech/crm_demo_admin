@@ -1,36 +1,37 @@
-.Box-assignee {
-    display: flex;
-    align-items: center;
-    gap: var(--0PX, 0px);
-    border-radius: var(--36px, 36px);
-    border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
-    background: var(--Background-White, #fff);
-    width: 1vw;
-    height: 1vh;
-    padding: 2px;
-    cursor: pointer;
-  }
+.Box_location {
+  display: flex;
+  align-items: center;
+  gap: var(--0PX, 0px);
+  border-radius: var(--36px, 36px);
+  border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
+  background: var(--Background-White, #0f0e0e);
+  width: 0.8vw;
+  height: 0.8vh;
+  padding: 2px;
+  cursor: pointer;
+}
 
 
-  .ticket-assigneemenu {
-    display: flex;
-    padding: var(--Spacing-16px, 16px) var(--Spacing-0px, 0px) var(--8px, 10px) var(--Spacing-0px, 0px);
-    flex-direction: column !important;
-    align-items: left;
-    position: absolute;
-    top: 95px;
-    right: 27%;
-    border: 1px solid #ebedf0;
-    border-radius: 20px;
-    box-shadow: 2px 2px 5px #e2e4e7;
-    z-index: 1600;
-    width: 11vw !important;
-    /* height: 40vh; */
-    /* overflow-y: scroll; */
-    /* overflow-x: hidden; */
-  }
-  .ticket-asssignee-container-layout {
-    height: 7vh;
-    overflow-y: scroll;
-    overflow-x: hidden;
-  }
+.ticket_assigneemenu1 {
+  display: flex;
+  padding: var(--Spacing-16px, 16px) var(--Spacing-0px, 0px) var(--8px, 10px) var(--Spacing-0px, 0px);
+  flex-direction: column !important;
+  align-items: left;
+  position: absolute;
+  top: 95px;
+  right: 27%;
+  border: 1px solid #ebedf0;
+  border-radius: 20px;
+  box-shadow: 2px 2px 5px #e2e4e7;
+  z-index: 1600;
+  width: 11vw !important;
+  /* height: 40vh; */
+  /* overflow-y: scroll; */
+  /* overflow-x: hidden; */
+}
+
+.ticket_asssignee_container_layout {
+  height: 7vh;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}

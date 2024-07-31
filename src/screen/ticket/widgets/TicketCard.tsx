@@ -377,7 +377,23 @@ const TicketCard = (props: Props) => {
           {props?.patientData?.consumer[0]?.lastName &&
             props?.patientData?.consumer[0]?.lastName}
         </Stack>}
+        {props?.patientData?.specialty ? (
+          <Stack sx={locationStyle}>
+            {props?.patientData?.specialty}
+          </Stack>) : (
+          <Stack sx={locationStyle}>
+            Mohali
+          </Stack>)
 
+        }
+
+      </Box>
+
+      {/* ------- */}
+      <Stack display={"flex"} flexDirection={"row"} justifyContent={"space-between"} marginTop={'5px'} width={"100%"}>
+        <Stack className="docName" >
+          {doctorSetter(props?.patientData?.prescription[0]?.doctor)}
+        </Stack>
         <Stack className='ticket-cardline2-right'>
           {props?.patientData?.consumer[0]?.gender ? (<>
             <Stack className="ticket-card-Gender">
@@ -392,18 +408,6 @@ const TicketCard = (props: Props) => {
             : (<></>)
           }
         </Stack>
-      </Box>
-
-      {/* ------- */}
-      <Stack display={"flex"} flexDirection={"row"} justifyContent={"space-between"} marginTop={'5px'} width={"100%"}>
-        <Stack className="docName" >
-          {doctorSetter(props?.patientData?.prescription[0]?.doctor)}
-        </Stack>
-        {props?.patientData?.specialty &&
-          <Stack sx={locationStyle}>
-            {props?.patientData?.specialty}
-          </Stack>
-        }
 
       </Stack>
 

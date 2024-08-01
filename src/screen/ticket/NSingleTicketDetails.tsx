@@ -356,28 +356,6 @@ const NSingleTicketDetails = (props: Props) => {
         }
     };
 
-    useEffect(() => {
-        const data = async () => {
-            console.log(currentTicket,"current 1")
-            if (ticketID == undefined) {
-                console.log(currentTicket,"current 2")
-                if (currentTicket?.consumer[0]?.uid == "undefined" || currentTicket?.consumer[0]?.uid == null || currentTicket?.consumer[0]?.uid) {
-                    console.log(currentTicket,"current 3 ")
-                    // if (ticketID) {
-                        await validateTicket(ticketID);
-                        if (!isSwitchView) {
-                            navigate(NAVIGATE_TO_TICKET);
-                        } else {
-                            navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
-                        }
-                    // }
-                }
-            }
-        }
-        data()
-    }, [currentTicket])
-
-
     // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
     // const handlePhoneCall = async (e: React.SyntheticEvent) => {
@@ -566,6 +544,15 @@ const NSingleTicketDetails = (props: Props) => {
     useEffect(() => {
         (async function () {
             const ticketData = getTicketInfo(ticketID);
+            if (ticketData === undefined && ticketID !== undefined) {
+                console.log(currentTicket, "current 1");
+                await validateTicket(ticketID);
+                if (!isSwitchView) {
+                    navigate(NAVIGATE_TO_TICKET);
+                } else {
+                    navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
+                }
+            }
             if (currentTicket) {
                 setSingleReminder([]);
                 setCallReschedule([]);
@@ -641,6 +628,22 @@ const NSingleTicketDetails = (props: Props) => {
         callRescheduler.length,
         callRescheduler
     ]);
+
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         if (currentTicket === undefined && ticketID !== undefined) {
+    //             console.log(currentTicket, "current 1");
+    //             await validateTicket(ticketID);
+    //             if (!isSwitchView) {
+    //                 navigate(NAVIGATE_TO_TICKET);
+    //             } else {
+    //                 navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
+    //             }
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, [currentTicket, ticketID, isSwitchView, navigate]);
 
     const [visible, setVisible] = useState(false);
     const [probabilityModal, setProbabilityModal] = useState(false);

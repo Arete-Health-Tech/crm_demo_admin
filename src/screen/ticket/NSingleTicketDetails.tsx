@@ -90,7 +90,7 @@ import {
     updateTicketSubStage,
     validateTicket
 } from '../../api/ticket/ticket';
-import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../constantUtils/constant';
+import { NAVIGATE_TO_SWITCHVIEW_TICKET, NAVIGATE_TO_TICKET, UNDEFINED } from '../../constantUtils/constant';
 import Modal from '@mui/material/Modal';
 import Checkbox from '@mui/material/Checkbox';
 import FormControl from '@mui/material/FormControl';
@@ -358,14 +358,16 @@ const NSingleTicketDetails = (props: Props) => {
 
     useEffect(() => {
         const data = async () => {
-            if (currentTicket?.consumer[0]?.uid == "undefined" || currentTicket?.consumer[0]?.uid == null || currentTicket?.consumer[0]?.uid) {
-                if (ticketID) {
-                    await validateTicket(ticketID);
-                    if (!isSwitchView) {
-                        navigate(NAVIGATE_TO_TICKET);
-                    } else {
-                        navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
-                    }
+            if (ticketID == undefined) {
+                if (currentTicket?.consumer[0]?.uid == "undefined" || currentTicket?.consumer[0]?.uid == null || currentTicket?.consumer[0]?.uid) {
+                    // if (ticketID) {
+                        await validateTicket(ticketID);
+                        if (!isSwitchView) {
+                            navigate(NAVIGATE_TO_TICKET);
+                        } else {
+                            navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
+                        }
+                    // }
                 }
             }
         }

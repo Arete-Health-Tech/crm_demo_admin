@@ -240,10 +240,16 @@ const CustomModal = () => {
     // setChipOpen(false);
     setShowForm(false);
 
-    // if (timerRef.current !== null) {
-    //   clearInterval(timerRef.current);
-    // }
-    // setTimer(0);
+    if (timerRef.current !== null) {
+      clearInterval(timerRef.current);
+    }
+    setTimer(0);
+    setNote('');
+    setFormData({
+      select: '',
+      stoppedTimer: 0
+    })
+    setChipOpen(false);
   };
 
   const isButtonClicked = (buttonName) => formData.select === buttonName;
@@ -671,7 +677,13 @@ const CustomModal = () => {
             </Box>
             <Box className="submit-call-response">
               <Stack className="Timer">{timer}</Stack>
-              <Stack>
+              <Stack display="flex" flexDirection="row" justifyContent="space-between" gap={"10px"}>
+                <button
+                  className='reminder-cancel-btn'
+                  onClick={handleClose}
+                >
+                  Cancel
+                </button>
                 <button
                   className="submit-call-Btn"
                   onClick={handleFormSubmit}

@@ -569,13 +569,13 @@ const TicketFilter = (props: {
                 }}
               >DND
               </ToggleButton>
-              <ToggleButton value="dnp"
+              {/* <ToggleButton value="dnp"
                 sx={{
                   fontFamily: "Outfit,sans-serif",
-                  fontSize: '12px',
+                  fontSize: '11px',
                 }}
               >DNP
-              </ToggleButton>
+              </ToggleButton> */}
               <ToggleButton value="todayTask"
                 sx={{
                   fontFamily: "Outfit,sans-serif",
@@ -589,6 +589,13 @@ const TicketFilter = (props: {
                   fontSize: '12px',
                 }}
               >Pending
+              </ToggleButton>
+              <ToggleButton value="CallCompleted"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >Call Completed
               </ToggleButton>
 
             </ToggleButtonGroup>

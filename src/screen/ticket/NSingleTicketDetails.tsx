@@ -358,10 +358,11 @@ const NSingleTicketDetails = (props: Props) => {
 
     useEffect(() => {
         const data = async () => {
+            console.log(currentTicket,"current 1")
             if (ticketID == undefined) {
-                console.log(currentTicket," aasdfghjkertghjxdcfvgbn")
+                console.log(currentTicket,"current 2")
                 if (currentTicket?.consumer[0]?.uid == "undefined" || currentTicket?.consumer[0]?.uid == null || currentTicket?.consumer[0]?.uid) {
-                    console.log(currentTicket," 2 current ticket ")
+                    console.log(currentTicket,"current 3 ")
                     // if (ticketID) {
                         await validateTicket(ticketID);
                         if (!isSwitchView) {

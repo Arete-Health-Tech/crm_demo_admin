@@ -361,6 +361,7 @@ const NSingleTicketDetails = (props: Props) => {
             if (ticketID == undefined) {
                 console.log(currentTicket," aasdfghjkertghjxdcfvgbn")
                 if (currentTicket?.consumer[0]?.uid == "undefined" || currentTicket?.consumer[0]?.uid == null || currentTicket?.consumer[0]?.uid) {
+                    console.log(currentTicket," 2 current ticket ")
                     // if (ticketID) {
                         await validateTicket(ticketID);
                         if (!isSwitchView) {

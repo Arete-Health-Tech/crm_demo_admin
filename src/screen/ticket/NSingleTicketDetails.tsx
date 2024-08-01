@@ -356,6 +356,23 @@ const NSingleTicketDetails = (props: Props) => {
         }
     };
 
+    useEffect(() => {
+        const data = async () => {
+            if (currentTicket?.consumer[0]?.uid == "undefined" || currentTicket?.consumer[0]?.uid == null || currentTicket?.consumer[0]?.uid) {
+                if (ticketID) {
+                    await validateTicket(ticketID);
+                    if (!isSwitchView) {
+                        navigate(NAVIGATE_TO_TICKET);
+                    } else {
+                        navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
+                    }
+                }
+            }
+        }
+        data()
+    }, [currentTicket])
+
+
     // remove hanlePhoneCall in FE. post changes of phone call in backend is pending...
 
     // const handlePhoneCall = async (e: React.SyntheticEvent) => {

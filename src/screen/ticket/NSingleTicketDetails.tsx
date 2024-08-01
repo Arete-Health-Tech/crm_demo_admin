@@ -359,6 +359,7 @@ const NSingleTicketDetails = (props: Props) => {
     useEffect(() => {
         const data = async () => {
             if (ticketID == undefined) {
+                console.log(currentTicket," aasdfghjkertghjxdcfvgbn")
                 if (currentTicket?.consumer[0]?.uid == "undefined" || currentTicket?.consumer[0]?.uid == null || currentTicket?.consumer[0]?.uid) {
                     // if (ticketID) {
                         await validateTicket(ticketID);

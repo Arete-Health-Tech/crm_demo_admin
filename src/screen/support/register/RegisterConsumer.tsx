@@ -17,6 +17,7 @@ import { getConsumerByUhid } from '../../../api/consumer/consumer';
 import { registerConsumerHandler } from '../../../api/consumer/consumerHandler';
 import useEventStore from '../../../store/eventStore';
 import { database } from '../../../utils/firebase';
+import { toast, ToastContainer } from 'react-toastify';
 
 const RegisterConsumer = () => {
   const initialConsumerFields = {
@@ -234,6 +235,8 @@ const RegisterConsumer = () => {
       }
     } catch (error) {
       console.log("gfggf")
+      toast.error("Data not found");
+
     }
     try {
       const response = await apiClient.get(
@@ -264,18 +267,13 @@ const RegisterConsumer = () => {
   };
 
   useEffect(() => {
-    if (consumer.uid.length > 4) {
-      fetchConsumerDataByUhid();
-    } else {
-      updateConsumerState('firstName', '');
-      updateConsumerState('lastName', '');
-      updateConsumerState('phone', '');
-      updateConsumerState('age', '');
-      updateConsumerState('gender', '');
-      setConsumerId('');
 
-      setExistingData(false);
-    }
+    updateConsumerState('firstName', '');
+    updateConsumerState('lastName', '');
+    updateConsumerState('phone', '');
+    updateConsumerState('age', '');
+    updateConsumerState('gender', '');
+    setConsumerId('');
 
   }, [consumer.uid]);
 
@@ -306,20 +304,31 @@ const RegisterConsumer = () => {
 
       {/* <TextField>{uhidData}</TextField> */}
       <Stack p={1} spacing={2} height="80vh">
-        <TextField
-          // sx={{ px: 0.5 }}
-          value={consumer.uid}
-          onChange={(e) => updateConsumerState('uid', e.target.value)}
-          fullWidth
-          size="small"
-          type="text"
-          placeholder="33XXX"
-          label="UHID"
-          // onBlur={fetchConsumerDataByUhid}
-          error={validations.uid.value}
-          helperText={validations.uid.message}
-        // inputProps={{ maxLength: 13, pattern: "\\d{0,12}" }}
-        />
+        <Stack display={'flex'} flexDirection={'row'} gap={'5px'} width={"100%"}>
+          <Stack width={"70%"}>
+            <TextField
+              // sx={{ px: 0.5 }}
+              value={consumer.uid}
+              onChange={(e) => updateConsumerState('uid', e.target.value)}
+              // fullWidth
+              size="small"
+              type="text"
+              placeholder="33XXX"
+              label="UHID"
+              // onBlur={fetchConsumerDataByUhid}
+              error={validations.uid.value}
+              helperText={validations.uid.message}
+            // inputProps={{ maxLength: 13, pattern: "\\d{0,12}" }}
+            />
+
+          </Stack>
+
+          <Stack component={'div'} onClick={fetchConsumerDataByUhid} width={'30%'}>
+            <Button size="medium" variant="contained">
+              Search
+            </Button>
+          </Stack>
+        </Stack>
         <Stack direction="row" spacing={2}>
           <TextField
             value={consumer.firstName}

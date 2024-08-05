@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom';
 import { getActivityData } from '../../../../api/ticket/ticket';
 import ReactHtmlParser from 'html-react-parser';
 import { Box, Stack, Typography } from '@mui/material';
+import DOMPurify from 'dompurify';
 
 type ActivitiesType = Record<string, Record<string, string>>;
 
@@ -54,16 +55,52 @@ const Activities = () => {
         const match = message.match(regex);
         return match ? new Date(match[1]).toDateString() : null;
     };
+   
+    let sanitizedContent
 
     const hanleEstimateText = (value: string) => {
-        const urlMatch = value.match(/href="([^"]*)"/);
-        const url = urlMatch ? urlMatch[1] : '';
+        const sanitizedContent = DOMPurify.sanitize(value);
+        return sanitizedContent
+    }
 
-        // Remove the HTML tags
-        const textWithoutTags = value.replace(/<\/?a[^>]*>/g, '');
+    const handleLinks = () => {
+        const links = document.querySelectorAll<HTMLAnchorElement>('#content-container a');
+        links.forEach(link => {
+            link.setAttribute('target', '_blank');
+            link.setAttribute('rel', 'noopener noreferrer');
+            link.addEventListener('click', (event) => {
+                event.preventDefault();
+                window.open(link.href, '_blank');
+            });
+        });
+    };
 
-        // Replace the URL in the original text with the extracted URL
-        return textWithoutTags.replace(/https:\/\/[^ ]*/, url);
+
+    // Effect to add event listeners after component mounts
+    useEffect(() => {
+        handleLinks();
+    }, [sanitizedContent]);
+
+    const activityUi = (value: any) => {
+        return (
+            <>
+                <div
+                    style={{
+                        display: 'flex',
+                        height: 'auto',
+                        padding: '1rem 0 0rem 2rem',
+                        marginLeft: '2rem',
+                        borderLeft: '1px solid #d4dbe5'
+                    }}
+                >
+                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
+                    <div className={styles.otherContent}>
+                        {value.split('on')[0]}
+                        <div className={styles.time}>{extractDateTime(value)}</div>
+                    </div>
+                </div>
+            </>
+        )
     }
 
     return (
@@ -81,39 +118,8 @@ const Activities = () => {
                     )}
                     {expandedMessages[index] && Object.entries(messages).reverse().map(([key, value]) => (
                         <div key={key}>
-                            {handleCheckKey(key) === 'ticketcreated' && (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 0rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }}
-                                >
-                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.otherContent}>
-                                        {value.split('on')[0]}
-                                        <div className={styles.time}>{extractDateTime(value)}</div>
-                                    </div>
-                                </div>
-                            )}
+                            {handleCheckKey(key) === 'ticketcreated' && activityUi(value)}
                             {handleCheckKey(key) === 'WhatappSend' && (
-                                // <div
-                                //     style={{
-                                //         display: 'flex',
-                                //         height: 'auto',
-                                //         padding: '1rem 0 1rem 2rem',
-                                //         marginLeft: '2rem',
-                                //         borderLeft: '1px solid #d4dbe5'
-                                //     }}
-                                // >
-                                //     <img src={smsIcon} alt="" style={{ marginRight: 4 }} />
-                                //     <div className={styles.content}>
-                                //         {value}
-                                //         <div className={styles.time}>{extractDateTime(value)}</div>
-                                //     </div>
-                                // </div>
                                 <Box display={'flex'} height={'auto'} padding={"1rem 0 0rem 0rem"} marginLeft={'2rem'} borderLeft={'1px solid #d4dbe5'}>
                                     <img src={whtsappIcon} alt="" style={{ marginLeft: 22, marginTop: '-1.5rem' }} />
                                     <Box
@@ -143,74 +149,10 @@ const Activities = () => {
                                     </Box>
                                 </Box>
                             )}
-                            {handleCheckKey(key) === 'Probability' && (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 0rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }}
-                                >
-                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.otherContent}>
-                                        {value.split('on')[0]}
-                                        <div className={styles.time}>{extractDateTime(value)}</div>
-                                    </div>
-                                </div>
-                            )}
-                            {handleCheckKey(key) === 'SkipEstimate' && (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 0rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }}
-                                >
-                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.otherContent}>
-                                        {value.split('on')[0]}
-                                        <div className={styles.time}>{extractDateTime(value)}</div>
-                                    </div>
-                                </div>
-                            )}
-                            {handleCheckKey(key) === 'changedSubStage' && (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 0rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }}
-                                >
-                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.otherContent}>
-                                        {value.split('on')[0]}
-                                        <div className={styles.time}>{extractDateTime(value)}</div>
-                                    </div>
-                                </div>
-                            )}
-                            {handleCheckKey(key) === 'Service' && (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 0rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }}
-                                >
-                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.otherContent}>
-                                        {value.split('on')[0]}
-                                        <div className={styles.time}>{extractDateTime(value)}</div>
-                                    </div>
-                                </div>
-                            )}
+                            {handleCheckKey(key) === 'Probability' && activityUi(value)}
+                            {handleCheckKey(key) === 'SkipEstimate' && activityUi(value)}
+                            {handleCheckKey(key) === 'changedSubStage' && activityUi(value)}
+                            {handleCheckKey(key) === 'Service' && activityUi(value)}
                             {handleCheckKey(key) === 'OutboundCall' && (
                                 <div
                                     style={{
@@ -246,23 +188,7 @@ const Activities = () => {
                                     </div>
                                 </div>
                             )}
-                            {handleCheckKey(key) === 'assingne' && (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 0rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }}
-                                >
-                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.otherContent}>
-                                        {value.split('on')[0]}
-                                        <div className={styles.time}>{extractDateTime(value)}</div>
-                                    </div>
-                                </div>
-                            )}
+                            {handleCheckKey(key) === 'assingne' && activityUi(value)}
                             {handleCheckKey(key) === 'Estimate' && (
                                 <div
                                     style={{
@@ -275,62 +201,14 @@ const Activities = () => {
                                 >
                                     <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
                                     <div className={styles.otherContent}>
-                                        {hanleEstimateText(value)}
+                                        <div id="content-container" dangerouslySetInnerHTML={{ __html: hanleEstimateText(value) }} />
                                         <div className={styles.time}>{extractDateTime(value)}</div>
                                     </div>
                                 </div>
                             )}
-                            {handleCheckKey(key) === 'reminder' && (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 0rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }}
-                                >
-                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.otherContent}>
-                                        {value.split('on')[0]}
-                                        <div className={styles.time}>{extractDateTime(value)}</div>
-                                    </div>
-                                </div>
-                            )}
-                            {handleCheckKey(key) === 'Rescheduler' && (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 0rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }}
-                                >
-                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.otherContent}>
-                                        {value.split('on')[0]}
-                                        <div className={styles.time}>{extractDateTime(value)}</div>
-                                    </div>
-                                </div>
-                            )}
-                            {handleCheckKey(key) === 'Status' && (
-                                <div
-                                    style={{
-                                        display: 'flex',
-                                        height: 'auto',
-                                        padding: '1rem 0 0rem 2rem',
-                                        marginLeft: '2rem',
-                                        borderLeft: '1px solid #d4dbe5'
-                                    }}
-                                >
-                                    <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
-                                    <div className={styles.otherContent}>
-                                        {value.split('on')[0]}
-                                        <div className={styles.time}>{extractDateTime(value)}</div>
-                                    </div>
-                                </div>
-                            )}
+                            {handleCheckKey(key) === 'reminder' && activityUi(value)}
+                            {handleCheckKey(key) === 'Rescheduler' && activityUi(value)}
+                            {handleCheckKey(key) === 'Status' && activityUi(value)}
                         </div>
                     ))}
                 </div>

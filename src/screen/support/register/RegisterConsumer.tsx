@@ -231,39 +231,40 @@ const RegisterConsumer = () => {
         updateConsumerState('gender', response.data[0].Gender === "Female" ? "F" : response.data[0].Gender === "Male" ? "M" : "O"
         );
         setConsumerId(response.data[0].PatientId);
-        existingBIData = true;
+        // existingBIData = true;
+        setExistingData(true)
       }
     } catch (error) {
       console.log("gfggf")
       toast.error("Data not found");
 
     }
-    try {
-      const response = await apiClient.get(
-        '/consumer/findConsumer?',
-        { params: { search: consumer.uid } }
-      );
-      if (response.status == 200) {
-        updateConsumerState('firstName', response.data.firstName);
-        updateConsumerState('lastName', response.data.lastName);
-        updateConsumerState('phone', response.data.phone);
-        updateConsumerState('age', calculateAge(response.data.dob));
-        updateConsumerState('gender', response.data.gender);
-        setConsumerId(response.data._id);
-        setExistingData(true);
-      }
-    } catch (error) {
-      if (!existingBIData) {
-        updateConsumerState('firstName', '');
-        updateConsumerState('lastName', '');
-        updateConsumerState('phone', '');
-        updateConsumerState('age', '');
-        updateConsumerState('gender', '');
-        setConsumerId('');
+    // try {
+    //   const response = await apiClient.get(
+    //     '/consumer/findConsumer?',
+    //     { params: { search: consumer.uid } }
+    //   );
+    //   if (response.status == 200) {
+    //     updateConsumerState('firstName', response.data.firstName);
+    //     updateConsumerState('lastName', response.data.lastName);
+    //     updateConsumerState('phone', response.data.phone);
+    //     updateConsumerState('age', calculateAge(response.data.dob));
+    //     updateConsumerState('gender', response.data.gender);
+    //     setConsumerId(response.data._id);
+    //     setExistingData(true);
+    //   }
+    // } catch (error) {
+    //   if (!existingBIData) {
+    //     updateConsumerState('firstName', '');
+    //     updateConsumerState('lastName', '');
+    //     updateConsumerState('phone', '');
+    //     updateConsumerState('age', '');
+    //     updateConsumerState('gender', '');
+    //     setConsumerId('');
 
-        setExistingData(false);
-      }
-    }
+    //     setExistingData(false);
+    //   }
+    // }
   };
 
   useEffect(() => {
@@ -319,6 +320,7 @@ const RegisterConsumer = () => {
               error={validations.uid.value}
               helperText={validations.uid.message}
             // inputProps={{ maxLength: 13, pattern: "\\d{0,12}" }}
+            // disabled={existingBIData ? false : true}
             />
 
           </Stack>
@@ -340,7 +342,7 @@ const RegisterConsumer = () => {
             label="First Name"
             error={validations.firstName.value}
             helperText={validations.firstName.message}
-            disabled={consumer.uid ? false : true}
+            disabled={existingData ? true : false}
           />
           <TextField
             value={consumer.lastName}
@@ -351,8 +353,9 @@ const RegisterConsumer = () => {
             placeholder="Doe"
             label="Last Name (optional)"
             error={validations.lastName.value}
-            disabled={consumer.uid ? false : true}
+            // disabled={consumer.uid ? false : true}
             helperText={validations.lastName.message}
+            disabled={existingData ? true : false}
           />
         </Stack>
         {/* <TextField
@@ -375,8 +378,9 @@ const RegisterConsumer = () => {
           placeholder="8979XXXXXX"
           label="Phone Number"
           error={validations.phone.value}
-          disabled={consumer.uid ? false : true}
+          // disabled={consumer.uid ? false : true}
           helperText={validations.phone.message}
+          disabled={existingData ? true : false}
         />
         {/* <TextField
           value={consumer.uid}
@@ -398,8 +402,9 @@ const RegisterConsumer = () => {
           placeholder="32"
           label="Age  (optional)"
           error={validations.age.value}
-          disabled={consumer.uid ? false : true}
+          // disabled={consumer.uid ? false : true}
           helperText={validations.age.message}
+          disabled={existingData ? true : false}
         />
         {/* <Typography color="GrayText">Select Gender</Typography>
         <Stack spacing={2} direction="row">
@@ -441,8 +446,9 @@ const RegisterConsumer = () => {
                   variant={
                     item.value === consumer.gender ? 'contained' : 'outlined'
                   }
-                  disabled={consumer.uid ? false : true}
+                  // disabled={consumer.uid ? false : true}
                   onClick={() => updateConsumerState('gender', item.value)}
+                  disabled={existingData ? true : false}
                 >
                   {item.label}
                 </Button>
@@ -453,7 +459,7 @@ const RegisterConsumer = () => {
             {validations.gender.message}
           </FormHelperText>
         </Box>
-        {existingData ? (
+        {/* {existingData ? (
           <Button size="large" onClick={nextConsumer} variant="contained">
             Next
           </Button>
@@ -461,7 +467,10 @@ const RegisterConsumer = () => {
           <Button size="large" onClick={registerConsumer} variant="contained">
             Next
           </Button>
-        )}
+        )} */}
+        <Button size="large" onClick={registerConsumer} variant="contained">
+          Next
+        </Button>
       </Stack>
     </Box>
   );

@@ -12,6 +12,9 @@ import { getAllStageCountHandler, getAllTimerStatusHandlerCallCompleted, getAllT
 import { Pie } from 'react-chartjs-2';
 import PieChart from './widgets/PieChart';
 import useServiceStore from '../../store/serviceStore';
+import useReprentativeStore from '../../store/representative';
+import useUserStore from '../../store/userStore';
+import { getRepresntativesHandler } from '../../api/representive/representativeHandler';
 
 type Props = {};
 
@@ -30,7 +33,10 @@ const Dashboard = (props: Props) => {
   const [working, setWorking] = useState(0);
   const [orientation, setOrientation] = useState(0);
   const [nurturing, setNurturing] = useState(0);
+  const { user } = useUserStore.getState();
+  const phone = user?.phone;
 
+  const { representative } = useReprentativeStore();
 
   getAllTimerStatusHandlerDnd()
     .then((timerData) => {
@@ -144,9 +150,24 @@ const Dashboard = (props: Props) => {
       });
   }, []);
 
+
   useEffect(() => {
-    localStorage.setItem('location', "")
-  }, [])
+    (async () => {
+      try {
+        const fetchedRepresentative = await getRepresntativesHandler();
+        const matchFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66a4caeaab18bee54eea0866");
+        if (matchFound) {
+          console.log("Phone number and unit match found in representative.", matchFound);
+          localStorage.setItem('location', "Amritsar")
+        } else {
+          console.log("No match found.");
+          localStorage.setItem('location', "")
+        }
+      } catch (error) {
+        console.error("Error fetching representatives:", error);
+      }
+    })();
+  }, [representative])
 
 
 

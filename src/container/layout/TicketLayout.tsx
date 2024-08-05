@@ -12,6 +12,7 @@ import {
   TextField,
   Typography
 } from '@mui/material';
+import { Tooltip, TooltipProps, styled, tooltipClasses } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 
 import { filterActions } from '../../screen/ticket/ticketStateReducers/actions/filterAction';
@@ -75,7 +76,22 @@ import {
   getAllServiceFromDbHandler,
   getAllServicesHandler
 } from '../../api/service/serviceHandler';
+import useReprentativeStore from '../../store/representative';
+import { getRepresntativesHandler } from '../../api/representive/representativeHandler';
 
+const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
+  <Tooltip {...props} arrow classes={{ popper: className }} />
+))(({ theme }) => ({
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: '#0566FF',
+    color: '#ffffff',
+    fontSize: 10,
+    fontFamily: `"Outfit",sans-serif`
+  },
+  [`& .${tooltipClasses.arrow}`]: {
+    color: '#0566FF',
+  }
+}));
 
 // .import { handleClearFilter } from '../../ticket / widgets / TicketFilter';
 let AllIntervals: any[] = [];
@@ -118,6 +134,10 @@ const Ticket = () => {
     setIsAuditor,
     viewEstimates,
   } = useTicketStore();
+  const { user } = useUserStore.getState();
+  const phoneNumber = user?.phone;
+
+  const { representative } = useReprentativeStore();
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
@@ -219,6 +239,7 @@ const Ticket = () => {
     }
     data()
   }, [localStorage.getItem('location')])
+
 
   // const handleSeachName = (
   //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -763,6 +784,25 @@ const Ticket = () => {
     }
   };
 
+  const [isAmritsarUser, SetIsAmritsarUser] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const fetchedRepresentative = await getRepresntativesHandler();
+        const matchFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
+        if (matchFound) {
+          console.log("It's AmritSar User.", matchFound);
+          SetIsAmritsarUser(true); // Assuming SetIsAmritsarUser is a function that sets state
+        } else {
+          console.log("Not Amritsar User.", matchFound);
+          SetIsAmritsarUser(false); // Assuming SetIsAmritsarUser is a function that sets state
+        }
+      } catch (error) {
+        console.error("Error fetching representatives:", error);
+      }
+    })();
+  }, [])
   return (
     <>
       <Box height={'100vh'} display="flex" position="fixed" width="100%">
@@ -806,13 +846,18 @@ const Ticket = () => {
                       cursor: "pointer"
                     }}
                     className="Box_location" onClick={() => setVisible(!visible)}>
-                    <Stack direction="row" alignItems="center" marginTop="3px" paddingLeft="1rem">
+                    <Stack direction="row"
+                      alignItems="center"
+                      marginTop="3px"
+                      paddingLeft="1rem"
+                      paddingRight={!isAmritsarUser ? "0rem" : "1rem"}
+                    >
                       <span>{localStorage.getItem('location') == "" ? 'All' : localStorage.getItem('location')}</span>
-                      <span>
+                      {!isAmritsarUser && <span>
                         <img src={DropDownArrow} alt="" />
-                      </span>
+                      </span>}
                     </Stack>
-                    <Stack
+                    {!isAmritsarUser && <Stack
                       ref={visibleRef}
                       display={visible ? 'block' : 'none'}
                       className="ticket-assigneemenu1"
@@ -833,7 +878,7 @@ const Ticket = () => {
                         </MenuItem>
 
                       </Stack>
-                    </Stack>
+                    </Stack>}
                   </Box>
 
                 </Stack>
@@ -851,13 +896,16 @@ const Ticket = () => {
                     navigate('/switchView');
                   }}
                 >
-                  <img
-                    src={ToggleIcon}
-                    alt="switch View"
-                    style={{
-                      fill: 'blue'
-                    }}
-                  />
+                  <LightTooltip title="Switch View">
+                    <img
+                      src={ToggleIcon}
+                      alt="switch View"
+                      style={{
+                        fill: 'blue'
+                      }}
+                    />
+                  </LightTooltip>
+
                 </Stack>
                 {/* <Stack
                   sx={{

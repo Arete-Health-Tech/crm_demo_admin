@@ -40,6 +40,7 @@ import { validateTicket } from '../../../api/ticket/ticket';
 import '../singleTicket.css';
 import AuditFilterIcon from "../../../assets/commentHeader.svg";
 import { Tooltip, TooltipProps, Zoom, tooltipClasses } from '@mui/material';
+import useReprentativeStore from '../../../store/representative';
 
 const drawerWidth = 450;
 export const ticketFilterCount = (
@@ -48,7 +49,8 @@ export const ticketFilterCount = (
   diagnosticsType: string[],
   dateRange: string[],
   statusType: string[],
-  filteredLocation: string
+  filteredLocation: string,
+  isAmritsarUser: boolean
 ) => {
   const stageListCount = selectedFilters['stageList'].length;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
@@ -59,7 +61,14 @@ export const ticketFilterCount = (
 
   const resultCount = selectedFilters['results'] ? 1 : 0;
   const statusCount = statusType ? statusType.length : 0;
-  const locationCount = filteredLocation === "Amritsar" ? 1 : 0;
+  let locationCount = 0;
+  if (isAmritsarUser) {
+    locationCount = 0;
+  } else {
+    locationCount = filteredLocation === "Amritsar" ? 1 : 0;
+  }
+
+
 
   const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount + statusCount + locationCount;
   return total;
@@ -139,6 +148,35 @@ const TicketFilter = (props: {
   const [selectedValueLost, setSelectedValueLost] = useState(null);
 
   ;
+  const { user } = useUserStore.getState();
+  const phoneNumber = user?.phone;
+
+  const { representative } = useReprentativeStore();
+
+
+
+  const [isAmritsarUser, SetIsAmritsarUser] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const fetchedRepresentative = await getRepresntativesHandler();
+        const matchFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
+        if (matchFound) {
+          console.log("Its AmritSar User.", matchFound);
+          SetIsAmritsarUser(true);
+          setFilteredLocation("Amritsar");
+
+        } else {
+          console.log("Not Amristsar User.");
+          SetIsAmritsarUser(false);
+          setFilteredLocation("");
+        }
+      } catch (error) {
+        console.error("Error fetching representatives:", error);
+      }
+    })();
+  }, [])
 
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -316,7 +354,7 @@ const TicketFilter = (props: {
     setPageNumber(1);
     setFilterTickets(selectedFilters);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser));
 
     props.setPage(1);
     if (ticketID) {
@@ -337,7 +375,7 @@ const TicketFilter = (props: {
     dispatchFilter({ type: filterActions.STATUS, payload: [] });
 
     setCurrentRepresentative('');
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser));
     setFilterCount(0);
     setPageNumber(1);
     setSelectedValue(null);
@@ -347,13 +385,19 @@ const TicketFilter = (props: {
     setStatusType((prev) => []);
     setDiagnosticsType((prev) => []);
     setDateRange(["", ""]);
-    setFilteredLocation("")
+    if (isAmritsarUser) {
+      setFilteredLocation("Amritsar");
+    } else {
+      setFilteredLocation("")
+    }
+
 
   };
 
   const handleToggleChange = (event, newValue: any) => {
     setSelectedValue(newValue === selectedValue ? null : newValue);
     setResult(newValue);
+    setFilteredLocation("")
   };
 
 
@@ -667,7 +711,7 @@ const TicketFilter = (props: {
               >Lab</ToggleButton>
             </ToggleButtonGroup>
           </Box>
-          <Box p={1} px={3}>
+          {!isAmritsarUser && <Box p={1} px={3}>
             <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
               Location
             </Stack>
@@ -684,7 +728,8 @@ const TicketFilter = (props: {
               >Amritsar</ToggleButton>
 
             </ToggleButtonGroup>
-          </Box>
+
+          </Box>}
 
           <Box p={1} px={3}>
             <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>

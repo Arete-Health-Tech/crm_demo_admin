@@ -63,15 +63,14 @@ export const ticketFilterCount = (
   const statusCount = statusType ? statusType.length : 0;
 
   let locationCount = 0;
-  if (isAmritsarUser) {
+  if (!isAmritsarUser) {
     console.log(isAmritsarUser, "------")
-    locationCount = 0;
+    locationCount = filteredLocation == "Amritsar" || filteredLocation == "Mohali" ? 1 : 0;
+    console.log(locationCount, "------")
   } else {
-    locationCount = filteredLocation === "Amritsar" ? 1 : 0;
+    locationCount = 0;
 
   }
-
-
 
   const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount + statusCount + locationCount;
   return total;
@@ -364,6 +363,7 @@ const TicketFilter = (props: {
     setPageNumber(1);
     setFilterTickets(selectedFilters);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    console.log(isAmritsarUser, "selected again")
     setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser));
 
     props.setPage(1);

@@ -61,11 +61,14 @@ export const ticketFilterCount = (
 
   const resultCount = selectedFilters['results'] ? 1 : 0;
   const statusCount = statusType ? statusType.length : 0;
+
   let locationCount = 0;
   if (isAmritsarUser) {
+    console.log(isAmritsarUser, "------")
     locationCount = 0;
   } else {
     locationCount = filteredLocation === "Amritsar" ? 1 : 0;
+
   }
 
 
@@ -163,12 +166,12 @@ const TicketFilter = (props: {
         const fetchedRepresentative = await getRepresntativesHandler();
         const matchFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
         if (matchFound) {
-          console.log("Its AmritSar User.", matchFound);
+          // console.log("Its AmritSar User.", matchFound);
           SetIsAmritsarUser(true);
           setFilteredLocation("Amritsar");
 
         } else {
-          console.log("Not Amristsar User.");
+          // console.log("Not Amristsar User.");
           SetIsAmritsarUser(false);
           setFilteredLocation("");
         }
@@ -203,6 +206,13 @@ const TicketFilter = (props: {
       dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: value });
     }
   };
+
+  const handleLocation = (
+    event: React.MouseEvent<HTMLElement>,
+    location: string
+  ) => {
+    setFilteredLocation(location);
+  }
 
   const handleAdmissionType = (
     event: React.MouseEvent<HTMLElement>,
@@ -540,7 +550,7 @@ const TicketFilter = (props: {
                 ))}
               </FormGroup>
             </Box>
-            <Box py={2} px={4}>
+            {/* <Box py={2} px={4}>
               <Stack sx={{
                 fontFamily: "Outfit,sans-serif",
                 fontSize: "14px",
@@ -558,8 +568,10 @@ const TicketFilter = (props: {
                   return <MenuItem value={id}>{label}</MenuItem>;
                 })}
               </Select>
-            </Box>
+            </Box>  */}
           </Box>
+
+
           <Box px={3}>
             <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
               Result (This filter cannot be used in combination with any other filter, To be used independently only)
@@ -667,12 +679,12 @@ const TicketFilter = (props: {
                 }}
               >
                 MM</ToggleButton>
-              <ToggleButton value="Radiation"
+              <ToggleButton value="DC"
                 sx={{
                   fontFamily: "Outfit,sans-serif",
                   fontSize: '12px',
                 }}
-              >Radiation</ToggleButton>
+              >DC</ToggleButton>
             </ToggleButtonGroup>
           </Box>
           <Box p={1} px={3}>
@@ -711,6 +723,7 @@ const TicketFilter = (props: {
               >Lab</ToggleButton>
             </ToggleButtonGroup>
           </Box>
+
           {!isAmritsarUser && <Box p={1} px={3}>
             <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
               Location
@@ -718,8 +731,15 @@ const TicketFilter = (props: {
             <ToggleButtonGroup
               color="primary"
               value={filteredLocation}
-              onChange={() => setFilteredLocation('Amritsar')}
+              // onChange={() => setFilteredLocation('Amritsar')}
+              onChange={handleLocation}
             >
+              <ToggleButton value="Mohali"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >Mohali</ToggleButton>
               <ToggleButton value="Amritsar"
                 sx={{
                   fontFamily: "Outfit,sans-serif",

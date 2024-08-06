@@ -7,7 +7,7 @@ import "../../singleTicket.css";
 import { Box, Grid, Stack } from "@mui/material";
 import useTicketStore from "../../../../store/ticketStore";
 import { setReschedularCompleted } from "../../../../api/ticket/ticket";
-import { getTicketHandler } from "../../../../api/ticket/ticketHandler";
+import { getAllTaskCountHandler, getTicketHandler } from "../../../../api/ticket/ticketHandler";
 
 function Accordion(props) {
     const [active, setActive] = useState(false);
@@ -26,13 +26,14 @@ function Accordion(props) {
         setArrowRotation(active ? 0 : 180);
     }
 
-    const handleChecked =async () => {
+    const handleChecked = async () => {
         try {
             const taskData = {
                 taskId: props._id,
                 completed: true
             }
             await setReschedularCompleted(taskData)
+            await getAllTaskCountHandler();
             await getTicketHandler(
                 searchByName,
                 pageNumber,

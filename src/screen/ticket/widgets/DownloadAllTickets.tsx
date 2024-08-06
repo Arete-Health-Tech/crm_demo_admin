@@ -55,18 +55,19 @@ const DownloadAllTickets = (props: Props) => {
 
     fetchAllEstimateData();
   }, [tickets]);
-  useEffect(() => {
-    const fetchAllEstimatePaymentType = async () => {
-      const estimates = {};
-      for (const item of tickets) {
-        const estimate = await fetchEstimatePaymentTypeData(item._id);
-        estimates[item._id] = estimate;
-      }
-      setEstimateDataPaymentType(estimates);
-    };
 
-    fetchAllEstimatePaymentType();
-  }, [tickets]);
+  // useEffect(() => {
+  //   const fetchAllEstimatePaymentType = async () => {
+  //     const estimates = {};
+  //     for (const item of tickets) {
+  //       const estimate = await fetchEstimatePaymentTypeData(item._id);
+  //       estimates[item._id] = estimate;
+  //     }
+  //     setEstimateDataPaymentType(estimates);
+  //   };
+
+  //   fetchAllEstimatePaymentType();
+  // }, [tickets]);
 
   const fetchEstimateData = async (ticketId: any): Promise<number> => {
     if (!ticketId) {
@@ -87,25 +88,25 @@ const DownloadAllTickets = (props: Props) => {
       return 0;
     }
   };
-  const fetchEstimatePaymentTypeData = async (ticketId: any): Promise<number> => {
-    if (!ticketId) {
-      console.error("Ticket ID is undefined.");
-      return 0;
-    }
+  // const fetchEstimatePaymentTypeData = async (ticketId: any): Promise<number> => {
+  //   if (!ticketId) {
+  //     console.error("Ticket ID is undefined.");
+  //     return 0;
+  //   }
 
-    try {
-      const response = await apiClient.get(`ticket/uploadestimateData/${ticketId}`);
-      const data = response.data;
-      if (data?.length && data[data.length - 1]?.ticket === ticketId) {
-        return data[data.length - 1]?.paymentType || "Not Mentioned";
-      } else {
-        return 0;
-      }
-    } catch (error) {
-      console.error("Error fetching estimate data:", error);
-      return 0;
-    }
-  };
+  //   try {
+  //     const response = await apiClient.get(`ticket/uploadestimateData/${ticketId}`);
+  //     const data = response.data;
+  //     if (data?.length && data[data.length - 1]?.ticket === ticketId) {
+  //       return data[data.length - 1]?.paymentType || "Not Mentioned";
+  //     } else {
+  //       return 0;
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching estimate data:", error);
+  //     return 0;
+  //   }
+  // };
 
   const departmentSetter = (id: string) => {
     return departments.find((element) => element._id === id)?.name;
@@ -218,8 +219,6 @@ const DownloadAllTickets = (props: Props) => {
         prescriptionLink1: ticket?.prescription[0]?.image1,
         Lead_disposition: ticket ? (ticket.result === "65991601a62baad220000001" ? "won" : (ticket.result === "65991601a62baad220000002" ? "loss" : null)) : null,
         // pharmacyStatus: ticket?.pharmacyStatus,
-        estimateValue: estimateData[ticket._id],
-        PaymentType: estimateDataPaymentType[ticket._id],
         date: ticket?.date,
         subStageName: subStageName(ticket?.subStageCode?.code),
         status: ticket?.status !== "dnp" && ticket?.status !== "dnd" && ticket?.status !== "CallCompleted" && ticket?.status !== "RescheduledCall" ? ticket.status : "N/A",

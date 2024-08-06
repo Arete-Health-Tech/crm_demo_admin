@@ -89,12 +89,8 @@ const MessagingWidget = (props: Props) => {
     );
   }
   useEffect(() => {
-    console.log("Initializing socket connection...");
     // Check if socket is connected
-    if (socket.connected) {
-      console.log('Socket connected successfully in ticketCard');
-    } else {
-      console.log('Socket not connected, attempting to connect...');
+    if (!socket.connected) {
       socket.connect();
     }
     // Listen for the 'newMessage' event
@@ -109,11 +105,11 @@ const MessagingWidget = (props: Props) => {
       socket.off('newMessage'); // Remove the event listener
       socket.disconnect();
     };
-  });
+  }, [ticketID]);
 
   useEffect(() => {
     handleMarkAsRead(ticketID)
-  }, [ticketID, allWhtsappCount])
+  }, [ticketID])
 
 
   useEffect(() => {

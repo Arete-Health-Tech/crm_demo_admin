@@ -47,7 +47,6 @@ const TicketCard = (props: Props) => {
   const { doctors, departments, allServices, stages } = useServiceStore();
   const [isNewTicket, setIsNewTicket] = useState(true);
   const [taskPendingCount, setTaskPendingCount] = useState(0);
-
   const [currentStage, setCurrentStage] = useState<iStage>({
     _id: '',
     name: '',
@@ -56,9 +55,10 @@ const TicketCard = (props: Props) => {
     parent: null,
     child: []
   });
+  const [whtsappNotificationCount, setWhtsappNotificationCount] = useState(0);
 
   const { tickets, filterTickets, setIsAuditor, allTaskCount, viewEstimates,
-    setViewEstimates, isEstimateUpload, setIsEstimateUpload, reminders, callRescheduler } = useTicketStore();
+    setViewEstimates, isEstimateUpload, setIsEstimateUpload, reminders, callRescheduler, allWhtsappCount } = useTicketStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -303,7 +303,16 @@ const TicketCard = (props: Props) => {
     setIsEstimateUpload(false);
   }, [props?.patientData._id, isEstimateUpload]);
 
-
+  useEffect(() => {
+    if (props.patientData._id !== undefined) {
+      if (allWhtsappCount.hasOwnProperty(props.patientData._id)) {
+        return setWhtsappNotificationCount(allWhtsappCount[props.patientData._id]);
+      } else {
+        return setWhtsappNotificationCount(0); // or any default value you prefer
+      }
+    }
+  }, [allWhtsappCount, props.patientData._id])
+  
   const date = new Date(props.patientData.createdAt);
   const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
 
@@ -524,7 +533,7 @@ const TicketCard = (props: Props) => {
         <Stack sx={{ display: "flex", flexDirection: "row !important", gap: "5px" }}>
           {/* <Stack className='task-pending'><img src={NotifyAudit} alt="" /></Stack> */}
           {taskPendingCount > 0 && <Stack className='task-pending'>{taskPendingCount} Tasks Pending </Stack>}
-          {/* <Stack className='ticket-card-notification'>2</Stack> */}
+          {whtsappNotificationCount > 0 && <Stack className='ticket-card-notification'>{whtsappNotificationCount}</Stack>}
         </Stack>
       </Stack>
 

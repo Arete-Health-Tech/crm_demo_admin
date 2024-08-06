@@ -831,7 +831,7 @@ const NSingleTicketDetails = (props: Props) => {
 
     //For getting the whtsapp message instant
 
-    const [messages, setMessages] = useState<storeMessage[]>([]);
+    const [messages, setMessages] = useState<DocumentData[]>([]);
 
     //This function call the api to get all the ticket id with their whtsapp message count 
     const getAllWhtsappMsgCount = async () => {
@@ -864,7 +864,30 @@ const NSingleTicketDetails = (props: Props) => {
             socket.off('newMessage', handleNewMessage); // Remove the event listener
             socket.disconnect();
         };
-    });
+    }, [messages]);
+
+
+    useEffect(() => {
+        if (ticketID) {
+            const collectionRef = collection(
+                database,
+                'ticket',
+                ticketID,
+                'messages'
+            );
+            const q = query(collectionRef, orderBy('createdAt'));
+            const unsub = onSnapshot(q, (snapshot) => {
+                const message: DocumentData[] = [];
+                snapshot.forEach((doc) => {
+                    message.push(doc.data());
+                });
+
+                setMessages(message);
+            });
+
+            return () => unsub();
+        }
+    }, [ticketID]);
 
     return (
         <>

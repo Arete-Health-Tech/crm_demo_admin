@@ -770,7 +770,7 @@ const Ticket = () => {
       socket.off('newMessage', handleNewMessage); // Remove the event listener
       socket.disconnect();
     };
-  });
+  }, [ticketID]);
 
   const handleOnClose = async () => {
     if (ticketID) {

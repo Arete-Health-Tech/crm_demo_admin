@@ -844,6 +844,33 @@ const StageCard = (props: Props) => {
                       color: '#080F1A',
                       fontFamily: `"Outfit",sans-serif`,
                     }}
+                    value={"Bed not available"}>
+                   Bed not available
+                  </MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '14px',
+                      color: '#080F1A',
+                      fontFamily: `"Outfit",sans-serif`,
+                    }}
+                    value={"Prescription not clear / Wrong prescription uploaded / Detail Mismatch"}>
+                   Prescription not clear / Wrong prescription uploaded / Detail Mismatch
+                  </MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '14px',
+                      color: '#080F1A',
+                      fontFamily: `"Outfit",sans-serif`,
+                    }}
+                    value={"Duplicate lead"}>
+                   Duplicate lead
+                  </MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '14px',
+                      color: '#080F1A',
+                      fontFamily: `"Outfit",sans-serif`,
+                    }}
                     value={"Chose another hospital - Which Hospital"}>
                     Chose another hospital - Which Hospital ?
                     <TextField

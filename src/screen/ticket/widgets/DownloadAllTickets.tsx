@@ -1,4 +1,4 @@
-import { DownloadForOfflineOutlined } from '@mui/icons-material';
+import { DownloadForOfflineOutlined, Payment } from '@mui/icons-material';
 import { Box, IconButton, Stack, Tooltip, TooltipProps, styled, tooltipClasses } from '@mui/material';
 import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
@@ -46,30 +46,23 @@ const DownloadAllTickets = (props: Props) => {
   useEffect(() => {
     const fetchAllEstimateData = async () => {
       const estimates = {};
+      const paymentTypes = {};
       for (const item of tickets) {
         const estimate = await fetchEstimateData(item._id);
+        const paymentType = await fetchEstimatePaymentTypeData(item._id);
         estimates[item._id] = estimate;
+        paymentTypes[item._id] = paymentType;
       }
       setEstimateData(estimates);
+      setEstimateDataPaymentType(paymentTypes);
     };
 
-    fetchAllEstimateData();
+    if (tickets.length > 0) {
+      fetchAllEstimateData();
+    }
   }, [tickets]);
 
-  // useEffect(() => {
-  //   const fetchAllEstimatePaymentType = async () => {
-  //     const estimates = {};
-  //     for (const item of tickets) {
-  //       const estimate = await fetchEstimatePaymentTypeData(item._id);
-  //       estimates[item._id] = estimate;
-  //     }
-  //     setEstimateDataPaymentType(estimates);
-  //   };
-
-  //   fetchAllEstimatePaymentType();
-  // }, [tickets]);
-
-  const fetchEstimateData = async (ticketId: any): Promise<number> => {
+  const fetchEstimateData = async (ticketId) => {
     if (!ticketId) {
       console.error("Ticket ID is undefined.");
       return 0;
@@ -78,6 +71,7 @@ const DownloadAllTickets = (props: Props) => {
     try {
       const response = await apiClient.get(`ticket/uploadestimateData/${ticketId}`);
       const data = response.data;
+      // console.log(data, "estimate data");
       if (data?.length && data[data.length - 1]?.ticket === ticketId) {
         return data[data.length - 1]?.total || 0;
       } else {
@@ -88,25 +82,26 @@ const DownloadAllTickets = (props: Props) => {
       return 0;
     }
   };
-  // const fetchEstimatePaymentTypeData = async (ticketId: any): Promise<number> => {
-  //   if (!ticketId) {
-  //     console.error("Ticket ID is undefined.");
-  //     return 0;
-  //   }
 
-  //   try {
-  //     const response = await apiClient.get(`ticket/uploadestimateData/${ticketId}`);
-  //     const data = response.data;
-  //     if (data?.length && data[data.length - 1]?.ticket === ticketId) {
-  //       return data[data.length - 1]?.paymentType || "Not Mentioned";
-  //     } else {
-  //       return 0;
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching estimate data:", error);
-  //     return 0;
-  //   }
-  // };
+  const fetchEstimatePaymentTypeData = async (ticketId) => {
+    if (!ticketId) {
+      console.error("Ticket ID is undefined.");
+      return "Not Mentioned";
+    }
+
+    try {
+      const response = await apiClient.get(`ticket/uploadestimateData/${ticketId}`);
+      const data = response.data;
+      if (data?.length && data[data.length - 1]?.ticket === ticketId) {
+        return data[data.length - 1]?.paymentType || "Not Mentioned";
+      } else {
+        return "Not Mentioned";
+      }
+    } catch (error) {
+      console.error("Error fetching payment type data:", error);
+      return "Not Mentioned";
+    }
+  };
 
   const departmentSetter = (id: string) => {
     return departments.find((element) => element._id === id)?.name;
@@ -175,7 +170,14 @@ const DownloadAllTickets = (props: Props) => {
     await getDoctorsHandler();
     await getDepartmentsHandler();
 
-    const data = sortedTickets?.map((ticket: any, index: number) => {
+    const data = await Promise.all(sortedTickets?.map(async (ticket: any, index: number) => {
+      const [
+        estimateValue,
+        paymentType
+      ] = await Promise.all([
+        fetchEstimateData(ticket._id),
+        fetchEstimatePaymentTypeData(ticket._id)
+      ]);
       return {
         serialNo: index + 1,
         firstName: ticket?.consumer[0]?.firstName,
@@ -219,6 +221,9 @@ const DownloadAllTickets = (props: Props) => {
         prescriptionLink1: ticket?.prescription[0]?.image1,
         Lead_disposition: ticket ? (ticket.result === "65991601a62baad220000001" ? "won" : (ticket.result === "65991601a62baad220000002" ? "loss" : null)) : null,
         // pharmacyStatus: ticket?.pharmacyStatus,
+        isEstimateUpload: estimateValue > 0 ? "Yes" : "No",
+        estimateValue: estimateValue,
+        PaymentType: paymentType,
         date: ticket?.date,
         subStageName: subStageName(ticket?.subStageCode?.code),
         status: ticket?.status !== "dnp" && ticket?.status !== "dnd" && ticket?.status !== "CallCompleted" && ticket?.status !== "RescheduledCall" ? ticket.status : "N/A",
@@ -241,7 +246,7 @@ const DownloadAllTickets = (props: Props) => {
         Call_Recording: ticket?.phoneData[ticket?.phoneData.length - 1]?.time || "Not Contacted yet",
         Last_Activity_Date: ticket?.lastActivity,
       };
-    });
+    }));
     const csv = Papa.unparse(data);
     const csvBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
     FileSaver.saveAs(

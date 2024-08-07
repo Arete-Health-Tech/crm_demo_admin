@@ -108,6 +108,38 @@ const getBackgroundColor = (probability) => {
   return '#E5E9EB';
 };
 
+const baseWonStyle = {
+  fontFamily: 'Outfit, sans-serif',
+  color: '#fff',
+  padding: '0px 8px',
+  borderRadius: '10px',
+  height: '24px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  fontWeight: 400,
+  fontSize: '12px',
+  gap: '4px',
+  lineHeight: '18px',
+  backgroundColor: '#08a742'
+};
+
+const baseLossStyle = {
+  fontFamily: 'Outfit, sans-serif',
+  color: '#fff',
+  padding: '0px 8px',
+  borderRadius: '10px',
+  height: '24px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  fontWeight: 400,
+  fontSize: '12px',
+  gap: '4px',
+  lineHeight: '18px',
+  backgroundColor: '#f94839'
+};
+
 let AllIntervals: any[] = [];
 
 function SwitchViewTable() {
@@ -808,7 +840,10 @@ function SwitchViewTable() {
 
                         {/* LeadStatus */}
                         <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item6}`} >
-                          <Stack sx={stageStyles[getStageName(item)]}> {getStageName(item)}</Stack>
+                          <Stack
+                            sx={item.result === "65991601a62baad220000002" ? baseLossStyle : item.result === "65991601a62baad220000001" ? baseWonStyle : stageStyles[getStageName(item)]} >
+                            {item.result === "65991601a62baad220000002" ? "Loss" : item.result === "65991601a62baad220000001" ? "Won" : getStageName(item)}
+                          </Stack>
                         </td>
 
                         {/* Services */}

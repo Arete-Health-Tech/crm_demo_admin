@@ -801,14 +801,22 @@ const NSingleTicketDetails = (props: Props) => {
     const handleAddAssigne = async (assigneeId: string) => {
         const res = await assignedToTicket(ticketID, assigneeId);
         getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
-        navigate(`/ticket/${ticketID}`);
+        if (isSwitchView) {
+            navigate(`/switchView/${ticketID}`);
+        } else {
+            navigate(`/ticket/${ticketID}`);
+        }
     };
 
     //This function is for remove assigne ticket from the representative
     const handleRemoveAssigne = async (assigneeId: string) => {
         const res = await removeFromTicket(ticketID, assigneeId);
         getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
-        navigate(`/ticket/${ticketID}`);
+        if (isSwitchView) {
+            navigate(`/switchView/${ticketID}`);
+        } else {
+            navigate(`/ticket/${ticketID}`);
+        }
     };
 
 

@@ -368,7 +368,12 @@ const StageCard = (props: Props) => {
       setHospitalName('');
       setFile(null);
       setLose('');
-      redirectTicket();
+      if (isSwitchView) {
+        navigate(`/switchView/${ticketID}`);
+      } else {
+        redirectTicket();
+      }
+
     }
 
     setOpen(false);
@@ -845,7 +850,7 @@ const StageCard = (props: Props) => {
                       fontFamily: `"Outfit",sans-serif`,
                     }}
                     value={"Bed not available"}>
-                   Bed not available
+                    Bed not available
                   </MenuItem>
                   <MenuItem
                     sx={{
@@ -854,7 +859,7 @@ const StageCard = (props: Props) => {
                       fontFamily: `"Outfit",sans-serif`,
                     }}
                     value={"Prescription not clear / Wrong prescription uploaded / Detail Mismatch"}>
-                   Prescription not clear / Wrong prescription uploaded / Detail Mismatch
+                    Prescription not clear / Wrong prescription uploaded / Detail Mismatch
                   </MenuItem>
                   <MenuItem
                     sx={{
@@ -863,7 +868,7 @@ const StageCard = (props: Props) => {
                       fontFamily: `"Outfit",sans-serif`,
                     }}
                     value={"Duplicate lead"}>
-                   Duplicate lead
+                    Duplicate lead
                   </MenuItem>
                   <MenuItem
                     sx={{

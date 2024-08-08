@@ -229,8 +229,11 @@ const RegisterConsumer = () => {
         let mobile;
         if (response.data[0].MobileNo.startsWith('0')) {
           mobile = response.data[0].MobileNo.substring(1);
+          updateConsumerState('phone', mobile);
+        } else {
+          updateConsumerState('phone', response.data[0].MobileNo);
         }
-        updateConsumerState('phone', mobile);
+
         updateConsumerState('age', calculateAge(response.data[0].DOB));
         updateConsumerState('gender', response.data[0].Gender === "Female" ? "F" : response.data[0].Gender === "Male" ? "M" : "O"
         );

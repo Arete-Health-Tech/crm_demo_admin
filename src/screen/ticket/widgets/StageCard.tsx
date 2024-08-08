@@ -813,17 +813,8 @@ const StageCard = (props: Props) => {
                       color: '#080F1A',
                       fontFamily: `"Outfit",sans-serif`,
                     }}
-                    value={"Financial Constraint"}>
-                    Financial Constraint
-                  </MenuItem>
-                  <MenuItem
-                    sx={{
-                      fontSize: '14px',
-                      color: '#080F1A',
-                      fontFamily: `"Outfit",sans-serif`,
-                    }}
-                    value={"Chose to stay back in home city"}>
-                    Chose to stay back in home city
+                    value={"Not Responding Anymore"}>
+                  Not Responding Anymore
                   </MenuItem>
                   <MenuItem
                     sx={{

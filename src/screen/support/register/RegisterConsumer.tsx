@@ -226,7 +226,11 @@ const RegisterConsumer = () => {
       if (response.data) {
         updateConsumerState('firstName', response.data[0].PatientName.split(' ')[0]);
         updateConsumerState('lastName', response.data[0].PatientName.split(' ')[1]);
-        updateConsumerState('phone', response.data[0].MobileNo);
+        let mobile;
+        if (response.data[0].MobileNo.startsWith('0')) {
+          mobile = response.data[0].MobileNo.substring(1);
+        }
+        updateConsumerState('phone', mobile);
         updateConsumerState('age', calculateAge(response.data[0].DOB));
         updateConsumerState('gender', response.data[0].Gender === "Female" ? "F" : response.data[0].Gender === "Male" ? "M" : "O"
         );

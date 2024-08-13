@@ -336,7 +336,10 @@ const TicketFilter = (props: {
           label: name
         };
       });
-      const transformRepresentative = fetchedRepresentative.map(
+
+      const assignRepr = fetchedRepresentative?.filter(rep => rep.role === "REPRESENTATIVE");
+      // const transformRepresentative = fetchedRepresentative.map(
+      const transformRepresentative = assignRepr.map(
         ({ _id, firstName, lastName }) => {
           const labelName = `${firstName} ${lastName}`;
           return {
@@ -550,13 +553,13 @@ const TicketFilter = (props: {
                 ))}
               </FormGroup>
             </Box>
-            {/* <Box py={2} px={4}>
+            <Box py={2} px={4}>
               <Stack sx={{
                 fontFamily: "Outfit,sans-serif",
                 fontSize: "14px",
                 fontWeight: "bold"
               }}>
-                Created By
+                Assigned To
               </Stack>
               <Select
                 size="medium"
@@ -564,11 +567,13 @@ const TicketFilter = (props: {
                 value={currentReperesentative}
                 sx={{ height: '35px' }}
               >
-                {representativeLabel?.map(({ id, label }, index) => {
-                  return <MenuItem value={id}>{label}</MenuItem>;
-                })}
+                {
+                  // representativeLabel?.some(rep => rep.role === "REPRESENTATIVE")
+                  representativeLabel?.map(({ id, label }, index) => {
+                    return <MenuItem value={id}>{label}</MenuItem>;
+                  })}
               </Select>
-            </Box>  */}
+            </Box>
           </Box>
 
 

@@ -114,11 +114,22 @@ export interface iAuditorcomment {
   Date?: Date | null | undefined;
 }
 
+
+export interface iEstimateUpload {
+  _id: string;
+  location: string;
+  total: Number;
+  ticket: string;
+  creator: string;
+  paymentType: string;
+}
+
 export interface iTicket {
   _id: string;
   consumer: iConsumer[];
   prescription: iPrescription[];
   estimate: iEstimate[];
+  estimateupload: iEstimateUpload[] | [];
   creator: string;
   auditorcomment: iAuditorcomment[];
   assigned: iAssigned[];

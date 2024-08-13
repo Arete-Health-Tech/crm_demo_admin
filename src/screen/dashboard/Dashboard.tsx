@@ -441,6 +441,7 @@ const Dashboard = (props: Props) => {
     (async () => {
       try {
         const fetchedRepresentative = await getRepresntativesHandler();
+        // console.log(fetchedRepresentative, "repressentive");
         const matchFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66a4caeaab18bee54eea0866");
         if (matchFound) {
           localStorage.setItem('location', "Amritsar");

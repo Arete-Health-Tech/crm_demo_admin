@@ -267,7 +267,8 @@ const Audit: React.FC = () => {
     admissionType: [],
     diagnosticsType: [],
     dateRange: [],
-    status: []
+    status: [],
+    followUp: null,
   };
   console.log(tickets, "----------------");
 

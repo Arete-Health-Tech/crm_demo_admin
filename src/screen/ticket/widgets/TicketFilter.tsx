@@ -50,7 +50,8 @@ export const ticketFilterCount = (
   dateRange: string[],
   statusType: string[],
   filteredLocation: string,
-  isAmritsarUser: boolean
+  isAmritsarUser: boolean,
+  followUp: Date | null,
 ) => {
   const stageListCount = selectedFilters['stageList'].length;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
@@ -61,6 +62,7 @@ export const ticketFilterCount = (
 
   const resultCount = selectedFilters['results'] ? 1 : 0;
   const statusCount = statusType ? statusType.length : 0;
+  const followUpCount = followUp !== null ? 1 : 0;
 
   let locationCount = 0;
   if (!isAmritsarUser) {
@@ -72,7 +74,7 @@ export const ticketFilterCount = (
 
   }
 
-  const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount + statusCount + locationCount;
+  const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount + statusCount + locationCount + followUpCount;
   return total;
 };
 const TicketFilter = (props: {
@@ -119,7 +121,8 @@ const TicketFilter = (props: {
     admissionType: [],
     diagnosticsType: [],
     dateRange: [],
-    status: []
+    status: [],
+    followUp: null
   };
 
   const { setFilterTickets, setPageNumber, isSwitchView, isAuditorFilterOn, setIsAuditorFilterOn, setFilteredLocation, filteredLocation } = useTicketStore();
@@ -143,6 +146,7 @@ const TicketFilter = (props: {
   );
   const [startDate, setStartDate] = React.useState<string>('');
   const [endDate, setEndDate] = React.useState<string>('');
+  const [followUp, setFollowUp] = React.useState<Date | null>(null);
   const [dateRange, setDateRange] = React.useState<string[]>(['', '']);
   const [currentReperesentative, setCurrentRepresentative] = useState('');
   const [filterCount, setFilterCount] = useState(0);
@@ -269,6 +273,33 @@ const TicketFilter = (props: {
     });
   };
 
+  const handleFollowUpToggleChange = (event: React.MouseEvent<HTMLElement>, newValue: string | null) => {
+    if (followUp == null) {
+      setFollowUp(new Date(newValue!));
+    } else {
+      setFollowUp(null);
+    }
+  };
+
+  const handleFollowUp = (event: React.MouseEvent<HTMLElement>, value: string | null) => {
+    console.log({ value });
+    if (followUp == null) {
+      const dateValue = value ? new Date(value) : null;
+      setFollowUp(dateValue);
+      dispatchFilter({
+        type: filterActions.FOLLOWUP,
+        payload: dateValue?.toISOString(),
+      });
+    } else {
+      const dateValue = value ? new Date(value) : null;
+      setFollowUp(null);
+      dispatchFilter({
+        type: filterActions.FOLLOWUP,
+        payload: dateValue,
+      });
+    }
+  };
+  console.log({ followUp })
 
 
   // const handleToggleChange = (event, newValue) => {
@@ -367,7 +398,7 @@ const TicketFilter = (props: {
     setFilterTickets(selectedFilters);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     console.log(isAmritsarUser, "selected again")
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, followUp));
 
     props.setPage(1);
     if (ticketID) {
@@ -386,14 +417,16 @@ const TicketFilter = (props: {
     dispatchFilter({ type: filterActions.DATERANGE, payload: [] });
     dispatchFilter({ type: filterActions.RESULTS, payload: null });
     dispatchFilter({ type: filterActions.STATUS, payload: [] });
+    dispatchFilter({ type: filterActions.FOLLOWUP, payload: null });
 
     setCurrentRepresentative('');
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, followUp));
     setFilterCount(0);
     setPageNumber(1);
     setSelectedValue(null);
     setSelectedValueLost(null);
-    setResult(" ")
+    setResult(" ");
+    setFollowUp(null);
     setAdmissionType((prev) => []);
     setStatusType((prev) => []);
     setDiagnosticsType((prev) => []);
@@ -412,7 +445,6 @@ const TicketFilter = (props: {
     setResult(newValue);
     setFilteredLocation("")
   };
-
 
   const handleToggleLostChange = (event, newValue: any) => {
     setSelectedValueLost(newValue === selectedValueLost ? null : newValue);
@@ -612,6 +644,30 @@ const TicketFilter = (props: {
                 LOST
               </ToggleButton>
 
+            </ToggleButtonGroup>
+          </Box>
+          <Box px={3}>
+            <Stack sx={{ fontFamily: "Outfit, sans-serif", fontWeight: "500" }}>
+              Doctor Appointment Follow-up Date (This filter cannot be used in combination with any other filter, To be used independently only)
+            </Stack>
+            <ToggleButtonGroup
+              color="primary"
+              value={followUp ? followUp.toISOString() : null} // Convert to string if not null
+              onChange={handleFollowUp}
+              exclusive // Ensure only one toggle can be selected
+            >
+              <ToggleButton
+                value={new Date().toISOString()} // Store the date as a string
+                style={{
+                  backgroundColor: followUp !== null ? '#3949AB14' : 'white',
+                  color: followUp !== null ? '#3949AB' : 'grey',
+                  fontFamily: "Outfit, sans-serif",
+                  fontSize: '12px',
+                }}
+                onClick={handleFollowUpToggleChange}
+              >
+                Doctor Appointment Date
+              </ToggleButton>
             </ToggleButtonGroup>
           </Box>
           <Box p={1} px={3}>

@@ -21,6 +21,7 @@ interface patientData {
     doctor: string;
     department: string;
     remarks: string | "";
+    followUp: string | null;
 }
 
 const EditIcon = () => (
@@ -64,7 +65,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         gender: '',
         doctor: '',
         department: '',
-        remarks: ""
+        remarks: "",
+        followUp: null,
     };
     const [PatientData, setPatientData] = React.useState<patientData>(initialPatientData)
     const [currentTicket, setCurrentTicket] = React.useState<iTicket>();
@@ -106,6 +108,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         { id: 'uhid', label: 'UHID', value: `#${PatientData.uhid}` },
         { id: 'Name', label: 'Name', value: `${PatientData.firstName} ${PatientData.lastName}`, setValue: setPatientData },
         { id: 'age', label: 'Age', value: PatientData.age, setValue: setPatientData },
+        { id: 'followUp', label: 'Followup Date', value: PatientData.followUp, setValue: setPatientData },
         {
             id: 'gender',
             label: 'Gender',
@@ -117,24 +120,28 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         {
             id: 'department', label: 'Department', value: PatientData.department, setValue: setPatientData
         },
-        { id: 'doctor', label: 'Doctor', value: PatientData.doctor, setValue: setPatientData }
+        { id: 'doctor', label: 'Doctor', value: PatientData.doctor, setValue: setPatientData },
     ];
 
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
             const fetchTicket = tickets.find((element) => ticketID === element._id);
+            console.log(fetchTicket)
             setCurrentTicket(fetchTicket);
+            const date = new Date(fetchTicket?.prescription[0]?.followUp);
+            const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
             setPatientData(prevData => ({
                 ...prevData,
                 uhid: `${fetchTicket?.consumer?.[0]?.uid}`,
                 firstName: `${fetchTicket?.consumer?.[0]?.firstName ?? ''}`,
                 lastName: `${fetchTicket?.consumer?.[0]?.lastName ?? ''}`,
-                remarks: `${fetchTicket?.prescription[0]?.remarks == " " ? "No Remark" : fetchTicket?.prescription[0]?.remarks}`,
+                remarks: `${fetchTicket?.prescription[0]?.remarks === " " || fetchTicket?.prescription[0]?.remarks == undefined ? "No Remark" : fetchTicket?.prescription[0]?.remarks}`,
                 age: `${fetchTicket?.consumer?.[0]?.age && fetchTicket?.consumer?.[0]?.age}`,
                 gender: (fetchTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (fetchTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
                 doctor: `${fetchTicket?.prescription?.[0]?.doctor}`,
-                department: `${fetchTicket?.prescription[0]?.departments[0]}`
+                department: `${fetchTicket?.prescription[0]?.departments[0]}`,
+                followUp: `${fetchTicket?.prescription[0]?.followUp == null ? "Not Mentioned" : formattedDate}`
 
             }));
         };
@@ -154,7 +161,6 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             "prescription": {
                 doctor: PatientData.doctor,
                 departments: [PatientData.department]
-
             }
         }
         await updateConusmerData(updatedData, ticketID)
@@ -227,10 +233,14 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                     <Stack className='Patient-detail-title'>UHID</Stack>
                                     <Stack component='div' className='Patient-detail-data'>#{PatientData.uhid}</Stack>
                                 </Box>
-                                {PatientData?.remarks !== "No" ? < Box className='Patient-detail-Head'>
+                                < Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Remark</Stack>
                                     <Stack component='div' className='Patient-detail-data'>{PatientData.remarks}</Stack>
-                                </Box> : <></>}
+                                </Box>
+                                < Box className='Patient-detail-Head'>
+                                    <Stack className='Patient-detail-title'>Followup Date</Stack>
+                                    <Stack component='div' className='Patient-detail-data'>{PatientData.followUp}</Stack>
+                                </Box>
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>First Name</Stack>
                                     <Stack component='div' className='Patient-detail-data'>
@@ -250,7 +260,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                                 style: {
                                                     textTransform: 'capitalize',
                                                     fontSize: '14px',
-                                                    fontFamily: 'Outfit,sans-serif'
+                                                    fontFamily: 'Outfit,sans-serif',
                                                 },
                                             }}
                                         />
@@ -419,7 +429,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                     <Box key={field.id} className='Patient-detail-Head'>
                                         <Stack className='Patient-detail-title'>{field.label}</Stack>
                                         <Stack component='div' className='Patient-detail-data'>{
-                                            field.label === "Department" ? departmentSetter(field.value) : field.label === "Doctor" ? doctorSetter(field.value) : (field.value)
+                                            field.label === "Department" ? departmentSetter(field.value) : field.label === "Doctor" ? doctorSetter(field.value): (field.value)
                                         }</Stack>
                                     </Box>
                                 ) : (

@@ -113,7 +113,8 @@ const AuditFilters = (props: {
         admissionType: [],
         diagnosticsType: [],
         dateRange: [],
-        status: []
+        status: [],
+        followUp: null
     };
 
     const { setFilterTickets, setPageNumber } = useTicketStore();

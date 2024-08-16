@@ -114,7 +114,6 @@ export interface iAuditorcomment {
   Date?: Date | null | undefined;
 }
 
-
 export interface iEstimateUpload {
   _id: string;
   location: string;
@@ -309,6 +308,7 @@ export interface iTicketFilter {
   dateRange: string[];
   results?: string | null;
   status: string[];
+  followUp: Date | null;
 }
 
 export interface iCreator {

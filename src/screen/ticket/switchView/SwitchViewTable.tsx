@@ -494,7 +494,8 @@ function SwitchViewTable() {
     admissionType: [],
     diagnosticsType: [],
     dateRange: [],
-    status: []
+    status: [],
+    followUp: null,
   };
 
 

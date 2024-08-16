@@ -310,7 +310,9 @@ const PatientRecord = ({ isPatient }) => {
                                 <Stack display="flex" flexDirection="row">
                                     <button style={{
                                         color: "black",
-
+                                        fontSize: '14px',
+                                        fontWeight: 400,
+                                        fontFamily: 'outfit,san-serif'
                                     }}
                                         onClick={() => {
                                             // changePrescriptionValue('admission', 'none');

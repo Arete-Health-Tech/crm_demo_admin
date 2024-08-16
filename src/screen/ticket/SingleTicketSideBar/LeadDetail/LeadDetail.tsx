@@ -28,13 +28,17 @@ const LeadDetail: React.FC<MyComponentProps> = ({ isLeadDetail }) => {
     }, [ticketID, tickets])
 
     const formatDate = () => {
-        const dateString = currentTicket?.createdAt;
-        if (!dateString) {
-            return '';
+        if (currentTicket?.createdAt) {
+            const date = new Date(currentTicket.createdAt);
+            const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
+            return formattedDate;
         }
-        const date = new Date(dateString);
-        const formattedDate = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
-        return formattedDate;
+        // const dateString = currentTicket?.createdAt;
+        // if (!dateString) {
+        //     return '';
+        // }
+        // const date = new Date(dateString);
+        // const formattedDate = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
     }
 
     const createdByName = () => {

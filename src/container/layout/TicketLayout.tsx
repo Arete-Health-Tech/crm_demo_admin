@@ -697,7 +697,8 @@ const Ticket = () => {
     admissionType: [],
     diagnosticsType: [],
     dateRange: [],
-    status: []
+    status: [],
+    followUp: null,
   };
 
   const backToDashboard = () => {

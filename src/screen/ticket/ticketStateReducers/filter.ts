@@ -11,9 +11,7 @@ export interface ticketFilterTypes {
   diagnosticsType: string[];
   dateRange: string[];
   status: string[];
-
-
-
+  followUp: Date | null;
 }
 
 export const selectedFiltersState: iTicketFilter = {
@@ -23,9 +21,9 @@ export const selectedFiltersState: iTicketFilter = {
   //  ....
   admissionType: [],
   diagnosticsType: [],
-  dateRange: ["", ""],
-  status: []
-
+  dateRange: ['', ''],
+  status: [],
+  followUp: null
 };
 
 interface actionType {
@@ -90,6 +88,12 @@ export function selectedFiltersReducer(
     };
   }
 
+  if (action.type === filterActions.FOLLOWUP) {
+    return {
+      ...selectedFiltersState,
+      followUp: action.payload
+    };
+  }
 
   throw new Error('unknown action type');
 }

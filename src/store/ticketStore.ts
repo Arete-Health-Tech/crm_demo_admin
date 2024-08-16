@@ -28,7 +28,8 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
     representative: null,
     results: null,
     dateRange: [],
-    status: []
+    status: [],
+    followUp: null
   },
   setFilterTickets: (filterTickets) => set({ filterTickets }),
   loaderOn: false,

@@ -67,7 +67,7 @@ export const ticketFilterCount = (
   let locationCount = 0;
   if (!isAmritsarUser) {
     console.log(isAmritsarUser, "------")
-    locationCount = filteredLocation == "Amritsar" || filteredLocation == "Mohali" ? 1 : 0;
+    locationCount = filteredLocation == "Amritsar" || filteredLocation == "Mohali" || filteredLocation == "Hoshiarpur" || filteredLocation == "Nawanshahr" ? 1 : 0;
     console.log(locationCount, "------")
   } else {
     locationCount = 0;
@@ -800,15 +800,35 @@ const TicketFilter = (props: {
                   fontFamily: "Outfit,sans-serif",
                   fontSize: '12px',
                 }}
-              >Mohali</ToggleButton>
+              >Mohali
+              </ToggleButton>
+
               <ToggleButton value="Amritsar"
                 sx={{
                   fontFamily: "Outfit,sans-serif",
                   fontSize: '12px',
                 }}
-              >Amritsar</ToggleButton>
+              >Amritsar
+              </ToggleButton>
+
+              <ToggleButton value="Hoshiarpur"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >Hoshiarpur
+              </ToggleButton>
+
+              <ToggleButton value="Nawanshahr"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >Nawanshahr
+              </ToggleButton>
 
             </ToggleButtonGroup>
+
 
           </Box>}
 

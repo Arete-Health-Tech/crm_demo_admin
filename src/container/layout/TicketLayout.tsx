@@ -877,6 +877,12 @@ const Ticket = () => {
                         <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Amritsar"), handleOnClose())}>
                           Amritsar
                         </MenuItem>
+                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Hoshiarpur"), handleOnClose())}>
+                          Hoshiarpur
+                        </MenuItem>
+                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Nawanshahr"), handleOnClose())}>
+                          Nawanshahr
+                        </MenuItem>
 
                       </Stack>
                     </Stack>}

@@ -127,10 +127,9 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
             const fetchTicket = tickets.find((element) => ticketID === element._id);
-            console.log(fetchTicket)
             setCurrentTicket(fetchTicket);
-            const date = new Date(fetchTicket?.prescription[0]?.followUp);
-            const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
+            // const date = new Date(fetchTicket?.prescription[0]?.followUp);
+            // const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
             setPatientData(prevData => ({
                 ...prevData,
                 uhid: `${fetchTicket?.consumer?.[0]?.uid}`,
@@ -142,7 +141,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 doctor: `${fetchTicket?.prescription?.[0]?.doctor}`,
                 department: `${fetchTicket?.prescription[0]?.departments[0]}`,
                 followUp: `${fetchTicket?.prescription[0]?.followUp == null || fetchTicket?.prescription[0]?.followUp == "1970-01-01T00:00:00.000Z"
-                    ? "Not Mentioned" : formattedDate}`
+                    ? `null` : `${new Date(fetchTicket?.prescription[0]?.followUp)}`}`
 
             }));
         };
@@ -161,7 +160,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             },
             "prescription": {
                 doctor: PatientData.doctor,
-                departments: [PatientData.department]
+                departments: [PatientData.department],
+                followUp: PatientData.followUp
             }
         }
         await updateConusmerData(updatedData, ticketID)
@@ -193,6 +193,10 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             setShowAlert(true);
         }
     };
+
+    const today = new Date().toISOString().split('T')[0];
+
+    console.log(patientData)
 
     return (
         <>
@@ -238,9 +242,39 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                     <Stack className='Patient-detail-title'>Remark</Stack>
                                     <Stack component='div' className='Patient-detail-data'>{PatientData.remarks}</Stack>
                                 </Box>
-                                < Box className='Patient-detail-Head'>
+                                {/* < Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Followup Date</Stack>
                                     <Stack component='div' className='Patient-detail-data'>{PatientData.followUp}</Stack>
+                                </Box> */}
+                                <Box className="Patient-detail-Head">
+                                    <Stack className="Patient-detail-title">FollowUp Date</Stack>
+                                    <Stack component="div" className="Patient-detail-data">
+                                        <TextField
+                                            id="followUp"
+                                            type="date"
+                                            label="FollowUp Date"
+                                            variant="outlined"
+                                            size="small"
+                                            inputProps={{
+                                                min: today, // Set the min date to today
+                                                style: { fontSize: '14px' }
+                                            }}
+                                            value={PatientData.followUp}
+                                            onChange={(e) =>
+                                                setPatientData((prev) => ({
+                                                    ...prev,
+                                                    followUp: (e.target.value).toString()
+                                                }))
+                                            }
+                                            InputProps={{
+                                                style: {
+                                                    textTransform: 'capitalize',
+                                                    fontSize: '14px',
+                                                    fontFamily: 'Outfit,sans-serif'
+                                                }
+                                            }}
+                                        />
+                                    </Stack>
                                 </Box>
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>First Name</Stack>
@@ -430,7 +464,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                     <Box key={field.id} className='Patient-detail-Head'>
                                         <Stack className='Patient-detail-title'>{field.label}</Stack>
                                         <Stack component='div' className='Patient-detail-data'>{
-                                            field.label === "Department" ? departmentSetter(field.value) : field.label === "Doctor" ? doctorSetter(field.value) : (field.value)
+                                            field.label === "Department" ? departmentSetter(field.value) : field.label === "Doctor" ? doctorSetter(field.value) : field.label === 'Followup Date' ? `${field.value === `null` ? "Not Mentioned" : `${String(new Date(field.value).getDate()).padStart(2, '0')}-${String(new Date(field.value).getMonth() + 1).padStart(2, '0')}-${new Date(field.value).getFullYear()}`}` : (field.value)
                                         }</Stack>
                                     </Box>
                                 ) : (

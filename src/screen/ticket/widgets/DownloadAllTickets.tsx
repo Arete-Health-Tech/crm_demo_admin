@@ -96,6 +96,9 @@ const DownloadAllTickets = (props: Props) => {
         return "Unknown";
     }
   }
+  const returnedDate = (date:string|null|Date) => {
+    return dayjs(date).format('DD/MMM/YYYY')
+  }
 
   const downloadData = async () => {
     setDisable(true);
@@ -141,9 +144,7 @@ const DownloadAllTickets = (props: Props) => {
         PETCT: ticket.prescription[0].diagnostics.includes('PET_CT')
           ? 'Yes'
           : 'No',
-        followUpDate: ticket.prescription[0].followUp
-          ? dayjs(ticket.prescription[0].followUp).format('DD/MMM/YYYY')
-          : 'No Follow Up',
+        followUpDate: (returnedDate(ticket?.prescription[0]?.followUp) === "Invalid Date" || returnedDate(ticket?.prescription[0]?.followUp) === "01/Jan/1970") ? "No Follow Up" : returnedDate(ticket?.prescription[0]?.followUp),
         capturedBy: ticket?.creator[0]?.firstName + ' ' + ticket?.creator[0]?.lastName,
         prescriptionCreatedAt: `${dayjs(
           ticket.prescription[0].createdAt

@@ -140,7 +140,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 gender: (fetchTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (fetchTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
                 doctor: `${fetchTicket?.prescription?.[0]?.doctor}`,
                 department: `${fetchTicket?.prescription[0]?.departments[0]}`,
-                followUp: `${fetchTicket?.prescription[0]?.followUp == "null" || fetchTicket?.prescription[0]?.followUp == "1970-01-01T00:00:00.000Z"
+                followUp: `${fetchTicket?.prescription[0]?.followUp == "null" || fetchTicket?.prescription[0]?.followUp == null ||fetchTicket?.prescription[0]?.followUp == "1970-01-01T00:00:00.000Z"
                     ? `null` : `${new Date(fetchTicket?.prescription[0]?.followUp)}`}`
 
             }));

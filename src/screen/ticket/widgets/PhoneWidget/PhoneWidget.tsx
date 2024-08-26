@@ -11,6 +11,7 @@ import useUserStore from '../../../../store/userStore';
 import { iTicket } from '../../../../types/store/ticket';
 import { useParams } from 'react-router-dom';
 import NotFoundIcon from '../../../../assets/NotFoundTask.svg';
+import dayjs from 'dayjs';
 
 const PhoneWidget = () => {
     const { ticketID } = useParams();
@@ -135,7 +136,7 @@ const PhoneWidget = () => {
                                             </Box>
                                             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                                                 <Box className={styles.phoneReplyDateTime}>
-                                                    12 April 2024 09:30AM
+                                                   { dayjs(new Date()).format('DD-MMM-YYYY')}
                                                 </Box>
                                                 <Box width="1.25rem" height="1.25rem">
                                                     <Avatar sx={{

@@ -136,7 +136,7 @@ const PhoneWidget = () => {
                                             </Box>
                                             <Box display={'flex'} justifyContent={'space-between'} alignItems={'center'}>
                                                 <Box className={styles.phoneReplyDateTime}>
-                                                   { dayjs(new Date()).format('DD-MMM-YYYY')}
+                                                   {/* { dayjs(new Date()).format('DD-MMM-YYYY')} */}
                                                 </Box>
                                                 <Box width="1.25rem" height="1.25rem">
                                                     <Avatar sx={{

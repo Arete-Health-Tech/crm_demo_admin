@@ -177,6 +177,7 @@ const DownloadAllTickets = (props: Props) => {
         Call_disposition: ticket?.status === "dnp" || ticket?.status === "dnd" || ticket?.status === "CallCompleted" || ticket?.status === "RescheduledCall" ? ticket?.status : "N/A",
         Call_Recording: ticket?.phoneData[ticket?.phoneData.length - 1]?.time || "Not Contacted yet",
         Last_Activity_Date: ticket?.lastActivity,
+        lostReasons: ticket?.patientStatus[0]?.dropReason,
       };
     });
     const csv = Papa.unparse(data);

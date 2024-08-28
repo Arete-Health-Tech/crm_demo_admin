@@ -11,6 +11,7 @@ import { Interface } from 'readline';
 import { updateConusmerData } from '../../../../api/ticket/ticket';
 import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
 import { apiClient } from '../../../../api/apiClient';
+import dayjs from 'dayjs';
 
 interface patientData {
     uhid: string;
@@ -123,6 +124,22 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         { id: 'doctor', label: 'Doctor', value: PatientData.doctor, setValue: setPatientData },
     ];
 
+    const handleCancel = () => {
+        setPatientData(prevData => ({
+            ...prevData,
+            uhid: `${currentTicket?.consumer?.[0]?.uid}`,
+            firstName: `${currentTicket?.consumer?.[0]?.firstName ?? ''}`,
+            lastName: `${currentTicket?.consumer?.[0]?.lastName ?? ''}`,
+            remarks: `${currentTicket?.prescription[0]?.remarks === " " || currentTicket?.prescription[0]?.remarks == undefined ? "No Remark" : currentTicket?.prescription[0]?.remarks}`,
+            age: `${currentTicket?.consumer?.[0]?.age && currentTicket?.consumer?.[0]?.age}`,
+            gender: (currentTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (currentTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
+            doctor: `${currentTicket?.prescription?.[0]?.doctor}`,
+            department: `${currentTicket?.prescription[0]?.departments[0]}`,
+            followUp: `${currentTicket?.prescription[0]?.followUp == "null" || currentTicket?.prescription[0]?.followUp == null || currentTicket?.prescription[0]?.followUp == "1970-01-01T00:00:00.000Z"
+                ? `null` : dayjs(currentTicket?.prescription[0]?.followUp).format('YYYY-MM-DD')}`
+            // `${new Date(fetchTicket?.prescription[0]?.followUp)}`
+        }));
+}
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
@@ -140,9 +157,9 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 gender: (fetchTicket?.consumer?.[0]?.gender === 'M') ? 'Male' : (fetchTicket?.consumer?.[0]?.gender === 'F') ? 'Female' : '',
                 doctor: `${fetchTicket?.prescription?.[0]?.doctor}`,
                 department: `${fetchTicket?.prescription[0]?.departments[0]}`,
-                followUp: `${fetchTicket?.prescription[0]?.followUp == "null" || fetchTicket?.prescription[0]?.followUp == null ||fetchTicket?.prescription[0]?.followUp == "1970-01-01T00:00:00.000Z"
-                    ? `null` : `${new Date(fetchTicket?.prescription[0]?.followUp)}`}`
-
+                followUp: `${fetchTicket?.prescription[0]?.followUp == "null" || fetchTicket?.prescription[0]?.followUp == null || fetchTicket?.prescription[0]?.followUp == "1970-01-01T00:00:00.000Z"
+                    ? `null` : dayjs(fetchTicket?.prescription[0]?.followUp).format('YYYY-MM-DD')}`
+                    // `${new Date(fetchTicket?.prescription[0]?.followUp)}`
             }));
         };
         getTicketInfo(ticketID);
@@ -197,8 +214,6 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
 
     const today = new Date().toISOString().split('T')[0];
 
-    console.log(patientData)
-
     return (
         <>
             <Box className="Patient-detail">
@@ -208,7 +223,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                         <Stack display="flex" flexDirection="row">
                             {isEditing ? (<Stack display="flex" flexDirection="row">
                                 <button className='cancel-btn'
-                                    onClick={() => setIsEditing(false)}>
+                                    onClick={() => { handleCancel(); setIsEditing(false)}}>
                                     cancel
                                 </button>
                                 <button className='save-btn'
@@ -261,11 +276,13 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                                                 style: { fontSize: '14px' }
                                             }}
                                             value={PatientData.followUp}
-                                            onChange={(e) =>
+                                            onChange={(e) => {
                                                 setPatientData((prev) => ({
                                                     ...prev,
                                                     followUp: (e.target.value).toString()
-                                                }))
+                                                }));
+                                                console.log(e.target.value)
+                                            }
                                             }
                                             InputProps={{
                                                 style: {

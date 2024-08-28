@@ -545,7 +545,6 @@ const NSingleTicketDetails = (props: Props) => {
         (async function () {
             const ticketData = getTicketInfo(ticketID);
             if (ticketData === undefined && ticketID !== undefined) {
-                console.log(currentTicket, "current 1");
                 await validateTicket(ticketID);
                 if (!isSwitchView) {
                     navigate(NAVIGATE_TO_TICKET);
@@ -632,7 +631,6 @@ const NSingleTicketDetails = (props: Props) => {
     // useEffect(() => {
     //     const fetchData = async () => {
     //         if (currentTicket === undefined && ticketID !== undefined) {
-    //             console.log(currentTicket, "current 1");
     //             await validateTicket(ticketID);
     //             if (!isSwitchView) {
     //                 navigate(NAVIGATE_TO_TICKET);

@@ -134,7 +134,7 @@
   border-radius: 0.5rem;
   border: 1px solid var(--Borders-Light-Grey, #d4dbe5);
   background: var(--Icons-White, #fff);
-  margin: 0 0 0.5rem 0.1rem;
+  margin: 0 0.5rem 0.5rem 0.1rem;
 }
 .callContent {
   display: flex;

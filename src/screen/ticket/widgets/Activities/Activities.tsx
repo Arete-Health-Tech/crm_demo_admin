@@ -176,7 +176,7 @@ const Activities = () => {
                                         display: 'flex',
                                         height: 'auto',
                                         padding: '1rem 0 0rem 2rem',
-                                        marginLeft: '1.8rem',
+                                        marginLeft: '2rem',
                                         borderLeft: '1px solid #d4dbe5'
                                     }}
                                 >
@@ -225,7 +225,7 @@ const Activities = () => {
                             textAlign: "center",
                             marginTop: "30px",
 
-                        }}><img width={'200px'} height={'200px'} src={NotFoundIcon} />
+                        }}><img width={'200px'} height={'200px'} src={NotFoundIcon} alt=''/>
                         </Stack>
                         <Box textAlign={'center'} sx={{
                             font: "bold",

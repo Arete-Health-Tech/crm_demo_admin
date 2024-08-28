@@ -66,9 +66,7 @@ export const ticketFilterCount = (
 
   let locationCount = 0;
   if (!isAmritsarUser) {
-    console.log(isAmritsarUser, "------")
     locationCount = filteredLocation == "Amritsar" || filteredLocation == "Mohali" || filteredLocation == "Hoshiarpur" || filteredLocation == "Nawanshahr" ? 1 : 0;
-    console.log(locationCount, "------")
   } else {
     locationCount = 0;
 
@@ -169,12 +167,10 @@ const TicketFilter = (props: {
         const fetchedRepresentative = await getRepresntativesHandler();
         const matchFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
         if (matchFound) {
-          // console.log("Its AmritSar User.", matchFound);
           SetIsAmritsarUser(true);
           setFilteredLocation("Amritsar");
 
         } else {
-          // console.log("Not Amristsar User.");
           SetIsAmritsarUser(false);
           setFilteredLocation("");
         }
@@ -282,7 +278,6 @@ const TicketFilter = (props: {
   };
 
   const handleFollowUp = (event: React.MouseEvent<HTMLElement>, value: string | null) => {
-    console.log({ value });
     if (followUp == null) {
       const dateValue = value ? new Date(value) : null;
       setFollowUp(dateValue);
@@ -299,8 +294,6 @@ const TicketFilter = (props: {
       });
     }
   };
-  console.log({ followUp })
-
 
   // const handleToggleChange = (event, newValue) => {
   //   setSelectedValue(newValue);
@@ -397,7 +390,6 @@ const TicketFilter = (props: {
     setPageNumber(1);
     setFilterTickets(selectedFilters);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-    console.log(isAmritsarUser, "selected again")
     setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, followUp));
 
     props.setPage(1);
@@ -405,7 +397,6 @@ const TicketFilter = (props: {
       await validateTicket(ticketID);
       navigate(NAVIGATE_TO_TICKET);
     }
-    console.log('filter dtata', selectedFilters);
   };
 
 

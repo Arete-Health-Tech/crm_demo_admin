@@ -793,10 +793,8 @@ const Ticket = () => {
         const fetchedRepresentative = await getRepresntativesHandler();
         const matchFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
         if (matchFound) {
-          console.log("It's AmritSar User.", matchFound);
           SetIsAmritsarUser(true); // Assuming SetIsAmritsarUser is a function that sets state
         } else {
-          console.log("Not Amritsar User.", matchFound);
           SetIsAmritsarUser(false); // Assuming SetIsAmritsarUser is a function that sets state
         }
       } catch (error) {

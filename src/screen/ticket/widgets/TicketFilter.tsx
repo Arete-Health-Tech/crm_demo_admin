@@ -67,16 +67,11 @@ export const ticketFilterCount = (
   const followUpCount = followUp !== null ? 1 : 0;
 
   let locationCount = 0;
-<<<<<<< Updated upstream
-  if (!isAmritsarUser) {
-=======
   if (!isAmritsarUser && !isHoshiarpurUser && !isNawanshahrUser) {
-    console.log(isHoshiarpurUser, "------")
->>>>>>> Stashed changes
     locationCount = filteredLocation == "Amritsar" || filteredLocation == "Mohali" || filteredLocation == "Hoshiarpur" || filteredLocation == "Nawanshahr" ? 1 : 0;
   } else {
     locationCount = 0;
-
+    console.log("good")
   }
 
   const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount + statusCount + locationCount + followUpCount;
@@ -174,14 +169,6 @@ const TicketFilter = (props: {
     (async () => {
       try {
         const fetchedRepresentative = await getRepresntativesHandler();
-<<<<<<< Updated upstream
-        const matchFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
-        if (matchFound) {
-          SetIsAmritsarUser(true);
-          setFilteredLocation("Amritsar");
-
-        } else {
-=======
         const amritsarFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
         const hoshiarpurFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66bf5f702586bb9ea5598451");
         const nawanshahrFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66bf5f5c2586bb9ea5598450");
@@ -201,7 +188,6 @@ const TicketFilter = (props: {
           setFilteredLocation("Nawanshahr");
         }
         else {
->>>>>>> Stashed changes
           SetIsAmritsarUser(false);
           SetIsHoshiarpurUser(false);
           SetIsNnawanshahrUser(false);
@@ -311,6 +297,7 @@ const TicketFilter = (props: {
   };
 
   const handleFollowUp = (event: React.MouseEvent<HTMLElement>, value: string | null) => {
+    console.log({ value });
     if (followUp == null) {
       const dateValue = value ? new Date(value) : null;
       setFollowUp(dateValue);
@@ -327,6 +314,8 @@ const TicketFilter = (props: {
       });
     }
   };
+  console.log({ followUp })
+
 
   // const handleToggleChange = (event, newValue) => {
   //   setSelectedValue(newValue);
@@ -423,18 +412,15 @@ const TicketFilter = (props: {
     setPageNumber(1);
     setFilterTickets(selectedFilters);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-<<<<<<< Updated upstream
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, followUp));
-=======
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, isHoshiarpurUser, isNawanshahrUser, followUp));
->>>>>>> Stashed changes
 
     props.setPage(1);
     if (ticketID) {
       await validateTicket(ticketID);
       navigate(NAVIGATE_TO_TICKET);
     }
+    console.log('filter dtata', selectedFilters);
   };
 
 

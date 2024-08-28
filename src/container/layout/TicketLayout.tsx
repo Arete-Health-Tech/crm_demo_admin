@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { Tooltip, TooltipProps, styled, tooltipClasses } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
+import NotFoundIcon from '../../../src/assets/NotFoundTask.svg';
 
 import { filterActions } from '../../screen/ticket/ticketStateReducers/actions/filterAction';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
@@ -785,39 +786,45 @@ const Ticket = () => {
     }
   };
 
-  const [isAmritsarUser, SetIsAmritsarUser] = useState(false);
-  const [isHoshiarpurUser, SetIsHoshiarpurUser] = useState(false);
-  const [isNawanshahrUser, SetIsNnawanshahrUser] = useState(false);
+  const [isAdminUser, setIsAdminUser] = useState(false);
 
   useEffect(() => {
-    (async () => {
+
+    const fetchRepresentatives = async () => {
       try {
         const fetchedRepresentative = await getRepresntativesHandler();
 
-        const amritsarFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66a4caeaab18bee54eea0866");
-        const hoshiarpurFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66bf5f702586bb9ea5598451");
-        const nawanshahrFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66bf5f5c2586bb9ea5598450");
+        const amritsarFound = fetchedRepresentative?.some(
+          rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866"
+        );
+        const hoshiarpurFound = fetchedRepresentative?.some(
+          rep => rep.phone === phoneNumber && rep.Unit === "66bf5f702586bb9ea5598451"
+        );
+        const nawanshahrFound = fetchedRepresentative?.some(
+          rep => rep.phone === phoneNumber && rep.Unit === "66bf5f5c2586bb9ea5598450"
+        );
+
+        console.log(nawanshahrFound, "found--------");
 
         if (amritsarFound) {
-          SetIsAmritsarUser(true);
+          setIsAdminUser(false);
+        } else if (hoshiarpurFound) {
+          setIsAdminUser(false);
+        } else if (nawanshahrFound) {
+          setIsAdminUser(false);
+        } else {
+          setIsAdminUser(true);
         }
-        else if (hoshiarpurFound) {
-          SetIsHoshiarpurUser(true);
-        }
-        else if (nawanshahrFound) {
-          SetIsNnawanshahrUser(true);
-        }
-        else {
 
-          SetIsAmritsarUser(false);
-          SetIsHoshiarpurUser(false);
-          SetIsNnawanshahrUser(false);
-        }
       } catch (error) {
         console.error("Error fetching representatives:", error);
       }
-    })();
-  }, [])
+    };
+
+    fetchRepresentatives();
+  }, [phone]);
+
+
   return (
     <>
       <Box height={'100vh'} display="flex" position="fixed" width="100%">
@@ -865,41 +872,44 @@ const Ticket = () => {
                       alignItems="center"
                       marginTop="3px"
                       paddingLeft="1rem"
-                      paddingRight={isAmritsarUser || isHoshiarpurUser || isNawanshahrUser ? "0rem" : "0.85rem"}
+                      paddingRight={isAdminUser ? "0rem" : "0.8rem"}
                     >
                       <span>{localStorage.getItem('location') == "" ? 'All' : localStorage.getItem('location')}</span>
-                      {!isAmritsarUser || !isHoshiarpurUser || !isNawanshahrUser && <span>
-                        <img src={DropDownArrow} alt="" />
-                      </span>}
+                      {isAdminUser ?
+                        (<span>
+                          <img src={DropDownArrow} alt="" />
+                        </span>) : (<></>)}
                     </Stack>
-                    {!isAmritsarUser || !isHoshiarpurUser || !isNawanshahrUser && <Stack
-                      ref={visibleRef}
-                      display={visible ? 'block' : 'none'}
-                      className="ticket-assigneemenu1"
-                      bgcolor="white"
-                      position="absolute"
-                      zIndex="1"
-                      boxShadow="0px 0px 10px rgba(0,0,0,0.1)"
-                    >
-                      <Stack className="ticket-asssignee-container-layout">
-                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', ""), handleOnClose())}>
-                          All
-                        </MenuItem>
-                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Mohali"), handleOnClose())}>
-                          Mohali
-                        </MenuItem>
-                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Amritsar"), handleOnClose())}>
-                          Amritsar
-                        </MenuItem>
-                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Hoshiarpur"), handleOnClose())}>
-                          Hoshiarpur
-                        </MenuItem>
-                        <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Nawanshahr"), handleOnClose())}>
-                          Nawanshahr
-                        </MenuItem>
+                    {isAdminUser
+                      ?
+                      (<Stack
+                        ref={visibleRef}
+                        display={visible ? 'block' : 'none'}
+                        className="ticket-assigneemenu1"
+                        bgcolor="white"
+                        position="absolute"
+                        zIndex="1"
+                        boxShadow="0px 0px 10px rgba(0,0,0,0.1)"
+                      >
+                        <Stack className="ticket-asssignee-container-layout">
+                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', ""), handleOnClose())}>
+                            All
+                          </MenuItem>
+                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Mohali"), handleOnClose())}>
+                            Mohali
+                          </MenuItem>
+                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Amritsar"), handleOnClose())}>
+                            Amritsar
+                          </MenuItem>
+                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Hoshiarpur"), handleOnClose())}>
+                            Hoshiarpur
+                          </MenuItem>
+                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Nawanshahr"), handleOnClose())}>
+                            Nawanshahr
+                          </MenuItem>
 
-                      </Stack>
-                    </Stack>}
+                        </Stack>
+                      </Stack>) : (<></>)}
                   </Box>
 
                 </Stack>
@@ -1024,18 +1034,23 @@ const Ticket = () => {
                 <TicketCard key={item._id} patientData={item} index={index} />
               ))
             ) : emptyDataText !== '' ? (
-              <Alert
-                sx={{
-                  marginTop: '40px',
-                  height: '25vh',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center'
-                }}
-                severity="error"
-              >
-                NO DATA FOUND
-              </Alert>
+              // <Alert
+              //   sx={{
+              //     marginTop: '40px',
+              //     height: '25vh',
+              //     display: 'flex',
+              //     justifyContent: 'center',
+              //     alignItems: 'center'
+              //   }}
+              //   severity="error"
+              // >
+              //   NO DATA FOUND
+              // </Alert>
+              <Box className="NotFound-Page">
+                <img src={NotFoundIcon} />
+                <Stack className='NotFound-text'>No Ticket Found</Stack>
+                <Stack className='NotFound-subtext'>No Ticket Found</Stack>
+              </Box>
             ) : (
               [0, 1, 2, 3, 4, 5].map((_, index) => (
                 <Skeleton

@@ -164,6 +164,7 @@ const TicketFilter = (props: {
   const [isAmritsarUser, SetIsAmritsarUser] = useState(false);
   const [isHoshiarpurUser, SetIsHoshiarpurUser] = useState(false);
   const [isNawanshahrUser, SetIsNnawanshahrUser] = useState(false);
+  const [isAdminUser, setIsAdminUser] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -188,6 +189,7 @@ const TicketFilter = (props: {
           setFilteredLocation("Nawanshahr");
         }
         else {
+          setIsAdminUser(true);
           SetIsAmritsarUser(false);
           SetIsHoshiarpurUser(false);
           SetIsNnawanshahrUser(false);
@@ -807,52 +809,54 @@ const TicketFilter = (props: {
             </ToggleButtonGroup>
           </Box>
 
-          {!isAmritsarUser || !isHoshiarpurUser || !isNawanshahrUser && <Box p={1} px={3}>
-            <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
-              Location
-            </Stack>
-            <ToggleButtonGroup
-              color="primary"
-              value={filteredLocation}
-              // onChange={() => setFilteredLocation('Amritsar')}
-              onChange={handleLocation}
-            >
-              <ToggleButton value="Mohali"
-                sx={{
-                  fontFamily: "Outfit,sans-serif",
-                  fontSize: '12px',
-                }}
-              >Mohali
-              </ToggleButton>
+          {isAdminUser &&
+            <Box p={1} px={3}>
+              <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
+                Location
+              </Stack>
+              <ToggleButtonGroup
+                color="primary"
+                value={filteredLocation}
+                // onChange={() => setFilteredLocation('Amritsar')}
+                onChange={handleLocation}
+              >
+                <ToggleButton value="Mohali"
+                  sx={{
+                    fontFamily: "Outfit,sans-serif",
+                    fontSize: '12px',
+                  }}
+                >Mohali
+                </ToggleButton>
 
-              <ToggleButton value="Amritsar"
-                sx={{
-                  fontFamily: "Outfit,sans-serif",
-                  fontSize: '12px',
-                }}
-              >Amritsar
-              </ToggleButton>
+                <ToggleButton value="Amritsar"
+                  sx={{
+                    fontFamily: "Outfit,sans-serif",
+                    fontSize: '12px',
+                  }}
+                >Amritsar
+                </ToggleButton>
 
-              <ToggleButton value="Hoshiarpur"
-                sx={{
-                  fontFamily: "Outfit,sans-serif",
-                  fontSize: '12px',
-                }}
-              >Hoshiarpur
-              </ToggleButton>
+                <ToggleButton value="Hoshiarpur"
+                  sx={{
+                    fontFamily: "Outfit,sans-serif",
+                    fontSize: '12px',
+                  }}
+                >Hoshiarpur
+                </ToggleButton>
 
-              <ToggleButton value="Nawanshahr"
-                sx={{
-                  fontFamily: "Outfit,sans-serif",
-                  fontSize: '12px',
-                }}
-              >Nawanshahr
-              </ToggleButton>
+                <ToggleButton value="Nawanshahr"
+                  sx={{
+                    fontFamily: "Outfit,sans-serif",
+                    fontSize: '12px',
+                  }}
+                >Nawanshahr
+                </ToggleButton>
 
-            </ToggleButtonGroup>
+              </ToggleButtonGroup>
 
 
-          </Box>}
+            </Box>
+          }
 
           <Box p={1} px={3}>
             <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>

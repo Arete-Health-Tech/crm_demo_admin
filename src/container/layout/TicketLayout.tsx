@@ -793,13 +793,6 @@ const Ticket = () => {
     (async () => {
       try {
         const fetchedRepresentative = await getRepresntativesHandler();
-<<<<<<< Updated upstream
-        const matchFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
-        if (matchFound) {
-          SetIsAmritsarUser(true); // Assuming SetIsAmritsarUser is a function that sets state
-        } else {
-          SetIsAmritsarUser(false); // Assuming SetIsAmritsarUser is a function that sets state
-=======
 
         const amritsarFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66a4caeaab18bee54eea0866");
         const hoshiarpurFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66bf5f702586bb9ea5598451");
@@ -819,7 +812,6 @@ const Ticket = () => {
           SetIsAmritsarUser(false);
           SetIsHoshiarpurUser(false);
           SetIsNnawanshahrUser(false);
->>>>>>> Stashed changes
         }
       } catch (error) {
         console.error("Error fetching representatives:", error);

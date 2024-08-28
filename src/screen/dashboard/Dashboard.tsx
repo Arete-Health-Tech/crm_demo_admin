@@ -442,10 +442,19 @@ const Dashboard = (props: Props) => {
       try {
         const fetchedRepresentative = await getRepresntativesHandler();
         // console.log(fetchedRepresentative, "repressentive");
-        const matchFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66a4caeaab18bee54eea0866");
-        if (matchFound) {
+        const amritsarFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66a4caeaab18bee54eea0866");
+        const hoshiarpurFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66bf5f702586bb9ea5598451");
+        const nawanshahrFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66bf5f5c2586bb9ea5598450");
+        if (amritsarFound) {
           localStorage.setItem('location', "Amritsar");
-        } else {
+        }
+        else if (hoshiarpurFound) {
+          localStorage.setItem('location', "Hoshiarpur");
+        }
+        else if (nawanshahrFound) {
+          localStorage.setItem('location', "Nawanshahr");
+        }
+        else {
           localStorage.setItem('location', "");
         }
       } catch (error) {

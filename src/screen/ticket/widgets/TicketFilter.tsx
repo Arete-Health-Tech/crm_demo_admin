@@ -51,6 +51,8 @@ export const ticketFilterCount = (
   statusType: string[],
   filteredLocation: string,
   isAmritsarUser: boolean,
+  isHoshiarpurUser: boolean,
+  isNawanshahrUser: boolean,
   followUp: Date | null,
 ) => {
   const stageListCount = selectedFilters['stageList'].length;
@@ -65,7 +67,12 @@ export const ticketFilterCount = (
   const followUpCount = followUp !== null ? 1 : 0;
 
   let locationCount = 0;
+<<<<<<< Updated upstream
   if (!isAmritsarUser) {
+=======
+  if (!isAmritsarUser && !isHoshiarpurUser && !isNawanshahrUser) {
+    console.log(isHoshiarpurUser, "------")
+>>>>>>> Stashed changes
     locationCount = filteredLocation == "Amritsar" || filteredLocation == "Mohali" || filteredLocation == "Hoshiarpur" || filteredLocation == "Nawanshahr" ? 1 : 0;
   } else {
     locationCount = 0;
@@ -160,18 +167,44 @@ const TicketFilter = (props: {
 
 
   const [isAmritsarUser, SetIsAmritsarUser] = useState(false);
+  const [isHoshiarpurUser, SetIsHoshiarpurUser] = useState(false);
+  const [isNawanshahrUser, SetIsNnawanshahrUser] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
         const fetchedRepresentative = await getRepresntativesHandler();
+<<<<<<< Updated upstream
         const matchFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
         if (matchFound) {
           SetIsAmritsarUser(true);
           setFilteredLocation("Amritsar");
 
         } else {
+=======
+        const amritsarFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
+        const hoshiarpurFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66bf5f702586bb9ea5598451");
+        const nawanshahrFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66bf5f5c2586bb9ea5598450");
+
+        if (amritsarFound) {
+          // console.log("Its AmritSar User.", matchFound);
+          SetIsAmritsarUser(true);
+          setFilteredLocation("Amritsar");
+
+        }
+        else if (hoshiarpurFound) {
+          SetIsHoshiarpurUser(true);
+          setFilteredLocation("Hoshiarpur");
+        }
+        else if (nawanshahrFound) {
+          SetIsNnawanshahrUser(true);
+          setFilteredLocation("Nawanshahr");
+        }
+        else {
+>>>>>>> Stashed changes
           SetIsAmritsarUser(false);
+          SetIsHoshiarpurUser(false);
+          SetIsNnawanshahrUser(false);
           setFilteredLocation("");
         }
       } catch (error) {
@@ -390,7 +423,12 @@ const TicketFilter = (props: {
     setPageNumber(1);
     setFilterTickets(selectedFilters);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+<<<<<<< Updated upstream
     setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, followUp));
+=======
+    // console.log(isAmritsarUser, "selected again")
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, isHoshiarpurUser, isNawanshahrUser, followUp));
+>>>>>>> Stashed changes
 
     props.setPage(1);
     if (ticketID) {
@@ -411,7 +449,7 @@ const TicketFilter = (props: {
     dispatchFilter({ type: filterActions.FOLLOWUP, payload: null });
 
     setCurrentRepresentative('');
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, followUp));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, isHoshiarpurUser, isNawanshahrUser, followUp));
     setFilterCount(0);
     setPageNumber(1);
     setSelectedValue(null);
@@ -424,6 +462,12 @@ const TicketFilter = (props: {
     setDateRange(["", ""]);
     if (isAmritsarUser) {
       setFilteredLocation("Amritsar");
+    }
+    else if (isHoshiarpurUser) {
+      setFilteredLocation("Hoshiarpur");
+    }
+    else if (isNawanshahrUser) {
+      setFilteredLocation("Nawanshahr");
     } else {
       setFilteredLocation("")
     }
@@ -440,6 +484,7 @@ const TicketFilter = (props: {
   const handleToggleLostChange = (event, newValue: any) => {
     setSelectedValueLost(newValue === selectedValueLost ? null : newValue);
     setResult(newValue);
+    setFilteredLocation("")
   };
 
   // const [isAuditorFilterOn, setIsAuditorFilterOn] = useState(false);
@@ -776,7 +821,7 @@ const TicketFilter = (props: {
             </ToggleButtonGroup>
           </Box>
 
-          {!isAmritsarUser && <Box p={1} px={3}>
+          {!isAmritsarUser || !isHoshiarpurUser || !isNawanshahrUser && <Box p={1} px={3}>
             <Stack sx={{ fontFamily: "Outfit,san-serif", fontWeight: "500" }}>
               Location
             </Stack>

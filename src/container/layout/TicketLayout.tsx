@@ -786,16 +786,40 @@ const Ticket = () => {
   };
 
   const [isAmritsarUser, SetIsAmritsarUser] = useState(false);
+  const [isHoshiarpurUser, SetIsHoshiarpurUser] = useState(false);
+  const [isNawanshahrUser, SetIsNnawanshahrUser] = useState(false);
 
   useEffect(() => {
     (async () => {
       try {
         const fetchedRepresentative = await getRepresntativesHandler();
+<<<<<<< Updated upstream
         const matchFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
         if (matchFound) {
           SetIsAmritsarUser(true); // Assuming SetIsAmritsarUser is a function that sets state
         } else {
           SetIsAmritsarUser(false); // Assuming SetIsAmritsarUser is a function that sets state
+=======
+
+        const amritsarFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66a4caeaab18bee54eea0866");
+        const hoshiarpurFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66bf5f702586bb9ea5598451");
+        const nawanshahrFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66bf5f5c2586bb9ea5598450");
+
+        if (amritsarFound) {
+          SetIsAmritsarUser(true);
+        }
+        else if (hoshiarpurFound) {
+          SetIsHoshiarpurUser(true);
+        }
+        else if (nawanshahrFound) {
+          SetIsNnawanshahrUser(true);
+        }
+        else {
+
+          SetIsAmritsarUser(false);
+          SetIsHoshiarpurUser(false);
+          SetIsNnawanshahrUser(false);
+>>>>>>> Stashed changes
         }
       } catch (error) {
         console.error("Error fetching representatives:", error);
@@ -849,14 +873,14 @@ const Ticket = () => {
                       alignItems="center"
                       marginTop="3px"
                       paddingLeft="1rem"
-                      paddingRight={!isAmritsarUser ? "0rem" : "1rem"}
+                      paddingRight={isAmritsarUser || isHoshiarpurUser || isNawanshahrUser ? "0rem" : "0.85rem"}
                     >
                       <span>{localStorage.getItem('location') == "" ? 'All' : localStorage.getItem('location')}</span>
-                      {!isAmritsarUser && <span>
+                      {!isAmritsarUser || !isHoshiarpurUser || !isNawanshahrUser && <span>
                         <img src={DropDownArrow} alt="" />
                       </span>}
                     </Stack>
-                    {!isAmritsarUser && <Stack
+                    {!isAmritsarUser || !isHoshiarpurUser || !isNawanshahrUser && <Stack
                       ref={visibleRef}
                       display={visible ? 'block' : 'none'}
                       className="ticket-assigneemenu1"

@@ -803,6 +803,9 @@ const Ticket = () => {
         const nawanshahrFound = fetchedRepresentative?.some(
           rep => rep.phone === phoneNumber && rep.Unit === "66bf5f5c2586bb9ea5598450"
         );
+        const khannaFound = fetchedRepresentative?.some(
+          rep => rep.phone === phoneNumber && rep.Unit === "66d5535689e33e0601248a79"
+        );
 
         console.log(nawanshahrFound, "found--------");
 
@@ -812,7 +815,10 @@ const Ticket = () => {
           setIsAdminUser(false);
         } else if (nawanshahrFound) {
           setIsAdminUser(false);
-        } else {
+        } else if (khannaFound) {
+          setIsAdminUser(false);
+        }
+        else {
           setIsAdminUser(true);
         }
 
@@ -906,6 +912,9 @@ const Ticket = () => {
                           </MenuItem>
                           <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Nawanshahr"), handleOnClose())}>
                             Nawanshahr
+                          </MenuItem>
+                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Khanna"), handleOnClose())}>
+                            Khanna
                           </MenuItem>
 
                         </Stack>

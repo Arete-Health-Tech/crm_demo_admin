@@ -53,6 +53,7 @@ export const ticketFilterCount = (
   isAmritsarUser: boolean,
   isHoshiarpurUser: boolean,
   isNawanshahrUser: boolean,
+  isKhannaUser: boolean,
   followUp: Date | null,
 ) => {
   const stageListCount = selectedFilters['stageList'].length;
@@ -67,8 +68,8 @@ export const ticketFilterCount = (
   const followUpCount = followUp !== null ? 1 : 0;
 
   let locationCount = 0;
-  if (!isAmritsarUser && !isHoshiarpurUser && !isNawanshahrUser) {
-    locationCount = filteredLocation == "Amritsar" || filteredLocation == "Mohali" || filteredLocation == "Hoshiarpur" || filteredLocation == "Nawanshahr" ? 1 : 0;
+  if (!isAmritsarUser && !isHoshiarpurUser && !isNawanshahrUser && !isKhannaUser) {
+    locationCount = filteredLocation == "Amritsar" || filteredLocation == "Mohali" || filteredLocation == "Hoshiarpur" || filteredLocation == "Nawanshahr" || filteredLocation == "Hoshiarpur" || filteredLocation == "Khanna" ? 1 : 0;
   } else {
     locationCount = 0;
     console.log("good")
@@ -164,6 +165,7 @@ const TicketFilter = (props: {
   const [isAmritsarUser, SetIsAmritsarUser] = useState(false);
   const [isHoshiarpurUser, SetIsHoshiarpurUser] = useState(false);
   const [isNawanshahrUser, SetIsNnawanshahrUser] = useState(false);
+  const [isKhannaUser, SetIsKhannaUser] = useState(false);
   const [isAdminUser, setIsAdminUser] = useState(false);
 
   useEffect(() => {
@@ -173,6 +175,8 @@ const TicketFilter = (props: {
         const amritsarFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866");
         const hoshiarpurFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66bf5f702586bb9ea5598451");
         const nawanshahrFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66bf5f5c2586bb9ea5598450");
+        const khannaFound = fetchedRepresentative?.some(rep => rep.phone === phoneNumber && rep.Unit === "66d5535689e33e0601248a79");
+
 
         if (amritsarFound) {
           // console.log("Its AmritSar User.", matchFound);
@@ -188,11 +192,16 @@ const TicketFilter = (props: {
           SetIsNnawanshahrUser(true);
           setFilteredLocation("Nawanshahr");
         }
+        else if (khannaFound) {
+          SetIsKhannaUser(true);
+          setFilteredLocation("Khanna");
+        }
         else {
           setIsAdminUser(true);
           SetIsAmritsarUser(false);
           SetIsHoshiarpurUser(false);
           SetIsNnawanshahrUser(false);
+          SetIsKhannaUser(false);
           setFilteredLocation("");
         }
       } catch (error) {
@@ -415,7 +424,7 @@ const TicketFilter = (props: {
     setFilterTickets(selectedFilters);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     // console.log(isAmritsarUser, "selected again")
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, isHoshiarpurUser, isNawanshahrUser, followUp));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, isHoshiarpurUser, isNawanshahrUser, isKhannaUser, followUp));
 
     props.setPage(1);
     if (ticketID) {
@@ -437,7 +446,7 @@ const TicketFilter = (props: {
     dispatchFilter({ type: filterActions.FOLLOWUP, payload: null });
 
     setCurrentRepresentative('');
-    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, isHoshiarpurUser, isNawanshahrUser, followUp));
+    setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, filteredLocation, isAmritsarUser, isHoshiarpurUser, isNawanshahrUser, isKhannaUser, followUp));
     setFilterCount(0);
     setPageNumber(1);
     setSelectedValue(null);
@@ -456,6 +465,9 @@ const TicketFilter = (props: {
     }
     else if (isNawanshahrUser) {
       setFilteredLocation("Nawanshahr");
+    }
+    else if (isKhannaUser) {
+      setFilteredLocation("Khanna");
     } else {
       setFilteredLocation("")
     }
@@ -844,12 +856,28 @@ const TicketFilter = (props: {
                 >Hoshiarpur
                 </ToggleButton>
 
+              </ToggleButtonGroup>
+              <ToggleButtonGroup
+                color="primary"
+                value={filteredLocation}
+                // onChange={() => setFilteredLocation('Amritsar')}
+                onChange={handleLocation}
+                sx={{ marginTop: "5px" }}
+              >
+
                 <ToggleButton value="Nawanshahr"
                   sx={{
                     fontFamily: "Outfit,sans-serif",
                     fontSize: '12px',
                   }}
                 >Nawanshahr
+                </ToggleButton>
+                <ToggleButton value="Khanna"
+                  sx={{
+                    fontFamily: "Outfit,sans-serif",
+                    fontSize: '12px',
+                  }}
+                >Khanna
                 </ToggleButton>
 
               </ToggleButtonGroup>

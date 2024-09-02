@@ -445,6 +445,8 @@ const Dashboard = (props: Props) => {
         const amritsarFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66a4caeaab18bee54eea0866");
         const hoshiarpurFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66bf5f702586bb9ea5598451");
         const nawanshahrFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66bf5f5c2586bb9ea5598450");
+        const khannaFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66d5535689e33e0601248a79");
+
         if (amritsarFound) {
           localStorage.setItem('location', "Amritsar");
         }
@@ -453,6 +455,9 @@ const Dashboard = (props: Props) => {
         }
         else if (nawanshahrFound) {
           localStorage.setItem('location', "Nawanshahr");
+        }
+        else if (khannaFound) {
+          localStorage.setItem('location', "Khanna");
         }
         else {
           localStorage.setItem('location', "");

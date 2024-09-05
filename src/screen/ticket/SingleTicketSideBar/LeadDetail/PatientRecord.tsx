@@ -115,6 +115,15 @@ const PatientRecord = ({ isPatient }) => {
                 }
             }
             await updateConusmerData(updatedData, ticketID)
+        } else if (item == "None") {
+            const updatedData = {
+                "consumer": {},
+                "prescription": {
+                    "admission": null,
+                    "service": null
+                }
+            }
+            await updateConusmerData(updatedData, ticketID)
         } else {
             const updatedData = {
                 "consumer": {},
@@ -299,6 +308,11 @@ const PatientRecord = ({ isPatient }) => {
 
     return (
         <>
+            {currentTicket?.prescription[0]?.admission ?
+                (<Stack className="gray-border">
+                    {/* Borders */}
+                </Stack>)
+                : (<></>)}
 
             {/* Admission Details */}
             {currentTicket?.prescription[0]?.admission ? (
@@ -372,7 +386,8 @@ const PatientRecord = ({ isPatient }) => {
                             <Box display={"flex"} flexDirection="column">
                                 <Box display={`${isEditing}` ? "block" : "none"}>
                                     <Stack flexWrap={'wrap'} flexDirection="row" gap={'14px'}>
-                                        {['Surgery',
+                                        {['None',
+                                            'Surgery',
                                             // 'Radiation',
                                             'MM',
                                             'DC'].map((item) => (

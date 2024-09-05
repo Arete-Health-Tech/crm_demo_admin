@@ -96,7 +96,7 @@ const DownloadAllTickets = (props: Props) => {
         return "Unknown";
     }
   }
-  const returnedDate = (date:string|null|Date) => {
+  const returnedDate = (date: string | null | Date) => {
     return dayjs(date).format('DD/MMM/YYYY')
   }
 
@@ -192,10 +192,12 @@ const DownloadAllTickets = (props: Props) => {
 
   return (
     <Box p={1} px={2}>
-      <LightTooltip title="Download All Data">
+      <LightTooltip title={!disable ? "Download All Data" : "Downloading...."}>
         <Stack style={{
-          width: "16.667px",
-          height: "15.397px"
+          width: "15.667px",
+          height: "15.397px",
+          // backgroundColor: !disable ? "none" : "grey",
+          borderRadius: "12px"
         }}>
           <button disabled={disable} onClick={downloadData}
           >

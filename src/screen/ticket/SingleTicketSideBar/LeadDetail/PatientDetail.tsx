@@ -139,7 +139,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 ? `null` : dayjs(currentTicket?.prescription[0]?.followUp).format('YYYY-MM-DD')}`
             // `${new Date(fetchTicket?.prescription[0]?.followUp)}`
         }));
-}
+    }
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
@@ -159,7 +159,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 department: `${fetchTicket?.prescription[0]?.departments[0]}`,
                 followUp: `${fetchTicket?.prescription[0]?.followUp == "null" || fetchTicket?.prescription[0]?.followUp == null || fetchTicket?.prescription[0]?.followUp == "1970-01-01T00:00:00.000Z"
                     ? `null` : dayjs(fetchTicket?.prescription[0]?.followUp).format('YYYY-MM-DD')}`
-                    // `${new Date(fetchTicket?.prescription[0]?.followUp)}`
+                // `${new Date(fetchTicket?.prescription[0]?.followUp)}`
             }));
         };
         getTicketInfo(ticketID);
@@ -170,6 +170,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         const date = PatientData.followUp !== "null" ? new Date(PatientData.followUp).toISOString() : PatientData.followUp;
         const updatedData = {
             "consumer": {
+                "uid": PatientData.uhid,
                 "firstName": PatientData.firstName,
                 "lastName": PatientData.lastName,
                 "gender": PatientData.gender === "Male" ? "M" : PatientData.gender === "Female" ? "F" : "",
@@ -212,6 +213,22 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         }
     };
 
+    const [error, setError] = useState('');
+
+    const handleInput = (e) => {
+        const newValue = e.target.value;
+        const numericValue = newValue.replace(/[^0-9]/g, '');
+
+        if (newValue !== numericValue || newValue === '') {
+            setError('Invalid UHID. Only numeric values are allowed and cannot be empty.');
+        } else {
+            setError('');
+            setPatientData((prev) => ({
+                ...prev,
+                uhid: newValue,
+            }));
+        }
+    };
     const today = new Date().toISOString().split('T')[0];
 
     return (
@@ -223,11 +240,17 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                         <Stack display="flex" flexDirection="row">
                             {isEditing ? (<Stack display="flex" flexDirection="row">
                                 <button className='cancel-btn'
-                                    onClick={() => { handleCancel(); setIsEditing(false)}}>
+                                    onClick={() => { handleCancel(); setIsEditing(false) }}>
                                     cancel
                                 </button>
-                                <button className='save-btn'
-                                    onClick={handleSubmit}>
+                                <button
+                                    className='save-btn'
+                                    onClick={(event) => {
+                                        if (!error) {
+                                            handleSubmit(event); // Pass the event argument to handleSubmit
+                                        }
+                                    }}
+                                >
                                     Save
                                 </button>
                             </Stack>) : (<>
@@ -252,7 +275,36 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                             <Box>
                                 <Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>UHID</Stack>
-                                    <Stack component='div' className='Patient-detail-data'>#{PatientData.uhid}</Stack>
+                                    {/* <Stack component='div' className='Patient-detail-data'>#{PatientData.uhid}</Stack> */}
+                                    <Stack component="div" className="Patient-detail-data">
+                                        <TextField
+                                            id="uhid"
+                                            type="text"
+                                            label="uhid"
+                                            variant="outlined"
+                                            size="small"
+                                            inputProps={{
+                                                style: { fontSize: '14px' },
+                                                onInput: handleInput,
+                                            }}
+                                            value={PatientData.uhid}
+                                            onChange={(e) =>
+                                                setPatientData((prev) => ({
+                                                    ...prev,
+                                                    uhid: e.target.value
+                                                }))
+                                            }
+                                            InputProps={{
+                                                style: {
+                                                    textTransform: 'capitalize',
+                                                    fontSize: '14px',
+                                                    fontFamily: 'Outfit,sans-serif'
+                                                }
+                                            }}
+                                            error={!!error}
+                                            helperText={error}
+                                        />
+                                    </Stack>
                                 </Box>
                                 < Box className='Patient-detail-Head'>
                                     <Stack className='Patient-detail-title'>Remark</Stack>

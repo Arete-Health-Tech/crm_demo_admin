@@ -814,7 +814,7 @@ const StageCard = (props: Props) => {
                       fontFamily: `"Outfit",sans-serif`,
                     }}
                     value={"Not Responding Anymore"}>
-                  Not Responding Anymore
+                    Not Responding Anymore
                   </MenuItem>
                   <MenuItem
                     sx={{
@@ -860,6 +860,24 @@ const StageCard = (props: Props) => {
                     }}
                     value={"Duplicate lead"}>
                     Duplicate lead
+                  </MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '14px',
+                      color: '#080F1A',
+                      fontFamily: `"Outfit",sans-serif`,
+                    }}
+                    value={"Wrong Number"}>
+                    Wrong Number
+                  </MenuItem>
+                  <MenuItem
+                    sx={{
+                      fontSize: '14px',
+                      color: '#080F1A',
+                      fontFamily: `"Outfit",sans-serif`,
+                    }}
+                    value={"Patient Expired"}>
+                    Patient Expired
                   </MenuItem>
                   <MenuItem
                     sx={{

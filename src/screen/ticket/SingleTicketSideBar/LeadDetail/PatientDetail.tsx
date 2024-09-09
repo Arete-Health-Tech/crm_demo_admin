@@ -240,7 +240,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                         <Stack display="flex" flexDirection="row">
                             {isEditing ? (<Stack display="flex" flexDirection="row">
                                 <button className='cancel-btn'
-                                    onClick={() => { handleCancel(); setIsEditing(false) }}>
+                                    onClick={() => { handleCancel(); setIsEditing(false); setError(''); }}>
                                     cancel
                                 </button>
                                 <button

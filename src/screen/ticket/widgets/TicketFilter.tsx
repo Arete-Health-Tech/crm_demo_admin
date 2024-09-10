@@ -715,20 +715,20 @@ const TicketFilter = (props: {
               value={statusType}
               onChange={handleStatusType}
             >
-              <ToggleButton value="dnd"
+              {/* <ToggleButton value="dnd"
                 sx={{
                   fontFamily: "Outfit,sans-serif",
                   fontSize: '12px',
                 }}
               >DND
-              </ToggleButton>
-              {/* <ToggleButton value="dnp"
+              </ToggleButton> */}
+               <ToggleButton value="dnp"
                 sx={{
                   fontFamily: "Outfit,sans-serif",
                   fontSize: '11px',
                 }}
               >DNP
-              </ToggleButton> */}
+              </ToggleButton> 
               <ToggleButton value="todayTask"
                 sx={{
                   fontFamily: "Outfit,sans-serif",

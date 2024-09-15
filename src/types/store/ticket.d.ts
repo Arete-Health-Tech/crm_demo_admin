@@ -254,6 +254,18 @@ export interface iTicketStore {
   setAllWhtsappCount: (allWhtsappCount: object) => void;
   filteredLocation: string;
   setFilteredLocation: (filteredLocation: string) => void;
+
+  // Audit Filter Variable
+  auditFilterCount: number;
+  setAuditFilterCount: (auditFilterCount: number) => void;
+  auditStage: string;
+  setAuditStage: (auditStage: string) => void;
+  auditStatus: string;
+  setAuditStatus: (auditStatus: string) => void;
+  auditResult: string;
+  setAuditResult: (auditResult: string) => void;
+  auditDateRange: string[];
+  setAuditDateRange: (auditDateRange: string[]) => void;
 }
 
 export interface iNote {

@@ -33,7 +33,7 @@ import {
 } from '../ticketStateReducers/filter';
 import { filterActions } from '../ticketStateReducers/actions/filterAction';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
-import { getAuditTicketsHandler, getTicketHandler } from '../../../api/ticket/ticketHandler';
+import { getAuditFilterTicketsHandler, getTicketHandler } from '../../../api/ticket/ticketHandler';
 import useUserStore from '../../../store/userStore';
 import { apiClient } from '../../../api/apiClient';
 import { validateTicket } from '../../../api/ticket/ticket';
@@ -489,7 +489,7 @@ const TicketFilter = (props: {
 
   // const [isAuditorFilterOn, setIsAuditorFilterOn] = useState(false);
   const handleAuditorFilter = async () => {
-    await getAuditTicketsHandler();
+    await getAuditFilterTicketsHandler();
     setIsAuditorFilterOn(true);
   }
   const handleClearAuditorFilter = async () => {
@@ -502,7 +502,7 @@ const TicketFilter = (props: {
   return (
     <Box>
       <Stack display={"flex"} flexDirection={"row"} gap={"10px"}>
-        {/* <Stack className="AuditorFilterIcon">
+        <Stack className="AuditorFilterIcon">
           {
             isAuditorFilterOn ? (
               <LightTooltip
@@ -531,7 +531,7 @@ const TicketFilter = (props: {
                 </LightTooltip>)
           }
 
-        </Stack> */}
+        </Stack>
         <IconButton onClick={handleFilterOpen}>
           <StyledBadge
             invisible={filterCount <= 0}

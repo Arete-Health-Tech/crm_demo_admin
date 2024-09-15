@@ -33,7 +33,7 @@ import NotFoundIcon from '../../../../assets/NotFoundTask.svg';
 import { Avatar } from '@mui/material';
 import { io } from 'socket.io-client';
 import { markAsRead } from '../../../../api/flow/flow';
-import { getAllWhtsappCountHandler, getTicketHandler } from '../../../../api/ticket/ticketHandler';
+import { getAllWhtsappCountHandler, getTicketHandler, getAllAuditTicketHandler } from '../../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../../constantUtils/constant';
 type Props = { ticketId: string | undefined };
 
@@ -70,23 +70,43 @@ const MessagingWidget = (props: Props) => {
   const handleMarkAsRead = async (ticketID: string | undefined) => {
     await markAsRead(ticketID)
     await getAllWhtsappCountHandler();
-    await getTicketHandler(
-      searchByName,
-      pageNumber,
-      'false',
-      filterTickets
-    );
+    if (isAuditor) {
+      await getAllAuditTicketHandler(
+        searchByName,
+        pageNumber,
+        'false',
+        filterTickets
+      );
+    } else {
+      await getTicketHandler(
+        searchByName,
+        pageNumber,
+        'false',
+        filterTickets
+      );
+    }
+
   }
 
   //This function call the api to get all the ticket id with their whtsapp message count 
   const getAllWhtsappMsgCount = async () => {
     await getAllWhtsappCountHandler();
-    await getTicketHandler(
-      searchByName,
-      pageNumber,
-      'false',
-      filterTickets
-    );
+    if (isAuditor) {
+      await getAllAuditTicketHandler(
+        searchByName,
+        pageNumber,
+        'false',
+        filterTickets
+      );
+    }
+    else {
+      await getTicketHandler(
+        searchByName,
+        pageNumber,
+        'false',
+        filterTickets
+      );
+    }
   }
   useEffect(() => {
     // Check if socket is connected

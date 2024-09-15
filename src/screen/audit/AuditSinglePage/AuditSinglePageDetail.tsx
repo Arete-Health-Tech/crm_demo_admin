@@ -85,7 +85,7 @@ import SingleTicketSideBar from '../../ticket/SingleTicketSideBar/SingleTicketSi
 import TaskBar from '../../ticket/SingleTicketSideBar/TaskBar';
 import ConnectorIcon from '../../../assets/hierarchy.svg'
 import { UNDEFINED } from '../../../constantUtils/constant';
-import { customTicketHandler } from '../../../api/ticket/ticketHandler';
+import { getAllAuditTicketHandler, getAuditFilterTicketsHandler } from '../../../api/ticket/ticketHandler';
 import { getTicket } from '../../../api/ticket/ticket';
 import useReprentativeStore from '../../../store/representative';
 import { format } from 'date-fns';
@@ -153,7 +153,8 @@ const AuditSinglePageDetail = (props: Props) => {
         callRescheduler,
         estimates,
         isAuditor,
-        setIsAuditor
+        setIsAuditor,
+        isAuditorFilterOn,
     } = useTicketStore();
     const { doctors, departments, stages } = useServiceStore();
     const [currentTicket, setCurrentTicket] = useState<iTicket>();
@@ -594,7 +595,12 @@ const AuditSinglePageDetail = (props: Props) => {
             setIsAuditorDisable(false);
         }
         const getTickets = async () => {
-            await customTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+            if (!isAuditorFilterOn) {
+                await getAllAuditTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+            } else {
+                await getAuditFilterTicketsHandler();
+            }
+
         }
         getTickets();
         clearAllData();
@@ -1085,7 +1091,7 @@ const AuditSinglePageDetail = (props: Props) => {
                                             <Activities />
                                         </TabPanel>
                                         <TabPanel value="2" style={{ padding: 0 }}>
-                                            <MessagingWidget ticketId={ticketID}/>
+                                            <MessagingWidget ticketId={ticketID} />
                                         </TabPanel>
                                         {/* <TabPanel value="3" style={{ padding: 0 }}>
                                 <QueryResolutionWidget />

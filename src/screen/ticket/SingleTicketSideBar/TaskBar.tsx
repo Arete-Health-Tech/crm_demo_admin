@@ -12,7 +12,7 @@ import EmptyStarIcon from '../../../assets/EmptyStar.svg'
 import NotFoundIcon from '../../../assets/NotFoundTask.svg';
 import { iTicket } from "../../../types/store/ticket";
 import { useParams } from "react-router-dom";
-import { getAuditTicketsHandler, getTicketHandler } from "../../../api/ticket/ticketHandler";
+import { getAuditFilterTicketsHandler, getTicketHandler } from "../../../api/ticket/ticketHandler";
 import { UNDEFINED } from "../../../constantUtils/constant";
 import { format } from 'date-fns';
 
@@ -124,7 +124,7 @@ const TaskBar = () => {
         if (!isAuditorFilterOn) {
             await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
         } else {
-            await getAuditTicketsHandler();
+            await getAuditFilterTicketsHandler();
         }
 
     }
@@ -221,7 +221,7 @@ const TaskBar = () => {
                     </div>
                 </Box>
                 {/* Audit Comments */}
-                {/* <Box>
+                <Box>
                     <Box sx={auditorOpenCss}>
                         <Box
                             style={{
@@ -340,7 +340,7 @@ const TaskBar = () => {
                             3
                         </Stack>
                     </Box>
-                </Box> */}
+                </Box>
             </Box>
             <AddReminderWidget isModalOpen={reminderModalOpen} setIsModalOpen={setReminderModalOpen} />
             <AddCallRescheduler />

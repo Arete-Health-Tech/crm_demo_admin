@@ -28,6 +28,19 @@
     /* min-height: 40px; */
 }
 
+.Audit_date_filters {
+    display: flex;
+    flex-direction: row !important;
+    min-width: 160px;
+    height: 36px;
+    align-items: center;
+    border-radius: var(--Spacing-16px, 16px);
+    background: var(--Background-Dark-Grey, #E1E6EE);
+    justify-content: space-between;
+    cursor: pointer;
+    color: #000;
+}
+
 .Audit_filters {
     display: flex;
     flex-direction: row !important;
@@ -217,6 +230,14 @@
     white-space: nowrap;
 }
 
+.item00 {
+    width: 30px !important;
+}
+
+.body_item00 {
+    width: 30px !important;
+}
+
 .item2 {
     width: 180px !important;
 }
@@ -294,9 +315,19 @@
 
 }
 
+
+
 .body_item2 {
+    display: flex;
+    flex-direction: column !important;
     width: 180px !important;
     white-space: nowrap;
+    gap: 10px;
+}
+
+.stage_tag {
+    display: flex;
+    flex-direction: column !important;
 }
 
 .body_item3 {

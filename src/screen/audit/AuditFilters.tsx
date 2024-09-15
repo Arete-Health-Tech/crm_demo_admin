@@ -1,7 +1,7 @@
 import { MenuItem, Stack, Zoom } from '@mui/material';
 import { Tooltip, TooltipProps, tooltipClasses } from '@mui/material';
 
-import React, { useReducer, useState } from 'react'
+import React, { useEffect, useReducer, useRef, useState } from 'react'
 import { DatePicker } from 'antd';
 import styles from "./audit.module.css";
 import ArrowDownIcon from '../../assets/ArrowDown.svg';
@@ -26,7 +26,7 @@ import { Box } from '@mui/system';
 import dayjs from 'dayjs';
 import { useParams, useNavigate } from 'react-router-dom';
 import { iTicketFilter } from '../../types/store/ticket';
-import { customTicketHandler, getTicketHandler } from '../../api/ticket/ticketHandler';
+import { getAllAuditTicketHandler } from '../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../constantUtils/constant';
 import { filterActions } from '../ticket/ticketStateReducers/actions/filterAction';
 import { validateTicket } from '../../api/ticket/ticket';
@@ -35,6 +35,7 @@ import { getRepresntativesHandler } from '../../api/representive/representativeH
 import { selectedFiltersReducer, ticketFilterTypes } from '../ticket/ticketStateReducers/filter';
 import useTicketStore from '../../store/ticketStore';
 import ClearIcon from '@mui/icons-material/Clear';
+import { set } from 'date-fns';
 
 const drawerWidth = 450;
 export const ticketFilterCount = (
@@ -42,17 +43,29 @@ export const ticketFilterCount = (
     admissionType: string[],
     diagnosticsType: string[],
     dateRange: string[],
-    statusType: string[]
-) => {
-    const stageListCount = selectedFilters['stageList'].length;
-    const representativeCount = selectedFilters['representative'] ? 1 : 0;
+    statusType: string[],
+    auditStage: string,
+    auditStatus: string,
+    auditResult: string,
+    auditDateRange: string[]
 
+) => {
+    // const stageListCount = selectedFilters['stageList'].length;
+    const stageListCount = auditStage.length > 0 ? 1 : 0;   //Audit Filter
+
+    const representativeCount = selectedFilters['representative'] ? 1 : 0;
     const admissionCount = admissionType ? admissionType.length : 0;
     const diagnosticsCount = diagnosticsType ? diagnosticsType.length : 0;
-    const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
 
-    const resultCount = selectedFilters['results'] ? 1 : 0;
-    const statusCount = statusType ? statusType.length : 0;
+    const DateCount = auditDateRange[0] && auditDateRange[1] ? 1 : 0;
+    // const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
+
+    const resultCount = auditResult.length > 0 ? 1 : 0; //Audit Filter
+    // const resultCount = selectedFilters['results'] ? 1 : 0;
+
+    const statusCount = auditStatus.length > 0 ? 1 : 0;  //Audit Filter
+    // const statusCount = statusType ? statusType.length : 0;
+
     const total = stageListCount + representativeCount + resultCount + admissionCount + diagnosticsCount + DateCount + statusCount;
     return total;
 };
@@ -94,6 +107,19 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
 const AuditFilters = (props: {
     setPage: React.Dispatch<React.SetStateAction<number>>;
 }) => {
+    const {
+        auditFilterCount,
+        auditStage,
+        setAuditStage,
+        setAuditFilterCount,
+        auditStatus,
+        setAuditStatus,
+        auditResult,
+        setAuditResult,
+        auditDateRange,
+        setAuditDateRange
+    } = useTicketStore();
+
     const { ticketID } = useParams();
     const navigate = useNavigate();
     const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
@@ -117,7 +143,10 @@ const AuditFilters = (props: {
         followUp: null
     };
 
-    const { setFilterTickets, setPageNumber } = useTicketStore();
+    const {
+        setFilterTickets,
+        setPageNumber,
+    } = useTicketStore();
 
     const [isFilterOpen, setIsFilterOpen] = React.useState(false);
     const [admissionType, setAdmissionType] = React.useState<string[]>([]);
@@ -133,6 +162,7 @@ const AuditFilters = (props: {
         selectedFiltersReducer,
         initialFilters
     );
+
     const [startDate, setStartDate] = React.useState<string>('');
     const [endDate, setEndDate] = React.useState<string>('');
     const [dateRange, setDateRange] = React.useState<string[]>(['', '']);
@@ -143,24 +173,16 @@ const AuditFilters = (props: {
     const [selectedValueLost, setSelectedValueLost] = useState(null);
     const [openStageFilter, setOpenStageFilter] = useState(false);
     const [openAuditValueFilter, setOpenAuditValueFilter] = useState(false);
+    const [openResultFilter, setOpenResultFilter] = useState(false);
     const [openAgentNameFilter, setOpenAgentNameFilter] = useState(false);
     const [selectedStage, setSelectedStage] = useState("");
     const [selectedStatus, setSelectedStatus] = useState("");
     const [dates, setDates] = useState(["", ""]);
 
-    const handleDateRange = (dates, dateStrings) => {
-        console.log(dates);
-        console.log(dateStrings, "selectedDateStrings")
-        setDates(prevState => [dateStrings[0], dateStrings[1]]);
-        setDateRange(prevState => [dateStrings[0], dateStrings[1]]);
-        dispatchFilter({
-            type: filterActions.DATERANGE,
-            payload: JSON.stringify([dateStrings[0], dateStrings[1]])
-        });
 
-    }
 
     const handleStatusChange = (status: any) => {
+        setAuditStatus(status);
         setSelectedStatus(status);
         setStatusType([status]);
         dispatchFilter({
@@ -170,21 +192,32 @@ const AuditFilters = (props: {
         setOpenAuditValueFilter(false)
     }
 
+    // const handleStageList = (id, label) => {
+
+    //     if (selectedFilters.stageList.includes(id)) {
+    //         const modifiedStageList = selectedFilters.stageList.filter(stage => stage !== id);
+
+    //         dispatchFilter({
+    //             type: filterActions.STAGES,
+    //             payload: [...modifiedStageList]
+    //         });
+    //         return;
+    //     }
+    //     dispatchFilter({
+    //         type: filterActions.STAGES,
+    //         payload: [...selectedFilters.stageList, id]
+    //     });
+    //     setSelectedStage(label);
+    //     setOpenStageFilter(false);
+    // };
+
     const handleStageList = (id, label) => {
 
-        if (selectedFilters.stageList.includes(id)) {
-            const modifiedStageList = selectedFilters.stageList.filter(stage => stage !== id);
-
-            dispatchFilter({
-                type: filterActions.STAGES,
-                payload: [...modifiedStageList]
-            });
-            return;
-        }
         dispatchFilter({
             type: filterActions.STAGES,
-            payload: [...selectedFilters.stageList, id]
+            payload: [id]
         });
+        setAuditStage(label);
         setSelectedStage(label);
         setOpenStageFilter(false);
     };
@@ -229,12 +262,9 @@ const AuditFilters = (props: {
 
         setIsFilterOpen(false);
         setPageNumber(1);
-        // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-        await customTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-        setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType));
-
-
-
+        await getAllAuditTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+        // setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType));
+        setAuditFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, auditStage, auditStatus, auditResult, auditDateRange));
         setFilterTickets(selectedFilters);
 
         props.setPage(1);
@@ -246,7 +276,6 @@ const AuditFilters = (props: {
         // console.log('filter dtata', selectedFilters);
     };
 
-
     const handleClearFilter = async () => {
         dispatchFilter({ type: filterActions.STAGES, payload: [] });
         dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
@@ -257,7 +286,14 @@ const AuditFilters = (props: {
         dispatchFilter({ type: filterActions.STATUS, payload: [] });
 
         setCurrentRepresentative('');
-        setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType));
+        // setFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType));
+        setAuditFilterCount(ticketFilterCount(selectedFilters, admissionType, diagnosticsType, dateRange, statusType, auditStage, auditStatus, auditResult, auditDateRange));
+        setAuditStage("");
+        setAuditStatus("");
+        setAuditResult("");
+        setAuditDateRange(["", ""]);
+        setAuditFilterCount(0);
+
         setFilterCount(0);
         setPageNumber(1);
         setSelectedValue(null);
@@ -270,30 +306,153 @@ const AuditFilters = (props: {
         setSelectedStage("");
         setSelectedStatus("");
         setSelectedRepresentativeName("");
-        // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-        // await customTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
 
 
     };
 
+    const stageRef = useRef<HTMLDivElement | null>(null);
+    const AgentNameRef = useRef<HTMLDivElement | null>(null);
+    const statusRef = useRef<HTMLDivElement | null>(null);
+    const resultRef = useRef<HTMLDivElement | null>(null);
+
+    const handleClickOutside = (event: MouseEvent) => {
+        const isClickOutsideStage =
+            stageRef.current && !stageRef.current.contains(event.target as Node);
+        const isClickOutsideAgentName =
+            AgentNameRef.current &&
+            !AgentNameRef.current.contains(event.target as Node);
+        const isClickOutsideStatusRef =
+            statusRef.current && !statusRef.current.contains(event.target as Node);
+        const isClickOutsideResultRef =
+            resultRef.current && !resultRef.current.contains(event.target as Node);
+
+        if (isClickOutsideStage) {
+            setOpenStageFilter(false);
+        }
+        if (isClickOutsideAgentName) {
+            setOpenAgentNameFilter(false);
+        }
+        if (isClickOutsideStatusRef) {
+            setOpenAuditValueFilter(false);
+        }
+        if (isClickOutsideResultRef) {
+            setOpenResultFilter(false);
+        }
+
+
+    };
+
+    useEffect(() => {
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
+    const handleResult = (value: string | null) => {
+        if (value === 'Won') {
+            // setResult(value);
+            setAuditResult(value);
+            dispatchFilter({
+                type: filterActions.RESULTS,
+                payload: '65991601a62baad220000001'
+            });
+        } else if (value === 'Lose') {
+            // setResult(value);
+            setAuditResult(value);
+            dispatchFilter({
+                type: filterActions.RESULTS,
+                payload: '65991601a62baad220000002'
+            });
+        } else if (value === null) {
+            // setResult('');
+            setAuditResult("");
+            dispatchFilter({
+                type: filterActions.RESULTS,
+                payload: null
+            });
+        }
+
+
+        setOpenResultFilter(false);
+    };
+
+    const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const startDate = e.target.value;
+        // setDateRange(prevState => [startDate, prevState[1]]);
+        setAuditDateRange([startDate, dateRange[1]]);
+        dispatchFilter({
+            type: filterActions.DATERANGE,
+            payload: JSON.stringify([startDate, dateRange[1]])
+        });
+    };
+
+    const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const endDate = e.target.value;
+        // setDateRange(prevState => [prevState[0], endDate]);
+        setAuditDateRange([dateRange[0], endDate]);
+        dispatchFilter({
+            type: filterActions.DATERANGE,
+            payload: JSON.stringify([dateRange[0], endDate])
+        });
+    };
 
 
     return (
         <>
 
             {/* Date Filters */}
-            <Stack>
-                <DatePicker.RangePicker
-                    style={datePickerStyle}
-                    // value={dates}
-                    onChange={handleDateRange}
-                />
-                <style>{`
-                    .ant-picker-range .ant-picker-input input::placeholder {
-                     color: black; /* Change this to your desired color */
-                    }
-                   `}</style>
 
+            <Stack direction="row" className={styles.Audit_date_filters}>
+                <TextField
+                    fullWidth
+                    onChange={handleStartDateChange}
+                    value={auditDateRange[0]}
+                    size='small'
+                    type="date"
+                    InputLabelProps={{ shrink: true, style: { fontFamily: "Outfit,san-serif", } }}
+                    inputProps={{ max: new Date().toISOString().split('T')[0], style: { fontFamily: "Outfit,san-serif", fontSize: "14px" } }}
+                    InputProps={{
+                        style: {
+                            border: 'none', // Removes the border
+                            fontFamily: "Outfit, sans-serif",
+                            fontSize: "14px",
+                        },
+                        disableUnderline: true, // Removes the underline (if it's an outlined variant)
+                    }}
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                border: 'none', // Removes the border of the outlined variant
+                            },
+                        },
+                    }}
+                />
+
+                <TextField
+                    fullWidth
+                    onChange={handleEndDateChange}
+                    value={auditDateRange[1]}
+                    type="date"
+                    size='small'
+                    InputLabelProps={{ shrink: true, style: { fontFamily: "Outfit,san-serif" } }}
+                    inputProps={{ max: new Date().toISOString().split('T')[0], min: new Date(dateRange[0]).toDateString().split('T')[0], style: { fontFamily: "Outfit,san-serif", fontSize: "14px" } }}
+                    InputProps={{
+                        style: {
+                            border: 'none', // Removes the border
+                            fontFamily: "Outfit, sans-serif",
+                            fontSize: "14px",
+                        },
+                        disableUnderline: true, // Removes the underline (if it's an outlined variant)
+                    }}
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                border: 'none', // Removes the border of the outlined variant
+                            },
+                        },
+                    }}
+                />
             </Stack>
 
             {/* Stage Filter */}
@@ -305,13 +464,17 @@ const AuditFilters = (props: {
                 }}>
                     <span className={styles.Audit_filters_title} >
                         {/* {pharmacyOrderStatusFilter ? pharmacyOrderStatusFilter === "Pending" ? "Processing" : pharmacyOrderStatusFilter : "All Orders"} */}
-                        {selectedStage ? selectedStage : "Stages"}
+                        {/* {selectedStage ? selectedStage : "Stages"} */}
+                        {auditStage ? auditStage : "Stages"}
                         {/* All Orders */}
                     </span>
                     <span className={styles.Audit_filters_icon}><img src={ArrowDownIcon} alt="Arrow-Down" /></span>
                 </Stack >
-                <Stack display={openStageFilter ? "block" : "none"}
-                    className={styles.Audit_filters_options} bgcolor="white"
+                <Stack
+                    ref={stageRef}
+                    display={openStageFilter ? "block" : "none"}
+                    className={styles.Audit_filters_options}
+                    bgcolor="white"
                 >
                     {stagesLabel.map(({ id, label }) => (
                         <MenuItem
@@ -335,12 +498,15 @@ const AuditFilters = (props: {
                     setOpenAgentNameFilter(false);
                 }}>
                     <span className={styles.Audit_filters_title} style={{ textTransform: "capitalize" }}>
-                        {selectedStatus ? selectedStatus : "Status"}
+                        {auditStatus ? auditStatus : "Status"}
                     </span>
                     <span className={styles.Audit_filters_icon}><img src={ArrowDownIcon} alt="Arrow-Down" /></span>
                 </Stack>
-                <Stack display={openAuditValueFilter ? "block" : "none"}
-                    className={styles.Audit_filters_options} bgcolor="white"
+                <Stack
+                    ref={statusRef}
+                    display={openAuditValueFilter ? "block" : "none"}
+                    className={styles.Audit_filters_options}
+                    bgcolor="white"
                 >
                     <MenuItem
                         sx={menuItemStyles}
@@ -366,12 +532,50 @@ const AuditFilters = (props: {
                     >
                         Pending
                     </MenuItem>
+                    <MenuItem
+                        sx={menuItemStyles}
+                        onClick={() => { handleStatusChange('CallCompleted') }}
+                    >
+                        Call Completed
+                    </MenuItem>
+
+                </Stack>
+            </Stack>
+
+            {/* won and loss */}
+            <Stack className={styles.Audit_stage_filter}>
+                <Stack className={styles.Audit_filters} onClick={() => {
+                    setOpenResultFilter(!openAuditValueFilter);
+                }}>
+                    <span className={styles.Audit_filters_title} style={{ textTransform: "capitalize" }}>
+                        {auditResult == "Won" ? "WON" : auditResult == "Lose" ? "LOST" : "Result"}
+                    </span>
+                    <span className={styles.Audit_filters_icon}><img src={ArrowDownIcon} alt="Arrow-Down" /></span>
+                </Stack>
+                <Stack
+                    ref={resultRef}
+                    display={openResultFilter ? "block" : "none"}
+                    className={styles.Audit_filters_options}
+                    bgcolor="white"
+                >
+                    <MenuItem
+                        sx={menuItemStyles}
+                        onClick={() => { handleResult("Won") }}
+                    >
+                        WON
+                    </MenuItem>
+                    <MenuItem
+                        sx={menuItemStyles}
+                        onClick={() => { handleResult('Lose') }}
+                    >
+                        LOST
+                    </MenuItem>
 
                 </Stack>
             </Stack>
 
             {/* Agent Name Filters */}
-            <Stack className={styles.Audit_stage_filter}>
+            {/* <Stack className={styles.Audit_stage_filter}>
                 <Stack className={styles.Audit_filters} onClick={() => {
                     setOpenAgentNameFilter(!openAgentNameFilter);
                     setOpenAuditValueFilter(false);
@@ -382,7 +586,9 @@ const AuditFilters = (props: {
                     </span>
                     <span className={styles.Audit_filters_icon}><img src={ArrowDownIcon} alt="Arrow-Down" /></span>
                 </Stack>
-                <Stack display={openAgentNameFilter ? "block" : "none"}
+                <Stack
+                    ref={AgentNameRef}
+                    display={openAgentNameFilter ? "block" : "none"}
                     className={styles.AuditAgent_filters_options} bgcolor="white"
 
                 >
@@ -393,43 +599,62 @@ const AuditFilters = (props: {
                     })}
 
                 </Stack>
-            </Stack>
+            </Stack> */}
 
-            <Stack py={1} px={1}>
-                <StyledBadge
-                    invisible={filterCount <= 0}
-                    badgeContent={filterCount}
-                >
-                    <button
-                        className={styles.apply_Filter}
-                        onClick={handleApplyFilter}
-                        style={{ fontSize: "14px", borderRadius: "5px", }}
-
-                    >
-                        Apply Filter
-                    </button>
-                </StyledBadge>
-            </Stack>
-            <Stack py={1} px={1}>
-                <Stack className={styles.clear_Filter}>
-                    {filterCount > 0 && (
-                        <LightTooltip
-                            title="Clear Filter"
-                            disableInteractive
-                            placement="top"
-                            TransitionComponent={Zoom}
+            <Stack display={'flex'} flexDirection={"column"}>
+                <Stack display={'flex'} flexDirection={"row"}>
+                    <Stack py={1} px={1} display={'flex'} flexDirection={"column"}>
+                        <StyledBadge
+                            // invisible={filterCount <= 0}
+                            // badgeContent={filterCount}
+                            invisible={auditFilterCount <= 0}
+                            badgeContent={auditFilterCount}
                         >
                             <button
-                                onClick={handleClearFilter}
-                                style={{ fontSize: "14px", borderRadius: "5px", }}>
-                                <ClearIcon />
+                                className={styles.apply_Filter}
+                                onClick={handleApplyFilter}
+                                style={{ fontSize: "14px", borderRadius: "5px", }}
+
+                            >
+                                Apply Filter
                             </button>
-                        </LightTooltip>
-                    )}
+                        </StyledBadge>
+
+
+                    </Stack>
+
+                    <Stack py={1} px={1}>
+                        <Stack className={styles.clear_Filter}>
+                            {auditFilterCount > 0 && (
+                                <LightTooltip
+                                    title="Clear Filter"
+                                    disableInteractive
+                                    placement="top"
+                                    TransitionComponent={Zoom}
+                                >
+                                    <button
+                                        onClick={handleClearFilter}
+                                        style={{ fontSize: "14px", borderRadius: "5px", }}>
+                                        <ClearIcon />
+                                    </button>
+                                </LightTooltip>
+                            )}
+                        </Stack>
+
+
+                    </Stack>
                 </Stack>
-
-
+                <Stack sx={{
+                    fontFamily: `Outfit,sanserif`,
+                    fontSize: '13px',
+                    color: '#647491'
+                }}>
+                    Clear, then Apply Again.
+                </Stack>
             </Stack>
+
+
+
         </>
     )
 }

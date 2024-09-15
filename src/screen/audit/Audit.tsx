@@ -20,7 +20,7 @@ import { DatePicker } from 'antd';
 import { useNavigate } from 'react-router-dom';
 import useTicketStore from '../../store/ticketStore';
 import { UNDEFINED } from '../../constantUtils/constant';
-import { customTicketHandler, getAuditTicketsHandler, getTicketHandler } from '../../api/ticket/ticketHandler';
+import { getAllAuditTicketHandler, getAuditFilterTicketsHandler, getTicketHandler } from '../../api/ticket/ticketHandler';
 import { getAllNotesWithoutTicketId } from '../../api/notes/allNote';
 import { getStagesHandler, getSubStagesHandler } from '../../api/stages/stagesHandler';
 import { getDoctorsHandler } from '../../api/doctor/doctorHandler';
@@ -80,6 +80,37 @@ const ClearBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
   }
 }));
 
+const baseWonStyle = {
+  fontFamily: 'Outfit, sans-serif',
+  color: '#fff',
+  padding: '0px 8px',
+  borderRadius: '10px',
+  height: '24px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  fontWeight: 400,
+  fontSize: '12px',
+  gap: '4px',
+  lineHeight: '18px',
+  backgroundColor: '#08a742'
+};
+
+const baseLossStyle = {
+  fontFamily: 'Outfit, sans-serif',
+  color: '#fff',
+  padding: '0px 8px',
+  borderRadius: '10px',
+  height: '24px',
+  display: 'flex',
+  justifyContent: 'center',
+  alignItems: 'center',
+  fontWeight: 400,
+  fontSize: '12px',
+  gap: '4px',
+  lineHeight: '18px',
+  backgroundColor: '#f94839'
+};
 
 const Audit: React.FC = () => {
   const navigate = useNavigate();
@@ -116,9 +147,11 @@ const Audit: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   // const navigate = useNavigate();
 
+  useEffect(() => {
+    localStorage.setItem('location', "");
+  },)
 
   const handleSearchKeyPress = async (e: any) => {
-    // console.log("e", e)
     const value = e.target?.value;
     if (value) {
       setSearchName(value);
@@ -132,9 +165,9 @@ const Audit: React.FC = () => {
         redirectTicket();
         return;
       }
-      // console.log({ filterTickets }, "003");
-      // await getTicketHandler(value, 1, 'false', filterTickets);/
-      await customTicketHandler(value, 1, 'false', filterTickets);
+      if (!isAuditorFilterOn) {
+        await getAllAuditTicketHandler(value, 1, 'false', filterTickets);
+      }
       setSearchByName(value);
       setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
       setPageNumber(1);
@@ -146,19 +179,16 @@ const Audit: React.FC = () => {
   useEffect(() => {
     setPageCount(Math.ceil(ticketCount / 10));
     setPage(pageNumber);
-    // console.log("ticket count",tickets )
   }, [tickets, searchByName]);
 
   const fetchTicketsOnEmpthySearch = async () => {
     setSearchName(UNDEFINED);
     setSearchByName(UNDEFINED);
-    // setTicketCount(ticketCache["count"]);
-    // setTickets(ticketCache[1]);
     setPage(1);
     setPageNumber(1);
-    // console.log({ filterTickets }, "002");
-    // await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
-    await customTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+    if (!isAuditorFilterOn) {
+      await getAllAuditTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+    }
   };
 
   const handlePagination = async (
@@ -167,23 +197,10 @@ const Audit: React.FC = () => {
   ) => {
     setPageNumber(pageNo);
     if (pageNo !== page) {
-      // console.log(pageNo)
-      // console.log(page)
       setTickets([]);
-      // if (
-      //   ticketCache[pageNo] &&
-      //   ticketCache[pageNo]?.length > 0 &&
-      //   searchName === UNDEFINED &&
-      //   ticketFilterCount(filterTickets) < 1
-      // ) {
-      //   setTickets(ticketCache[pageNo]);
-      // } else {
-      //   await getTicketHandler(searchName, pageNo, 'false', filterTickets);
-      // }
-
-
-      // await getTicketHandler(searchName, pageNo, 'false', filterTickets);
-      await customTicketHandler(searchName, pageNo, 'false', filterTickets);
+      if (!isAuditorFilterOn) {
+        await getAllAuditTicketHandler(searchName, pageNo, 'false', filterTickets);
+      }
       setPage(pageNo);
       setPageNumber(pageNo);
 
@@ -193,33 +210,10 @@ const Audit: React.FC = () => {
   window.onload = redirectTicket;
 
   useEffect(() => {
-    const getTickets = async () => {
-      const phone = 916397401855;
-      // console.log(selectedFilters," this is selected filters");
-      const ticketId: string = UNDEFINED;
-      const fetchUpdated: boolean = false
-      const data = await getTicket(
-        UNDEFINED,
-        pageNumber,
-        'false',
-        filterTickets,
-        ticketId,
-        fetchUpdated,
-        phone
-      );
-      const sortedTickets = data?.tickets;
-      const count = data?.count;
-      // console.log(sortedTickets, "dfjdfdfndmf");
-      setTicketCount(count);
-      setTickets(sortedTickets);
-    }
-
-    // getTickets();
     (async function () {
-      // console.log({ filterTickets }, "006");
-      // await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
-
-      await customTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+      if (!isAuditorFilterOn) {
+        await getAllAuditTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+      }
       await getAllNotesWithoutTicketId();
       await getStagesHandler();
       await getSubStagesHandler();
@@ -231,24 +225,20 @@ const Audit: React.FC = () => {
     setPageNumber(1);
   }, []);
 
-  // console.log(representative, "reprenstative");
   useEffect(() => {
     const refetchTickets = async () => {
       const copiedFilterTickets = { ...filterTickets };
       let pageNumber = page;
 
-      // await getTicketHandler(
-      //   searchName,
-      //   pageNumber,
-      //   'false',
-      //   copiedFilterTickets
-      // );
-      await customTicketHandler(
-        searchName,
-        pageNumber,
-        'false',
-        copiedFilterTickets
-      );
+      if (!isAuditorFilterOn) {
+        await getAllAuditTicketHandler(
+          searchName,
+          pageNumber,
+          'false',
+          copiedFilterTickets
+        );
+      }
+
 
     };
 
@@ -260,6 +250,7 @@ const Audit: React.FC = () => {
   }, [filterTickets, page, searchName]);
 
   const { setFilterTickets } = useTicketStore();
+
   const initialFilters = {
     stageList: [],
     representative: null,
@@ -270,6 +261,7 @@ const Audit: React.FC = () => {
     status: [],
     followUp: null,
   };
+
   console.log(tickets, "----------------");
 
   const calculateRecivedCall = (phoneCalls: any) => {
@@ -350,12 +342,12 @@ const Audit: React.FC = () => {
   };
 
   const handleAuditorFilter = async () => {
-    await getAuditTicketsHandler();
+    await getAuditFilterTicketsHandler();
     setIsAuditorFilterOn(true);
   }
-  const handleClearAuditorFilter = async () => {
 
-    await customTicketHandler(UNDEFINED, 1, 'false', initialFilters);
+  const handleClearAuditorFilter = async () => {
+    await getAllAuditTicketHandler(UNDEFINED, 1, 'false', initialFilters);
     setIsAuditorFilterOn(false);
   }
 
@@ -473,6 +465,7 @@ const Audit: React.FC = () => {
                       <img src={SortArrowIcon} alt="sortArrow" />
                     </Stack>
                   </th>
+                  <th className={`${styles.Audit_table_head_item} ${styles.item00}`}></th>
                   <th className={`${styles.Audit_table_head_item} ${styles.item2}`}>Stage</th>
                   <th className={`${styles.Audit_table_head_item} ${styles.item3}`}>Last Contacted</th>
                   <th className={`${styles.Audit_table_head_item} ${styles.item4}`}>Calls</th>
@@ -517,9 +510,22 @@ const Audit: React.FC = () => {
                         </Stack>
 
                       </td>
-
+                      <td className={`${styles.Audit_table_body_item} ${styles.body_item00}`}>
+                        <Stack
+                          sx={item.result === "65991601a62baad220000002"
+                            ? baseLossStyle
+                            : item.result === "65991601a62baad220000001"
+                              ? baseWonStyle
+                              : undefined
+                          }
+                        >
+                          {item.result === "65991601a62baad220000002" ? "Loss" : item.result === "65991601a62baad220000001" ? "Won" : ""}
+                        </Stack>
+                      </td>
                       {/* Stage */}
                       <td className={`${styles.Audit_table_body_item} ${styles.body_item2}`}>
+
+
                         <Stack className={styles.Audit_stage}>
                           {handleStage(item.stage)}
                         </Stack>
@@ -538,6 +544,7 @@ const Audit: React.FC = () => {
                             {handleSubStage(item?.subStageCode?.code)}
                           </Stack>
                         </Stack>
+
                       </td>
 
                       {/* Last Contacted */}

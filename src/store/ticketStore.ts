@@ -89,7 +89,18 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   allWhtsappCount: {},
   setAllWhtsappCount: (allWhtsappCount) => set({ allWhtsappCount }),
   filteredLocation: '',
-  setFilteredLocation: (filteredLocation) => set({ filteredLocation })
+  setFilteredLocation: (filteredLocation) => set({ filteredLocation }),
+  // Audit filter variable
+  auditStage: "",
+  setAuditStage: (auditStage) => set({ auditStage }),
+  auditStatus: "",
+  setAuditStatus: (auditStatus) => set({ auditStatus }),
+  auditResult: "",
+  setAuditResult: (auditResult) => set({ auditResult }),
+  auditFilterCount: 0,
+  setAuditFilterCount: (auditFilterCount) => set({ auditFilterCount }),
+  auditDateRange: [""],
+  setAuditDateRange: (auditDateRange) => set({ auditDateRange }),
 }));
 
 export default useTicketStore;

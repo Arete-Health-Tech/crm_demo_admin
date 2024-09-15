@@ -29,6 +29,27 @@ export const getTicket = async (
   return data;
 };
 
+export const getAuditTicket = async (
+  name: string,
+  pageNumber: number = 1,
+  downloadAll: string,
+  selectedFilters: any,
+  ticketId?: string | null,
+  fetchUpdated: boolean = false,
+  phone?: any,
+  filteredLocation?: string | '',
+  won?: any,
+  lose?: any
+) => {
+  const params = new URLSearchParams(selectedFilters).toString();
+  // const timestamp = new Date().getTime();
+  const { data } = await apiClient.get(
+    `/ticket/getAllAuditTicket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}`
+  );
+  return data;
+};
+
+
 export const createTicket = async (prescription: any) => {
   const { data } = await apiClient.post('/ticket', prescription, {
     /* @ts-ignore */

@@ -56,7 +56,7 @@ const AppContainer = () => {
     return <RepresentativeFive />;
   } else if (user !== null && user.role === Roles.PHARMACY) {
     return <OrderList />;
-  } else if (user !== null && user.role === Roles.AUDIT) {
+  } else if (user !== null && user.role === Roles.AUDITOR) {
     return <Auditor />;
   } else if (user !== null && user.role === Roles.DOCTOR) {
     return <Query />

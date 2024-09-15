@@ -19,7 +19,8 @@ import {
   getPharmacyTickets,
   getAllTaskCount,
   getAuditTickets,
-  getAllWhatsAppCount
+  getAllWhatsAppCount,
+  getAuditTicket
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -77,7 +78,7 @@ export const getTicketHandler = async (
   setLoaderOn(false);
 };
 
-export const getAuditTicketsHandler = async () => {
+export const getAuditFilterTicketsHandler = async () => {
   const {
     setTickets,
     setTicketCount,
@@ -102,13 +103,13 @@ export const getAuditTicketsHandler = async () => {
   setLoaderOn(false);
 };
 
-export const customTicketHandler = async (
+export const getAllAuditTicketHandler = async (
   name: string,
   pageNumber: number = 1,
   downloadAll: 'true' | 'false' = 'false',
   selectedFilters: iTicketFilter | null,
   ticketId: string = UNDEFINED,
-  fetchUpdated: boolean = false
+  fetchUpdated: boolean = false,
 ) => {
   const {
     setTickets,
@@ -117,20 +118,22 @@ export const customTicketHandler = async (
     ticketCache,
     setEmptyDataText,
     setDownloadTickets,
-    setLoaderOn
+    setLoaderOn,
+    filteredLocation
   } = useTicketStore.getState();
   const { user } = useUserStore.getState();
-  const phone = 916397401855;
+  const phone = user?.phone;
 
   setLoaderOn(true);
-  const data = await getTicket(
+  const data = await getAuditTicket(
     name,
     pageNumber,
     downloadAll,
     selectedFilters,
     ticketId,
     fetchUpdated,
-    phone
+    phone,
+    filteredLocation
   );
   const sortedTickets = data.tickets;
   const count = data.count;

@@ -571,7 +571,7 @@ const Ticket = () => {
                 // selectedFilters,
                 reminderDetail?.ticket,
                 true,
-                phone
+                phoneNumber
               );
               // setTickets(data.tickets)
               // setTicketCount(data.count)
@@ -658,7 +658,7 @@ const Ticket = () => {
                 filterTickets,
                 callRescheduleDetail?.ticket,
                 true,
-                phone
+                phoneNumber
               );
 
               setTicketCallReschedulerPatient(data?.tickets[0]);

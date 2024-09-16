@@ -22,9 +22,10 @@ export const getTicket = async (
   const params = new URLSearchParams(selectedFilters).toString();
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
-    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&specialty=${localStorage.getItem(
+    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
+    &specialty=${localStorage.getItem(
       'location'
-    )}&specialtyforFilter=${filteredLocation}&${params}`
+    )}&specialtyforFilter=${filteredLocation}`
   );
   return data;
 };
@@ -328,4 +329,16 @@ export const getAuditTickets = async () => {
 export const getAllWhatsAppCount = async () => {
   const data = await apiClient.get(`/flow/getAllWhatsAppCount`);
   return Promise.resolve(data.data);
+};
+
+export const markAsReadAuditComment = async (ticketID: string | undefined) => {
+  const { data } = await apiClient.post(`/ticket/markAuditRead`, {
+    ticket: ticketID
+  });
+  return data;
+};
+
+export const getAuditorCommentCount = async () => {
+  const { data } = await apiClient.get(`/ticket/auditorCommentCount`);
+  return data;
 };

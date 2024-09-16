@@ -54,6 +54,7 @@ import useServiceStore from '../../store/serviceStore';
 import './styles.css';
 import {
   getAllCallReschedulerHandler,
+  getAuditorCommentCount,
   getTicket,
   validateTicket
 } from '../../api/ticket/ticket';
@@ -134,6 +135,8 @@ const Ticket = () => {
     setIsSwitchView,
     setIsAuditor,
     viewEstimates,
+    allAuditCommentCount,
+    setAllAuditCommentCount
   } = useTicketStore();
   const { user } = useUserStore.getState();
   const phoneNumber = user?.phone;
@@ -830,6 +833,43 @@ const Ticket = () => {
     fetchRepresentatives();
   }, [phone]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getAuditorCommentCount(); // Resolve the promise here
+        setAllAuditCommentCount({
+          auditorCommentId: "",
+          ticketid: "",
+          unreadCount: data ? data : {}, // Set the resolved data here
+        });
+      } catch (error) {
+        console.error('Error fetching auditor comment count:', error);
+      }
+    };
+
+    fetchData();
+  }, [])
+
+
+  useEffect(() => {
+
+    // Check if socket is connected
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    const handleNewMessage = (data: any) => {
+      setAllAuditCommentCount(data)
+    };
+
+    // Listen for the 'newMessage' event
+    socket.on('auditorCommentAdded', handleNewMessage);
+    return () => {
+      socket.off('auditorCommentAdded', handleNewMessage); // Remove the event listener
+      socket.disconnect();
+    };
+  });
+  console.log(allAuditCommentCount)
 
   return (
     <>

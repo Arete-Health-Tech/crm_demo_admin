@@ -84,6 +84,13 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   setIsAuditor: (isAuditor) => set({ isAuditor }),
   allTaskCount: [],
   setAllTaskCount: (allTaskCount) => set({ allTaskCount }),
+  allAuditCommentCount: {
+    auditorCommentId: '',
+    ticketid: '',
+    unreadCount: {}
+  },
+  setAllAuditCommentCount: (allAuditCommentCount) =>
+    set({ allAuditCommentCount }),
   agentLogin: false,
   setAgentLogin: (agentLogin) => set({ agentLogin }),
   allWhtsappCount: {},

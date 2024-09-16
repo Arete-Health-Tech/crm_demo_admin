@@ -21,6 +21,7 @@ import DefaultPr from '../../../../src/assets/DefaultPr.svg'
 import NotifyAudit from '../../../../src/assets/NotifyAudit.svg'
 import '../singleTicket.css'
 import { apiClient, socket } from '../../../api/apiClient';
+import audited_icon from "../../../assets/audited_icon.svg"
 
 // import { updateIsNewTicket } from '../../../api/ticket/ticket';
 
@@ -47,6 +48,7 @@ const TicketCard = (props: Props) => {
   const { doctors, departments, allServices, stages } = useServiceStore();
   const [isNewTicket, setIsNewTicket] = useState(true);
   const [taskPendingCount, setTaskPendingCount] = useState(0);
+  const [auditCommentCount, setAuditCommentCount] = useState(0)
   const [currentStage, setCurrentStage] = useState<iStage>({
     _id: '',
     name: '',
@@ -58,7 +60,7 @@ const TicketCard = (props: Props) => {
   const [whtsappNotificationCount, setWhtsappNotificationCount] = useState(0);
 
   const { tickets, filterTickets, setIsAuditor, allTaskCount, viewEstimates,
-    setViewEstimates, isEstimateUpload, setIsEstimateUpload, reminders, callRescheduler, allWhtsappCount } = useTicketStore();
+    setViewEstimates, isEstimateUpload, setIsEstimateUpload, reminders, callRescheduler, allWhtsappCount, allAuditCommentCount } = useTicketStore();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -312,9 +314,16 @@ const TicketCard = (props: Props) => {
       }
     }
   }, [allWhtsappCount, props.patientData._id])
-  
+
   const date = new Date(props.patientData.createdAt);
   const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
+
+  useEffect(() => {
+    const currentCount = Object.entries(allAuditCommentCount.unreadCount).find(([key, value], index) => key === props.patientData._id)
+    // console.log(currentCount)
+    setAuditCommentCount(currentCount !== undefined ? currentCount[1] : 0)
+  }, [props.patientData._id, ticketID, allAuditCommentCount])
+
 
   return (
     <Box
@@ -534,6 +543,7 @@ const TicketCard = (props: Props) => {
           {/* <Stack className='task-pending'><img src={NotifyAudit} alt="" /></Stack> */}
           {taskPendingCount > 0 && <Stack className='task-pending'>{taskPendingCount} Tasks Pending </Stack>}
           {whtsappNotificationCount > 0 && <Stack className='ticket-card-notification'>{whtsappNotificationCount}</Stack>}
+          {auditCommentCount > 0 && <Stack>{<img src={audited_icon} alt=""/>}</Stack>}
         </Stack>
       </Stack>
 

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './Activities.module.css';
-import ArrowUp from '../../../../assets/ArrowUp.svg';
-import ArrowDown from '../../../../assets/ArrowDown.svg';
+import ArrowUp from '../../../../assets/AddIcon.svg';
+import ArrowDown from '../../../../assets/Substract.svg';
 import activityIcon from '../../../../assets/activityIcon.svg';
 import smsIcon from '../../../../assets/smsIcon.svg';
 import whtsappIcon from '../../../../assets/whtsappIcon.svg';

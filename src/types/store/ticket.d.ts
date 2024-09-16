@@ -122,7 +122,6 @@ export interface iEstimateUpload {
   creator: string;
   paymentType: string;
 }
-
 export interface iTicket {
   _id: string;
   consumer: iConsumer[];
@@ -248,6 +247,8 @@ export interface iTicketStore {
   setIsEstimateUpload: (isEstimateUpload: boolean) => void;
   allTaskCount: iTaskCount[];
   setAllTaskCount: (allTaskCount: iTaskCount[]) => void;
+  allAuditCommentCount: iAllAuditComment;
+  setAllAuditCommentCount: (allAuditCommentCount: iAllAuditComment) => void;
   agentLogin: boolean;
   setAgentLogin: (agentLogin: boolean) => void;
   allWhtsappCount: object;
@@ -322,7 +323,11 @@ export interface iTicketFilter {
   status: string[];
   followUp: Date | null;
 }
-
+export interface iAllAuditComment {
+  auditorCommentId: string;
+  ticketid: string;
+  unreadCount: object;
+}
 export interface iCreator {
   _id: string;
   firstName: string;

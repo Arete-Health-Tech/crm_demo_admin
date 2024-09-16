@@ -206,7 +206,7 @@ const NSingleTicketDetails = (props: Props) => {
         estimates,
         isSwitchView,
         setIsSwitchView,
-        allWhtsappCount
+        allWhtsappCount,
     } = useTicketStore();
     const { doctors, departments, stages } = useServiceStore();
     const { user } = useUserStore();
@@ -1404,13 +1404,13 @@ const NSingleTicketDetails = (props: Props) => {
                                             value == '5' ? styles.selectedTab : styles.tabsLabel
                                         }
                                     />
-                                    <Tab
+                                    {/* <Tab
                                         label="Query Resolution"
                                         value="6"
                                         className={
                                             value == '6' ? styles.selectedTab : styles.tabsLabel
                                         }
-                                    />
+                                    /> */}
                                     <Tab
                                         label="Notes"
                                         value="7"

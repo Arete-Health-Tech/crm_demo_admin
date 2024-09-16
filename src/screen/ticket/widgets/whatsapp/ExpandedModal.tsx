@@ -6,7 +6,7 @@ import { useParams } from 'react-router-dom';
 
 const ExpandedModal = () => {
     const { setWhtsappExpanded, whtsappExpanded } = useTicketStore();
-    const {ticketID}=useParams();
+    const { ticketID } = useParams();
 
     return (
         <>
@@ -16,7 +16,7 @@ const ExpandedModal = () => {
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <MessagingWidget ticketId={ticketID}/>
+                <MessagingWidget ticketId={ticketID} />
             </Modal>
         </>
     )

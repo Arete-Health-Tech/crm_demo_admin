@@ -25,6 +25,9 @@ import AuditSinglePageDetail from '../../screen/audit/AuditSinglePage/AuditSingl
 import SwitchViewTable from '../../screen/ticket/switchView/SwitchViewTable';
 import AgentLogin from '../../screen/agent/AgentLogin';
 import FileUpload from '../../screen/fileUpload/fileUpload';
+import ConfigurationBar from '../../screen/configuration/ConfigurationBar';
+import Configuration from './Configuration';
+
 
 type Props = {};
 
@@ -73,6 +76,7 @@ const Authenticated = (props: Props) => {
               element={<NSingleTicketDetails />}
             />
             <Route path="upload-file" element={<FileUpload />} />
+            <Route path="configuration/*" element={<Configuration />} />
           </Routes>
         </Navbar>
       </AgentLogin>

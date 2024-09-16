@@ -382,7 +382,7 @@ const Navbar = ({ children }) => {
 
                                 {/* this stack is for doctors,department,WhatsappFlow starts */}
 
-                                <Stack className={styles.nav_Icon}>
+                                {/* <Stack className={styles.nav_Icon}>
                                     {sidebarMenu.map((item) => (
                                         <Stack key={item.title} >
                                             <Stack
@@ -457,7 +457,7 @@ const Navbar = ({ children }) => {
                                             ))}
                                         </Stack>
                                     ))}
-                                </Stack>
+                                </Stack> */}
 
                                 {/* this stack is for doctors,department,WhatsappFlow end */}
 
@@ -548,28 +548,51 @@ const Navbar = ({ children }) => {
                             <Stack>
                                 <Stack
 
-                                    onClick={() => goToPage('/Configurations')}
+                                    onClick={() => goToPage('/configuration/agents')}
                                     sx={{
                                         display: "flex",
                                         justifyContent: "center",
                                         alignItems: "center",
                                         gap: "24px",
-                                        width: "3.5vw",
-                                        height: "7vh",
+                                        width: "3.3vw",
+                                        height: "6.8vh",
                                         borderRadius: "8px",
                                         cursor: 'pointer',
-                                        backgroundColor: location.pathname === '/Configurations' ? '#DAE8FF' : 'transparent',
+                                        backgroundColor: location.pathname === '/Configuration' ||
+                                            location.pathname === '/configuration/agents' ||
+                                            location.pathname === '/configuration/cordinators' ||
+                                            location.pathname === '/configuration/spocs' ||
+                                            location.pathname === '/configuration/doctors' ||
+                                            location.pathname === '/configuration/departmentsmaster' ||
+                                            location.pathname === '/configuration/units' ||
+                                            location.pathname === '/configuration/services' ||
+                                            location.pathname === '/configuration/wards' ||
+                                            location.pathname === '/configuration/cms' ||
+                                            location.pathname === '/configuration/flowbuildermanager'
+                                            ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
                                             background: '#E1E6EE'
                                         }
                                     }}
                                 >
-                                    <LightTooltip title="Configurations"
+                                    <LightTooltip title="Configuration"
                                         disableInteractive
                                         placement="right"
                                         TransitionComponent={Zoom}
                                     >
-                                        {location.pathname === '/Configurations' ? (<img src={SettingActive} alt="Configurations" />) : (<img src={Taskscopy} alt="Configurations" />)}
+                                        {location.pathname === '/configuration' ||
+                                            location.pathname === '/configuration/agents' ||
+                                            location.pathname === '/configuration/cordinators' ||
+                                            location.pathname === '/configuration/spocs' ||
+                                            location.pathname === '/configuration/doctors' ||
+                                            location.pathname === '/configuration/departmentsmaster' ||
+                                            location.pathname === '/configuration/units' ||
+                                            location.pathname === '/configuration/services' ||
+                                            location.pathname === '/configuration/wards' ||
+                                            location.pathname === '/configuration/cms' ||
+                                            location.pathname === '/configuration/flowbuildermanager'
+                                            ?
+                                            (<img src={SettingActive} alt="Configuration" />) : (<img src={Taskscopy} alt="Configuration" />)}
 
                                     </LightTooltip>
                                 </Stack>

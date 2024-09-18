@@ -56,6 +56,8 @@ import {
   getAllCallReschedulerHandler,
   getAuditorCommentCount,
   getTicket,
+  getTicketAfterNotification,
+  getticketRescedulerAbove,
   validateTicket
 } from '../../api/ticket/ticket';
 import CustomSpinLoader from '../../components/CustomSpinLoader';
@@ -535,6 +537,29 @@ const Ticket = () => {
     };
   }, [filterTickets, page, searchName]);
 
+  useEffect(() => {
+    const refetchTickets = async () => {
+      const copiedFilterTickets = { ...filterTickets };
+      let pageNumber = page;
+      if (ticketID) {
+      } else {
+        await getTicketAfterNotification(
+          searchName,
+          pageNumber,
+          'false',
+          copiedFilterTickets
+        );
+      }
+    };
+
+    socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+
+    return () => {
+      socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    };
+  }, [filterTickets, page, searchName]);
+
+
   // useEffect(() => {
   //   const refetchTickets = async () => {
   //     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
@@ -551,6 +576,7 @@ const Ticket = () => {
     clearAllInterval(AllIntervals);
 
     reminders?.forEach((reminderDetail, index) => {
+      console.log(reminderDetail)
       let alarmInterval: any;
 
       alarmInterval = setInterval(() => {
@@ -563,16 +589,16 @@ const Ticket = () => {
         ) {
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
-              const data = await getTicket(
-                UNDEFINED,
-                1,
-                'false',
-                filterTickets,
-                // selectedFilters,
-                reminderDetail?.ticket,
-                true,
-                phoneNumber
+              const data = await getticketRescedulerAbove(
+                reminderDetail?.ticket
               );
+              await getTicketHandler(
+                searchByName,
+                pageNumber,
+                'false',
+                filterTickets
+              );
+              console.log(data)
               // setTickets(data.tickets)
               // setTicketCount(data.count)
               // const tiketIndex = ticketCache[1].findIndex((currentData) => {
@@ -610,7 +636,7 @@ const Ticket = () => {
               //   });
               // }
 
-              setTicketReminderPatient(data?.tickets[0]);
+              setTicketReminderPatient(data?.message);
               setAlamarReminderList([...alarmReminderedList, reminderDetail]);
               setReminderList([...reminderList, reminderDetail?._id]);
               // redirectTicket();
@@ -651,17 +677,16 @@ const Ticket = () => {
         ) {
           (async () => {
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
-              const data = await getTicket(
-                UNDEFINED,
-                1,
-                'false',
-                filterTickets,
-                callRescheduleDetail?.ticket,
-                true,
-                phoneNumber
+              const data = await getticketRescedulerAbove(
+                callRescheduleDetail?.ticket
               );
-
-              setTicketCallReschedulerPatient(data?.tickets[0]);
+              await getTicketHandler(
+                searchByName,
+                pageNumber,
+                'false',
+                filterTickets
+              );
+              setTicketCallReschedulerPatient(data?.message);
               setAlarmCallReschedulerList([
                 ...alarmCallReschedulerList,
                 callRescheduleDetail

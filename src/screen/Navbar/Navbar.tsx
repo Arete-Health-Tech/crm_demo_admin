@@ -548,7 +548,7 @@ const Navbar = ({ children }) => {
                             <Stack>
                                 <Stack
 
-                                    onClick={() => goToPage('/configuration/agents')}
+                                    // onClick={() => goToPage('/configuration/agents')}
                                     sx={{
                                         display: "flex",
                                         justifyContent: "center",

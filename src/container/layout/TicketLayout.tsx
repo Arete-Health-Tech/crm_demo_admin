@@ -598,6 +598,7 @@ const Ticket = () => {
                 'false',
                 filterTickets
               );
+              console.log(data)
               // setTickets(data.tickets)
               // setTicketCount(data.count)
               // const tiketIndex = ticketCache[1].findIndex((currentData) => {

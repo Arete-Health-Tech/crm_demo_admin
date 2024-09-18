@@ -207,6 +207,7 @@ const Ticket = () => {
     pageNo: number
   ) => {
     setPageNumber(pageNo);
+    setPage(pageNo);
     if (pageNo !== page) {
       setTickets([]);
       // if (
@@ -220,7 +221,6 @@ const Ticket = () => {
       //   await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       // }
       await getTicketHandler(searchName, pageNo, 'false', filterTickets);
-      setPage(pageNo);
       setPageNumber(pageNo);
 
       redirectTicket();
@@ -605,8 +605,8 @@ const Ticket = () => {
               const data = await getticketRescedulerAbove(
                 reminderDetail?.ticket
               );
-              let pageNumber = page;
-              await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
+              // let pageNumber = page;
+              // await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
               // setTickets(data.tickets)
               // setTicketCount(data.count)
               // const tiketIndex = ticketCache[1].findIndex((currentData) => {
@@ -671,6 +671,8 @@ const Ticket = () => {
   }, [showReminderModal]);
 
   useEffect(() => {
+    let pageNumber = page;
+    console.log(pageNumber)
     clearAllInterval(AllIntervals);
     callRescheduler?.forEach((callRescheduleDetail, index) => {
       let alarmInterval: any;
@@ -688,8 +690,7 @@ const Ticket = () => {
               const data = await getticketRescedulerAbove(
                 callRescheduleDetail?.ticket
               );
-              let pageNumber = page;
-              await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
+              // await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
               setTicketCallReschedulerPatient(data?.message);
               setAlarmCallReschedulerList([
                 ...alarmCallReschedulerList,

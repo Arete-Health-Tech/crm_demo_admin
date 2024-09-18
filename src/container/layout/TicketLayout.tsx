@@ -116,6 +116,16 @@ const menuItemStyles = {
   lineHeight: '150%',
 };
 const Ticket = () => {
+  const initialFilters: ticketFilterTypes = {
+    stageList: [],
+    representative: null,
+    results: null,
+    admissionType: [],
+    diagnosticsType: [],
+    dateRange: [],
+    status: [],
+    followUp: null
+  };
   const { ticketID } = useParams();
   const {
     tickets,
@@ -144,6 +154,11 @@ const Ticket = () => {
   const phoneNumber = user?.phone;
 
   const { representative } = useReprentativeStore();
+
+  const [selectedFilters, dispatchFilter] = useReducer(
+    selectedFiltersReducer,
+    initialFilters
+  );
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
@@ -176,7 +191,6 @@ const Ticket = () => {
   const [showCallReschedulerModal, setShowCallReschedulerModal] =
     useState(false);
 
-  // const [pageNumber, setPageNumber] = useState<number>(1);
   const [page, setPage] = useState<number>(1);
   const [selectedItem, setSelectedItem] = useState('Mohali');
   const visibleRef = useRef<HTMLDivElement | null>(null);
@@ -517,7 +531,6 @@ const Ticket = () => {
   // }
   useEffect(() => {
     const refetchTickets = async () => {
-      const copiedFilterTickets = { ...filterTickets };
       let pageNumber = page;
       if (ticketID) {
       } else {
@@ -525,7 +538,7 @@ const Ticket = () => {
           searchName,
           pageNumber,
           'false',
-          copiedFilterTickets
+          filterTickets
         );
       }
     };
@@ -539,7 +552,6 @@ const Ticket = () => {
 
   useEffect(() => {
     const refetchTickets = async () => {
-      const copiedFilterTickets = { ...filterTickets };
       let pageNumber = page;
       if (ticketID) {
       } else {
@@ -547,7 +559,7 @@ const Ticket = () => {
           searchName,
           pageNumber,
           'false',
-          copiedFilterTickets
+          filterTickets
         );
       }
     };
@@ -571,6 +583,7 @@ const Ticket = () => {
   //     socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
   //   };
   // }, []);
+  console.log(page)
 
   useEffect(() => {
     clearAllInterval(AllIntervals);
@@ -592,13 +605,8 @@ const Ticket = () => {
               const data = await getticketRescedulerAbove(
                 reminderDetail?.ticket
               );
-              await getTicketHandler(
-                searchByName,
-                pageNumber,
-                'false',
-                filterTickets
-              );
-              console.log(data)
+              let pageNumber = page;
+              await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
               // setTickets(data.tickets)
               // setTicketCount(data.count)
               // const tiketIndex = ticketCache[1].findIndex((currentData) => {
@@ -680,12 +688,8 @@ const Ticket = () => {
               const data = await getticketRescedulerAbove(
                 callRescheduleDetail?.ticket
               );
-              await getTicketHandler(
-                searchByName,
-                pageNumber,
-                'false',
-                filterTickets
-              );
+              let pageNumber = page;
+              await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
               setTicketCallReschedulerPatient(data?.message);
               setAlarmCallReschedulerList([
                 ...alarmCallReschedulerList,
@@ -719,16 +723,16 @@ const Ticket = () => {
   }, [showCallReschedulerModal]);
 
   const { setFilterTickets } = useTicketStore();
-  const initialFilters = {
-    stageList: [],
-    representative: null,
-    results: null,
-    admissionType: [],
-    diagnosticsType: [],
-    dateRange: [],
-    status: [],
-    followUp: null,
-  };
+  // const initialFilters = {
+  //   stageList: [],
+  //   representative: null,
+  //   results: null,
+  //   admissionType: [],
+  //   diagnosticsType: [],
+  //   dateRange: [],
+  //   status: [],
+  //   followUp: null,
+  // };
 
   const backToDashboard = () => {
     getTicketHandler(UNDEFINED, 1, 'false', initialFilters);

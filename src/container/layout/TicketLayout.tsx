@@ -664,9 +664,14 @@ const Ticket = () => {
     });
   }, [reminders]);
 
+  const handleCallToasterReminder = async () => {
+    handleCallReminderToast();
+    await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
+  }
+
   useEffect(() => {
     if (showReminderModal) {
-      handleCallReminderToast();
+      handleCallToasterReminder()
     }
   }, [showReminderModal]);
 
@@ -717,9 +722,14 @@ const Ticket = () => {
     });
   }, [callRescheduler]);
 
+  const handleCallToasterRescheduler = async () => {
+    handleCallReschedulerToast();
+    await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
+  }
+
   useEffect(() => {
     if (showCallReschedulerModal) {
-      handleCallReschedulerToast();
+      handleCallToasterRescheduler();
     }
   }, [showCallReschedulerModal]);
 

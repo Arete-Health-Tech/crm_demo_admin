@@ -155,11 +155,6 @@ const Ticket = () => {
 
   const { representative } = useReprentativeStore();
 
-  const [selectedFilters, dispatchFilter] = useReducer(
-    selectedFiltersReducer,
-    initialFilters
-  );
-
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
   const [totalEstimateValue, setTotalEstimateValue] = useState(0);
@@ -666,7 +661,7 @@ const Ticket = () => {
 
   const handleCallToasterReminder = async () => {
     handleCallReminderToast();
-    await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
+    await getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
   }
 
   useEffect(() => {
@@ -724,7 +719,7 @@ const Ticket = () => {
 
   const handleCallToasterRescheduler = async () => {
     handleCallReschedulerToast();
-    await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
+    await getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
   }
 
   useEffect(() => {

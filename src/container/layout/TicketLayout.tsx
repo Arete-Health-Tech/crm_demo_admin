@@ -56,6 +56,8 @@ import {
   getAllCallReschedulerHandler,
   getAuditorCommentCount,
   getTicket,
+  getTicketAfterNotification,
+  getticketRescedulerAbove,
   validateTicket
 } from '../../api/ticket/ticket';
 import CustomSpinLoader from '../../components/CustomSpinLoader';
@@ -114,6 +116,16 @@ const menuItemStyles = {
   lineHeight: '150%',
 };
 const Ticket = () => {
+  const initialFilters: ticketFilterTypes = {
+    stageList: [],
+    representative: null,
+    results: null,
+    admissionType: [],
+    diagnosticsType: [],
+    dateRange: [],
+    status: [],
+    followUp: null
+  };
   const { ticketID } = useParams();
   const {
     tickets,
@@ -174,7 +186,6 @@ const Ticket = () => {
   const [showCallReschedulerModal, setShowCallReschedulerModal] =
     useState(false);
 
-  // const [pageNumber, setPageNumber] = useState<number>(1);
   const [page, setPage] = useState<number>(1);
   const [selectedItem, setSelectedItem] = useState('Mohali');
   const visibleRef = useRef<HTMLDivElement | null>(null);
@@ -191,6 +202,7 @@ const Ticket = () => {
     pageNo: number
   ) => {
     setPageNumber(pageNo);
+    setPage(pageNo);
     if (pageNo !== page) {
       setTickets([]);
       // if (
@@ -204,7 +216,6 @@ const Ticket = () => {
       //   await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       // }
       await getTicketHandler(searchName, pageNo, 'false', filterTickets);
-      setPage(pageNo);
       setPageNumber(pageNo);
 
       redirectTicket();
@@ -515,7 +526,6 @@ const Ticket = () => {
   // }
   useEffect(() => {
     const refetchTickets = async () => {
-      const copiedFilterTickets = { ...filterTickets };
       let pageNumber = page;
       if (ticketID) {
       } else {
@@ -523,7 +533,7 @@ const Ticket = () => {
           searchName,
           pageNumber,
           'false',
-          copiedFilterTickets
+          filterTickets
         );
       }
     };
@@ -534,6 +544,28 @@ const Ticket = () => {
       socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
   }, [filterTickets, page, searchName]);
+
+  useEffect(() => {
+    const refetchTickets = async () => {
+      let pageNumber = page;
+      if (ticketID) {
+      } else {
+        await getTicketAfterNotification(
+          searchName,
+          pageNumber,
+          'false',
+          filterTickets
+        );
+      }
+    };
+
+    socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+
+    return () => {
+      socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    };
+  }, [filterTickets, page, searchName]);
+
 
   // useEffect(() => {
   //   const refetchTickets = async () => {
@@ -546,11 +578,13 @@ const Ticket = () => {
   //     socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
   //   };
   // }, []);
+  console.log(page)
 
   useEffect(() => {
     clearAllInterval(AllIntervals);
 
     reminders?.forEach((reminderDetail, index) => {
+      console.log(reminderDetail)
       let alarmInterval: any;
 
       alarmInterval = setInterval(() => {
@@ -563,16 +597,11 @@ const Ticket = () => {
         ) {
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
-              const data = await getTicket(
-                UNDEFINED,
-                1,
-                'false',
-                filterTickets,
-                // selectedFilters,
-                reminderDetail?.ticket,
-                true,
-                phoneNumber
+              const data = await getticketRescedulerAbove(
+                reminderDetail?.ticket
               );
+              // let pageNumber = page;
+              // await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
               // setTickets(data.tickets)
               // setTicketCount(data.count)
               // const tiketIndex = ticketCache[1].findIndex((currentData) => {
@@ -610,7 +639,7 @@ const Ticket = () => {
               //   });
               // }
 
-              setTicketReminderPatient(data?.tickets[0]);
+              setTicketReminderPatient(data?.message);
               setAlamarReminderList([...alarmReminderedList, reminderDetail]);
               setReminderList([...reminderList, reminderDetail?._id]);
               // redirectTicket();
@@ -630,13 +659,20 @@ const Ticket = () => {
     });
   }, [reminders]);
 
+  const handleCallToasterReminder = async () => {
+    handleCallReminderToast();
+    await getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+  }
+
   useEffect(() => {
     if (showReminderModal) {
-      handleCallReminderToast();
+      handleCallToasterReminder()
     }
   }, [showReminderModal]);
 
   useEffect(() => {
+    let pageNumber = page;
+    console.log(pageNumber)
     clearAllInterval(AllIntervals);
     callRescheduler?.forEach((callRescheduleDetail, index) => {
       let alarmInterval: any;
@@ -651,17 +687,11 @@ const Ticket = () => {
         ) {
           (async () => {
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
-              const data = await getTicket(
-                UNDEFINED,
-                1,
-                'false',
-                filterTickets,
-                callRescheduleDetail?.ticket,
-                true,
-                phoneNumber
+              const data = await getticketRescedulerAbove(
+                callRescheduleDetail?.ticket
               );
-
-              setTicketCallReschedulerPatient(data?.tickets[0]);
+              // await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
+              setTicketCallReschedulerPatient(data?.message);
               setAlarmCallReschedulerList([
                 ...alarmCallReschedulerList,
                 callRescheduleDetail
@@ -687,23 +717,28 @@ const Ticket = () => {
     });
   }, [callRescheduler]);
 
+  const handleCallToasterRescheduler = async () => {
+    handleCallReschedulerToast();
+    await getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+  }
+
   useEffect(() => {
     if (showCallReschedulerModal) {
-      handleCallReschedulerToast();
+      handleCallToasterRescheduler();
     }
   }, [showCallReschedulerModal]);
 
   const { setFilterTickets } = useTicketStore();
-  const initialFilters = {
-    stageList: [],
-    representative: null,
-    results: null,
-    admissionType: [],
-    diagnosticsType: [],
-    dateRange: [],
-    status: [],
-    followUp: null,
-  };
+  // const initialFilters = {
+  //   stageList: [],
+  //   representative: null,
+  //   results: null,
+  //   admissionType: [],
+  //   diagnosticsType: [],
+  //   dateRange: [],
+  //   status: [],
+  //   followUp: null,
+  // };
 
   const backToDashboard = () => {
     getTicketHandler(UNDEFINED, 1, 'false', initialFilters);

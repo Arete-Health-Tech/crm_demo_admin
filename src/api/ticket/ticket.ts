@@ -30,6 +30,42 @@ export const getTicket = async (
   return data;
 };
 
+export const getticketRescedulerAbove = async (
+  ticketId?: string | null,
+) => {
+  // const timestamp = new Date().getTime();
+  const { data } = await apiClient.get(
+    `/ticket/getticketRescedulerAbove?ticket=${ticketId}`
+  );
+  return data;
+};
+
+
+export const getTicketAfterNotification = async (
+  name: string,
+  pageNumber: number = 1,
+  downloadAll: string,
+  selectedFilters: any,
+  ticketId?: string | null,
+  fetchUpdated: boolean = false,
+  phone?: any,
+  filteredLocation?: string | '',
+  won?: any,
+  lose?: any
+) => {
+  console.log("inside new function")
+  const params = new URLSearchParams(selectedFilters).toString();
+  // const timestamp = new Date().getTime();
+  const { data } = await apiClient.get(
+    `/ticket/getReshedulerTickets/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
+    &specialty=${localStorage.getItem(
+      'location'
+    )}&specialtyforFilter=${filteredLocation}`
+  );
+  return data;
+};
+
+
 export const getAuditTicket = async (
   name: string,
   pageNumber: number = 1,

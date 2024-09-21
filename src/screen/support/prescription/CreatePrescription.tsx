@@ -1231,7 +1231,7 @@ const CreatePrescription = () => {
                 'MRI',
                 'Lab',
                 'X-RAY',
-                'USG'].map(
+                'USG','Echo'].map(
                   (item) => (
                     <Button
                       size="small"

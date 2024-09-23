@@ -53,8 +53,14 @@ const Authenticated = (props: Props) => {
               <Route path="node-replies" element={<NodeReplies />} />
               <Route path="node-lists" element={<NodeList />} />
             </Route>
-            <Route path="ticket" element={<TicketLayout />}>
+            <Route path="admission" element={<TicketLayout />}>
               {/* <Route path=":ticketID" element={<SingleTicketDetails />} /> */}
+              <Route path=":ticketID" element={<NSingleTicketDetails />} />
+            </Route>
+            <Route path="diagnostics" element={<TicketLayout />}>
+              <Route path=":ticketID" element={<NSingleTicketDetails />} />
+            </Route>
+            <Route path="follow-up" element={<TicketLayout />}>
               <Route path=":ticketID" element={<NSingleTicketDetails />} />
             </Route>
             <Route path="tickets" element={<TicketLayout />} />

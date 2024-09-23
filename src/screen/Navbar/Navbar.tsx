@@ -26,8 +26,14 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import Taskscopy from '../../assets/Tasks copy.svg';
 import Tasks from '../../assets/Tasks.svg';
 import ticketIcon from '../../assets/ticket_icon.svg';
+import Diagnostics from "../../assets/Diagnostics.svg";
+import DiagnosticsActive from '../../assets/DiagnosticsActive.svg';
 import Dashboard from '../../assets/Dashboard.svg';
 import pharmacy from '../../assets/Pharmacy.svg';
+import admission from '../../assets/admission.svg';
+import admissionActive from '../../assets/admissionActive.svg';
+import Followup from '../../assets/Followup.svg';
+import FollowupActive from '../../assets/FollowupActive.svg';
 import departmentIcon from '../../assets/departmentIcon.svg';
 import departmentDeafultIcon from '../../assets/departmentIconDefault.svg';
 import UploadFileIcon from '../../assets/UploadFileIcon.svg';
@@ -260,6 +266,7 @@ const Navbar = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [open, setOpen] = React.useState(false);
+    const { setTicketType } = useTicketStore();
     const [expandedMenu, setExpandedMenu] = React.useState(null);
     const {
         isSwitchView,
@@ -270,11 +277,11 @@ const Navbar = ({ children }) => {
         navigate(path);
     };
 
-    const handleGoToTicket = () => {
+    const handleGoToTicket = (e) => {
         if (isSwitchView) {
             goToPage('/switchView');
         } else {
-            goToPage('/ticket');
+            goToPage(e === "Diagnostics" ? '/diagnostics' : e === "Admission" ? '/admission' : e === "Follow-Up" ? '/follow-up' : "");
         }
     }
 
@@ -351,7 +358,7 @@ const Navbar = ({ children }) => {
                                 <Stack className={styles.nav_Icon}>
                                     <Stack
                                         // onClick={() => goToPage('/ticket')}
-                                        onClick={() => { handleGoToTicket() }}
+                                        onClick={() => { localStorage.setItem("ticketType", "Diagnostics"); handleGoToTicket("Diagnostics") }}
 
 
                                         sx={{
@@ -363,23 +370,83 @@ const Navbar = ({ children }) => {
                                             height: "6.8vh",
                                             borderRadius: "8px",
                                             cursor: 'pointer',
-                                            backgroundColor: location.pathname.includes('/ticket') || location.pathname.includes('/switchView') ? '#DAE8FF' : 'transparent',
+                                            backgroundColor: location.pathname.includes('/diagnostics') || localStorage.getItem('ticketType') === 'Diagnostics' ? '#DAE8FF' : 'transparent',
                                             '&:hover': {
                                                 background: '#E1E6EE'
                                             }
                                         }}>
-                                        <LightTooltip title="Ticket"
+                                        <LightTooltip title="Diagnostics"
                                             disableInteractive
                                             placement="right"
                                             TransitionComponent={Zoom}
                                         >
 
-                                            {location.pathname.includes('/ticket') || location.pathname.includes('/switchView') ? (<img src={ticketIcon} alt="Ticket" />) : (<img src={NonActiveTicket} alt="Ticket" />)}
+                                            {location.pathname.includes('/diagnostics') || localStorage.getItem('ticketType') === 'Diagnostics' ? (<img src={DiagnosticsActive} alt="Ticket" />) : (<img src={Diagnostics} alt="Ticket" />)}
 
                                         </LightTooltip>
                                     </Stack>
                                 </Stack>
+                                <Stack className={styles.nav_Icon}>
+                                    <Stack
+                                        // onClick={() => goToPage('/ticket')}
+                                        onClick={() => { localStorage.setItem("ticketType", "Admission"); handleGoToTicket("Admission") }}
 
+
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            gap: "24px",
+                                            width: "3.3vw",
+                                            height: "6.8vh",
+                                            borderRadius: "8px",
+                                            cursor: 'pointer',
+                                            backgroundColor: location.pathname.includes('/admission') || localStorage.getItem('ticketType') === 'Admission' ? '#DAE8FF' : 'transparent',
+                                            '&:hover': {
+                                                background: '#E1E6EE'
+                                            }
+                                        }}>
+                                        <LightTooltip title="Admission"
+                                            disableInteractive
+                                            placement="right"
+                                            TransitionComponent={Zoom}
+                                        >
+
+                                            {location.pathname.includes('/admission') || localStorage.getItem('ticketType') === 'Admission' ? (<img src={admissionActive} alt="Ticket" />) : (<img src={admission} alt="Ticket" />)}
+
+                                        </LightTooltip>
+                                    </Stack>
+                                </Stack> <Stack className={styles.nav_Icon}>
+                                    <Stack
+                                        // onClick={() => goToPage('/ticket')}
+                                        onClick={() => { localStorage.setItem("ticketType", "Follow-Up"); handleGoToTicket("Follow-Up") }}
+
+
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            gap: "24px",
+                                            width: "3.3vw",
+                                            height: "6.8vh",
+                                            borderRadius: "8px",
+                                            cursor: 'pointer',
+                                            backgroundColor: location.pathname.includes('/follow-up') || localStorage.getItem('ticketType') === 'Follow-Up' ? '#DAE8FF' : 'transparent',
+                                            '&:hover': {
+                                                background: '#E1E6EE'
+                                            }
+                                        }}>
+                                        <LightTooltip title="Follow-Up"
+                                            disableInteractive
+                                            placement="right"
+                                            TransitionComponent={Zoom}
+                                        >
+
+                                            {location.pathname.includes('/follow-up') || localStorage.getItem('ticketType') === 'Follow-Up' ? (<img src={FollowupActive} alt="Ticket" />) : (<img src={Followup} alt="Ticket" />)}
+
+                                        </LightTooltip>
+                                    </Stack>
+                                </Stack>
                                 {/* this stack is for doctors,department,WhatsappFlow starts */}
 
                                 {/* <Stack className={styles.nav_Icon}>
@@ -548,7 +615,7 @@ const Navbar = ({ children }) => {
                             <Stack>
                                 <Stack
 
-                                    // onClick={() => goToPage('/configuration/agents')}
+                                    onClick={() => goToPage('/configuration/agents')}
                                     sx={{
                                         display: "flex",
                                         justifyContent: "center",
@@ -558,17 +625,7 @@ const Navbar = ({ children }) => {
                                         height: "6.8vh",
                                         borderRadius: "8px",
                                         cursor: 'pointer',
-                                        backgroundColor: location.pathname === '/Configuration' ||
-                                            location.pathname === '/configuration/agents' ||
-                                            location.pathname === '/configuration/cordinators' ||
-                                            location.pathname === '/configuration/spocs' ||
-                                            location.pathname === '/configuration/doctors' ||
-                                            location.pathname === '/configuration/departmentsmaster' ||
-                                            location.pathname === '/configuration/units' ||
-                                            location.pathname === '/configuration/services' ||
-                                            location.pathname === '/configuration/wards' ||
-                                            location.pathname === '/configuration/cms' ||
-                                            location.pathname === '/configuration/flowbuildermanager'
+                                        backgroundColor: location.pathname.includes('/configuration')
                                             ? '#DAE8FF' : 'transparent',
                                         '&:hover': {
                                             background: '#E1E6EE'
@@ -580,17 +637,7 @@ const Navbar = ({ children }) => {
                                         placement="right"
                                         TransitionComponent={Zoom}
                                     >
-                                        {location.pathname === '/configuration' ||
-                                            location.pathname === '/configuration/agents' ||
-                                            location.pathname === '/configuration/cordinators' ||
-                                            location.pathname === '/configuration/spocs' ||
-                                            location.pathname === '/configuration/doctors' ||
-                                            location.pathname === '/configuration/departmentsmaster' ||
-                                            location.pathname === '/configuration/units' ||
-                                            location.pathname === '/configuration/services' ||
-                                            location.pathname === '/configuration/wards' ||
-                                            location.pathname === '/configuration/cms' ||
-                                            location.pathname === '/configuration/flowbuildermanager'
+                                        {location.pathname.includes('/configuration')
                                             ?
                                             (<img src={SettingActive} alt="Configuration" />) : (<img src={Taskscopy} alt="Configuration" />)}
 

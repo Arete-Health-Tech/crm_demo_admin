@@ -98,16 +98,18 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   filteredLocation: '',
   setFilteredLocation: (filteredLocation) => set({ filteredLocation }),
   // Audit filter variable
-  auditStage: "",
+  auditStage: '',
   setAuditStage: (auditStage) => set({ auditStage }),
-  auditStatus: "",
+  auditStatus: '',
   setAuditStatus: (auditStatus) => set({ auditStatus }),
-  auditResult: "",
+  auditResult: '',
   setAuditResult: (auditResult) => set({ auditResult }),
   auditFilterCount: 0,
   setAuditFilterCount: (auditFilterCount) => set({ auditFilterCount }),
-  auditDateRange: [""],
+  auditDateRange: [''],
   setAuditDateRange: (auditDateRange) => set({ auditDateRange }),
+  ticketType: '',
+  setTicketType: (ticketType) => set({ticketType})
 }));
 
 export default useTicketStore;

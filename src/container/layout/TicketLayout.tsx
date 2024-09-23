@@ -194,7 +194,7 @@ const Ticket = () => {
   const navigate = useNavigate();
   const currentRoute = useMatch(NAVIGATE_TO_TICKET);
   const redirectTicket = () => {
-    navigate(NAVIGATE_TO_TICKET);
+    // navigate(NAVIGATE_TO_TICKET);
   };
 
   const handlePagination = async (
@@ -218,7 +218,7 @@ const Ticket = () => {
       await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       setPageNumber(pageNo);
 
-      redirectTicket();
+      // redirectTicket();
     }
   };
 
@@ -255,7 +255,6 @@ const Ticket = () => {
     data()
   }, [localStorage.getItem('location')])
 
-
   // const handleSeachName = (
   //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   // ) => {
@@ -279,7 +278,7 @@ const Ticket = () => {
       if (value === '') {
         fetchTicketsOnEmpthySearch();
         setSearchError('Type to search & Enter');
-        redirectTicket();
+        // redirectTicket();
         return;
       }
       await getTicketHandler(value, 1, 'false', filterTickets);
@@ -287,7 +286,7 @@ const Ticket = () => {
       setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
       setPageNumber(1);
       setPage(1);
-      redirectTicket();
+      // redirectTicket();
     }
   };
 
@@ -374,7 +373,7 @@ const Ticket = () => {
     })();
     setPageNumber(1);
     setIsAuditor(false);
-  }, []);
+  }, [localStorage.getItem('ticketType')]);
 
   // const isAlamredReminderExist = (reminder: iReminder) => {
   //   const result = reminderList?.findIndex((data) => data === reminder?._id);
@@ -535,21 +534,6 @@ const Ticket = () => {
           'false',
           filterTickets
         );
-      }
-    };
-
-    socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-
-    return () => {
-      socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-    };
-  }, [filterTickets, page, searchName]);
-
-  useEffect(() => {
-    const refetchTickets = async () => {
-      let pageNumber = page;
-      if (ticketID) {
-      } else {
         await getTicketAfterNotification(
           searchName,
           pageNumber,
@@ -559,13 +543,22 @@ const Ticket = () => {
       }
     };
 
-    socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    // socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    if (localStorage.getItem('ticketType') === 'Diagnostics') {
+      socket.on(socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS, refetchTickets);
+    } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+      socket.on(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
+    }
 
     return () => {
-      socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+      if (localStorage.getItem('ticketType') === 'Diagnostics') {
+        socket.off(socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS, refetchTickets);
+      } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+        socket.off(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
+      }
+      // socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
   }, [filterTickets, page, searchName]);
-
 
   // useEffect(() => {
   //   const refetchTickets = async () => {

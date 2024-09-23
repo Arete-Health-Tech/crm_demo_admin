@@ -267,6 +267,8 @@ export interface iTicketStore {
   setAuditResult: (auditResult: string) => void;
   auditDateRange: string[];
   setAuditDateRange: (auditDateRange: string[]) => void;
+  ticketType: string;
+  setTicketType: (ticketType: string) => void;
 }
 
 export interface iNote {

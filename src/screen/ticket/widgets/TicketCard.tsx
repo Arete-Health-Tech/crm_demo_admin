@@ -102,7 +102,14 @@ const TicketCard = (props: Props) => {
     // updateIsNewTicket(props.patientData._id, false);
 
     setIsNewTicket(false);
-    navigate(`/ticket/${props.patientData._id}`);
+    navigate(`${localStorage.getItem('ticketType') === 'Diagnostics'
+      ? '/diagnostics/'
+      : localStorage.getItem('ticketType') === 'Admission'
+        ? '/admission/'
+        : localStorage.getItem('ticketType') === 'Follow-Up'
+          ? '/follow-up/'
+          : '/ticket/'
+      }${props.patientData._id}`);
 
   }
 
@@ -543,7 +550,7 @@ const TicketCard = (props: Props) => {
           {/* <Stack className='task-pending'><img src={NotifyAudit} alt="" /></Stack> */}
           {taskPendingCount > 0 && <Stack className='task-pending'>{taskPendingCount} Tasks Pending </Stack>}
           {whtsappNotificationCount > 0 && <Stack className='ticket-card-notification'>{whtsappNotificationCount}</Stack>}
-          {auditCommentCount > 0 && <Stack>{<img src={audited_icon} alt=""/>}</Stack>}
+          {auditCommentCount > 0 && <Stack>{<img src={audited_icon} alt="" />}</Stack>}
         </Stack>
       </Stack>
 

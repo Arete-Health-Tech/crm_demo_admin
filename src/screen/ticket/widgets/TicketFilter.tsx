@@ -434,7 +434,6 @@ const TicketFilter = (props: {
     console.log('filter dtata', selectedFilters);
   };
 
-
   const handleClearFilter = async () => {
     dispatchFilter({ type: filterActions.STAGES, payload: [] });
     dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
@@ -474,6 +473,11 @@ const TicketFilter = (props: {
 
 
   };
+
+  useEffect(() => {
+    handleClearFilter()
+  }, [localStorage.getItem('ticketType')])
+
 
   const handleToggleChange = (event, newValue: any) => {
     setSelectedValue(newValue === selectedValue ? null : newValue);

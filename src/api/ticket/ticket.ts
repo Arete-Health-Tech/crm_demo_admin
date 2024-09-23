@@ -6,6 +6,9 @@ import {
   iTimer
 } from '../../types/store/ticket';
 import { apiClient } from '../apiClient';
+import useTicketStore from '../../store/ticketStore';
+
+const { ticketType } = useTicketStore.getState();
 
 export const getTicket = async (
   name: string,
@@ -22,7 +25,15 @@ export const getTicket = async (
   const params = new URLSearchParams(selectedFilters).toString();
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
-    `/ticket/?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
+    `${
+      localStorage.getItem('ticketType') === 'Admission'
+        ? '/ticket/'
+        : localStorage.getItem('ticketType') === 'Diagnostics'
+        ? '/diagnostics/getRepresentativediagnosticsTickets/'
+        : localStorage.getItem('ticketType') === 'Follow-Up'
+        ? '/followUp/FollowUpTickets'
+        : '/ticket/'
+    }?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
     &specialty=${localStorage.getItem(
       'location'
     )}&specialtyforFilter=${filteredLocation}`
@@ -30,16 +41,13 @@ export const getTicket = async (
   return data;
 };
 
-export const getticketRescedulerAbove = async (
-  ticketId?: string | null,
-) => {
+export const getticketRescedulerAbove = async (ticketId?: string | null) => {
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
     `/ticket/getticketRescedulerAbove?ticket=${ticketId}`
   );
   return data;
 };
-
 
 export const getTicketAfterNotification = async (
   name: string,
@@ -53,7 +61,7 @@ export const getTicketAfterNotification = async (
   won?: any,
   lose?: any
 ) => {
-  console.log("inside new function")
+  console.log('inside new function');
   const params = new URLSearchParams(selectedFilters).toString();
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
@@ -64,7 +72,6 @@ export const getTicketAfterNotification = async (
   );
   return data;
 };
-
 
 export const getAuditTicket = async (
   name: string,
@@ -85,7 +92,6 @@ export const getAuditTicket = async (
   );
   return data;
 };
-
 
 export const createTicket = async (prescription: any) => {
   const { data } = await apiClient.post('/ticket', prescription, {

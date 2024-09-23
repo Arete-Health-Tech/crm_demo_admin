@@ -286,7 +286,7 @@ function SwitchViewTable() {
       await getAllCallReschedulerHandler();
     })();
     setPageNumber(1)
-  }, []);
+  }, [localStorage.getItem('ticketType')]);
 
   const handleCloseModal = async () => {
 
@@ -504,7 +504,14 @@ function SwitchViewTable() {
     getTicketHandler(UNDEFINED, 1, 'false', initialFilters);
     setFilterTickets(initialFilters);
     // navigate('/')
-    navigate('/ticket')
+    navigate(`${localStorage.getItem('ticketType') === 'Diagnostics'
+      ? '/diagnostics/'
+      : localStorage.getItem('ticketType') === 'Admission'
+        ? '/admission/'
+        : localStorage.getItem('ticketType') === 'Follow-Up'
+          ? '/follow-up/'
+          : '/ticket/'
+      }`)
   }
 
   useEffect(() => {

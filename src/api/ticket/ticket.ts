@@ -44,7 +44,7 @@ export const getTicket = async (
 export const getticketRescedulerAbove = async (ticketId?: string | null) => {
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
-    `/ticket/getticketRescedulerAbove?ticket=${ticketId}`
+    `/diagnostics/getReshedulerTicketlelo?ticket=${ticketId}`
   );
   return data;
 };
@@ -161,7 +161,18 @@ export const getAllReminders = async () => {
 };
 
 export const createNewReminder = async (reminderData: iReminder) => {
-  const { data } = await apiClient.post(`/task/reminder`, reminderData);
+  const { data } = await apiClient.post(`/task/reminder`, {
+    ...reminderData,
+    ticketType: `${
+      localStorage.getItem('ticketType') === 'Admission'
+        ? 'admission'
+        : localStorage.getItem('ticketType') === 'Diagnostics'
+        ? 'diagnostics'
+        : localStorage.getItem('ticketType') === 'Follow-Up'
+        ? 'followUp'
+        : ''
+    }`
+  });
   return data;
 };
 
@@ -178,10 +189,18 @@ export const getAllTaskCount = async () => {
 export const createNewCallRescheduler = async (
   callReschedulerData: iCallRescheduler
 ) => {
-  const { data } = await apiClient.post(
-    `/task/reschedular`,
-    callReschedulerData
-  );
+  const { data } = await apiClient.post(`/task/reschedular`, {
+    ...callReschedulerData,
+    ticketType: `${
+      localStorage.getItem('ticketType') === 'Admission'
+        ? 'admission'
+        : localStorage.getItem('ticketType') === 'Diagnostics'
+        ? 'diagnostics'
+        : localStorage.getItem('ticketType') === 'Follow-Up'
+        ? 'followUp'
+        : ''
+    }`
+  });
   return data;
 };
 

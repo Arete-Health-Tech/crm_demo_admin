@@ -160,9 +160,9 @@ const AddCallRescheduler = () => {
 
   const addCAllRescheduler = async () => {
     try {
-      const result = await createNewCallReschedulerHandler({
+      await createNewCallReschedulerHandler({
         ...callReschedulerData,
-        ticket: ticketID
+        ticket: ticketID,
       });
       setCallReschedulerData({
         date: 0,

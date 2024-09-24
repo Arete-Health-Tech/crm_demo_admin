@@ -330,7 +330,7 @@ const Navbar = ({ children }) => {
                             <Box className={styles.navbarItem}>
                                 <Stack className={styles.nav_Icon}>
                                     <Stack
-                                        onClick={() => goToPage('/')}
+                                        onClick={() => { localStorage.setItem('ticketType', ''); goToPage('/') }}
                                         sx={{
                                             display: "flex",
                                             justifyContent: "center",
@@ -358,37 +358,6 @@ const Navbar = ({ children }) => {
                                 <Stack className={styles.nav_Icon}>
                                     <Stack
                                         // onClick={() => goToPage('/ticket')}
-                                        onClick={() => { localStorage.setItem("ticketType", "Diagnostics"); handleGoToTicket("Diagnostics") }}
-
-
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            gap: "24px",
-                                            width: "3.3vw",
-                                            height: "6.8vh",
-                                            borderRadius: "8px",
-                                            cursor: 'pointer',
-                                            backgroundColor: location.pathname.includes('/diagnostics') || localStorage.getItem('ticketType') === 'Diagnostics' ? '#DAE8FF' : 'transparent',
-                                            '&:hover': {
-                                                background: '#E1E6EE'
-                                            }
-                                        }}>
-                                        <LightTooltip title="Diagnostics"
-                                            disableInteractive
-                                            placement="right"
-                                            TransitionComponent={Zoom}
-                                        >
-
-                                            {location.pathname.includes('/diagnostics') || localStorage.getItem('ticketType') === 'Diagnostics' ? (<img src={DiagnosticsActive} alt="Ticket" />) : (<img src={Diagnostics} alt="Ticket" />)}
-
-                                        </LightTooltip>
-                                    </Stack>
-                                </Stack>
-                                <Stack className={styles.nav_Icon}>
-                                    <Stack
-                                        // onClick={() => goToPage('/ticket')}
                                         onClick={() => { localStorage.setItem("ticketType", "Admission"); handleGoToTicket("Admission") }}
 
 
@@ -401,7 +370,7 @@ const Navbar = ({ children }) => {
                                             height: "6.8vh",
                                             borderRadius: "8px",
                                             cursor: 'pointer',
-                                            backgroundColor: location.pathname.includes('/admission') || localStorage.getItem('ticketType') === 'Admission' ? '#DAE8FF' : 'transparent',
+                                            backgroundColor: location.pathname.includes('admission') || localStorage.getItem('ticketType') === 'Admission' ? '#DAE8FF' : 'transparent',
                                             '&:hover': {
                                                 background: '#E1E6EE'
                                             }
@@ -412,11 +381,43 @@ const Navbar = ({ children }) => {
                                             TransitionComponent={Zoom}
                                         >
 
-                                            {location.pathname.includes('/admission') || localStorage.getItem('ticketType') === 'Admission' ? (<img src={admissionActive} alt="Ticket" />) : (<img src={admission} alt="Ticket" />)}
+                                            {location.pathname.includes('admission') || localStorage.getItem('ticketType') === 'Admission' ? (<img src={admissionActive} alt="Ticket" />) : (<img src={admission} alt="Ticket" />)}
 
                                         </LightTooltip>
                                     </Stack>
-                                </Stack> <Stack className={styles.nav_Icon}>
+                                </Stack>
+                                <Stack className={styles.nav_Icon}>
+                                    <Stack
+                                        // onClick={() => goToPage('/ticket')}
+                                        onClick={() => { localStorage.setItem("ticketType", "Diagnostics"); handleGoToTicket("Diagnostics") }}
+
+
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            gap: "24px",
+                                            width: "3.3vw",
+                                            height: "6.8vh",
+                                            borderRadius: "8px",
+                                            cursor: 'pointer',
+                                            backgroundColor: location.pathname.includes('diagnostics') || localStorage.getItem('ticketType') === 'Diagnostics' ? '#DAE8FF' : 'transparent',
+                                            '&:hover': {
+                                                background: '#E1E6EE'
+                                            }
+                                        }}>
+                                        <LightTooltip title="Diagnostics"
+                                            disableInteractive
+                                            placement="right"
+                                            TransitionComponent={Zoom}
+                                        >
+
+                                            {location.pathname.includes('diagnostics') || localStorage.getItem('ticketType') === 'Diagnostics' ? (<img src={DiagnosticsActive} alt="Ticket" />) : (<img src={Diagnostics} alt="Ticket" />)}
+
+                                        </LightTooltip>
+                                    </Stack>
+                                </Stack>
+                                <Stack className={styles.nav_Icon}>
                                     <Stack
                                         // onClick={() => goToPage('/ticket')}
                                         onClick={() => { localStorage.setItem("ticketType", "Follow-Up"); handleGoToTicket("Follow-Up") }}
@@ -431,7 +432,7 @@ const Navbar = ({ children }) => {
                                             height: "6.8vh",
                                             borderRadius: "8px",
                                             cursor: 'pointer',
-                                            backgroundColor: location.pathname.includes('/follow-up') || localStorage.getItem('ticketType') === 'Follow-Up' ? '#DAE8FF' : 'transparent',
+                                            backgroundColor: location.pathname.includes('follow-up') || localStorage.getItem('ticketType') === 'Follow-Up' ? '#DAE8FF' : 'transparent',
                                             '&:hover': {
                                                 background: '#E1E6EE'
                                             }
@@ -442,7 +443,7 @@ const Navbar = ({ children }) => {
                                             TransitionComponent={Zoom}
                                         >
 
-                                            {location.pathname.includes('/follow-up') || localStorage.getItem('ticketType') === 'Follow-Up' ? (<img src={FollowupActive} alt="Ticket" />) : (<img src={Followup} alt="Ticket" />)}
+                                            {location.pathname.includes('follow-up') || localStorage.getItem('ticketType') === 'Follow-Up' ? (<img src={FollowupActive} alt="Ticket" />) : (<img src={Followup} alt="Ticket" />)}
 
                                         </LightTooltip>
                                     </Stack>

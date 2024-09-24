@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Alert,
   Box,
@@ -205,16 +206,6 @@ const Ticket = () => {
     setPage(pageNo);
     if (pageNo !== page) {
       setTickets([]);
-      // if (
-      //   ticketCache[pageNo] &&
-      //   ticketCache[pageNo]?.length > 0 &&
-      //   searchName === UNDEFINED &&
-      //   ticketFilterCount(filterTickets) < 1
-      // ) {
-      //   setTickets(ticketCache[pageNo]);
-      // } else {
-      //   await getTicketHandler(searchName, pageNo, 'false', filterTickets);
-      // }
       await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       setPageNumber(pageNo);
 
@@ -250,10 +241,17 @@ const Ticket = () => {
 
   useEffect(() => {
     const data = async () => {
+      setSearchName(UNDEFINED);
+      setSearchByName(UNDEFINED);
+      setSearchError('Type to search & Enter');
+      // setTicketCount(ticketCache["count"]);
+      // setTickets(ticketCache[1]);
+      setPage(1);
+      setPageNumber(1);
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
     }
     data()
-  }, [localStorage.getItem('location')])
+  }, [localStorage.getItem('location'), localStorage.getItem('ticketType')])
 
   // const handleSeachName = (
   //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -268,22 +266,18 @@ const Ticket = () => {
   // };
 
   const handleSearchKeyPress = async (e: any) => {
-    const value = e.target?.value;
-    if (value) {
-      setSearchName(value);
-    }
     if (e.key === 'Enter') {
       setTickets([]);
 
-      if (value === '') {
+      if (searchName === '') {
         fetchTicketsOnEmpthySearch();
         setSearchError('Type to search & Enter');
         // redirectTicket();
         return;
       }
-      await getTicketHandler(value, 1, 'false', filterTickets);
-      setSearchByName(value);
-      setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
+      await getTicketHandler(searchName, 1, 'false', filterTickets);
+      setSearchByName(searchName);
+      setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
       setPageNumber(1);
       setPage(1);
       // redirectTicket();
@@ -548,6 +542,8 @@ const Ticket = () => {
       socket.on(socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS, refetchTickets);
     } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
       socket.on(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
+    } else if (localStorage.getItem('ticketType') === 'Admission') {
+      socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     }
 
     return () => {
@@ -555,6 +551,8 @@ const Ticket = () => {
         socket.off(socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS, refetchTickets);
       } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
         socket.off(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
+      } else if (localStorage.getItem('ticketType') === 'Admission') {
+        socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
       }
       // socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
@@ -1042,8 +1040,10 @@ const Ticket = () => {
                   </span>
                   <input
                     type="text"
+                    value={searchName !== 'undefined' ? searchName : ""}
                     className="search-input"
                     placeholder=" Search..."
+                    onChange={(e) => setSearchName(e.target.value)}
                     onKeyDown={handleSearchKeyPress}
                   />
                 </Stack>

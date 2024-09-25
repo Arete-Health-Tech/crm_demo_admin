@@ -184,10 +184,14 @@ const CustomModal = () => {
       if (formData.select === "Rescheduled Call") {
         setIsModalOpenCall(true)
       }
-      if (challengeSelected.includes('Awaiting test results' || 'Awaiting TPA approvals' ||
-        'Under MM')) {
-        setIsModalOpenCall(true)
-      }
+     if (
+       ['Awaiting test results', 'Awaiting TPA approvals', 'Under MM'].some(
+         (status) => challengeSelected.includes(status)
+       )
+     ) {
+       setIsModalOpenCall(true);
+     }
+
       // on submit button click after 1 second the ticket data will call 
       (async () => {
         await getTicketHandler(

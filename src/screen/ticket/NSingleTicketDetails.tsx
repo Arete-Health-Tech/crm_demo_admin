@@ -550,9 +550,9 @@ const NSingleTicketDetails = (props: Props) => {
               localStorage.getItem('ticketType') === 'Admission'
                 ? '/admission/'
                 : localStorage.getItem('ticketType') === 'Diagnostics'
-                ? '/diagnostics/getRepresentativediagnosticsTickets/'
+                ? '/diagnostics/'
                 : localStorage.getItem('ticketType') === 'Follow-Up'
-                ? '/followUp/FollowUpTickets'
+                ? '/followUp/'
                 : '/ticket/'
             }`
           );
@@ -792,9 +792,9 @@ const NSingleTicketDetails = (props: Props) => {
       navigate(`${localStorage.getItem('ticketType') === 'Admission'
           ? '/admission/'
           : localStorage.getItem('ticketType') === 'Diagnostics'
-          ? '/diagnostics/getRepresentativediagnosticsTickets/'
+          ? '/diagnostics/'
           : localStorage.getItem('ticketType') === 'Follow-Up'
-          ? '/followUp/FollowUpTickets'
+          ? '/followUp/'
           : '/ticket/'}${ticketID}`);
     }
   };
@@ -810,9 +810,9 @@ const NSingleTicketDetails = (props: Props) => {
         localStorage.getItem('ticketType') === 'Admission'
           ? '/admission/'
           : localStorage.getItem('ticketType') === 'Diagnostics'
-          ? '/diagnostics/getRepresentativediagnosticsTickets/'
+          ? '/diagnostics/'
           : localStorage.getItem('ticketType') === 'Follow-Up'
-          ? '/followUp/FollowUpTickets'
+          ? '/followUp/'
           : '/ticket/'
       }`
     );
@@ -828,9 +828,9 @@ const NSingleTicketDetails = (props: Props) => {
       navigate(`${localStorage.getItem('ticketType') === 'Admission'
           ? '/admission/'
           : localStorage.getItem('ticketType') === 'Diagnostics'
-          ? '/diagnostics/getRepresentativediagnosticsTickets/'
+          ? '/diagnostics/'
           : localStorage.getItem('ticketType') === 'Follow-Up'
-          ? '/followUp/FollowUpTickets'
+          ? '/followUp/'
           : '/ticket/'}${ticketID}`);
     }
   };
@@ -845,9 +845,9 @@ const NSingleTicketDetails = (props: Props) => {
       navigate(`${localStorage.getItem('ticketType') === 'Admission'
           ? '/admission/'
           : localStorage.getItem('ticketType') === 'Diagnostics'
-          ? '/diagnostics/getRepresentativediagnosticsTickets/'
+          ? '/diagnostics/'
           : localStorage.getItem('ticketType') === 'Follow-Up'
-          ? '/followUp/FollowUpTickets'
+          ? '/followUp/'
           : '/ticket/'}${ticketID}`);
     }
   };

@@ -46,7 +46,11 @@ import handleClearFilter from '../../screen/ticket/widgets/TicketFilter';
 import DownloadAllTickets from '../../screen/ticket/widgets/DownloadAllTickets';
 import dayjs from 'dayjs';
 import CustomPagination from './CustomPagination';
-import { NAVIGATE_TO_SWITCHVIEW_TICKET, NAVIGATE_TO_TICKET, UNDEFINED } from '../../constantUtils/constant';
+import {
+  NAVIGATE_TO_SWITCHVIEW_TICKET,
+  NAVIGATE_TO_TICKET,
+  UNDEFINED
+} from '../../constantUtils/constant';
 import {
   getStagesHandler,
   getSubStagesHandler
@@ -58,8 +62,11 @@ import {
   getAuditorCommentCount,
   getTicket,
   getTicketAfterNotification,
+  getTicketForAdmisions,
   getticketRescedulerAbove,
-  validateTicket
+  getticketRescedulerAboveAdmission,
+  validateTicket,
+  validateTicketDiago
 } from '../../api/ticket/ticket';
 import CustomSpinLoader from '../../components/CustomSpinLoader';
 import { socket } from '../../api/apiClient';
@@ -94,7 +101,7 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
     fontFamily: `"Outfit",sans-serif`
   },
   [`& .${tooltipClasses.arrow}`]: {
-    color: '#0566FF',
+    color: '#0566FF'
   }
 }));
 
@@ -114,7 +121,7 @@ const menuItemStyles = {
   fontSize: '14px',
   fontStyle: 'normal',
   fontWeight: '400',
-  lineHeight: '150%',
+  lineHeight: '150%'
 };
 const Ticket = () => {
   const initialFilters: ticketFilterTypes = {
@@ -191,7 +198,6 @@ const Ticket = () => {
   const [selectedItem, setSelectedItem] = useState('Mohali');
   const visibleRef = useRef<HTMLDivElement | null>(null);
 
-
   const navigate = useNavigate();
   const currentRoute = useMatch(NAVIGATE_TO_TICKET);
   const redirectTicket = () => {
@@ -249,9 +255,9 @@ const Ticket = () => {
       setPage(1);
       setPageNumber(1);
       await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
-    }
-    data()
-  }, [localStorage.getItem('location'), localStorage.getItem('ticketType')])
+    };
+    data();
+  }, [localStorage.getItem('location'), localStorage.getItem('ticketType')]);
 
   // const handleSeachName = (
   //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -416,7 +422,9 @@ const Ticket = () => {
             fontWeight: 'bold'
           }}
         >
-          <NotificationsActiveIcon sx={{ fontSize: '20px', marginRight: '14px' }} />
+          <NotificationsActiveIcon
+            sx={{ fontSize: '20px', marginRight: '14px' }}
+          />
           Reminder{' '}
           {(
             ticketReminderPatient?.consumer[0]?.firstName || 'N/A'
@@ -460,14 +468,14 @@ const Ticket = () => {
             fontWeight: 'bold'
           }}
         >
-          <NotificationsActiveIcon sx={{ fontSize: '20px', marginRight: '14px' }} />
+          <NotificationsActiveIcon
+            sx={{ fontSize: '20px', marginRight: '14px' }}
+          />
           {ticketCallReschedulerPatient && (
             <Typography>{`Call Rescheduler for ${(
-              ticketCallReschedulerPatient?.consumer[0]?.firstName ||
-              'N/A'
+              ticketCallReschedulerPatient?.consumer[0]?.firstName || 'N/A'
             ).toUpperCase()}${(
-              ticketCallReschedulerPatient?.consumer[0]?.lastName ||
-              'N/A'
+              ticketCallReschedulerPatient?.consumer[0]?.lastName || 'N/A'
             ).toUpperCase()} `}</Typography>
           )}{' '}
         </div>
@@ -479,16 +487,12 @@ const Ticket = () => {
             marginLeft: '33px'
           }}
         >
-          <Typography
-            fontSize={'18px'}
-            fontWeight={'600'}
-            margin={'10px'}
-          >
+          <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
             {alarmCallReschedulerList[0]?.selectedLabels
               ? alarmCallReschedulerList[0].selectedLabels
-                .map((label) => label.label)
-                .join(', ')
-                .toUpperCase()
+                  .map((label) => label.label)
+                  .join(', ')
+                  .toUpperCase()
               : 'N/A'}
           </Typography>
         </div>
@@ -522,12 +526,7 @@ const Ticket = () => {
       let pageNumber = page;
       if (ticketID) {
       } else {
-        await getTicketHandler(
-          searchName,
-          pageNumber,
-          'false',
-          filterTickets
-        );
+        await getTicketHandler(searchName, pageNumber, 'false', filterTickets);
         await getTicketAfterNotification(
           searchName,
           pageNumber,
@@ -539,7 +538,10 @@ const Ticket = () => {
 
     // socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     if (localStorage.getItem('ticketType') === 'Diagnostics') {
-      socket.on(socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS, refetchTickets);
+      socket.on(
+        socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
+        refetchTickets
+      );
     } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
       socket.on(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
     } else if (localStorage.getItem('ticketType') === 'Admission') {
@@ -548,9 +550,15 @@ const Ticket = () => {
 
     return () => {
       if (localStorage.getItem('ticketType') === 'Diagnostics') {
-        socket.off(socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS, refetchTickets);
+        socket.off(
+          socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
+          refetchTickets
+        );
       } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
-        socket.off(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
+        socket.off(
+          socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
+          refetchTickets
+        );
       } else if (localStorage.getItem('ticketType') === 'Admission') {
         socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
       }
@@ -569,13 +577,13 @@ const Ticket = () => {
   //     socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
   //   };
   // }, []);
-  console.log(page)
+  console.log(page);
 
   useEffect(() => {
     clearAllInterval(AllIntervals);
 
     reminders?.forEach((reminderDetail, index) => {
-      console.log(reminderDetail)
+      console.log(reminderDetail);
       let alarmInterval: any;
 
       alarmInterval = setInterval(() => {
@@ -588,11 +596,24 @@ const Ticket = () => {
         ) {
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
-              const data = await getticketRescedulerAbove(
-                reminderDetail?.ticket
-              );
+              const data =
+                localStorage.getItem('ticketType') === 'Admission'
+                  ? await getticketRescedulerAboveAdmission(
+                      reminderDetail?.ticket
+                    )
+                  : await getticketRescedulerAbove(reminderDetail?.ticket);
+
+              // const newData = await getTicketForAdmisions(
+              //   UNDEFINED,
+              //   1,
+              //   'false',
+              //   filterTickets,
+              //   reminderDetail?.ticket,
+              //   true,
+              //   phoneNumber
+              // );
               // let pageNumber = page;
-              // await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
+              // await getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
               // setTickets(data.tickets)
               // setTicketCount(data.count)
               // const tiketIndex = ticketCache[1].findIndex((currentData) => {
@@ -630,7 +651,7 @@ const Ticket = () => {
               //   });
               // }
 
-              setTicketReminderPatient(data?.message);
+              setTicketReminderPatient(data.message);
               setAlamarReminderList([...alarmReminderedList, reminderDetail]);
               setReminderList([...reminderList, reminderDetail?._id]);
               // redirectTicket();
@@ -653,17 +674,17 @@ const Ticket = () => {
   const handleCallToasterReminder = async () => {
     handleCallReminderToast();
     await getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
-  }
+  };
 
   useEffect(() => {
     if (showReminderModal) {
-      handleCallToasterReminder()
+      handleCallToasterReminder();
     }
   }, [showReminderModal]);
 
   useEffect(() => {
     let pageNumber = page;
-    console.log(pageNumber)
+    console.log(pageNumber);
     clearAllInterval(AllIntervals);
     callRescheduler?.forEach((callRescheduleDetail, index) => {
       let alarmInterval: any;
@@ -678,9 +699,15 @@ const Ticket = () => {
         ) {
           (async () => {
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
-              const data = await getticketRescedulerAbove(
-                callRescheduleDetail?.ticket
-              );
+              const data =
+                localStorage.getItem('ticketType') === 'Admission'
+                  ? await getticketRescedulerAboveAdmission(
+                      callRescheduleDetail?.ticket
+                    )
+                  : await getticketRescedulerAbove(
+                      callRescheduleDetail?.ticket
+                    );
+
               // await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
               setTicketCallReschedulerPatient(data?.message);
               setAlarmCallReschedulerList([
@@ -711,7 +738,7 @@ const Ticket = () => {
   const handleCallToasterRescheduler = async () => {
     handleCallReschedulerToast();
     await getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
-  }
+  };
 
   useEffect(() => {
     if (showCallReschedulerModal) {
@@ -762,27 +789,20 @@ const Ticket = () => {
     setAnchorEl(null);
   };
 
-
-  //This function call the api to get all the ticket id with their whtsapp message count 
+  //This function call the api to get all the ticket id with their whtsapp message count
   const getAllWhtsappMsgCount = async () => {
     await getAllWhtsappCountHandler();
-    await getTicketHandler(
-      searchName,
-      pageNumber,
-      'false',
-      filterTickets
-    );
-  }
+    await getTicketHandler(searchName, pageNumber, 'false', filterTickets);
+  };
   useEffect(() => {
-    getAllWhtsappMsgCount()
-  }, [])
+    getAllWhtsappMsgCount();
+  }, []);
 
   //For getting the whtsapp message instant
 
   const [messages, setMessages] = useState<storeMessage[]>([]);
 
   useEffect(() => {
-
     // Check if socket is connected
     if (!socket.connected) {
       socket.connect();
@@ -790,7 +810,7 @@ const Ticket = () => {
 
     const handleNewMessage = (data) => {
       setMessages((prevMessages) => [...prevMessages, data.message]);
-      getAllWhtsappMsgCount()
+      getAllWhtsappMsgCount();
     };
 
     // Listen for the 'newMessage' event
@@ -805,45 +825,53 @@ const Ticket = () => {
 
   const handleOnClose = async () => {
     if (ticketID) {
+      // localStorage.getItem('ticketType') === 'Admission'
+      //   ? await validateTicket(ticketID)
+      //   : await validateTicketDiago(ticketID);
       await validateTicket(ticketID);
       if (!isSwitchView) {
-        navigate(`${localStorage.getItem('ticketType') === 'Admission'
-          ? '/ticket/'
-          : localStorage.getItem('ticketType') === 'Diagnostics'
-            ? '/diagnostics/getRepresentativediagnosticsTickets/'
-            : localStorage.getItem('ticketType') === 'Follow-Up'
+        navigate(
+          `${
+            localStorage.getItem('ticketType') === 'Admission'
+              ? '/admission/'
+              : localStorage.getItem('ticketType') === 'Diagnostics'
+              ? '/diagnostics/getRepresentativediagnosticsTickets/'
+              : localStorage.getItem('ticketType') === 'Follow-Up'
               ? '/followUp/FollowUpTickets'
               : '/ticket/'
-          }`);
+          }`
+        );
       } else {
         navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
       }
-
     }
   };
 
   const [isAdminUser, setIsAdminUser] = useState(false);
 
   useEffect(() => {
-
     const fetchRepresentatives = async () => {
       try {
         const fetchedRepresentative = await getRepresntativesHandler();
 
         const amritsarFound = fetchedRepresentative?.some(
-          rep => rep.phone === phoneNumber && rep.Unit === "66a4caeaab18bee54eea0866"
+          (rep) =>
+            rep.phone === phoneNumber && rep.Unit === '66a4caeaab18bee54eea0866'
         );
         const hoshiarpurFound = fetchedRepresentative?.some(
-          rep => rep.phone === phoneNumber && rep.Unit === "66bf5f702586bb9ea5598451"
+          (rep) =>
+            rep.phone === phoneNumber && rep.Unit === '66bf5f702586bb9ea5598451'
         );
         const nawanshahrFound = fetchedRepresentative?.some(
-          rep => rep.phone === phoneNumber && rep.Unit === "66bf5f5c2586bb9ea5598450"
+          (rep) =>
+            rep.phone === phoneNumber && rep.Unit === '66bf5f5c2586bb9ea5598450'
         );
         const khannaFound = fetchedRepresentative?.some(
-          rep => rep.phone === phoneNumber && rep.Unit === "66d5535689e33e0601248a79"
+          (rep) =>
+            rep.phone === phoneNumber && rep.Unit === '66d5535689e33e0601248a79'
         );
 
-        console.log(nawanshahrFound, "found--------");
+        console.log(nawanshahrFound, 'found--------');
 
         if (amritsarFound) {
           setIsAdminUser(false);
@@ -853,13 +881,11 @@ const Ticket = () => {
           setIsAdminUser(false);
         } else if (khannaFound) {
           setIsAdminUser(false);
-        }
-        else {
+        } else {
           setIsAdminUser(true);
         }
-
       } catch (error) {
-        console.error("Error fetching representatives:", error);
+        console.error('Error fetching representatives:', error);
       }
     };
 
@@ -871,9 +897,9 @@ const Ticket = () => {
       try {
         const data = await getAuditorCommentCount(); // Resolve the promise here
         setAllAuditCommentCount({
-          auditorCommentId: "",
-          ticketid: "",
-          unreadCount: data ? data : {}, // Set the resolved data here
+          auditorCommentId: '',
+          ticketid: '',
+          unreadCount: data ? data : {} // Set the resolved data here
         });
       } catch (error) {
         console.error('Error fetching auditor comment count:', error);
@@ -881,18 +907,16 @@ const Ticket = () => {
     };
 
     fetchData();
-  }, [])
-
+  }, []);
 
   useEffect(() => {
-
     // Check if socket is connected
     if (!socket.connected) {
       socket.connect();
     }
 
     const handleNewMessage = (data: any) => {
-      setAllAuditCommentCount(data)
+      setAllAuditCommentCount(data);
     };
 
     // Listen for the 'newMessage' event
@@ -902,7 +926,7 @@ const Ticket = () => {
       socket.disconnect();
     };
   });
-  console.log(allAuditCommentCount)
+  console.log(allAuditCommentCount);
 
   return (
     <>
@@ -939,29 +963,39 @@ const Ticket = () => {
               </Stack>
               <Stack display={'flex'} flexDirection={'row'}>
                 <Stack>
-                  <Box height="100%"
+                  <Box
+                    height="100%"
                     sx={{
-                      borderRadius: "var(--36px, 36px)",
-                      border: "1px solid var(--Borders-Light-Grey, #d4dbe5)",
-                      background: "var(--Background-White, #FFF)",
-                      cursor: "pointer"
+                      borderRadius: 'var(--36px, 36px)',
+                      border: '1px solid var(--Borders-Light-Grey, #d4dbe5)',
+                      background: 'var(--Background-White, #FFF)',
+                      cursor: 'pointer'
                     }}
-                    className="Box_location" onClick={() => setVisible(!visible)}>
-                    <Stack direction="row"
+                    className="Box_location"
+                    onClick={() => setVisible(!visible)}
+                  >
+                    <Stack
+                      direction="row"
                       alignItems="center"
                       marginTop="3px"
                       paddingLeft="1rem"
-                      paddingRight={isAdminUser ? "0rem" : "0.8rem"}
+                      paddingRight={isAdminUser ? '0rem' : '0.8rem'}
                     >
-                      <span>{localStorage.getItem('location') == "" ? 'All' : localStorage.getItem('location')}</span>
-                      {isAdminUser ?
-                        (<span>
+                      <span>
+                        {localStorage.getItem('location') == ''
+                          ? 'All'
+                          : localStorage.getItem('location')}
+                      </span>
+                      {isAdminUser ? (
+                        <span>
                           <img src={DropDownArrow} alt="" />
-                        </span>) : (<></>)}
+                        </span>
+                      ) : (
+                        <></>
+                      )}
                     </Stack>
-                    {isAdminUser
-                      ?
-                      (<Stack
+                    {isAdminUser ? (
+                      <Stack
                         ref={visibleRef}
                         display={visible ? 'block' : 'none'}
                         className="ticket-assigneemenu1"
@@ -971,29 +1005,72 @@ const Ticket = () => {
                         boxShadow="0px 0px 10px rgba(0,0,0,0.1)"
                       >
                         <Stack className="ticket-asssignee-container-layout">
-                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', ""), handleOnClose())}>
+                          <MenuItem
+                            sx={menuItemStyles}
+                            onClick={() => (
+                              setVisible(false),
+                              localStorage.setItem('location', ''),
+                              handleOnClose()
+                            )}
+                          >
                             All
                           </MenuItem>
-                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Mohali"), handleOnClose())}>
+                          <MenuItem
+                            sx={menuItemStyles}
+                            onClick={() => (
+                              setVisible(false),
+                              localStorage.setItem('location', 'Mohali'),
+                              handleOnClose()
+                            )}
+                          >
                             Mohali
                           </MenuItem>
-                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Amritsar"), handleOnClose())}>
+                          <MenuItem
+                            sx={menuItemStyles}
+                            onClick={() => (
+                              setVisible(false),
+                              localStorage.setItem('location', 'Amritsar'),
+                              handleOnClose()
+                            )}
+                          >
                             Amritsar
                           </MenuItem>
-                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Hoshiarpur"), handleOnClose())}>
+                          <MenuItem
+                            sx={menuItemStyles}
+                            onClick={() => (
+                              setVisible(false),
+                              localStorage.setItem('location', 'Hoshiarpur'),
+                              handleOnClose()
+                            )}
+                          >
                             Hoshiarpur
                           </MenuItem>
-                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Nawanshahr"), handleOnClose())}>
+                          <MenuItem
+                            sx={menuItemStyles}
+                            onClick={() => (
+                              setVisible(false),
+                              localStorage.setItem('location', 'Nawanshahr'),
+                              handleOnClose()
+                            )}
+                          >
                             Nawanshahr
                           </MenuItem>
-                          <MenuItem sx={menuItemStyles} onClick={() => (setVisible(false), localStorage.setItem('location', "Khanna"), handleOnClose())}>
+                          <MenuItem
+                            sx={menuItemStyles}
+                            onClick={() => (
+                              setVisible(false),
+                              localStorage.setItem('location', 'Khanna'),
+                              handleOnClose()
+                            )}
+                          >
                             Khanna
                           </MenuItem>
-
                         </Stack>
-                      </Stack>) : (<></>)}
+                      </Stack>
+                    ) : (
+                      <></>
+                    )}
                   </Box>
-
                 </Stack>
                 <Stack>
                   <DownloadAllTickets />
@@ -1018,7 +1095,6 @@ const Ticket = () => {
                       }}
                     />
                   </LightTooltip>
-
                 </Stack>
                 {/* <Stack
                   sx={{
@@ -1047,7 +1123,7 @@ const Ticket = () => {
                   </span>
                   <input
                     type="text"
-                    value={searchName !== 'undefined' ? searchName : ""}
+                    value={searchName !== 'undefined' ? searchName : ''}
                     className="search-input"
                     placeholder=" Search..."
                     onChange={(e) => setSearchName(e.target.value)}
@@ -1132,8 +1208,8 @@ const Ticket = () => {
               // </Alert>
               <Box className="NotFound-Page">
                 <img src={NotFoundIcon} />
-                <Stack className='NotFound-text'>No Ticket Found</Stack>
-                <Stack className='NotFound-subtext'>No Ticket Found</Stack>
+                <Stack className="NotFound-text">No Ticket Found</Stack>
+                <Stack className="NotFound-subtext">No Ticket Found</Stack>
               </Box>
             ) : (
               [0, 1, 2, 3, 4, 5].map((_, index) => (
@@ -1302,7 +1378,7 @@ const Ticket = () => {
         </Box>
 
         {/* <CustomSpinLoader open={loaderOn} /> */}
-      </Box >
+      </Box>
       <ExpandedModal />
       <ExpandedSmsModal />
       <ExpandedPhoneModal />

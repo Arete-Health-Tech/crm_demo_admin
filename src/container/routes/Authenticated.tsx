@@ -63,7 +63,7 @@ const Authenticated = (props: Props) => {
             <Route path="follow-up" element={<TicketLayout />}>
               <Route path=":ticketID" element={<NSingleTicketDetails />} />
             </Route>
-            <Route path="tickets" element={<TicketLayout />} />
+            {/* <Route path="tickets" element={<TicketLayout />} /> */}
             <Route path="dump" element={<Dump />} />
             <Route path="/OrderList" element={<OrderListBody />} />
             <Route

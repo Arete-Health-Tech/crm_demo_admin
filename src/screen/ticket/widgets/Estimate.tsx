@@ -411,7 +411,14 @@ const Estimate = (props: Props) => {
     if (ticketID) {
       await validateTicket(ticketID);
       if (!isSwitchView) {
-        navigate(NAVIGATE_TO_TICKET);
+        navigate(`${localStorage.getItem('ticketType') === 'Admission'
+          ? '/admission/'
+          : localStorage.getItem('ticketType') === 'Diagnostics'
+            ? '/diagnostics/getRepresentativediagnosticsTickets/'
+            : localStorage.getItem('ticketType') === 'Follow-Up'
+              ? '/followUp/FollowUpTickets'
+              : '/ticket/'
+          }`);
       } else {
         navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
       }

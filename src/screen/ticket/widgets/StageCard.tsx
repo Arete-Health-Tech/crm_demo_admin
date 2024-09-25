@@ -127,7 +127,14 @@ const StageCard = (props: Props) => {
   };
 
   const redirectTicket = () => {
-    navigate(NAVIGATE_TO_TICKET);
+    navigate(`${localStorage.getItem('ticketType') === 'Admission'
+      ? '/admission/'
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+        ? '/diagnostics/getRepresentativediagnosticsTickets/'
+        : localStorage.getItem('ticketType') === 'Follow-Up'
+          ? '/followUp/FollowUpTickets'
+          : '/ticket/'
+      }`);
   };
 
   // const getCurrentStage = () => {

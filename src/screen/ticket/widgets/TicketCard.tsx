@@ -13,18 +13,17 @@ import { iStage } from '../../../types/store/service';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
-import DnpIcon from '../../../../src/assets/DNP-icon.svg'
-import MediumPr from '../../../../src/assets/MediumPr.svg'
-import LowPr from '../../../../src/assets/LowPr.svg'
-import HighPr from '../../../../src/assets/HighPr.svg'
-import DefaultPr from '../../../../src/assets/DefaultPr.svg'
-import NotifyAudit from '../../../../src/assets/NotifyAudit.svg'
-import '../singleTicket.css'
+import DnpIcon from '../../../../src/assets/DNP-icon.svg';
+import MediumPr from '../../../../src/assets/MediumPr.svg';
+import LowPr from '../../../../src/assets/LowPr.svg';
+import HighPr from '../../../../src/assets/HighPr.svg';
+import DefaultPr from '../../../../src/assets/DefaultPr.svg';
+import NotifyAudit from '../../../../src/assets/NotifyAudit.svg';
+import '../singleTicket.css';
 import { apiClient, socket } from '../../../api/apiClient';
-import audited_icon from "../../../assets/audited_icon.svg"
+import audited_icon from '../../../assets/audited_icon.svg';
 
 // import { updateIsNewTicket } from '../../../api/ticket/ticket';
-
 
 type Props = {
   patientData: iTicket;
@@ -42,13 +41,12 @@ interface storeMessage {
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
-
 const TicketCard = (props: Props) => {
   const { ticketID } = useParams();
   const { doctors, departments, allServices, stages } = useServiceStore();
   const [isNewTicket, setIsNewTicket] = useState(true);
   const [taskPendingCount, setTaskPendingCount] = useState(0);
-  const [auditCommentCount, setAuditCommentCount] = useState(0)
+  const [auditCommentCount, setAuditCommentCount] = useState(0);
   const [currentStage, setCurrentStage] = useState<iStage>({
     _id: '',
     name: '',
@@ -59,17 +57,42 @@ const TicketCard = (props: Props) => {
   });
   const [whtsappNotificationCount, setWhtsappNotificationCount] = useState(0);
 
-  const { tickets, filterTickets, setIsAuditor, allTaskCount, viewEstimates,
-    setViewEstimates, isEstimateUpload, setIsEstimateUpload, reminders, callRescheduler, allWhtsappCount, allAuditCommentCount } = useTicketStore();
+  const {
+    tickets,
+    filterTickets,
+    setIsAuditor,
+    allTaskCount,
+    viewEstimates,
+    setViewEstimates,
+    isEstimateUpload,
+    setIsEstimateUpload,
+    reminders,
+    callRescheduler,
+    allWhtsappCount,
+    allAuditCommentCount
+  } = useTicketStore();
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (filterTickets.stageList.length === 0 && props.index === 0 && window.location.href.split('/')[3] === "tickets") {
-      navigate(`/ticket/${props.patientData._id}`);
+    if (
+      filterTickets.stageList.length === 0 &&
+      props.index === 0 &&
+      window.location.href.split('/')[3] === 'tickets'
+    ) {
+      navigate(
+        `${
+          localStorage.getItem('ticketType') === 'Admission'
+            ? '/admission/'
+            : localStorage.getItem('ticketType') === 'Diagnostics'
+            ? '/diagnostics/getRepresentativediagnosticsTickets/'
+            : localStorage.getItem('ticketType') === 'Follow-Up'
+            ? '/followUp/FollowUpTickets'
+            : '/ticket/'
+        }${ticketID}${props.patientData._id}`
+      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterTickets, props.index, props.patientData._id])
-
+  }, [filterTickets, props.index, props.patientData._id]);
 
   const doctorSetter = (id: string) => {
     return doctors.find((element) => element._id === id)?.name;
@@ -79,9 +102,7 @@ const TicketCard = (props: Props) => {
     return departments.find((element) => element._id === id)?.name;
   };
 
-
   // const { tickets, setTickets } = useTicketStore();
-
 
   useEffect(() => {
     setIsNewTicket(props.patientData.isNewTicket);
@@ -98,25 +119,25 @@ const TicketCard = (props: Props) => {
   }, [stages]);
 
   const showTicket = () => {
-
     // updateIsNewTicket(props.patientData._id, false);
 
     setIsNewTicket(false);
-    navigate(`${localStorage.getItem('ticketType') === 'Diagnostics'
-      ? '/diagnostics/'
-      : localStorage.getItem('ticketType') === 'Admission'
-        ? '/admission/'
-        : localStorage.getItem('ticketType') === 'Follow-Up'
+    navigate(
+      `${
+        localStorage.getItem('ticketType') === 'Diagnostics'
+          ? '/diagnostics/'
+          : localStorage.getItem('ticketType') === 'Admission'
+          ? '/admission/'
+          : localStorage.getItem('ticketType') === 'Follow-Up'
           ? '/follow-up/'
           : '/ticket/'
-      }${props.patientData._id}`);
-
-  }
+      }${props.patientData._id}`
+    );
+  };
 
   // const updateIsNewTicket = (ticketId: any, newValue: boolean) => {
 
   //   const ticketIndex = tickets.findIndex(ticket => ticket._id === ticketId);
-
 
   //   if (ticketIndex !== -1) {
 
@@ -127,8 +148,6 @@ const TicketCard = (props: Props) => {
   //     };
   //   }
   // }
-
-
 
   const baseStyle = {
     fontFamily: 'Outfit, sans-serif',
@@ -142,7 +161,7 @@ const TicketCard = (props: Props) => {
     fontWeight: 400,
     fontSize: '12px',
     gap: '4px',
-    lineHeight: '18px',
+    lineHeight: '18px'
   };
 
   const baseWonStyle = {
@@ -190,34 +209,33 @@ const TicketCard = (props: Props) => {
     fontSize: '12px',
     gap: '4px',
     lineHeight: '18px',
-    backgroundColor: '#D9EBFF',
-  }
+    backgroundColor: '#D9EBFF'
+  };
   const stageStyles = {
     'New Lead': {
       ...baseStyle,
-      backgroundColor: '#D9EBFF',
-
+      backgroundColor: '#D9EBFF'
     },
     Contacted: {
       ...baseStyle,
-      color: "#FFA500",
-      backgroundColor: '#FFF2D9',
+      color: '#FFA500',
+      backgroundColor: '#FFF2D9'
     },
     Working: {
       ...baseStyle,
       backgroundColor: '#DFF2E3',
-      color: '#28A745',
+      color: '#28A745'
     },
     Orientation: {
       ...baseStyle,
-      color: "#20C997",
-      backgroundColor: '#DEF7EF',
+      color: '#20C997',
+      backgroundColor: '#DEF7EF'
     },
     Nurturing: {
       ...baseStyle,
       backgroundColor: '#E9E3F6',
-      color: '#6F42C1',
-    },
+      color: '#6F42C1'
+    }
   };
 
   const stageName = currentStage?.name;
@@ -238,23 +256,28 @@ const TicketCard = (props: Props) => {
     if (dayDifference < 1) {
       // Calculate the difference in hours
       const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
-      const minuteDifference = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-      const formattedTimeDifference = `${hourDifference.toString().padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
-      return `${formattedTimeDifference} hrs ago`
+      const minuteDifference = Math.floor(
+        (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+      );
+      const formattedTimeDifference = `${hourDifference
+        .toString()
+        .padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
+      return `${formattedTimeDifference} hrs ago`;
     } else {
-      return `${dayDifference} days ago`
+      return `${dayDifference} days ago`;
     }
-  }
+  };
 
   useEffect(() => {
-    const foundData = allTaskCount.find(item => item.ticketId === props.patientData._id);
+    const foundData = allTaskCount.find(
+      (item) => item.ticketId === props.patientData._id
+    );
     if (foundData) {
       setTaskPendingCount(foundData.totalCount);
     } else {
       setTaskPendingCount(0);
     }
   }, [props.patientData._id, allTaskCount, reminders, callRescheduler]);
-
 
   const isSelected = ticketID === props.patientData._id;
 
@@ -291,12 +314,14 @@ const TicketCard = (props: Props) => {
       const ticketId = props.patientData._id;
 
       if (!ticketId) {
-        console.error("Ticket ID is undefined.");
+        console.error('Ticket ID is undefined.');
         return;
       }
 
       try {
-        const { data } = await apiClient.get(`ticket/uploadestimateData/${ticketId}`);
+        const { data } = await apiClient.get(
+          `ticket/uploadestimateData/${ticketId}`
+        );
 
         if (data?.length && data[data.length - 1]?.ticket === ticketId) {
           setTotalEstimateValue(data[data.length - 1]?.total);
@@ -315,22 +340,27 @@ const TicketCard = (props: Props) => {
   useEffect(() => {
     if (props.patientData._id !== undefined) {
       if (allWhtsappCount.hasOwnProperty(props.patientData._id)) {
-        return setWhtsappNotificationCount(allWhtsappCount[props.patientData._id]);
+        return setWhtsappNotificationCount(
+          allWhtsappCount[props.patientData._id]
+        );
       } else {
         return setWhtsappNotificationCount(0); // or any default value you prefer
       }
     }
-  }, [allWhtsappCount, props.patientData._id])
+  }, [allWhtsappCount, props.patientData._id]);
 
   const date = new Date(props.patientData.createdAt);
-  const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
+  const formattedDate = `${String(date.getDate()).padStart(2, '0')}-${String(
+    date.getMonth() + 1
+  ).padStart(2, '0')}-${date.getFullYear()}`;
 
   useEffect(() => {
-    const currentCount = Object.entries(allAuditCommentCount.unreadCount).find(([key, value], index) => key === props.patientData._id)
+    const currentCount = Object.entries(allAuditCommentCount.unreadCount).find(
+      ([key, value], index) => key === props.patientData._id
+    );
     // console.log(currentCount)
-    setAuditCommentCount(currentCount !== undefined ? currentCount[1] : 0)
-  }, [props.patientData._id, ticketID, allAuditCommentCount])
-
+    setAuditCommentCount(currentCount !== undefined ? currentCount[1] : 0);
+  }, [props.patientData._id, ticketID, allAuditCommentCount]);
 
   return (
     <Box
@@ -338,16 +368,16 @@ const TicketCard = (props: Props) => {
       bgcolor={ticketID === props.patientData._id ? '#EBEDF0' : '#FFFFFF'}
       my={1}
       sx={{
-        borderRadius: "var(--16px, 16px)",
+        borderRadius: 'var(--16px, 16px)',
         width: '100%',
-        gap: "12px",
+        gap: '12px',
         // 1px solid #0566FF
-        borderTop: isSelected ? "1px solid #ACB8CB" : 'none',
-        borderRight: isSelected ? "1px solid #ACB8CB" : 'none',
-        borderLeft: isSelected ? "1px solid #ACB8CB" : 'none',
+        borderTop: isSelected ? '1px solid #ACB8CB' : 'none',
+        borderRight: isSelected ? '1px solid #ACB8CB' : 'none',
+        borderLeft: isSelected ? '1px solid #ACB8CB' : 'none',
         '&:hover': {
           bgcolor: '#EBEDF0',
-          cursor: 'pointer',
+          cursor: 'pointer'
           // borderTop: "1px solid #ACB8CB",
           // borderRight: "1px solid #ACB8CB",
           // borderLeft: "1px solid #ACB8CB"
@@ -358,82 +388,121 @@ const TicketCard = (props: Props) => {
       // }}
       onClick={showTicket}
     >
-
       {/* Line 1 */}
 
-      <Box className="ticket-card-line1" sx={{ marginTop: "2px" }}>
-
-        <Stack className='ticket-card-line1-left'>
-          <Stack sx={props.patientData.result === "65991601a62baad220000002" ? baseLossStyle : props.patientData.result === "65991601a62baad220000001" ? baseWonStyle : stageStyle}> {props.patientData.result === "65991601a62baad220000002" ? "Loss" : props.patientData.result === "65991601a62baad220000001" ? "Won" : stageName}</Stack>
-          {totalEstimateValue == 0 ? (<>
-            {/* <Stack className="Priority-tag"> <img src={DefaultPr} alt="DefaultPr" /><span style={{ fontSize: "12px" }}>N/A</span></Stack> */}
-            <></>
-          </>) : (
+      <Box className="ticket-card-line1" sx={{ marginTop: '2px' }}>
+        <Stack className="ticket-card-line1-left">
+          <Stack
+            sx={
+              props.patientData.result === '65991601a62baad220000002'
+                ? baseLossStyle
+                : props.patientData.result === '65991601a62baad220000001'
+                ? baseWonStyle
+                : stageStyle
+            }
+          >
+            {' '}
+            {props.patientData.result === '65991601a62baad220000002'
+              ? 'Loss'
+              : props.patientData.result === '65991601a62baad220000001'
+              ? 'Won'
+              : stageName}
+          </Stack>
+          {totalEstimateValue == 0 ? (
             <>
-              <Stack className="Priority-tag">{totalEstimateValue > 15000 ?
-                (<><img src={HighPr} alt="" />High</>)
-                :
-                (totalEstimateValue < 15000) && 4550 < (totalEstimateValue)
-                  ? (<><img src={MediumPr} alt="" />Medium</>)
-                  : (<><img src={LowPr} alt="" />Low</>)}
+              {/* <Stack className="Priority-tag"> <img src={DefaultPr} alt="DefaultPr" /><span style={{ fontSize: "12px" }}>N/A</span></Stack> */}
+              <></>
+            </>
+          ) : (
+            <>
+              <Stack className="Priority-tag">
+                {totalEstimateValue > 15000 ? (
+                  <>
+                    <img src={HighPr} alt="" />
+                    High
+                  </>
+                ) : totalEstimateValue < 15000 && 4550 < totalEstimateValue ? (
+                  <>
+                    <img src={MediumPr} alt="" />
+                    Medium
+                  </>
+                ) : (
+                  <>
+                    <img src={LowPr} alt="" />
+                    Low
+                  </>
+                )}
               </Stack>
+            </>
+          )}
 
-            </>)
-          }
-
-          {props?.patientData.status === "dnp" && <Stack sx={{
-            width: "18px",
-            height: "18px"
-          }}
-          ><img src={DnpIcon} /></Stack>}
+          {props?.patientData.status === 'dnp' && (
+            <Stack
+              sx={{
+                width: '18px',
+                height: '18px'
+              }}
+            >
+              <img src={DnpIcon} />
+            </Stack>
+          )}
           {/* <Stack><img src={DNP} /></Stack> */}
-
         </Stack>
 
-        {props.patientData?.consumer[0]?.uid && <Stack className='ticketCard-Uhid'>#{props?.patientData?.consumer[0]?.uid}</Stack>}
-
+        {props.patientData?.consumer[0]?.uid && (
+          <Stack className="ticketCard-Uhid">
+            #{props?.patientData?.consumer[0]?.uid}
+          </Stack>
+        )}
       </Box>
 
       {/* Line 2 */}
 
       <Box className="ticket-card-line1 line2">
-        {props?.patientData?.consumer[0]?.firstName && <Stack className='ticket-card-name'>
-          {props?.patientData?.consumer[0]?.firstName}{' '}
-          {props?.patientData?.consumer[0]?.lastName &&
-            props?.patientData?.consumer[0]?.lastName}
-        </Stack>}
+        {props?.patientData?.consumer[0]?.firstName && (
+          <Stack className="ticket-card-name">
+            {props?.patientData?.consumer[0]?.firstName}{' '}
+            {props?.patientData?.consumer[0]?.lastName &&
+              props?.patientData?.consumer[0]?.lastName}
+          </Stack>
+        )}
         {props?.patientData?.specialty ? (
-          <Stack sx={locationStyle}>
-            {props?.patientData?.specialty}
-          </Stack>) : (
-          <Stack sx={locationStyle}>
-            Mohali
-          </Stack>)
-
-        }
-
+          <Stack sx={locationStyle}>{props?.patientData?.specialty}</Stack>
+        ) : (
+          <Stack sx={locationStyle}>Mohali</Stack>
+        )}
       </Box>
 
       {/* ------- */}
-      <Stack display={"flex"} flexDirection={"row"} justifyContent={"space-between"} marginTop={'5px'} width={"100%"}>
-        <Stack className="docName" >
+      <Stack
+        display={'flex'}
+        flexDirection={'row'}
+        justifyContent={'space-between'}
+        marginTop={'5px'}
+        width={'100%'}
+      >
+        <Stack className="docName">
           {doctorSetter(props?.patientData?.prescription[0]?.doctor)}
         </Stack>
-        <Stack className='ticket-cardline2-right'>
-          {props?.patientData?.consumer[0]?.gender ? (<>
-            <Stack className="ticket-card-Gender">
-              {props?.patientData?.consumer[0]?.gender}
-            </Stack>
-          </>) : (<>
-          </>
+        <Stack className="ticket-cardline2-right">
+          {props?.patientData?.consumer[0]?.gender ? (
+            <>
+              <Stack className="ticket-card-Gender">
+                {props?.patientData?.consumer[0]?.gender}
+              </Stack>
+            </>
+          ) : (
+            <></>
           )}
 
-          {props?.patientData?.consumer[0]?.age
-            ? (<><Stack>{props?.patientData?.consumer[0]?.age}</Stack></>)
-            : (<></>)
-          }
+          {props?.patientData?.consumer[0]?.age ? (
+            <>
+              <Stack>{props?.patientData?.consumer[0]?.age}</Stack>
+            </>
+          ) : (
+            <></>
+          )}
         </Stack>
-
       </Stack>
 
       <Stack className="docName">
@@ -446,38 +515,42 @@ const TicketCard = (props: Props) => {
       {/* Line 3 */}
 
       <Box className="ticket-card-line3">
-        {props?.patientData?.prescription[0]?.admission ? (<>
-          <Stack className='ticket-card-line3-tag'>{props?.patientData?.prescription[0]?.admission}</Stack>
-        </>
-        )
-          :
-          (<></>)
-        }
-        {props?.patientData?.prescription[0]?.diagnostics.length > 0 ? (<>
-          <Stack className='ticket-card-line3-tag'>Diagonstic</Stack>
-        </>
-        )
-          :
-          (<></>)
-        }
+        {props?.patientData?.prescription[0]?.admission ? (
+          <>
+            <Stack className="ticket-card-line3-tag">
+              {props?.patientData?.prescription[0]?.admission}
+            </Stack>
+          </>
+        ) : (
+          <></>
+        )}
+        {props?.patientData?.prescription[0]?.diagnostics.length > 0 ? (
+          <>
+            <Stack className="ticket-card-line3-tag">Diagonstic</Stack>
+          </>
+        ) : (
+          <></>
+        )}
 
         {props?.patientData?.estimate?.length > 0 ? (
           <>
-            {props?.patientData?.estimate[0]?.paymentType === 0
-              ? <Stack className='ticket-card-line3-tag'>Cash</Stack>
-              : props?.patientData?.estimate[0]?.paymentType === 1
-                ? <Stack className='ticket-card-line3-tag'>Insurance</Stack>
-                : props?.patientData?.estimate[0]?.paymentType === 2
-                  ? <Stack className='ticket-card-line3-tag'>CGHS | ECHS</Stack>
-                  : ''}
+            {props?.patientData?.estimate[0]?.paymentType === 0 ? (
+              <Stack className="ticket-card-line3-tag">Cash</Stack>
+            ) : props?.patientData?.estimate[0]?.paymentType === 1 ? (
+              <Stack className="ticket-card-line3-tag">Insurance</Stack>
+            ) : props?.patientData?.estimate[0]?.paymentType === 2 ? (
+              <Stack className="ticket-card-line3-tag">CGHS | ECHS</Stack>
+            ) : (
+              ''
+            )}
           </>
-        ) :
-          (<>
-          </>)}
+        ) : (
+          <></>
+        )}
       </Box>
 
       {/*  */}
-      <Stack sx={{ borderTop: '2px solid #E1E6EE', marginTop: "10px" }}>
+      <Stack sx={{ borderTop: '2px solid #E1E6EE', marginTop: '10px' }}>
         {/* Borders */}
       </Stack>
 
@@ -542,31 +615,48 @@ const TicketCard = (props: Props) => {
         />
       </Box> */}
 
-      <Stack className="ticket-card-line3" sx={{ justifyContent: "space-between" }}>
-        <Stack className='Ticket-LeadAge' sx={{ fontSize: "12px !important", padding: "4px 0 0px 0" }}>
+      <Stack
+        className="ticket-card-line3"
+        sx={{ justifyContent: 'space-between' }}
+      >
+        <Stack
+          className="Ticket-LeadAge"
+          sx={{ fontSize: '12px !important', padding: '4px 0 0px 0' }}
+        >
           {formattedDate}
         </Stack>
-        <Stack sx={{ display: "flex", flexDirection: "row !important", gap: "5px" }}>
+        <Stack
+          sx={{ display: 'flex', flexDirection: 'row !important', gap: '5px' }}
+        >
           {/* <Stack className='task-pending'><img src={NotifyAudit} alt="" /></Stack> */}
-          {taskPendingCount > 0 && <Stack className='task-pending'>{taskPendingCount} Tasks Pending </Stack>}
-          {whtsappNotificationCount > 0 && <Stack className='ticket-card-notification'>{whtsappNotificationCount}</Stack>}
-          {auditCommentCount > 0 && <Stack>{<img src={audited_icon} alt="" />}</Stack>}
+          {taskPendingCount > 0 && (
+            <Stack className="task-pending">
+              {taskPendingCount} Tasks Pending{' '}
+            </Stack>
+          )}
+          {whtsappNotificationCount > 0 && (
+            <Stack className="ticket-card-notification">
+              {whtsappNotificationCount}
+            </Stack>
+          )}
+          {auditCommentCount > 0 && (
+            <Stack>{<img src={audited_icon} alt="" />}</Stack>
+          )}
         </Stack>
       </Stack>
 
-      <Stack className='linear-progress'>
+      <Stack className="linear-progress">
         <LinearProgress
           variant="determinate"
           value={currentStage?.code * 20 || 0}
           sx={{
             '& .MuiLinearProgress-bar': {
               backgroundColor: '#0566FF',
-              borderBottomLeftRadius: "5px"// custom color
-            },
+              borderBottomLeftRadius: '5px' // custom color
+            }
           }}
         />
       </Stack>
-
     </Box>
   );
 };

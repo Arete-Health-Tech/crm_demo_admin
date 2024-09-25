@@ -1,50 +1,56 @@
-import { useEffect, useState } from "react";
-import { useMatch, useNavigate, useParams } from "react-router-dom";
-import { NAVIGATE_TO_TICKET, UNDEFINED } from "../../../constantUtils/constant";
+import { useEffect, useState } from 'react';
+import { useMatch, useNavigate, useParams } from 'react-router-dom';
+import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import useTicketStore from '../../../store/ticketStore';
-import { getAllCallReschedulerHandler, getAllReminderHandler, getTicketHandler } from "../../../api/ticket/ticketHandler";
-import { getAllNotesWithoutTicketId } from "../../../api/notes/allNote";
-import { getStagesHandler, getSubStagesHandler } from "../../../api/stages/stagesHandler";
-import { getDoctorsHandler } from "../../../api/doctor/doctorHandler";
-import { getDepartmentsHandler } from "../../../api/department/departmentHandler";
-import { iCallRescheduler, iReminder } from "../../../types/store/ticket";
-import { socketEventConstants } from "../../../constantUtils/socketEventsConstants";
-import { apiClient, socket } from "../../../api/apiClient";
-import { getTicket } from "../../../api/ticket/ticket";
-import { getAllStageCountHandler } from "../../../api/dashboard/dashboardHandler";
-import { Box, Chip, Modal, Stack, Typography } from "@mui/material";
-import styles from "./switchView.module.css";
-import "../../orders/orderList.css"
+import {
+  getAllCallReschedulerHandler,
+  getAllReminderHandler,
+  getTicketHandler
+} from '../../../api/ticket/ticketHandler';
+import { getAllNotesWithoutTicketId } from '../../../api/notes/allNote';
+import {
+  getStagesHandler,
+  getSubStagesHandler
+} from '../../../api/stages/stagesHandler';
+import { getDoctorsHandler } from '../../../api/doctor/doctorHandler';
+import { getDepartmentsHandler } from '../../../api/department/departmentHandler';
+import { iCallRescheduler, iReminder } from '../../../types/store/ticket';
+import { socketEventConstants } from '../../../constantUtils/socketEventsConstants';
+import { apiClient, socket } from '../../../api/apiClient';
+import { getTicket } from '../../../api/ticket/ticket';
+import { getAllStageCountHandler } from '../../../api/dashboard/dashboardHandler';
+import { Box, Chip, Modal, Stack, Typography } from '@mui/material';
+import styles from './switchView.module.css';
+import '../../orders/orderList.css';
 import { DatePicker } from 'antd';
 import SearchIcon from '@mui/icons-material/Search';
 import CheckBoxIcon from '../../../assets/AuditCheckBox.svg';
-import MediumPr from '../../../assets/MediumPr.svg'
-import LowPr from '../../../assets/LowPr.svg'
-import HighPr from '../../../assets/HighPr.svg'
-import DefaultPr from '../../../assets/DefaultPr.svg'
-import AuditFilterIcon from '../../../assets/commentHeader.svg'
-import NotFoundIcon from '../../../assets/NotFoundTask.svg'
-import ActiveToggleIcon from '../../../assets/ActiveToggle.svg'
-import TicketFilter from "../widgets/TicketFilter";
-import CustomPagination from "../../../container/layout/CustomPagination";
-import useServiceStore from "../../../store/serviceStore";
-import { iStage } from "../../../types/store/service";
+import MediumPr from '../../../assets/MediumPr.svg';
+import LowPr from '../../../assets/LowPr.svg';
+import HighPr from '../../../assets/HighPr.svg';
+import DefaultPr from '../../../assets/DefaultPr.svg';
+import AuditFilterIcon from '../../../assets/commentHeader.svg';
+import NotFoundIcon from '../../../assets/NotFoundTask.svg';
+import ActiveToggleIcon from '../../../assets/ActiveToggle.svg';
+import TicketFilter from '../widgets/TicketFilter';
+import CustomPagination from '../../../container/layout/CustomPagination';
+import useServiceStore from '../../../store/serviceStore';
+import { iStage } from '../../../types/store/service';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import CloseIcon from '@mui/icons-material/Close';
-import dayjs from "dayjs";
-import DownloadAllTickets from "../widgets/DownloadAllTickets";
-import { isNull } from "util";
-
+import dayjs from 'dayjs';
+import DownloadAllTickets from '../widgets/DownloadAllTickets';
+import { isNull } from 'util';
 
 const datePickerStyle = {
   backgroundColor: '#E1E6EE',
-  color: "#000",
-  fontFamily: "Outfit,sans-serif",
+  color: '#000',
+  fontFamily: 'Outfit,sans-serif',
   borderRadius: '16px',
-  minHeight: "35px",
-  padding: "4px 20px",
-  border: "none",
-  width: "250px"
+  minHeight: '35px',
+  padding: '4px 20px',
+  border: 'none',
+  width: '250px'
 };
 
 const baseStyle = {
@@ -59,35 +65,34 @@ const baseStyle = {
   fontWeight: 400,
   fontSize: '12px',
   gap: '4px',
-  lineHeight: '18px',
+  lineHeight: '18px'
 };
 
 const stageStyles = {
   'New Lead': {
     ...baseStyle,
-    backgroundColor: '#D9EBFF',
-
+    backgroundColor: '#D9EBFF'
   },
   Contacted: {
     ...baseStyle,
-    color: "#FFA500",
-    backgroundColor: '#FFF2D9',
+    color: '#FFA500',
+    backgroundColor: '#FFF2D9'
   },
   Working: {
     ...baseStyle,
     backgroundColor: '#DFF2E3',
-    color: '#28A745',
+    color: '#28A745'
   },
   Orientation: {
     ...baseStyle,
-    color: "#20C997",
-    backgroundColor: '#DEF7EF',
+    color: '#20C997',
+    backgroundColor: '#DEF7EF'
   },
   Nurturing: {
     ...baseStyle,
     backgroundColor: '#E9E3F6',
-    color: '#6F42C1',
-  },
+    color: '#6F42C1'
+  }
 };
 
 const getColor = (probability) => {
@@ -198,7 +203,17 @@ function SwitchViewTable() {
   const navigate = useNavigate();
   const currentRoute = useMatch(NAVIGATE_TO_TICKET);
   const redirectTicket = () => {
-    navigate(NAVIGATE_TO_TICKET);
+    navigate(
+      `${
+        localStorage.getItem('ticketType') === 'Admission'
+          ? '/admission/'
+          : localStorage.getItem('ticketType') === 'Diagnostics'
+          ? '/diagnostics/getRepresentativediagnosticsTickets/'
+          : localStorage.getItem('ticketType') === 'Follow-Up'
+          ? '/followUp/FollowUpTickets'
+          : '/ticket/'
+      }`
+    );
   };
   const [stageCount, setStageCount] = useState(0);
   const [newLead, setNewLead] = useState(0);
@@ -211,7 +226,7 @@ function SwitchViewTable() {
     event: React.ChangeEvent<unknown>,
     pageNo: number
   ) => {
-    setPageNumber(pageNo)
+    setPageNumber(pageNo);
     if (pageNo !== page) {
       setTickets([]);
       // if (
@@ -237,14 +252,13 @@ function SwitchViewTable() {
     setPage(pageNumber);
   }, [tickets, searchByName]);
 
-
   const fetchTicketsOnEmpthySearch = async () => {
     setSearchName(UNDEFINED);
     setSearchByName(UNDEFINED);
     // setTicketCount(ticketCache["count"]);
     // setTickets(ticketCache[1]);
     setPage(1);
-    setPageNumber(1)
+    setPageNumber(1);
     await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
   };
 
@@ -265,11 +279,10 @@ function SwitchViewTable() {
       await getTicketHandler(value, 1, 'false', filterTickets);
       setSearchByName(value);
       setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
-      setPageNumber(1)
+      setPageNumber(1);
       setPage(1);
       // redirectTicket()
     }
-
   };
 
   window.onload = redirectTicket;
@@ -285,15 +298,14 @@ function SwitchViewTable() {
       await getAllReminderHandler();
       await getAllCallReschedulerHandler();
     })();
-    setPageNumber(1)
+    setPageNumber(1);
   }, [localStorage.getItem('ticketType')]);
 
   const handleCloseModal = async () => {
-
     const result = await getAllReminderHandler();
     setTimeout(() => {
       setPage(1);
-      setPageNumber(1)
+      setPageNumber(1);
       let list = alarmReminderedList;
       list.splice(0, 1);
       setShowReminderModal(false);
@@ -302,9 +314,7 @@ function SwitchViewTable() {
     }, 100);
   };
 
-
   const handleCloseCallReschedulerModal = async () => {
-
     const result = await getAllCallReschedulerHandler();
 
     setTimeout(() => {
@@ -316,9 +326,7 @@ function SwitchViewTable() {
       setAlarmCallReschedulerList([]);
       setcallReschedulerList(result);
     }, 100);
-
-
-  }
+  };
 
   const clearAllInterval = (AllIntervals: any[]) => {
     AllIntervals?.forEach((interval) => {
@@ -330,13 +338,16 @@ function SwitchViewTable() {
   useEffect(() => {
     const refetchTickets = async () => {
       const copiedFilterTickets = { ...filterTickets };
-      let pageNumber = page
+      let pageNumber = page;
       if (ticketID) {
-
       } else {
-        await getTicketHandler(searchName, pageNumber, 'false', copiedFilterTickets);
+        await getTicketHandler(
+          searchName,
+          pageNumber,
+          'false',
+          copiedFilterTickets
+        );
       }
-
     };
 
     socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
@@ -360,10 +371,8 @@ function SwitchViewTable() {
           reminderDetail.date + 11000 > currentTime.getTime()
           // isAlamredReminderExist(reminderDetail)
         ) {
-
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
-
               const data = await getTicket(
                 UNDEFINED,
                 1,
@@ -429,8 +438,6 @@ function SwitchViewTable() {
         clearAllInterval(AllIntervals);
       };
     });
-
-
   }, [reminders]);
 
   useEffect(() => {
@@ -446,10 +453,8 @@ function SwitchViewTable() {
           callRescheduleDetail.date + 11000 > currentTime.getTime()
           // isAlamredReminderExist(reminderDetail)
         ) {
-
           (async () => {
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
-
               const data = await getTicket(
                 UNDEFINED,
                 1,
@@ -495,24 +500,25 @@ function SwitchViewTable() {
     diagnosticsType: [],
     dateRange: [],
     status: [],
-    followUp: null,
+    followUp: null
   };
 
-
   const backToDashboard = () => {
-
     getTicketHandler(UNDEFINED, 1, 'false', initialFilters);
     setFilterTickets(initialFilters);
     // navigate('/')
-    navigate(`${localStorage.getItem('ticketType') === 'Diagnostics'
-      ? '/diagnostics/'
-      : localStorage.getItem('ticketType') === 'Admission'
-        ? '/admission/'
-        : localStorage.getItem('ticketType') === 'Follow-Up'
+    navigate(
+      `${
+        localStorage.getItem('ticketType') === 'Diagnostics'
+          ? '/diagnostics/'
+          : localStorage.getItem('ticketType') === 'Admission'
+          ? '/admission/'
+          : localStorage.getItem('ticketType') === 'Follow-Up'
           ? '/follow-up/'
           : '/ticket/'
-      }`)
-  }
+      }`
+    );
+  };
 
   useEffect(() => {
     getAllStageCountHandler()
@@ -542,9 +548,7 @@ function SwitchViewTable() {
                 break;
             }
           });
-
         }
-
       })
       .catch((error) => {
         console.error('Error fetching timer data:', error);
@@ -558,7 +562,8 @@ function SwitchViewTable() {
       title: 'New Lead',
       content: newLead,
       color: '#cddefe'
-    }, {
+    },
+    {
       id: 2,
       title: 'Contacted',
       content: contacted,
@@ -598,13 +603,17 @@ function SwitchViewTable() {
     if (dayDifference < 1) {
       // Calculate the difference in hours
       const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
-      const minuteDifference = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-      const formattedTimeDifference = `${hourDifference.toString().padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
-      return `${formattedTimeDifference} hrs ago`
+      const minuteDifference = Math.floor(
+        (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
+      );
+      const formattedTimeDifference = `${hourDifference
+        .toString()
+        .padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
+      return `${formattedTimeDifference} hrs ago`;
     } else {
-      return `${dayDifference} days ago`
+      return `${dayDifference} days ago`;
     }
-  }
+  };
 
   const doctorSetter = (id: string) => {
     return doctors.find((element) => element._id === id)?.name;
@@ -619,10 +628,9 @@ function SwitchViewTable() {
     if (stageDetail) {
       return stageDetail.name;
     } else {
-
       return 'Unknown Stage';
     }
-  }
+  };
 
   const [estimateData, setEstimateData] = useState({});
 
@@ -641,12 +649,14 @@ function SwitchViewTable() {
 
   const fetchEstimateData = async (ticketId: any): Promise<number> => {
     if (!ticketId) {
-      console.error("Ticket ID is undefined.");
+      console.error('Ticket ID is undefined.');
       return 0;
     }
 
     try {
-      const response = await apiClient.get(`ticket/uploadestimateData/${ticketId}`);
+      const response = await apiClient.get(
+        `ticket/uploadestimateData/${ticketId}`
+      );
       const data = response.data;
       if (data?.length && data[data.length - 1]?.ticket === ticketId) {
         return data[data.length - 1]?.total || 0;
@@ -654,97 +664,89 @@ function SwitchViewTable() {
         return 0;
       }
     } catch (error) {
-      console.error("Error fetching estimate data:", error);
+      console.error('Error fetching estimate data:', error);
       return 0;
     }
   };
 
+  return (
+    <>
+      <Box className={styles.SwitchView_container}>
+        {/* Switch View Head */}
+        <Box className={styles.SwitchView_filters_container}>
+          <Stack className={styles.SwitchView_container_title}>Tickets</Stack>
 
-
-  return (<>
-    <Box className={styles.SwitchView_container}>
-
-      {/* Switch View Head */}
-      <Box className={styles.SwitchView_filters_container}>
-        <Stack className={styles.SwitchView_container_title} >
-          Tickets
-        </Stack>
-
-        <Stack display={'flex'} flexDirection={'row'}>
-          <Stack><DownloadAllTickets /></Stack>
-          <Stack
-            sx={{
-              marginTop: '5px',
-              marginRight: '10px',
-              cursor: 'pointer',
-
-            }}
-            onClick={() => {
-              backToDashboard();
-              setIsSwitchView(false);
-            }}
-          >
-            <img
-              src={ActiveToggleIcon}
-              alt="switch View"
-              style={{
-                fill: "blue"
-              }}
-            />
-          </Stack>
-          <Stack
-            sx={{
-              marginTop: '5px',
-              color: '#000',
-              fontFamily: 'Outfit,sanserif',
-              fontSize: '14px'
-            }}
-          >
-            Switch view
-          </Stack>
-        </Stack>
-      </Box>
-
-      {/* Switch View Filters */}
-      <Box className={styles.SwitchView_filters_container}>
-
-
-        <Box className={styles.SwitchView_filters_left}>
-
-
-        </Box>
-
-        {/* Search Filter And Filters Component */}
-        <Box display={'flex'} flexDirection={'row'} gap={'9px'}>
-          {/* Search Filters */}
-          <Stack gap={'2px'}>
-            <Stack className={styles.search}>
-              <div className={styles.search_container}>
-                <span className={styles.search_icon}><SearchIcon /></span>
-                <input
-                  type="text"
-                  className={styles.search_input}
-                  placeholder=" Search..."
-                  onKeyDown={handleSearchKeyPress}
-                />
-              </div>
+          <Stack display={'flex'} flexDirection={'row'}>
+            <Stack>
+              <DownloadAllTickets />
             </Stack>
             <Stack
               sx={{
-                fontFamily: `Outfit,sanserif`,
-                fontSize: '13px',
-                color: '#647491',
-                marginLeft: "5px"
-
+                marginTop: '5px',
+                marginRight: '10px',
+                cursor: 'pointer'
+              }}
+              onClick={() => {
+                backToDashboard();
+                setIsSwitchView(false);
               }}
             >
-              {searchError && <div>{searchError}</div>}
+              <img
+                src={ActiveToggleIcon}
+                alt="switch View"
+                style={{
+                  fill: 'blue'
+                }}
+              />
+            </Stack>
+            <Stack
+              sx={{
+                marginTop: '5px',
+                color: '#000',
+                fontFamily: 'Outfit,sanserif',
+                fontSize: '14px'
+              }}
+            >
+              Switch view
             </Stack>
           </Stack>
+        </Box>
 
+        {/* Switch View Filters */}
+        <Box className={styles.SwitchView_filters_container}>
+          <Box className={styles.SwitchView_filters_left}></Box>
 
-          {/* Filter Component */}
-          {/* <Stack sx={{
+          {/* Search Filter And Filters Component */}
+          <Box display={'flex'} flexDirection={'row'} gap={'9px'}>
+            {/* Search Filters */}
+            <Stack gap={'2px'}>
+              <Stack className={styles.search}>
+                <div className={styles.search_container}>
+                  <span className={styles.search_icon}>
+                    <SearchIcon />
+                  </span>
+                  <input
+                    type="text"
+                    className={styles.search_input}
+                    placeholder=" Search..."
+                    onKeyDown={handleSearchKeyPress}
+                  />
+                </div>
+              </Stack>
+              <Stack
+                sx={{
+                  fontFamily: `Outfit,sanserif`,
+                  fontSize: '13px',
+                  color: '#647491',
+                  marginLeft: '5px'
+                }}
+              >
+                {searchError && <div>{searchError}</div>}
+              </Stack>
+            </Stack>
+
+            {/* Filter Component */}
+            {/* <Stack sx={{
             marginTop: "10px",
             marginRight: '-10px',
             width: "24px",
@@ -752,334 +754,458 @@ function SwitchViewTable() {
           }}>
             <img src={AuditFilterIcon} alt="Audit Filter" />
           </Stack> */}
-          <Stack marginRight={'-10px'}>
-            <TicketFilter setPage={setPage} />
-          </Stack>
+            <Stack marginRight={'-10px'}>
+              <TicketFilter setPage={setPage} />
+            </Stack>
+          </Box>
+        </Box>
+
+        {/* Stages Data  */}
+        <Box className="OrderType-container">
+          {cardsData.map((card) => (
+            <>
+              <Stack
+                className="OrderType-card"
+                sx={{
+                  borderLeft:
+                    card.id !== 1
+                      ? '1px solid var(--Borders-Light-Grey, #D4DBE5)'
+                      : 'none'
+                }}
+              >
+                <Stack className="OrderType-card-title">{card.title}</Stack>
+                <Stack className="OrderType-card-value">
+                  {card.content ? card.content : 0}
+                </Stack>
+              </Stack>
+            </>
+          ))}
+        </Box>
+
+        {/* Tickets Tables */}
+        <Box
+          sx={{ height: '55% !important' }}
+          className={styles.SwitchView_table_container}
+        >
+          <Box height={'100%'}>
+            <table
+              className={styles.SwitchView_table}
+              style={{
+                height: '95%'
+              }}
+            >
+              <Box sx={{ position: 'sticky' }}>
+                <thead>
+                  <tr className={styles.SwitchView_table_head}>
+                    <th className={`${styles.SwitchView_table_head_item}`}>
+                      Lead
+                    </th>
+                    <th
+                      className={`${styles.SwitchView_table_head_item} ${styles.Switch_item2}`}
+                    >
+                      Lead Age
+                    </th>
+                    <th
+                      className={`${styles.SwitchView_table_head_item} ${styles.Switch_item3}`}
+                    >
+                      Doctor
+                    </th>
+                    <th
+                      className={`${styles.SwitchView_table_head_item} ${styles.Switch_item4}`}
+                    >
+                      Specialty
+                    </th>
+                    <th
+                      className={`${styles.SwitchView_table_head_item} ${styles.Switch_item6}`}
+                    >
+                      Lead status
+                    </th>
+                    <th
+                      className={`${styles.SwitchView_table_head_item} ${styles.Switch_item5}`}
+                    >
+                      Services
+                    </th>
+                    <th
+                      className={`${styles.SwitchView_table_head_item} ${styles.Switch_item7}`}
+                    >
+                      Probability
+                    </th>
+                    <th
+                      className={`${styles.SwitchView_table_head_item} ${styles.Switch_item7}`}
+                    >
+                      Priority
+                    </th>
+                  </tr>
+                </thead>
+              </Box>
+              <Box
+                sx={{
+                  height: '95%',
+                  overflowY: 'auto',
+                  '&::-webkit-scrollbar': { width: '4px', marginTop: '100px' },
+                  '&::-webkit-scrollbar-thumb': {
+                    backgroundColor: '#DAE8FF',
+                    borderRadius: '4px'
+                  },
+                  '&::-webkit-scrollbar-thumb:hover': {
+                    backgroundColor: '#555'
+                  }
+                }}
+              >
+                <tbody>
+                  {tickets.length > 0 ? (
+                    <>
+                      {tickets.map((item) => (
+                        <tr
+                          key={item._id}
+                          className={styles.SwitchView_table_body}
+                          onClick={() => navigate(`${item._id}`)}
+                        >
+                          {/* Lead */}
+                          <td
+                            className={`${styles.SwitchView_table_body_item}`}
+                          >
+                            <Stack
+                              display={'flex'}
+                              flexDirection={'row'}
+                              gap={'8px'}
+                            >
+                              <Stack
+                                className={styles.SwitchView_name}
+                                sx={{ textTransform: 'capitalize !important' }}
+                              >
+                                {/* {patientName(item)} */}
+                                {`${item?.consumer?.[0]?.firstName ?? ''} ${
+                                  item?.consumer?.[0]?.lastName ?? ''
+                                }`}
+                              </Stack>
+                              <Stack className={styles.SwitchView_GenAge}>
+                                {item.consumer[0]?.gender && (
+                                  <Stack className={styles.SwitchView_Gen}>
+                                    {item.consumer[0]?.gender}
+                                  </Stack>
+                                )}
+                                {item.consumer[0]?.age && (
+                                  <Stack className={styles.SwitchView_Age}>
+                                    {' '}
+                                    {item.consumer[0]?.age}
+                                  </Stack>
+                                )}
+                              </Stack>
+                            </Stack>
+                            <Stack className={styles.SwitchView_uhid}>
+                              #{item.consumer[0]?.uid}
+                            </Stack>
+                          </td>
+
+                          {/* Lead Age */}
+                          <td
+                            className={`${styles.SwitchView_table_body_item}  ${styles.Switch_body_item2}`}
+                          >
+                            <Stack className={styles.SwitchView_last_date}>
+                              {calculatedDate(item.date)}
+                            </Stack>
+                          </td>
+
+                          {/* Doctor Name */}
+                          <td
+                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item3}`}
+                          >
+                            <Stack
+                              className={styles.SwitchView_doc}
+                              sx={{ textTransform: 'capitalize !important' }}
+                            >
+                              {doctorSetter(item?.prescription[0]?.doctor)}
+                            </Stack>
+                          </td>
+
+                          {/* Department */}
+                          <td
+                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item4}`}
+                          >
+                            <Stack
+                              className={styles.SwitchView_dep}
+                              sx={{ textTransform: 'capitalize !important' }}
+                            >
+                              {departmentSetter(
+                                item.prescription[0].departments[0]
+                              )}
+                            </Stack>
+                          </td>
+
+                          {/* LeadStatus */}
+                          <td
+                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item6}`}
+                          >
+                            <Stack
+                              sx={
+                                item.result === '65991601a62baad220000002'
+                                  ? baseLossStyle
+                                  : item.result === '65991601a62baad220000001'
+                                  ? baseWonStyle
+                                  : stageStyles[getStageName(item)]
+                              }
+                            >
+                              {item.result === '65991601a62baad220000002'
+                                ? 'Loss'
+                                : item.result === '65991601a62baad220000001'
+                                ? 'Won'
+                                : getStageName(item)}
+                            </Stack>
+                          </td>
+
+                          {/* Services */}
+                          <td
+                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item5}`}
+                          >
+                            <Box className="ticket-card-line3">
+                              {item.prescription[0].admission ? (
+                                <>
+                                  <Stack className="ticket-card-line3-tag">
+                                    {item.prescription[0].admission}
+                                  </Stack>
+                                </>
+                              ) : (
+                                <></>
+                              )}
+                              {item.prescription[0].diagnostics.length > 0 ? (
+                                <>
+                                  <Stack className="ticket-card-line3-tag">
+                                    Diagonstic
+                                  </Stack>
+                                </>
+                              ) : (
+                                <></>
+                              )}
+                            </Box>
+                          </td>
+
+                          {/* Probabilty */}
+                          <td
+                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`}
+                          >
+                            <Stack
+                              className={styles.SwitchView_Prob}
+                              sx={{
+                                color: getColor(item?.Probability),
+                                backgroundColor: getBackgroundColor(
+                                  item?.Probability
+                                )
+                              }}
+                            >
+                              {!item?.Probability ? 0 : item?.Probability}%
+                            </Stack>
+                          </td>
+
+                          {/* Priority */}
+                          <td
+                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`}
+                          >
+                            {estimateData[item._id] == 0 ? (
+                              <>
+                                <Stack className="Priority-tag">
+                                  {' '}
+                                  <img src={DefaultPr} alt="DefaultPr" />
+                                  <span style={{ fontSize: '12px' }}>N/A</span>
+                                </Stack>
+                              </>
+                            ) : (
+                              <>
+                                <Stack className="Priority-tag">
+                                  {estimateData[item._id] > 15000 ? (
+                                    <>
+                                      <img src={HighPr} alt="" />
+                                      High
+                                    </>
+                                  ) : estimateData[item._id] < 15000 &&
+                                    4550 < estimateData[item._id] ? (
+                                    <>
+                                      <img src={MediumPr} alt="" />
+                                      Medium
+                                    </>
+                                  ) : (
+                                    <>
+                                      <img src={LowPr} alt="" />
+                                      Low
+                                    </>
+                                  )}
+                                </Stack>
+                              </>
+                            )}
+                          </td>
+                        </tr>
+                      ))}
+                    </>
+                  ) : (
+                    <>
+                      <Box
+                        className="NotFound-Page"
+                        sx={{
+                          width: '90.5vw',
+                          height: '30vh'
+                        }}
+                      >
+                        <img src={NotFoundIcon} />
+                        <Stack className="NotFound-text">
+                          No Ticket Available
+                        </Stack>
+                        <Stack className="NotFound-subtext">
+                          No Data Found
+                        </Stack>
+                      </Box>
+                    </>
+                  )}
+                </tbody>
+              </Box>
+
+              <Box className={styles.SwitchView_pagination}>
+                <CustomPagination
+                  handlePagination={handlePagination}
+                  pageCount={pageCount}
+                  page={pageNumber}
+                />
+              </Box>
+            </table>
+          </Box>
         </Box>
       </Box>
 
-      {/* Stages Data  */}
-      <Box className="OrderType-container">
-        {cardsData.map((card) => (
-          <>
-            <Stack className='OrderType-card' sx={{ borderLeft: card.id !== 1 ? "1px solid var(--Borders-Light-Grey, #D4DBE5)" : "none" }}>
-              <Stack className='OrderType-card-title'>{card.title}</Stack>
-              <Stack className='OrderType-card-value'>{card.content ? card.content : 0}</Stack>
-            </Stack>
-          </>
-
-        ))}
-      </Box>
-
-      {/* Tickets Tables */}
-      <Box sx={{ height: "55% !important" }} className={styles.SwitchView_table_container}>
-
-        <Box height={'100%'}>
-          <table className={styles.SwitchView_table} style={{
-            height: '95%'
-          }}>
-            <Box sx={{ position: "sticky" }}>
-              <thead>
-                <tr className={styles.SwitchView_table_head}>
-
-                  <th className={`${styles.SwitchView_table_head_item}`} >Lead</th>
-                  <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item2}`} >Lead Age</th>
-                  <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item3}`} >Doctor</th>
-                  <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item4}`} >Specialty</th>
-                  <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item6}`} >Lead status</th>
-                  <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item5}`} >Services</th>
-                  <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item7}`} >Probability</th>
-                  <th className={`${styles.SwitchView_table_head_item} ${styles.Switch_item7}`} >Priority</th>
-
-                </tr>
-              </thead>
-            </Box>
-            <Box sx={{
-              height: "95%", overflowY: 'auto',
-              '&::-webkit-scrollbar': { width: '4px', marginTop: "100px" },
-              '&::-webkit-scrollbar-thumb': { backgroundColor: '#DAE8FF', borderRadius: '4px' },
-              '&::-webkit-scrollbar-thumb:hover': { backgroundColor: '#555' }
-            }}>
-              <tbody>
-                {tickets.length > 0 ?
-                  (<>
-                    {tickets.map(item => (
-                      <tr key={item._id} className={styles.SwitchView_table_body}
-                        onClick={() => navigate(`${item._id}`)}>
-
-                        {/* Lead */}
-                        <td className={`${styles.SwitchView_table_body_item}`}>
-                          <Stack display={'flex'} flexDirection={'row'} gap={'8px'}>
-                            <Stack className={styles.SwitchView_name} sx={{ textTransform: "capitalize !important" }}>
-                              {/* {patientName(item)} */}
-                              {`${item?.consumer?.[0]?.firstName ?? ''} ${item?.consumer?.[0]?.lastName ?? ''}`}
-                            </Stack>
-                            <Stack className={styles.SwitchView_GenAge}>
-                              {item.consumer[0]?.gender && <Stack className={styles.SwitchView_Gen}>{item.consumer[0]?.gender}</Stack>}
-                              {item.consumer[0]?.age && <Stack className={styles.SwitchView_Age}> {item.consumer[0]?.age}</Stack>}
-                            </Stack>
-                          </Stack>
-                          <Stack className={styles.SwitchView_uhid}>
-                            #{item.consumer[0]?.uid}
-                          </Stack>
-                        </td>
-
-                        {/* Lead Age */}
-                        <td className={`${styles.SwitchView_table_body_item}  ${styles.Switch_body_item2}`}  >
-                          <Stack className={styles.SwitchView_last_date}>
-                            {calculatedDate(item.date)}
-                          </Stack>
-                        </td>
-
-                        {/* Doctor Name */}
-                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item3}`} >
-                          <Stack className={styles.SwitchView_doc} sx={{ textTransform: "capitalize !important" }}>
-                            {doctorSetter(item?.prescription[0]?.doctor)}
-                          </Stack>
-                        </td>
-
-                        {/* Department */}
-                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item4}`} >
-                          <Stack className={styles.SwitchView_dep} sx={{ textTransform: "capitalize !important" }}>
-                            {departmentSetter(item.prescription[0].departments[0])}
-                          </Stack>
-                        </td>
-
-
-                        {/* LeadStatus */}
-                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item6}`} >
-                          <Stack
-                            sx={item.result === "65991601a62baad220000002" ? baseLossStyle : item.result === "65991601a62baad220000001" ? baseWonStyle : stageStyles[getStageName(item)]} >
-                            {item.result === "65991601a62baad220000002" ? "Loss" : item.result === "65991601a62baad220000001" ? "Won" : getStageName(item)}
-                          </Stack>
-                        </td>
-
-                        {/* Services */}
-                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item5}`} >
-
-                          <Box className="ticket-card-line3">
-                            {item.prescription[0].admission ? (<>
-                              <Stack className='ticket-card-line3-tag'>{item.prescription[0].admission}</Stack>
-                            </>
-                            )
-                              :
-                              (<></>)
-                            }
-                            {item.prescription[0].diagnostics.length > 0 ? (<>
-                              <Stack className='ticket-card-line3-tag'>Diagonstic</Stack>
-                            </>
-                            )
-                              :
-                              (<></>)
-                            }
-                          </Box>
-
-                        </td>
-
-
-                        {/* Probabilty */}
-                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`} >
-                          <Stack className={styles.SwitchView_Prob}
-                            sx={{
-                              color: getColor(item?.Probability),
-                              backgroundColor: getBackgroundColor(item?.Probability),
-                            }}
-                          >{!item?.Probability ? 0 : item?.Probability}%</Stack>
-                        </td>
-
-                        {/* Priority */}
-                        <td className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`} >
-                          {estimateData[item._id] == 0 ? (<>
-                            <Stack className="Priority-tag"> <img src={DefaultPr} alt="DefaultPr" /><span style={{ fontSize: "12px" }}>N/A</span></Stack>
-                          </>) : (
-                            <>
-                              <Stack className="Priority-tag">{estimateData[item._id] > 15000 ?
-                                (<><img src={HighPr} alt="" />High</>)
-                                :
-                                (estimateData[item._id] < 15000) && 4550 < (estimateData[item._id])
-                                  ? (<><img src={MediumPr} alt="" />Medium</>)
-                                  : (<><img src={LowPr} alt="" />Low</>)}
-                              </Stack>
-
-                            </>)
-                          }
-                        </td>
-
-
-                      </tr>
-                    ))}
-                  </>) :
-                  (<>
-                    <Box className="NotFound-Page" sx={{
-                      width: "90.5vw",
-                      height: '30vh'
-                    }}>
-                      <img src={NotFoundIcon} />
-                      <Stack className='NotFound-text'>No Ticket Available</Stack>
-                      <Stack className='NotFound-subtext'>No Data Found</Stack>
-                    </Box></>)}
-
-              </tbody>
-            </Box>
-
-            <Box className={styles.SwitchView_pagination}>
-              <CustomPagination
-                handlePagination={handlePagination}
-                pageCount={pageCount}
-                page={pageNumber}
+      {/* Modal For Reminder  */}
+      <Box>
+        <Modal
+          open={showReminderModal}
+          // onClose={() => handleCloseModal()}
+        >
+          <Box
+            sx={{
+              position: 'absolute',
+              bgcolor: 'white',
+              width: '600px',
+              height: '400px',
+              top: '50%',
+              left: '50%',
+              border: '0px solid transparent',
+              borderRadius: '8px',
+              transform: 'translate(-50%, -50%)',
+              padding: '10px'
+            }}
+          >
+            <div
+              onClick={handleCloseModal}
+              style={{
+                display: 'flex',
+                justifyContent: 'end',
+                cursor: 'pointer'
+              }}
+            >
+              <CloseIcon fontSize="large" />
+            </div>
+            <div className="buzz-animation">
+              <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
+            </div>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column'
+              }}
+            >
+              {ticketReminderPatient && (
+                <Typography>{`Reminder for ${(
+                  ticketReminderPatient?.consumer[0]?.firstName || 'N/A'
+                ).toUpperCase()} `}</Typography>
+              )}{' '}
+              <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
+                {alarmReminderedList[0]?.title.toUpperCase() || 'N/A'}
+              </Typography>
+              <Typography margin={'12px'}>
+                {alarmReminderedList[0]?.description || 'N/A'}
+              </Typography>
+              <Chip
+                size="medium"
+                variant="outlined"
+                color="primary"
+                label={dayjs(alarmReminderedList[0]?.date).format(
+                  'DD/MMM/YYYY hh:mm A '
+                )}
               />
             </Box>
-          </table>
-        </Box>
+          </Box>
+        </Modal>
       </Box>
-    </Box>
 
-    {/* Modal For Reminder  */}
-    <Box>
-      <Modal
-        open={showReminderModal}
-      // onClose={() => handleCloseModal()}
-      >
-        <Box
-          sx={{
-            position: 'absolute',
-            bgcolor: 'white',
-            width: '600px',
-            height: '400px',
-            top: '50%',
-            left: '50%',
-            border: '0px solid transparent',
-            borderRadius: '8px',
-            transform: 'translate(-50%, -50%)',
-            padding: '10px'
-          }}
+      {/* Modal For Rescheduler */}
+      <Box>
+        <Modal
+          open={showCallReschedulerModal}
+          // onClose={() => handleCloseModal()}
         >
-          <div
-            onClick={handleCloseModal}
-            style={{
-              display: 'flex',
-              justifyContent: 'end',
-              cursor: 'pointer'
-            }}
-          >
-            <CloseIcon fontSize="large" />
-          </div>
-          <div className="buzz-animation">
-            <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
-          </div>
           <Box
             sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              flexDirection: 'column'
+              position: 'absolute',
+              bgcolor: 'white',
+              width: '600px',
+              height: '400px',
+              top: '50%',
+              left: '50%',
+              border: '0px solid transparent',
+              borderRadius: '8px',
+              transform: 'translate(-50%, -50%)',
+              padding: '10px'
             }}
           >
-            {ticketReminderPatient && (
-              <Typography>{`Reminder for ${(
-                ticketReminderPatient?.consumer[0]?.firstName || 'N/A'
-              ).toUpperCase()} `}</Typography>
-            )}{' '}
-            <Typography
-              fontSize={'18px'}
-              fontWeight={'600'}
-              margin={'10px'}
+            <div
+              onClick={handleCloseCallReschedulerModal}
+              style={{
+                display: 'flex',
+                justifyContent: 'end',
+                cursor: 'pointer'
+              }}
             >
-              {alarmReminderedList[0]?.title.toUpperCase() || 'N/A'}
-            </Typography>
-            <Typography margin={'12px'}>
-              {alarmReminderedList[0]?.description || 'N/A'}
-            </Typography>
-            <Chip
-              size="medium"
-              variant="outlined"
-              color="primary"
-              label={dayjs(alarmReminderedList[0]?.date).format(
-                'DD/MMM/YYYY hh:mm A '
-              )}
-            />
-          </Box>
-        </Box>
-      </Modal>
-    </Box>
-
-    {/* Modal For Rescheduler */}
-    <Box>
-      <Modal
-        open={showCallReschedulerModal}
-      // onClose={() => handleCloseModal()}
-      >
-        <Box
-          sx={{
-            position: 'absolute',
-            bgcolor: 'white',
-            width: '600px',
-            height: '400px',
-            top: '50%',
-            left: '50%',
-            border: '0px solid transparent',
-            borderRadius: '8px',
-            transform: 'translate(-50%, -50%)',
-            padding: '10px'
-          }}
-        >
-          <div
-            onClick={handleCloseCallReschedulerModal}
-            style={{
-              display: 'flex',
-              justifyContent: 'end',
-              cursor: 'pointer'
-            }}
-          >
-            <CloseIcon fontSize="large" />
-          </div>
-          <div className="buzz-animation">
-            <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
-          </div>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              flexDirection: 'column'
-            }}
-          >
-            {ticketCallReschedulerPatient && (
-              <Typography>{`Call Rescheduler for ${(
-                ticketCallReschedulerPatient?.consumer[0]?.firstName ||
-                'N/A'
-              ).toUpperCase()} `}</Typography>
-            )}{' '}
-            <Typography
-              fontSize={'18px'}
-              fontWeight={'600'}
-              margin={'10px'}
+              <CloseIcon fontSize="large" />
+            </div>
+            <div className="buzz-animation">
+              <NotificationsActiveIcon sx={{ fontSize: '80px' }} />
+            </div>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'column'
+              }}
             >
-              {alarmCallReschedulerList[0]?.selectedLabels
-                ? alarmCallReschedulerList[0].selectedLabels
-                  .map((label) => label.label)
-                  .join(', ')
-                  .toUpperCase()
-                : 'N/A'}
-            </Typography>
-            <Typography margin={'12px'}>
-              {alarmCallReschedulerList[0]?.description || 'N/A'}
-            </Typography>
-            <Chip
-              size="medium"
-              variant="outlined"
-              color="primary"
-              label={dayjs(alarmCallReschedulerList[0]?.date).format(
-                'DD/MMM/YYYY hh:mm A '
-              )}
-            />
+              {ticketCallReschedulerPatient && (
+                <Typography>{`Call Rescheduler for ${(
+                  ticketCallReschedulerPatient?.consumer[0]?.firstName || 'N/A'
+                ).toUpperCase()} `}</Typography>
+              )}{' '}
+              <Typography fontSize={'18px'} fontWeight={'600'} margin={'10px'}>
+                {alarmCallReschedulerList[0]?.selectedLabels
+                  ? alarmCallReschedulerList[0].selectedLabels
+                      .map((label) => label.label)
+                      .join(', ')
+                      .toUpperCase()
+                  : 'N/A'}
+              </Typography>
+              <Typography margin={'12px'}>
+                {alarmCallReschedulerList[0]?.description || 'N/A'}
+              </Typography>
+              <Chip
+                size="medium"
+                variant="outlined"
+                color="primary"
+                label={dayjs(alarmCallReschedulerList[0]?.date).format(
+                  'DD/MMM/YYYY hh:mm A '
+                )}
+              />
+            </Box>
           </Box>
-        </Box>
-      </Modal>
-    </Box>
-  </>
-
-  )
+        </Modal>
+      </Box>
+    </>
+  );
 }
 
 export default SwitchViewTable;

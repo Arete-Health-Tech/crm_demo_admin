@@ -44,7 +44,7 @@ export const getTicket = async (
 export const getticketRescedulerAbove = async (ticketId?: string | null) => {
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
-    `/diagnostics/getReshedulerTicketlelo?ticket=${ticketId}`
+    `/diagnostics/getticketRescedulerAbove?ticket=${ticketId}`
   );
   return data;
 };

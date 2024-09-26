@@ -476,14 +476,17 @@ const TicketFilter = (props: {
     props.setPage(1);
     if (ticketID) {
       await validateTicket(ticketID);
-      navigate(`${localStorage.getItem('ticketType') === 'Admission'
-        ? '/admission/'
-        : localStorage.getItem('ticketType') === 'Diagnostics'
-          ? '/diagnostics/getRepresentativediagnosticsTickets/'
-          : localStorage.getItem('ticketType') === 'Follow-Up'
-            ? '/followUp/FollowUpTickets'
+      navigate(
+        `${
+          localStorage.getItem('ticketType') === 'Admission'
+            ? '/admission/'
+            : localStorage.getItem('ticketType') === 'Diagnostics'
+            ? '/diagnostics/'
+            : localStorage.getItem('ticketType') === 'Follow-Up'
+            ? '/follow-up/FollowUpTickets'
             : '/ticket/'
-        }`);
+        }`
+      );
     }
     console.log('filter dtata', selectedFilters);
   };

@@ -552,7 +552,7 @@ const NSingleTicketDetails = (props: Props) => {
                 : localStorage.getItem('ticketType') === 'Diagnostics'
                 ? '/diagnostics/'
                 : localStorage.getItem('ticketType') === 'Follow-Up'
-                ? '/followUp/'
+                ? '/follow-up/'
                 : '/ticket/'
             }`
           );
@@ -789,13 +789,17 @@ const NSingleTicketDetails = (props: Props) => {
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {
-      navigate(`${localStorage.getItem('ticketType') === 'Admission'
-          ? '/admission/'
-          : localStorage.getItem('ticketType') === 'Diagnostics'
-          ? '/diagnostics/'
-          : localStorage.getItem('ticketType') === 'Follow-Up'
-          ? '/followUp/'
-          : '/ticket/'}${ticketID}`);
+      navigate(
+        `${
+          localStorage.getItem('ticketType') === 'Admission'
+            ? '/admission/'
+            : localStorage.getItem('ticketType') === 'Diagnostics'
+            ? '/diagnostics/'
+            : localStorage.getItem('ticketType') === 'Follow-Up'
+            ? '/follow-up/'
+            : '/ticket/'
+        }${ticketID}`
+      );
     }
   };
 
@@ -812,7 +816,7 @@ const NSingleTicketDetails = (props: Props) => {
           : localStorage.getItem('ticketType') === 'Diagnostics'
           ? '/diagnostics/'
           : localStorage.getItem('ticketType') === 'Follow-Up'
-          ? '/followUp/'
+          ? '/follow-up/'
           : '/ticket/'
       }`
     );
@@ -825,13 +829,17 @@ const NSingleTicketDetails = (props: Props) => {
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {
-      navigate(`${localStorage.getItem('ticketType') === 'Admission'
-          ? '/admission/'
-          : localStorage.getItem('ticketType') === 'Diagnostics'
-          ? '/diagnostics/'
-          : localStorage.getItem('ticketType') === 'Follow-Up'
-          ? '/followUp/'
-          : '/ticket/'}${ticketID}`);
+      navigate(
+        `${
+          localStorage.getItem('ticketType') === 'Admission'
+            ? '/admission/'
+            : localStorage.getItem('ticketType') === 'Diagnostics'
+            ? '/diagnostics/'
+            : localStorage.getItem('ticketType') === 'Follow-Up'
+            ? '/follow-up/'
+            : '/ticket/'
+        }${ticketID}`
+      );
     }
   };
 
@@ -842,13 +850,17 @@ const NSingleTicketDetails = (props: Props) => {
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {
-      navigate(`${localStorage.getItem('ticketType') === 'Admission'
-          ? '/admission/'
-          : localStorage.getItem('ticketType') === 'Diagnostics'
-          ? '/diagnostics/'
-          : localStorage.getItem('ticketType') === 'Follow-Up'
-          ? '/followUp/'
-          : '/ticket/'}${ticketID}`);
+      navigate(
+        `${
+          localStorage.getItem('ticketType') === 'Admission'
+            ? '/admission/'
+            : localStorage.getItem('ticketType') === 'Diagnostics'
+            ? '/diagnostics/'
+            : localStorage.getItem('ticketType') === 'Follow-Up'
+            ? '/follow-up/'
+            : '/ticket/'
+        }${ticketID}`
+      );
     }
   };
 

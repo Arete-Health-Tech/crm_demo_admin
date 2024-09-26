@@ -835,9 +835,9 @@ const Ticket = () => {
             localStorage.getItem('ticketType') === 'Admission'
               ? '/admission/'
               : localStorage.getItem('ticketType') === 'Diagnostics'
-              ? '/diagnostics/getRepresentativediagnosticsTickets/'
+              ? '/diagnostics/'
               : localStorage.getItem('ticketType') === 'Follow-Up'
-              ? '/followUp/FollowUpTickets'
+              ? '/follow-up/FollowUpTickets'
               : '/ticket/'
           }`
         );

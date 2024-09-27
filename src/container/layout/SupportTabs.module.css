@@ -1,0 +1,7 @@
+.tabs_layout {
+  display: flex;
+  flex-direction: column !important;
+  align-items: center;
+  gap: 0px;
+  flex: 1 0 0;
+}

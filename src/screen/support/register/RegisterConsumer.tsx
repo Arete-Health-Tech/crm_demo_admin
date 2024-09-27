@@ -47,7 +47,7 @@ const RegisterConsumer = () => {
   const [existingData, setExistingData] = useState(false);
   const { setSnacks } = useEventStore();
   const navigate = useNavigate();
-  let existingBIData = false
+  let existingBIData = false;
 
   // const validationsChecker = () => {
   //   const firstName = consumer.firstName === initialConsumerFields.firstName;
@@ -109,7 +109,7 @@ const RegisterConsumer = () => {
         : { message: 'Please enter correct phone number', value: true },
       uid: uidValid
         ? defaultValidations
-        : { message: 'Please enter correct UHID', value: true },
+        : { message: 'Please enter correct UHID', value: true }
     }));
 
     return firstNameValid && phoneValid && uidValid;
@@ -157,7 +157,6 @@ const RegisterConsumer = () => {
 
       const data = await registerConsumerHandler(consumerPayload);
       if (data) {
-
         setConsumerId(data._id);
         setExistingData(true);
       } else {
@@ -194,9 +193,9 @@ const RegisterConsumer = () => {
   };
 
   const calculateAge = (dob) => {
-    console.log(dob, "dob")
+    console.log(dob, 'dob');
     if (!dob) {
-      return "";
+      return '';
     }
 
     const birthDate = new Date(dob);
@@ -210,22 +209,30 @@ const RegisterConsumer = () => {
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDifference = today.getMonth() - birthDate.getMonth();
 
-    if (monthDifference < 0 || (monthDifference === 0 && today.getDate() < birthDate.getDate())) {
+    if (
+      monthDifference < 0 ||
+      (monthDifference === 0 && today.getDate() < birthDate.getDate())
+    ) {
       age--;
     }
 
     return age;
-  }
+  };
 
   const fetchConsumerDataByUhid = async () => {
     try {
-      const response = await apiClient.get(
-        '/consumer/UhidData?',
-        { params: { search: consumer.uid } }
-      );
+      const response = await apiClient.get('/consumer/UhidData?', {
+        params: { search: consumer.uid }
+      });
       if (response.data) {
-        updateConsumerState('firstName', response.data[0].PatientName.split(' ')[0]);
-        updateConsumerState('lastName', response.data[0].PatientName.split(' ')[1]);
+        updateConsumerState(
+          'firstName',
+          response.data[0].PatientName.split(' ')[0]
+        );
+        updateConsumerState(
+          'lastName',
+          response.data[0].PatientName.split(' ')[1]
+        );
         let mobile;
         if (response.data[0].MobileNo.startsWith('0')) {
           mobile = response.data[0].MobileNo.substring(1);
@@ -235,16 +242,21 @@ const RegisterConsumer = () => {
         }
 
         updateConsumerState('age', calculateAge(response.data[0].DOB));
-        updateConsumerState('gender', response.data[0].Gender === "Female" ? "F" : response.data[0].Gender === "Male" ? "M" : "O"
+        updateConsumerState(
+          'gender',
+          response.data[0].Gender === 'Female'
+            ? 'F'
+            : response.data[0].Gender === 'Male'
+            ? 'M'
+            : 'O'
         );
         setConsumerId(response.data[0].PatientId);
         // existingBIData = true;
-        setExistingData(true)
+        setExistingData(true);
       }
     } catch (error) {
-      console.log("gfggf")
-      toast.error("Data not found");
-
+      console.log('gfggf');
+      toast.error('Data not found');
     }
     // try {
     //   const response = await apiClient.get(
@@ -275,14 +287,13 @@ const RegisterConsumer = () => {
   };
 
   useEffect(() => {
-
     updateConsumerState('firstName', '');
     updateConsumerState('lastName', '');
     updateConsumerState('phone', '');
     updateConsumerState('age', '');
     updateConsumerState('gender', '');
     setConsumerId('');
-
+    setExistingData(false);
   }, [consumer.uid]);
 
   return (
@@ -312,8 +323,13 @@ const RegisterConsumer = () => {
 
       {/* <TextField>{uhidData}</TextField> */}
       <Stack p={1} spacing={2} height="80vh">
-        <Stack display={'flex'} flexDirection={'row'} gap={'5px'} width={"100%"}>
-          <Stack width={"70%"}>
+        <Stack
+          display={'flex'}
+          flexDirection={'row'}
+          gap={'5px'}
+          width={'100%'}
+        >
+          <Stack width={'70%'}>
             <TextField
               // sx={{ px: 0.5 }}
               value={consumer.uid}
@@ -326,13 +342,16 @@ const RegisterConsumer = () => {
               // onBlur={fetchConsumerDataByUhid}
               error={validations.uid.value}
               helperText={validations.uid.message}
-            // inputProps={{ maxLength: 13, pattern: "\\d{0,12}" }}
-            // disabled={existingBIData ? false : true}
+              // inputProps={{ maxLength: 13, pattern: "\\d{0,12}" }}
+              // disabled={existingBIData ? false : true}
             />
-
           </Stack>
 
-          <Stack component={'div'} onClick={fetchConsumerDataByUhid} width={'30%'}>
+          <Stack
+            component={'div'}
+            onClick={fetchConsumerDataByUhid}
+            width={'30%'}
+          >
             <Button size="medium" variant="contained">
               Search
             </Button>

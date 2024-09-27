@@ -53,15 +53,20 @@ const Home = () => {
               </Typography>
             </Stack>
             <Logout />
-          </Box>                                                                                                 
+          </Box>
         </Stack>
         <Stack
           mb={1}
           justifyContent="centers"
-          onClick={() => navigate('/search')}
+          // onClick={() => navigate('/search')}
           style={inputStyles}
         >
-          <Typography color="GrayText">Search Patient</Typography>
+          <input
+            type="text"
+            // className={Styles.search_input}
+            placeholder=" Search..."
+            // onKeyDown={handleSearchKeyPress}
+          />
         </Stack>
       </Box>
       <Box p={1} height="100%">

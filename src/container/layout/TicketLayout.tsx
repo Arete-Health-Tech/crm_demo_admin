@@ -1,3 +1,4 @@
+/* eslint-disable no-sequences */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   Alert,
@@ -38,9 +39,10 @@ import { getDepartmentsHandler } from '../../api/department/departmentHandler';
 import { Outlet, useMatch, useNavigate, useParams } from 'react-router-dom';
 import DefaultScreen from '../../components/DefaultScreen';
 import { ArrowBack } from '@mui/icons-material';
-import TicketFilter, {
-  ticketFilterCount
-} from '../../screen/ticket/widgets/TicketFilter';
+import TicketFilter from '../../screen/ticket/widgets/TicketFilter';
+import TicketFilterDiago from '../../screen/ticket/widgets/TicketFilterDiago';
+import TicketFilterFollowup from '../../screen/ticket/widgets/TicketFilterFollowup';
+
 import handleClearFilter from '../../screen/ticket/widgets/TicketFilter';
 
 import DownloadAllTickets from '../../screen/ticket/widgets/DownloadAllTickets';
@@ -62,11 +64,9 @@ import {
   getAuditorCommentCount,
   getTicket,
   getTicketAfterNotification,
-  getTicketForAdmisions,
   getticketRescedulerAbove,
   getticketRescedulerAboveAdmission,
-  validateTicket,
-  validateTicketDiago
+  validateTicket
 } from '../../api/ticket/ticket';
 import CustomSpinLoader from '../../components/CustomSpinLoader';
 import { socket } from '../../api/apiClient';
@@ -1141,7 +1141,15 @@ const Ticket = () => {
                   <img src={AuditFilterIcon} alt="Audit Filter" />
                 </Stack> */}
                 <Stack marginRight={'-10px'}>
-                  <TicketFilter setPage={setPage} />
+                  {localStorage.getItem('ticketType') === 'Admission' ? (
+                    <TicketFilter setPage={setPage} />
+                  ) : localStorage.getItem('ticketType') === 'Diagnostics' ? (
+                    <TicketFilterDiago setPage={setPage} />
+                  ) : localStorage.getItem('ticketType') === 'Follow-Up' ? (
+                    <TicketFilterFollowup setPage={setPage} />
+                  ) : (
+                    <TicketFilter setPage={setPage} />
+                  )}
                 </Stack>
               </Box>
               <Box

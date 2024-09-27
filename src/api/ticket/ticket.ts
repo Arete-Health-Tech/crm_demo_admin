@@ -41,28 +41,28 @@ export const getTicket = async (
   return data;
 };
 
-export const getTicketForAdmisions = async (
-  name: string,
-  pageNumber: number = 1,
-  downloadAll: string,
-  selectedFilters: any,
-  ticketId?: string | null,
-  fetchUpdated: boolean = false,
-  phone?: any,
-  filteredLocation?: string | '',
-  won?: any,
-  lose?: any
-) => {
-  const params = new URLSearchParams(selectedFilters).toString();
-  // const timestamp = new Date().getTime();
-  const { data } = await apiClient.get(
-    `/ticket/getReshedulerTickets?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
-    &specialty=${localStorage.getItem(
-      'location'
-    )}&specialtyforFilter=${filteredLocation}`
-  );
-  return data;
-};
+// export const getTicketForAdmisions = async (
+//   name: string,
+//   pageNumber: number = 1,
+//   downloadAll: string,
+//   selectedFilters: any,
+//   ticketId?: string | null,
+//   fetchUpdated: boolean = false,
+//   phone?: any,
+//   filteredLocation?: string | '',
+//   won?: any,
+//   lose?: any
+// ) => {
+//   const params = new URLSearchParams(selectedFilters).toString();
+//   // const timestamp = new Date().getTime();
+//   const { data } = await apiClient.get(
+//     `/ticket/getReshedulerTickets?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
+//     &specialty=${localStorage.getItem(
+//       'location'
+//     )}&specialtyforFilter=${filteredLocation}`
+//   );
+//   return data;
+// };
 
 export const getticketRescedulerAbove = async (ticketId?: string | null) => {
   // const timestamp = new Date().getTime();
@@ -72,7 +72,9 @@ export const getticketRescedulerAbove = async (ticketId?: string | null) => {
   return data;
 };
 
-export const getticketRescedulerAboveAdmission = async (ticketId?: string | null) => {
+export const getticketRescedulerAboveAdmission = async (
+  ticketId?: string | null
+) => {
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
     `/ticket/getticketRescedulerAbove?ticket=${ticketId}`
@@ -159,16 +161,20 @@ export const updateTicketSubStage = async (payload: {
 };
 
 export const validateTicket = async (ticketId: string | undefined) => {
-  const result = await apiClient.put('/ticket/validateTicket', { ticketId });
+  const result = await apiClient.put(
+    localStorage.getItem('ticketType') === 'Admission'
+      ? '/ticket/validateTicket'
+      : '/diagnostics/validateDiagnosticsTicket',
+    { ticketId }
+  );
   return result;
 };
-export const validateTicketDiago = async (ticketId: string | undefined) => {
-  const result = await apiClient.put('/diagnostics/validateDiagnosticsTicket', {
-    ticketId
-  });
-  return result;
-};
-
+// export const validateTicketDiago = async (ticketId: string | undefined) => {
+//   const result = await apiClient.put('/diagnostics/validateDiagnosticsTicket', {
+//     ticketId
+//   });
+//   return result;
+// };
 
 export const sendTextMessage = async (
   message: string,

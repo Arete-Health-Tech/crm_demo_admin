@@ -201,6 +201,10 @@ export interface iTicketStore {
   setCallRescheduler: (callRescheduler: iCallRescheduler[]) => void;
   filterTickets: iTicketFilter;
   setFilterTickets: (filterTickets: iTicketFilter) => void;
+  filterTicketsDiago: iTicketFilter;
+  setFilterTicketsDiago: (filterTicketsDiago: iTicketFilter) => void;
+  filterTicketsFollowUp: iTicketFilter;
+  setFilterTicketsFollowUp: (filterTicketsFollowUp: iTicketFilter) => void;
   loaderOn: boolean;
   setLoaderOn: (loaderOn: boolean) => void;
   pageNumber: number;

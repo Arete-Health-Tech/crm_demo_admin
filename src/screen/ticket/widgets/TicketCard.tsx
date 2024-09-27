@@ -86,7 +86,7 @@ const TicketCard = (props: Props) => {
             : localStorage.getItem('ticketType') === 'Diagnostics'
             ? '/diagnostics/'
             : localStorage.getItem('ticketType') === 'Follow-Up'
-            ? '/follow-up/FollowUpTickets'
+            ? '/follow-up'
             : '/ticket/'
         }${ticketID}${props.patientData._id}`
       );

@@ -32,6 +32,24 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
     followUp: null
   },
   setFilterTickets: (filterTickets) => set({ filterTickets }),
+  filterTicketsDiago: {
+    stageList: [],
+    representative: null,
+    results: null,
+    dateRange: [],
+    status: [],
+    followUp: null
+  },
+  setFilterTicketsDiago: (filterTicketsDiago) => set({ filterTicketsDiago }),
+  filterTicketsFollowUp: {
+    stageList: [],
+    representative: null,
+    results: null,
+    dateRange: [],
+    status: [],
+    followUp: null
+  },
+  setFilterTicketsFollowUp: (filterTicketsFollowUp) => set({ filterTicketsFollowUp }),
   loaderOn: false,
   setLoaderOn: (loaderOn) => set({ loaderOn }),
   pageNumber: 1,
@@ -109,7 +127,7 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   auditDateRange: [''],
   setAuditDateRange: (auditDateRange) => set({ auditDateRange }),
   ticketType: '',
-  setTicketType: (ticketType) => set({ticketType})
+  setTicketType: (ticketType) => set({ ticketType })
 }));
 
 export default useTicketStore;

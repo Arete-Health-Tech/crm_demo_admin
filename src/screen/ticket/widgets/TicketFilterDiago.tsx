@@ -29,9 +29,10 @@ import { iTicketFilter } from '../../../types/store/ticket';
 import { getRepresntativesHandler } from '../../../api/representive/representativeHandler';
 import {
   selectedFiltersReducer,
+  selectedFiltersReducerDiago,
   ticketFilterTypes
 } from '../ticketStateReducers/filter';
-import { filterActions } from '../ticketStateReducers/actions/filterAction';
+import { filterActionsDiago } from '../ticketStateReducers/actions/filterAction';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import {
   getAuditFilterTicketsHandler,
@@ -158,7 +159,8 @@ const TicketFilter = (props: {
     isAuditorFilterOn,
     setIsAuditorFilterOn,
     setFilteredLocation,
-    filteredLocation
+    filteredLocation,
+    setFilterTicketsDiago
   } = useTicketStore();
 
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
@@ -172,8 +174,8 @@ const TicketFilter = (props: {
   const [stagesLabel, setStagesLabels] = React.useState<any>([]);
   const [representativeLabel, setRepresentativeLabel] = React.useState<any>([]);
 
-  const [selectedFilters, dispatchFilter] = useReducer(
-    selectedFiltersReducer,
+  const [selectedFilters, dispatchFilterDiago] = useReducer(
+    selectedFiltersReducerDiago,
     initialFilters
   );
   // const [startDate, setStartDate] = React.useState<string>('');
@@ -250,14 +252,14 @@ const TicketFilter = (props: {
       const modifiedStageList = selectedFilters.stageList;
       modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
 
-      dispatchFilter({
-        type: filterActions.STAGES,
+      dispatchFilterDiago({
+        type: filterActionsDiago.STAGES,
         payload: [...modifiedStageList]
       });
       return;
     }
-    dispatchFilter({
-      type: filterActions.STAGES,
+    dispatchFilterDiago({
+      type: filterActionsDiago.STAGES,
       payload: [...selectedFilters.stageList, value]
     });
   };
@@ -266,7 +268,7 @@ const TicketFilter = (props: {
     const value = e.target.value;
     if (value) {
       setCurrentRepresentative(value);
-      dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: value });
+      dispatchFilterDiago({ type: filterActionsDiago.REPRESENTATIVE, payload: value });
     }
   };
 
@@ -283,8 +285,8 @@ const TicketFilter = (props: {
   ) => {
     setAdmissionType(newAdmission);
 
-    dispatchFilter({
-      type: filterActions.ADMISSIONTYPE,
+    dispatchFilterDiago({
+      type: filterActionsDiago.ADMISSIONTYPE,
       payload: newAdmission
     });
   };
@@ -295,8 +297,8 @@ const TicketFilter = (props: {
   ) => {
     setStatusType(Status);
 
-    dispatchFilter({
-      type: filterActions.STATUS,
+    dispatchFilterDiago({
+      type: filterActionsDiago.STATUS,
       payload: Status
     });
   };
@@ -306,8 +308,8 @@ const TicketFilter = (props: {
     newDiagnostics: string[]
   ) => {
     setDiagnosticsType(newDiagnostics);
-    dispatchFilter({
-      type: filterActions.DIAGNOSTICSTYPE,
+    dispatchFilterDiago({
+      type: filterActionsDiago.DIAGNOSTICSTYPE,
       payload: newDiagnostics
     });
   };
@@ -315,8 +317,8 @@ const TicketFilter = (props: {
   const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const startDate = e.target.value;
     setDateRange((prevState) => [startDate, prevState[1]]);
-    dispatchFilter({
-      type: filterActions.DATERANGE,
+    dispatchFilterDiago({
+      type: filterActionsDiago.DATERANGE,
       payload: JSON.stringify([startDate, dateRange[1]])
     });
   };
@@ -324,8 +326,8 @@ const TicketFilter = (props: {
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const endDate = e.target.value;
     setDateRange((prevState) => [prevState[0], endDate]);
-    dispatchFilter({
-      type: filterActions.DATERANGE,
+    dispatchFilterDiago({
+      type: filterActionsDiago.DATERANGE,
       payload: JSON.stringify([dateRange[0], endDate])
     });
   };
@@ -349,15 +351,15 @@ const TicketFilter = (props: {
     if (followUp == null) {
       const dateValue = value ? new Date(value) : null;
       setFollowUp(dateValue);
-      dispatchFilter({
-        type: filterActions.FOLLOWUP,
+      dispatchFilterDiago({
+        type: filterActionsDiago.FOLLOWUP,
         payload: dateValue?.toISOString()
       });
     } else {
       const dateValue = value ? new Date(value) : null;
       setFollowUp(null);
-      dispatchFilter({
-        type: filterActions.FOLLOWUP,
+      dispatchFilterDiago({
+        type: filterActionsDiago.FOLLOWUP,
         payload: dateValue
       });
     }
@@ -373,20 +375,20 @@ const TicketFilter = (props: {
 
     if (value === 'Won') {
       setResult(value);
-      dispatchFilter({
-        type: filterActions.RESULTS,
+      dispatchFilterDiago({
+        type: filterActionsDiago.RESULTS,
         payload: '65991601a62baad220000001'
       });
     } else if (value === 'Lose') {
       setResult(value);
-      dispatchFilter({
-        type: filterActions.RESULTS,
+      dispatchFilterDiago({
+        type: filterActionsDiago.RESULTS,
         payload: '65991601a62baad220000002'
       });
     } else if (value === null) {
       setResult(value);
-      dispatchFilter({
-        type: filterActions.RESULTS,
+      dispatchFilterDiago({
+        type: filterActionsDiago.RESULTS,
         payload: null
       });
     }
@@ -454,7 +456,7 @@ const TicketFilter = (props: {
 
     setIsFilterOpen(false);
     setPageNumber(1);
-    setFilterTickets(selectedFilters);
+    setFilterTicketsDiago(selectedFilters);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(
@@ -492,14 +494,14 @@ const TicketFilter = (props: {
   };
 
   const handleClearFilter = async () => {
-    dispatchFilter({ type: filterActions.STAGES, payload: [] });
-    dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
-    dispatchFilter({ type: filterActions.ADMISSIONTYPE, payload: [] });
-    dispatchFilter({ type: filterActions.DIAGNOSTICSTYPE, payload: [] });
-    dispatchFilter({ type: filterActions.DATERANGE, payload: [] });
-    dispatchFilter({ type: filterActions.RESULTS, payload: null });
-    dispatchFilter({ type: filterActions.STATUS, payload: [] });
-    dispatchFilter({ type: filterActions.FOLLOWUP, payload: null });
+    dispatchFilterDiago({ type: filterActionsDiago.STAGES, payload: [] });
+    dispatchFilterDiago({ type: filterActionsDiago.REPRESENTATIVE, payload: null });
+    dispatchFilterDiago({ type: filterActionsDiago.ADMISSIONTYPE, payload: [] });
+    dispatchFilterDiago({ type: filterActionsDiago.DIAGNOSTICSTYPE, payload: [] });
+    dispatchFilterDiago({ type: filterActionsDiago.DATERANGE, payload: [] });
+    dispatchFilterDiago({ type: filterActionsDiago.RESULTS, payload: null });
+    dispatchFilterDiago({ type: filterActionsDiago.STATUS, payload: [] });
+    dispatchFilterDiago({ type: filterActionsDiago.FOLLOWUP, payload: null });
 
     setCurrentRepresentative('');
     setFilterCount(

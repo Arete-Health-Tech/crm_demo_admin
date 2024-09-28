@@ -41,8 +41,18 @@ const MessagingWidget = (props: Props) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { ticketID } = useParams();
   const { user } = useUserStore();
-  const { tickets, filterTickets, setWhtsappExpanded, whtsappExpanded, isAuditor, pageNumber, allWhtsappCount, searchByName } =
-    useTicketStore();
+  const {
+    tickets,
+    filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
+    setWhtsappExpanded,
+    whtsappExpanded,
+    isAuditor,
+    pageNumber,
+    allWhtsappCount,
+    searchByName
+  } = useTicketStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState(null);
   const [id, setId] = useState('');
@@ -51,6 +61,17 @@ const MessagingWidget = (props: Props) => {
   const [isDisabled, setIsDisabled] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   // const { user, setUser } = useUserStore();
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
+
+
   function getConsumerIdByDataId(dataArray, dataIdToMatch) {
     for (const obj of dataArray) {
       if (obj._id === dataIdToMatch) {
@@ -75,15 +96,10 @@ const MessagingWidget = (props: Props) => {
         searchByName,
         pageNumber,
         'false',
-        filterTickets
+        newFilter
       );
     } else {
-      await getTicketHandler(
-        searchByName,
-        pageNumber,
-        'false',
-        filterTickets
-      );
+      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     }
 
   }
@@ -96,7 +112,7 @@ const MessagingWidget = (props: Props) => {
         searchByName,
         pageNumber,
         'false',
-        filterTickets
+        newFilter
       );
     }
     else {
@@ -104,7 +120,7 @@ const MessagingWidget = (props: Props) => {
         searchByName,
         pageNumber,
         'false',
-        filterTickets
+        newFilter
       );
     }
   }

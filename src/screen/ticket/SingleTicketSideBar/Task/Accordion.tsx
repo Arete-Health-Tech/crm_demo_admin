@@ -15,10 +15,21 @@ function Accordion(props) {
     const [height, setHeight] = useState("0px");
     const [arrowRotation, setArrowRotation] = useState(0);
     const {
-        filterTickets,
-        searchByName,
-        pageNumber,
+      filterTickets,
+      filterTicketsDiago,
+      filterTicketsFollowUp,
+      searchByName,
+      pageNumber
     } = useTicketStore();
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
 
     function toggleAccordion() {
         setActive(!active);
@@ -35,10 +46,10 @@ function Accordion(props) {
             await setReschedularCompleted(taskData)
             await getAllTaskCountHandler();
             await getTicketHandler(
-                searchByName,
-                pageNumber,
-                'false',
-                filterTickets
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
             );
         } catch (error) {
             console.log(error)

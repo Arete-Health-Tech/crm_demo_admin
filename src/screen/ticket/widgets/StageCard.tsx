@@ -79,11 +79,26 @@ const StageCard = (props: Props) => {
   const [progressCount, setProgressCount] = useState<number>(0);
   const [activeState, setActiveState] = useState<number>(0);
   const [nextStage, setNextStage] = useState<string>('');
-  const { filterTickets, searchByName, pageNumber } = useTicketStore();
+  const {
+    filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
+    searchByName,
+    pageNumber
+  } = useTicketStore();
   const navigate = useNavigate();
   const [hospitalName, setHospitalName] = useState('');
   const [disableLostButton, setDisableLostButton] = useState(true);
   const [disableWonButton, setDisableWonButton] = useState(true);
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
 
 
   const [steps, setSteps] = useState([
@@ -242,8 +257,7 @@ const StageCard = (props: Props) => {
           searchByName,
           pageNumber,
           'false',
-          filterTickets,
-
+          newFilter
         );
         setTicketUpdateFlag(result);
       })();
@@ -365,8 +379,7 @@ const StageCard = (props: Props) => {
             searchByName,
             pageNumber,
             'false',
-            filterTickets,
-
+            newFilter
           );
           setTicketUpdateFlag(result);
         })();

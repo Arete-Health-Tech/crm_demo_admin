@@ -18,6 +18,8 @@ function UploadEstimate() {
   const { ticketID } = useParams();
   const {
     filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
     pageNumber,
     searchByName,
     setViewEstimates,
@@ -29,6 +31,17 @@ function UploadEstimate() {
   const [noteTextValue, setNoteTextValue] = useState('');
   const [disabled, setDisabled] = useState(true);
   const [selectedOption, setSelectedOption] = useState('');
+
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
+
 
   const checkIsEmpty = () => {
     if (
@@ -116,8 +129,7 @@ function UploadEstimate() {
           searchByName,
           pageNumber,
           'false',
-          filterTickets,
-
+          newFilter
         );
       })()
       setNoteTextValue('');
@@ -131,8 +143,7 @@ function UploadEstimate() {
           searchByName,
           pageNumber,
           'false',
-          filterTickets,
-
+          newFilter
         );
       })()
       setNoteTextValue('');

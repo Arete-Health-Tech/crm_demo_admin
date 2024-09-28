@@ -32,8 +32,14 @@ import { socket } from '../../../api/apiClient';
 const TaskBar = () => {
     const { ticketID } = useParams();
     const boxRef = useRef<HTMLDivElement | null>(null);
-    const { tickets, filterTickets, isAuditorFilterOn, setIsAuditorFilterOn } =
-        useTicketStore();
+    const {
+      tickets,
+      filterTickets,
+      filterTicketsDiago,
+      filterTicketsFollowUp,
+      isAuditorFilterOn,
+      setIsAuditorFilterOn
+    } = useTicketStore();
     const { isModalOpenCall, setIsModalOpenCall, searchByName, pageNumber, allAuditCommentCount, setAllAuditCommentCount } = useTicketStore();
     const [anchorEl, setAnchorEl] = useState(null);
     const [selectedOption, setSelectedOption] = useState(null);
@@ -128,9 +134,20 @@ const TaskBar = () => {
         fontWeight: 500
     };
 
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
+
+
     const getTicketAuditorComments = async () => {
         if (!isAuditorFilterOn) {
-            await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+            await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
         } else {
             await getAuditFilterTicketsHandler();
         }
@@ -168,12 +185,7 @@ const TaskBar = () => {
             ticketid: "",
             unreadCount: data, // Set the resolved data here
         });
-        await getTicketHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            filterTickets
-        );
+        await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     }
 
     useEffect(() => {

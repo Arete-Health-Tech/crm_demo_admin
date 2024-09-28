@@ -138,6 +138,8 @@ const Ticket = () => {
   const {
     tickets,
     filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
     setSearchByName,
     searchByName,
     ticketCount,
@@ -201,8 +203,27 @@ const Ticket = () => {
   const navigate = useNavigate();
   const currentRoute = useMatch(NAVIGATE_TO_TICKET);
   const redirectTicket = () => {
-    // navigate(NAVIGATE_TO_TICKET);
+    navigate(
+      `${
+        localStorage.getItem('ticketType') === 'Admission'
+          ? '/admission/'
+          : localStorage.getItem('ticketType') === 'Diagnostics'
+          ? '/diagnostics/'
+          : localStorage.getItem('ticketType') === 'Follow-Up'
+          ? '/follow-up/'
+          : '/ticket/'
+      }`
+    );
   };
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
 
   const handlePagination = async (
     event: React.ChangeEvent<unknown>,
@@ -212,10 +233,10 @@ const Ticket = () => {
     setPage(pageNo);
     if (pageNo !== page) {
       setTickets([]);
-      await getTicketHandler(searchName, pageNo, 'false', filterTickets);
+      await getTicketHandler(searchName, pageNo, 'false', newFilter);
       setPageNumber(pageNo);
 
-      // redirectTicket();
+      redirectTicket();
     }
   };
 
@@ -231,7 +252,7 @@ const Ticket = () => {
     // setTickets(ticketCache[1]);
     setPage(1);
     setPageNumber(1);
-    await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+    await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -246,6 +267,7 @@ const Ticket = () => {
   }, []);
 
   useEffect(() => {
+    console.log(newFilter, 'newFilter');
     const data = async () => {
       setSearchName(UNDEFINED);
       setSearchByName(UNDEFINED);
@@ -254,7 +276,7 @@ const Ticket = () => {
       // setTickets(ticketCache[1]);
       setPage(1);
       setPageNumber(1);
-      await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+      // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
     };
     data();
   }, [localStorage.getItem('location'), localStorage.getItem('ticketType')]);
@@ -278,15 +300,15 @@ const Ticket = () => {
       if (searchName === '') {
         fetchTicketsOnEmpthySearch();
         setSearchError('Type to search & Enter');
-        // redirectTicket();
+        redirectTicket();
         return;
       }
-      await getTicketHandler(searchName, 1, 'false', filterTickets);
+      await getTicketHandler(searchName, 1, 'false', newFilter);
       setSearchByName(searchName);
       setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
       setPageNumber(1);
       setPage(1);
-      // redirectTicket();
+      redirectTicket();
     }
   };
 
@@ -360,7 +382,7 @@ const Ticket = () => {
 
   useEffect(() => {
     (async function () {
-      await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+      // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
       await getAllNotesWithoutTicketId();
       await getStagesHandler();
       await getSubStagesHandler();
@@ -526,12 +548,12 @@ const Ticket = () => {
       let pageNumber = page;
       if (ticketID) {
       } else {
-        await getTicketHandler(searchName, pageNumber, 'false', filterTickets);
+        await getTicketHandler(searchName, pageNumber, 'false', newFilter);
         await getTicketAfterNotification(
           searchName,
           pageNumber,
           'false',
-          filterTickets
+          newFilter
         );
       }
     };
@@ -564,7 +586,7 @@ const Ticket = () => {
       }
       // socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
-  }, [filterTickets, page, searchName]);
+  }, [newFilter, page, searchName]);
 
   // useEffect(() => {
   //   const refetchTickets = async () => {
@@ -654,7 +676,7 @@ const Ticket = () => {
               setTicketReminderPatient(data.message);
               setAlamarReminderList([...alarmReminderedList, reminderDetail]);
               setReminderList([...reminderList, reminderDetail?._id]);
-              // redirectTicket();
+              redirectTicket();
               setShowReminderModal(true);
             }
           })();
@@ -673,7 +695,7 @@ const Ticket = () => {
 
   const handleCallToasterReminder = async () => {
     handleCallReminderToast();
-    await getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+    await getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
   };
 
   useEffect(() => {
@@ -718,7 +740,7 @@ const Ticket = () => {
                 ...callReschedulerList,
                 callRescheduleDetail?._id
               ]);
-              // redirectTicket();
+              redirectTicket();
               setShowCallReschedulerModal(true);
             }
           })();
@@ -737,7 +759,7 @@ const Ticket = () => {
 
   const handleCallToasterRescheduler = async () => {
     handleCallReschedulerToast();
-    await getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+    await getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
   };
 
   useEffect(() => {
@@ -792,7 +814,7 @@ const Ticket = () => {
   //This function call the api to get all the ticket id with their whtsapp message count
   const getAllWhtsappMsgCount = async () => {
     await getAllWhtsappCountHandler();
-    await getTicketHandler(searchName, pageNumber, 'false', filterTickets);
+    await getTicketHandler(searchName, pageNumber, 'false', newFilter);
   };
   useEffect(() => {
     getAllWhtsappMsgCount();
@@ -837,7 +859,7 @@ const Ticket = () => {
               : localStorage.getItem('ticketType') === 'Diagnostics'
               ? '/diagnostics/'
               : localStorage.getItem('ticketType') === 'Follow-Up'
-              ? '/follow-up/FollowUpTickets'
+              ? '/follow-up/'
               : '/ticket/'
           }`
         );

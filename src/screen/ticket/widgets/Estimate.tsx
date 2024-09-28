@@ -127,7 +127,13 @@ const Estimate = (props: Props) => {
 
   const [searchServiceValue, setSearchServiceValue] = useState('');
   const { wards, doctors, allServices } = useServiceStore();
-  const { filterTickets, searchByName, pageNumber } = useTicketStore();
+  const {
+    filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
+    searchByName,
+    pageNumber
+  } = useTicketStore();
   const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
 
   const [textFieldValue, setTextFieldValue] = useState('');
@@ -139,6 +145,15 @@ const Estimate = (props: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   // D STARTS HERE__________________________
 
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
 
 
   const [alert, setAlert] = useState<AlertType>({
@@ -313,12 +328,7 @@ const Estimate = (props: Props) => {
     setIsEstimateOpen(false);
     setTimeout(() => {
       (async () => {
-        await getTicketHandler(
-          searchByName,
-          pageNumber,
-          'false',
-          filterTickets
-        );
+        await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         props.setTicketUpdateFlag(result);
       })();
     }, 1000);
@@ -352,7 +362,12 @@ const Estimate = (props: Props) => {
         const result = await updateTicketSubStage(payload);
         setTimeout(() => {
           (async () => {
-            await getTicketHandler(searchByName, pageNumber, 'false', filterTickets);
+            await getTicketHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
+            );
             setTicketUpdateFlag(result);
           })();
         }, 1000);

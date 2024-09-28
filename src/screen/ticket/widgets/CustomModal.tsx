@@ -48,6 +48,8 @@ const CustomModal = () => {
   const {
     tickets,
     filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
     reminders,
     pageNumber,
     searchByName,
@@ -76,6 +78,17 @@ const CustomModal = () => {
     select: '',
     stoppedTimer: 0
   });
+
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
+
 
   useEffect(() => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
@@ -194,12 +207,7 @@ const CustomModal = () => {
 
       // on submit button click after 1 second the ticket data will call 
       (async () => {
-        await getTicketHandler(
-          searchByName,
-          pageNumber,
-          'false',
-          filterTickets
-        );
+        await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       })();
 
       // Check if result is truthy (not undefined or null)

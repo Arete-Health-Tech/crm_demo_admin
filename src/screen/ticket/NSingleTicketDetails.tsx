@@ -203,6 +203,8 @@ const NSingleTicketDetails = (props: Props) => {
   const {
     tickets,
     filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
     reminders,
     pageNumber,
     searchByName,
@@ -277,6 +279,16 @@ const NSingleTicketDetails = (props: Props) => {
     });
   };
 
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
+
+  console.log(newFilter);
   useEffect(() => {
     /* @ts-ignore */
     setPrescription(structuredClone(initialPrescription));
@@ -326,11 +338,11 @@ const NSingleTicketDetails = (props: Props) => {
         );
         setDisableButton(false);
         setAmissionTypeClicked(true);
-        getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+        getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
       } catch (error) {
         setDisableButton(false);
         setAmissionTypeClicked(true);
-        getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+        getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
         console.error('Error occurred:', error);
       }
 
@@ -785,7 +797,7 @@ const NSingleTicketDetails = (props: Props) => {
   const handleProbability = async (value) => {
     await updateTicketProbability(value, ticketID);
     setProbabilityModal(false);
-    getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+    await getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {
@@ -807,7 +819,7 @@ const NSingleTicketDetails = (props: Props) => {
   const handleLeadDelete = async () => {
     setDeleteModal(false);
     await deleteTicket(ticketID);
-    getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+    getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
     await validateTicket(ticketID);
     navigate(
       `${
@@ -825,7 +837,7 @@ const NSingleTicketDetails = (props: Props) => {
   //This function is for assigne ticket to different representative
   const handleAddAssigne = async (assigneeId: string) => {
     const res = await assignedToTicket(ticketID, assigneeId);
-    getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+    getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {
@@ -846,7 +858,7 @@ const NSingleTicketDetails = (props: Props) => {
   //This function is for remove assigne ticket from the representative
   const handleRemoveAssigne = async (assigneeId: string) => {
     const res = await removeFromTicket(ticketID, assigneeId);
-    getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
+    getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {
@@ -888,7 +900,7 @@ const NSingleTicketDetails = (props: Props) => {
   //This function call the api to get all the ticket id with their whtsapp message count
   const getAllWhtsappMsgCount = async () => {
     await getAllWhtsappCountHandler();
-    await getTicketHandler(searchByName, pageNumber, 'false', filterTickets);
+    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
   };
 
   useEffect(() => {

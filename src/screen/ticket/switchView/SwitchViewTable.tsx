@@ -153,6 +153,8 @@ function SwitchViewTable() {
   const {
     tickets,
     filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
     setSearchByName,
     searchByName,
     ticketCount,
@@ -172,6 +174,15 @@ function SwitchViewTable() {
     viewEstimates,
     setViewEstimates
   } = useTicketStore();
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
@@ -239,7 +250,7 @@ function SwitchViewTable() {
       // } else {
       //   await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       // }
-      await getTicketHandler(searchName, pageNo, 'false', filterTickets);
+      await getTicketHandler(searchName, pageNo, 'false', newFilter);
       setPage(pageNo);
       setPageNumber(pageNo);
 
@@ -259,7 +270,7 @@ function SwitchViewTable() {
     // setTickets(ticketCache[1]);
     setPage(1);
     setPageNumber(1);
-    await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+    await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
   };
 
   const handleSearchKeyPress = async (e: any) => {
@@ -276,7 +287,7 @@ function SwitchViewTable() {
         // redirectTicket()
         return;
       }
-      await getTicketHandler(value, 1, 'false', filterTickets);
+      await getTicketHandler(value, 1, 'false', newFilter);
       setSearchByName(value);
       setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
       setPageNumber(1);
@@ -289,7 +300,7 @@ function SwitchViewTable() {
 
   useEffect(() => {
     (async function () {
-      await getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+      await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
       await getAllNotesWithoutTicketId();
       await getStagesHandler();
       await getSubStagesHandler();
@@ -337,7 +348,7 @@ function SwitchViewTable() {
 
   useEffect(() => {
     const refetchTickets = async () => {
-      const copiedFilterTickets = { ...filterTickets };
+      const copiedFilterTickets = { ...newFilter };
       let pageNumber = page;
       if (ticketID) {
       } else {
@@ -355,7 +366,7 @@ function SwitchViewTable() {
     return () => {
       socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
-  }, [filterTickets, page, searchName]);
+  }, [newFilter, page, searchName]);
 
   useEffect(() => {
     clearAllInterval(AllIntervals);
@@ -377,7 +388,7 @@ function SwitchViewTable() {
                 UNDEFINED,
                 1,
                 'false',
-                filterTickets,
+                newFilter,
                 // selectedFilters,
                 reminderDetail?.ticket,
                 true,
@@ -459,7 +470,7 @@ function SwitchViewTable() {
                 UNDEFINED,
                 1,
                 'false',
-                filterTickets,
+                newFilter,
                 callRescheduleDetail?.ticket,
                 true,
                 phone

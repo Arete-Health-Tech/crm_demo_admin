@@ -20,7 +20,8 @@ import {
   getAllTaskCount,
   getAuditTickets,
   getAllWhatsAppCount,
-  getAuditTicket
+  getAuditTicket,
+  getAllTicket
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';

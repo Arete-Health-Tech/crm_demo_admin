@@ -63,10 +63,12 @@ const menuItemStyles = {
 
 const PatientRecord = ({ isPatient }) => {
     const {
-        filterTickets,
-        searchByName,
-        pageNumber,
-        isAuditor
+      filterTickets,
+      filterTicketsDiago,
+      filterTicketsFollowUp,
+      searchByName,
+      pageNumber,
+      isAuditor
     } = useTicketStore();
     const [currentTicket, setCurrentTicket] = React.useState<iTicket>();
     const [isEditing, setIsEditing] = React.useState(false);
@@ -81,6 +83,17 @@ const PatientRecord = ({ isPatient }) => {
     } = useTicketStore();
     const { allServices, services } = useServiceStore();
     const { ticketID } = useParams();
+
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
+
 
     useEffect(() => {
         const getTicketInfo = (ticketID: string | undefined) => {
@@ -135,12 +148,7 @@ const PatientRecord = ({ isPatient }) => {
             await updateConusmerData(updatedData, ticketID)
         }
 
-        await getTicketHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            filterTickets
-        );
+        await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         setIsEditing(false);
         setAdmissionType('');
     };
@@ -154,12 +162,7 @@ const PatientRecord = ({ isPatient }) => {
             }
         }
         await updateConusmerData(updatedData, ticketID)
-        await getTicketHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            filterTickets
-        );
+        await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         setIsDiagonsticTestEditing(false);
     };
 
@@ -284,7 +287,7 @@ const PatientRecord = ({ isPatient }) => {
             setDisableButton(false);
             setAmissionTypeClicked(true);
             setIsEditing(false);
-            getTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+            getTicketHandler(UNDEFINED, 1, 'false', newFilter);
 
             // const url = ticketID !== undefined ? `/ticket/${ticketID}` : `/ticket`;
             // window.location.href = url;

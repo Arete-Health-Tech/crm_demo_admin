@@ -44,7 +44,14 @@ import NotFoundIcon from '../../../assets/NotFoundTask.svg';
 type Props = { setTicketUpdateFlag: any };
 
 const NotesWidget = (props: Props) => {
-  const { filterTickets, searchByName, pageNumber, isAuditor } = useTicketStore();
+  const {
+    filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
+    searchByName,
+    pageNumber,
+    isAuditor
+  } = useTicketStore();
   const [notesModal, setNotesModal] = useState(false);
   const [note, setNote] = useState('');
   const [loading, setLoading] = useState(true);
@@ -56,6 +63,15 @@ const NotesWidget = (props: Props) => {
   const { ticketID } = useParams();
   const { user, setUser } = useUserStore();
 
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
 
   const handleAddNewNote = async () => {
     if (note !== '<p><br></p>') {
@@ -70,7 +86,7 @@ const NotesWidget = (props: Props) => {
             searchByName,
             pageNumber,
             'false',
-            filterTickets
+            newFilter
           );
           props.setTicketUpdateFlag(result);
         })();
@@ -94,7 +110,7 @@ const NotesWidget = (props: Props) => {
             searchByName,
             pageNumber,
             'false',
-            filterTickets
+            newFilter
           );
           setNotesClickedData(null)
           await getAllNotesHandler(ticketID as string);
@@ -125,7 +141,7 @@ const NotesWidget = (props: Props) => {
           searchByName,
           pageNumber,
           'false',
-          filterTickets
+          newFilter
         );
         setNotesClickedData(null)
         await getAllNotesHandler(ticketID as string);

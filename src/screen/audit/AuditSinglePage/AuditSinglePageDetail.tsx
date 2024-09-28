@@ -145,16 +145,18 @@ const AuditSinglePageDetail = (props: Props) => {
     const navigate = useNavigate();
     const { ticketID } = useParams();
     const {
-        tickets,
-        filterTickets,
-        reminders,
-        pageNumber,
-        searchByName,
-        callRescheduler,
-        estimates,
-        isAuditor,
-        setIsAuditor,
-        isAuditorFilterOn,
+      tickets,
+      filterTickets,
+      filterTicketsDiago,
+      filterTicketsFollowUp,
+      reminders,
+      pageNumber,
+      searchByName,
+      callRescheduler,
+      estimates,
+      isAuditor,
+      setIsAuditor,
+      isAuditorFilterOn
     } = useTicketStore();
     const { doctors, departments, stages } = useServiceStore();
     const [currentTicket, setCurrentTicket] = useState<iTicket>();
@@ -190,6 +192,15 @@ const AuditSinglePageDetail = (props: Props) => {
     const [matchedObjects, setMatchedObjects] = useState([]);
     const [callReschedulerData, setCallReschedulerData] = useState([]);
 
+
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
 
     const handleChange = (event: React.SyntheticEvent, newValue: string) => {
         setValue(newValue);
@@ -596,7 +607,12 @@ const AuditSinglePageDetail = (props: Props) => {
         }
         const getTickets = async () => {
             if (!isAuditorFilterOn) {
-                await getAllAuditTicketHandler(UNDEFINED, 1, 'false', filterTickets);
+                await getAllAuditTicketHandler(
+                  UNDEFINED,
+                  1,
+                  'false',
+                  newFilter
+                );
             } else {
                 await getAuditFilterTicketsHandler();
             }

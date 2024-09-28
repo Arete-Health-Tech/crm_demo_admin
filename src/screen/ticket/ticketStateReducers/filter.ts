@@ -26,6 +26,30 @@ export const selectedFiltersState: iTicketFilter = {
   followUp: null
 };
 
+export const selectedFiltersStateDiago: iTicketFilter = {
+  stageList: [],
+  representative: null,
+  results: null,
+  //  ....
+  admissionType: [],
+  diagnosticsType: [],
+  dateRange: ['', ''],
+  status: [],
+  followUp: null
+};
+
+export const selectedFiltersStateFollowUp: iTicketFilter = {
+  stageList: [],
+  representative: null,
+  results: null,
+  //  ....
+  admissionType: [],
+  diagnosticsType: [],
+  dateRange: ['', ''],
+  status: [],
+  followUp: null
+};
+
 interface actionType {
   type: string;
   payload: any;
@@ -106,7 +130,7 @@ export function selectedFiltersReducer(
   throw new Error('unknown action type');
 }
 export function selectedFiltersReducerDiago(
-  selectedFiltersState: iTicketFilter,
+  selectedFiltersStateDiago: iTicketFilter,
   action: actionTypeDiago
 ): iTicketFilter {
   if (action.type === filterActions.STAGES) {
@@ -172,7 +196,7 @@ export function selectedFiltersReducerDiago(
   throw new Error('unknown action type');
 }
 export function selectedFiltersReducerFollowUp(
-  selectedFiltersState: iTicketFilter,
+  selectedFiltersStateFollowUp: iTicketFilter,
   action: actionTypeFollowup
 ): iTicketFilter {
   if (action.type === filterActions.STAGES) {

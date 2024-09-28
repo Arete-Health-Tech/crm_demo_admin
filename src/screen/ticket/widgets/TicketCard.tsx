@@ -60,6 +60,8 @@ const TicketCard = (props: Props) => {
   const {
     tickets,
     filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
     setIsAuditor,
     allTaskCount,
     viewEstimates,
@@ -73,9 +75,18 @@ const TicketCard = (props: Props) => {
   } = useTicketStore();
   const navigate = useNavigate();
 
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
+
   useEffect(() => {
     if (
-      filterTickets.stageList.length === 0 &&
+      newFilter.stageList.length === 0 &&
       props.index === 0 &&
       window.location.href.split('/')[3] === 'tickets'
     ) {
@@ -92,7 +103,7 @@ const TicketCard = (props: Props) => {
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filterTickets, props.index, props.patientData._id]);
+  }, [newFilter, props.index, props.patientData._id]);
 
   const doctorSetter = (id: string) => {
     return doctors.find((element) => element._id === id)?.name;

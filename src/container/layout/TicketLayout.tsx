@@ -90,7 +90,7 @@ import {
 } from '../../api/service/serviceHandler';
 import useReprentativeStore from '../../store/representative';
 import { getRepresntativesHandler } from '../../api/representive/representativeHandler';
-import { SpinnerDotted } from 'spinners-react';
+import { SpinnerCircularFixed	 } from 'spinners-react';
 
 const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
@@ -978,7 +978,7 @@ const Ticket = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <SpinnerDotted
+              <SpinnerCircularFixed	
                 size={100}
                 thickness={100}
                 speed={50}

@@ -44,6 +44,16 @@ export const getAllTicket = async () => {
   const { data } = await apiClient.get(`/ticket/getTicketsWithinDateRange`);
   return data;
 };
+export const getAllTicketDiagontics = async () => {
+  const { data } = await apiClient.get(
+    `/ticket/getAllDownloadTicketDiagnostics`
+  );
+  return data;
+};
+export const getAllTicketFollowUp = async () => {
+  const { data } = await apiClient.get(`/ticket/getAllDownloadTicketFolllow`);
+  return data;
+};
 
 export const getticketRescedulerAbove = async (ticketId?: string | null) => {
   // const timestamp = new Date().getTime();

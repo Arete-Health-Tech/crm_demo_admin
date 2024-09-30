@@ -22,7 +22,11 @@ import { UNDEFINED } from '../../../constantUtils/constant';
 import useReprentativeStore from '../../../store/representative';
 import DownloadAllFileIcon from '../../../../src/assets/DownloadAllFiles.svg';
 import { apiClient } from '../../../api/apiClient';
-import { getAllTicket } from '../../../api/ticket/ticket';
+import {
+  getAllTicket,
+  getAllTicketDiagontics,
+  getAllTicketFollowUp
+} from '../../../api/ticket/ticket';
 
 type Props = {};
 
@@ -127,7 +131,15 @@ const DownloadAllTickets = (props: Props) => {
 
   const downloadData = async () => {
     setDownloadDisable(true);
-    const sortedTickets = await getAllTicket();
+    const sortedTickets =
+      localStorage.getItem('ticketType') === 'Admission'
+        ? await getAllTicket()
+        : localStorage.getItem('ticketType') === 'Diagnostics'
+        ? await getAllTicketDiagontics()
+        : localStorage.getItem('ticketType') === 'Follow-Up'
+        ? await getAllTicketFollowUp()
+        : await getAllTicket();
+
     await getDoctorsHandler();
     await getDepartmentsHandler();
 

@@ -49,7 +49,8 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
     status: [],
     followUp: null
   },
-  setFilterTicketsFollowUp: (filterTicketsFollowUp) => set({ filterTicketsFollowUp }),
+  setFilterTicketsFollowUp: (filterTicketsFollowUp) =>
+    set({ filterTicketsFollowUp }),
   loaderOn: false,
   setLoaderOn: (loaderOn) => set({ loaderOn }),
   pageNumber: 1,
@@ -127,7 +128,9 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   auditDateRange: [''],
   setAuditDateRange: (auditDateRange) => set({ auditDateRange }),
   ticketType: '',
-  setTicketType: (ticketType) => set({ ticketType })
+  setTicketType: (ticketType) => set({ ticketType }),
+  downloadDisable: false,
+  setDownloadDisable: (downloadDisable) => set({ downloadDisable })
 }));
 
 export default useTicketStore;

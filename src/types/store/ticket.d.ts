@@ -273,6 +273,8 @@ export interface iTicketStore {
   setAuditDateRange: (auditDateRange: string[]) => void;
   ticketType: string;
   setTicketType: (ticketType: string) => void;
+  downloadDisable: boolean;
+  setDownloadDisable: (downloadDisable: boolean) => void;
 }
 
 export interface iNote {

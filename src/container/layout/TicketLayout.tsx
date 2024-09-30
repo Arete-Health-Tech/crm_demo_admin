@@ -90,6 +90,7 @@ import {
 } from '../../api/service/serviceHandler';
 import useReprentativeStore from '../../store/representative';
 import { getRepresntativesHandler } from '../../api/representive/representativeHandler';
+import { SpinnerDotted } from 'spinners-react';
 
 const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
@@ -158,7 +159,8 @@ const Ticket = () => {
     setIsAuditor,
     viewEstimates,
     allAuditCommentCount,
-    setAllAuditCommentCount
+    setAllAuditCommentCount,
+    downloadDisable
   } = useTicketStore();
   const { user } = useUserStore.getState();
   const phoneNumber = user?.phone;
@@ -276,7 +278,7 @@ const Ticket = () => {
       // setTickets(ticketCache[1]);
       setPage(1);
       setPageNumber(1);
-      // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
     };
     data();
   }, [localStorage.getItem('location'), localStorage.getItem('ticketType')]);
@@ -624,12 +626,12 @@ const Ticket = () => {
                       reminderDetail?.ticket
                     )
                   : await getticketRescedulerAbove(reminderDetail?.ticket);
-              await getTicketHandler(
-                searchByName,
-                pageNumber,
-                'false',
-                newFilter
-              );
+              // await getTicketHandler(
+              //   searchByName,
+              //   pageNumber,
+              //   'false',
+              //   newFilter
+              // );
 
               // const newData = await getTicketForAdmisions(
               //   UNDEFINED,
@@ -956,6 +958,42 @@ const Ticket = () => {
 
   return (
     <>
+      {downloadDisable && (
+        <>
+          <Box
+            position="fixed"
+            top={0}
+            left={0}
+            width="100%"
+            height="100%"
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            bgcolor="rgba(255, 255, 255, 0.5)" // Semi-transparent background
+            zIndex={9999} // Ensure it's on top
+          >
+            <Box
+              display="flex"
+              flexDirection="column" // Arrange spinner and text vertically
+              justifyContent="center"
+              alignItems="center"
+            >
+              <SpinnerDotted
+                size={100}
+                thickness={100}
+                speed={50}
+                color="#007BFF"
+                // secondaryColor="#D9EBFF"
+              />
+              <Box mt={2} fontSize="16px" fontWeight="bold">
+                {' '}
+                {/* Add margin-top to space text below the spinner */}
+                Downloading Please Wait ...
+              </Box>
+            </Box>
+          </Box>
+        </>
+      )}
       <Box height={'100vh'} display="flex" position="fixed" width="100%">
         <Box
           bgcolor="#F6F7F9"

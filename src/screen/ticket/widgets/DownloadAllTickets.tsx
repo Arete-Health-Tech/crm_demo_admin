@@ -12,9 +12,7 @@ import dayjs from 'dayjs';
 import React, { useEffect, useState } from 'react';
 import { getDepartmentsHandler } from '../../../api/department/departmentHandler';
 import { getDoctorsHandler } from '../../../api/doctor/doctorHandler';
-import {
-  getTicketHandler
-} from '../../../api/ticket/ticketHandler';
+import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import useServiceStore from '../../../store/serviceStore';
 import useTicketStore from '../../../store/ticketStore';
 import Papa from 'papaparse';
@@ -46,9 +44,14 @@ const DownloadAllTickets = (props: Props) => {
   const { doctors, departments, stages, allNotes } = useServiceStore();
 
   const { representative } = useReprentativeStore();
-  const { filterTickets, filterTicketsDiago, filterTicketsFollowUp, tickets } =
-    useTicketStore();
-  const [disable, setDisable] = useState(false);
+  const {
+    filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
+    setDownloadDisable,
+    downloadDisable
+  } = useTicketStore();
+  // const [disable, setDisable] = useState(false);
 
   const newFilter =
     localStorage.getItem('ticketType') === 'Admission'
@@ -123,10 +126,7 @@ const DownloadAllTickets = (props: Props) => {
   };
 
   const downloadData = async () => {
-    const startDate = new Date();
-    const endDate = new Date();
-
-    setDisable(true);
+    setDownloadDisable(true);
     const sortedTickets = await getAllTicket();
     await getDoctorsHandler();
     await getDepartmentsHandler();
@@ -267,12 +267,14 @@ const DownloadAllTickets = (props: Props) => {
       csvBlob,
       `${dayjs(new Date()).format('DD:MM:YY')}Data.csv`
     );
-    setDisable(false);
+    setDownloadDisable(false);
   };
 
   return (
     <Box p={1} px={2}>
-      <LightTooltip title={!disable ? 'Download All Data' : 'Downloading....'}>
+      <LightTooltip
+        title={!downloadDisable ? 'Download All Data' : 'Downloading....'}
+      >
         <Stack
           style={{
             width: '15.667px',
@@ -281,7 +283,7 @@ const DownloadAllTickets = (props: Props) => {
             borderRadius: '12px'
           }}
         >
-          <button disabled={disable} onClick={downloadData}>
+          <button disabled={downloadDisable} onClick={downloadData}>
             <img src={DownloadAllFileIcon} alt="Download All Data" />
           </button>
         </Stack>

@@ -616,9 +616,9 @@ const PatientRecord = ({ isPatient }) => {
                                             <MenuItem value="USG" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>USG</MenuItem>
                                             <MenuItem value="X-RAY" sx={{ fontFamily: "Outfit,sans-serif", fontSize: "12px" }}>X-RAY</MenuItem>
                                         </Select>
-                                        <IconButton onClick={() => removeDiagnosticTest(index)}>
+                                        {/* <IconButton onClick={() => removeDiagnosticTest(index)}>
                                             <DeleteIcon sx={{ color: 'red' }} />
-                                        </IconButton>
+                                        </IconButton> */}
                                     </Stack>
                                 ) : (
                                     <>

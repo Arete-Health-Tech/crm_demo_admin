@@ -1326,12 +1326,15 @@ const NSingleTicketDetails = (props: Props) => {
                 {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     Set Priority
                                 </MenuItem> */}
-                <MenuItem
-                  sx={menuItemStyles}
-                  onClick={() => setAmissionTypeClicked(false)}
-                >
-                  Add Surgery
-                </MenuItem>
+                {currentTicket?.prescription[0]?.admission !== null ||
+                  (currentTicket?.prescription[0]?.admission !== '' && (
+                    <MenuItem
+                      sx={menuItemStyles}
+                      onClick={() => setAmissionTypeClicked(false)}
+                    >
+                      Add Surgery
+                    </MenuItem>
+                  ))}
                 {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     Initate RFA
                                 </MenuItem> */}

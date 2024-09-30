@@ -26,6 +26,7 @@ import { updateConusmerData } from '../../../../api/ticket/ticket';
 import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
 import { apiClient } from '../../../../api/apiClient';
 import dayjs from 'dayjs';
+import { UNDEFINED } from '../../../../constantUtils/constant';
 
 interface patientData {
   uhid: string;
@@ -306,7 +307,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
       }
     };
     await updateConusmerData(updatedData, ticketID);
-    window.location.reload()
+    // window.location.reload()
+    await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
     setIsEditing(false);
   };
 

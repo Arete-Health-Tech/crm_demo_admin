@@ -236,7 +236,7 @@ const Ticket = () => {
       await getTicketHandler(searchName, pageNo, 'false', newFilter);
       setPageNumber(pageNo);
 
-      redirectTicket();
+      // redirectTicket();
     }
   };
 
@@ -300,7 +300,7 @@ const Ticket = () => {
       if (searchName === '') {
         fetchTicketsOnEmpthySearch();
         setSearchError('Type to search & Enter');
-        redirectTicket();
+        // redirectTicket();
         return;
       }
       await getTicketHandler(searchName, 1, 'false', newFilter);
@@ -308,7 +308,7 @@ const Ticket = () => {
       setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
       setPageNumber(1);
       setPage(1);
-      redirectTicket();
+      // redirectTicket();
     }
   };
 
@@ -378,7 +378,7 @@ const Ticket = () => {
   //   } else return true;
   // };
 
-  window.onload = redirectTicket;
+  // window.onload = redirectTicket;
 
   useEffect(() => {
     (async function () {
@@ -624,6 +624,12 @@ const Ticket = () => {
                       reminderDetail?.ticket
                     )
                   : await getticketRescedulerAbove(reminderDetail?.ticket);
+              await getTicketHandler(
+                searchByName,
+                pageNumber,
+                'false',
+                newFilter
+              );
 
               // const newData = await getTicketForAdmisions(
               //   UNDEFINED,
@@ -635,7 +641,6 @@ const Ticket = () => {
               //   phoneNumber
               // );
               // let pageNumber = page;
-              // await getTicketHandler(UNDEFINED, pageNumber, 'false', filterTickets);
               // setTickets(data.tickets)
               // setTicketCount(data.count)
               // const tiketIndex = ticketCache[1].findIndex((currentData) => {
@@ -676,7 +681,7 @@ const Ticket = () => {
               setTicketReminderPatient(data.message);
               setAlamarReminderList([...alarmReminderedList, reminderDetail]);
               setReminderList([...reminderList, reminderDetail?._id]);
-              redirectTicket();
+              // redirectTicket();
               setShowReminderModal(true);
             }
           })();
@@ -740,7 +745,7 @@ const Ticket = () => {
                 ...callReschedulerList,
                 callRescheduleDetail?._id
               ]);
-              redirectTicket();
+              // redirectTicket();
               setShowCallReschedulerModal(true);
             }
           })();
@@ -948,7 +953,6 @@ const Ticket = () => {
       socket.disconnect();
     };
   });
-  console.log(allAuditCommentCount);
 
   return (
     <>

@@ -541,13 +541,15 @@ const TicketFilter = (props: {
       setFilteredLocation('');
     }
   };
- useEffect(() => {
-   const handleClear = async () => {
-     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-   };
-   handleClear();
-   handleClearFilter();
- }, [localStorage.getItem('ticketType')]);
+
+  useEffect(() => {
+    const handleClear = async () => {
+      await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    };
+    handleClearFilter();
+    handleApplyFilter();
+    handleClear();
+  }, [localStorage.getItem('ticketType')]);
 
   const handleToggleChange = (event, newValue: any) => {
     setSelectedValue(newValue === selectedValue ? null : newValue);

@@ -544,8 +544,9 @@ const TicketFilter = (props: {
     const handleClear = async () => {
       await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     };
-    handleClear();
     handleClearFilter();
+    handleApplyFilter();
+    handleClear();
   }, [localStorage.getItem('ticketType')]);
 
   const handleToggleChange = (event, newValue: any) => {

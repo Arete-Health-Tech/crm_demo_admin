@@ -302,6 +302,7 @@ export interface iReminder {
   title: string;
   description: string;
   ticket: string | undefined;
+  ticketType?: string;
   creator?: string;
 }
 
@@ -312,6 +313,7 @@ export interface iCallRescheduler {
   description: string;
   ticket: string | undefined;
   creator?: string;
+  ticketType?: string;
   selectedLabels: SelectedLabel[];
   reason: string;
 }

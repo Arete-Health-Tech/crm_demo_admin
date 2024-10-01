@@ -80,11 +80,11 @@ export const ticketFilterCount = (
   ) {
     locationCount =
       filteredLocation == 'Amritsar' ||
-        filteredLocation == 'Mohali' ||
-        filteredLocation == 'Hoshiarpur' ||
-        filteredLocation == 'Nawanshahr' ||
-        filteredLocation == 'Hoshiarpur' ||
-        filteredLocation == 'Khanna'
+      filteredLocation == 'Mohali' ||
+      filteredLocation == 'Hoshiarpur' ||
+      filteredLocation == 'Nawanshahr' ||
+      filteredLocation == 'Hoshiarpur' ||
+      filteredLocation == 'Khanna'
         ? 1
         : 0;
   } else {
@@ -268,7 +268,10 @@ const TicketFilter = (props: {
     const value = e.target.value;
     if (value) {
       setCurrentRepresentative(value);
-      dispatchFilterFollowUp({ type: filterActionsFollowUp.REPRESENTATIVE, payload: value });
+      dispatchFilterFollowUp({
+        type: filterActionsFollowUp.REPRESENTATIVE,
+        payload: value
+      });
     }
   };
 
@@ -495,13 +498,31 @@ const TicketFilter = (props: {
 
   const handleClearFilter = async () => {
     dispatchFilterFollowUp({ type: filterActionsFollowUp.STAGES, payload: [] });
-    dispatchFilterFollowUp({ type: filterActionsFollowUp.REPRESENTATIVE, payload: null });
-    dispatchFilterFollowUp({ type: filterActionsFollowUp.ADMISSIONTYPE, payload: [] });
-    dispatchFilterFollowUp({ type: filterActionsFollowUp.DIAGNOSTICSTYPE, payload: [] });
-    dispatchFilterFollowUp({ type: filterActionsFollowUp.DATERANGE, payload: [] });
-    dispatchFilterFollowUp({ type: filterActionsFollowUp.RESULTS, payload: null });
+    dispatchFilterFollowUp({
+      type: filterActionsFollowUp.REPRESENTATIVE,
+      payload: null
+    });
+    dispatchFilterFollowUp({
+      type: filterActionsFollowUp.ADMISSIONTYPE,
+      payload: []
+    });
+    dispatchFilterFollowUp({
+      type: filterActionsFollowUp.DIAGNOSTICSTYPE,
+      payload: []
+    });
+    dispatchFilterFollowUp({
+      type: filterActionsFollowUp.DATERANGE,
+      payload: []
+    });
+    dispatchFilterFollowUp({
+      type: filterActionsFollowUp.RESULTS,
+      payload: null
+    });
     dispatchFilterFollowUp({ type: filterActionsFollowUp.STATUS, payload: [] });
-    dispatchFilterFollowUp({ type: filterActionsFollowUp.FOLLOWUP, payload: null });
+    dispatchFilterFollowUp({
+      type: filterActionsFollowUp.FOLLOWUP,
+      payload: null
+    });
 
     setCurrentRepresentative('');
     setFilterCount(
@@ -611,7 +632,7 @@ const TicketFilter = (props: {
           <StyledBadge
             invisible={filterCount <= 0}
             badgeContent={filterCount}
-          // color="primary"
+            // color="primary"
           >
             <FilterList sx={{ color: '#080F1A' }} />
           </StyledBadge>
@@ -811,15 +832,17 @@ const TicketFilter = (props: {
                 }}
               >DND
               </ToggleButton> */}
-              <ToggleButton
-                value="dnp"
-                sx={{
-                  fontFamily: 'Outfit,sans-serif',
-                  fontSize: '11px'
-                }}
-              >
-                DNP
-              </ToggleButton>
+              {localStorage.getItem('ticketType') !== 'Follow-Up' && (
+                <ToggleButton
+                  value="dnp"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '11px'
+                  }}
+                >
+                  DNP
+                </ToggleButton>
+              )}
               <ToggleButton
                 value="todayTask"
                 sx={{

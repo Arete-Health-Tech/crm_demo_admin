@@ -90,7 +90,7 @@ import {
 } from '../../api/service/serviceHandler';
 import useReprentativeStore from '../../store/representative';
 import { getRepresntativesHandler } from '../../api/representive/representativeHandler';
-import { SpinnerCircularFixed	 } from 'spinners-react';
+import { SpinnerDotted } from 'spinners-react';
 
 const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
@@ -183,6 +183,16 @@ const Ticket = () => {
   >([]);
   const [ticketReminderPatient, setTicketReminderPatient] = useState<any>(null);
   const [ticketCallReschedulerPatient, setTicketCallReschedulerPatient] =
+    useState<any>(null);
+  const [taskTypeForReminder, setTaskTypeForReminder] = useState('');
+  const [taskTypeForRecheduler, setTaskTypeForRecheduler] = useState('');
+
+  const [
+    ticketCallReschedulerConsumerData,
+    setTicketCallReschedulerConsumerData
+  ] = useState<any>(null);
+
+  const [ticketCallReminderConsumerData, setTicketCallReminderConsumerData] =
     useState<any>(null);
 
   const [searchError, setSearchError] = useState<string>(
@@ -450,12 +460,11 @@ const Ticket = () => {
             sx={{ fontSize: '20px', marginRight: '14px' }}
           />
           Reminder{' '}
-          {(
-            ticketReminderPatient?.consumer[0]?.firstName || 'N/A'
-          ).toUpperCase()}
-          {(
-            ticketReminderPatient?.consumer[0]?.lastName || 'N/A'
-          ).toUpperCase()}
+          {(ticketCallReminderConsumerData?.firstName || '').toUpperCase()}
+          {(ticketCallReminderConsumerData?.lastName || '').toUpperCase()}
+          {taskTypeForReminder === 'Admission'
+            ? '(Admission)'
+            : '(Diagnostics)'}
         </div>
         <div
           style={{
@@ -496,11 +505,16 @@ const Ticket = () => {
             sx={{ fontSize: '20px', marginRight: '14px' }}
           />
           {ticketCallReschedulerPatient && (
-            <Typography>{`Call Rescheduler for ${(
-              ticketCallReschedulerPatient?.consumer[0]?.firstName || 'N/A'
-            ).toUpperCase()}${(
-              ticketCallReschedulerPatient?.consumer[0]?.lastName || 'N/A'
-            ).toUpperCase()} `}</Typography>
+            <Typography sx={{ fontSize: '14px', marginRight: '14px' }}>
+              {`Call Rescheduler for ${(
+                ticketCallReschedulerConsumerData?.firstName || ''
+              ).toUpperCase()}${(
+                ticketCallReschedulerConsumerData?.lastName || ''
+              ).toUpperCase()} `}
+              {taskTypeForRecheduler === 'Admission'
+                ? '(Admission)'
+                : '(Diagnostics)'}
+            </Typography>
           )}{' '}
         </div>
         <div
@@ -620,8 +634,9 @@ const Ticket = () => {
         ) {
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
+              console.log(reminders);
               const data =
-                localStorage.getItem('ticketType') === 'Admission'
+                reminderDetail.ticketType === 'admission'
                   ? await getticketRescedulerAboveAdmission(
                       reminderDetail?.ticket
                     )
@@ -679,8 +694,11 @@ const Ticket = () => {
               //     1: [data?.tickets[0], ...ticketCache[1]]
               //   });
               // }
-
-              setTicketReminderPatient(data.message);
+              if (reminderDetail.ticketType === 'admission') {
+                setTaskTypeForReminder('Admission');
+              }
+              setTicketCallReminderConsumerData(data.message?.consumerDetails);
+              setTicketReminderPatient(data.message?.ticketdetails);
               setAlamarReminderList([...alarmReminderedList, reminderDetail]);
               setReminderList([...reminderList, reminderDetail?._id]);
               // redirectTicket();
@@ -729,7 +747,7 @@ const Ticket = () => {
           (async () => {
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
               const data =
-                localStorage.getItem('ticketType') === 'Admission'
+                callRescheduleDetail.ticketType === 'admission'
                   ? await getticketRescedulerAboveAdmission(
                       callRescheduleDetail?.ticket
                     )
@@ -737,8 +755,14 @@ const Ticket = () => {
                       callRescheduleDetail?.ticket
                     );
 
+              if (callRescheduleDetail.ticketType === 'admission') {
+                setTaskTypeForRecheduler('Admission');
+              }
+              setTicketCallReschedulerConsumerData(
+                data?.consumerDetails?.consumerDetails
+              );
               // await getTicketHandler(UNDEFINED, pageNumber, 'false', selectedFilters);
-              setTicketCallReschedulerPatient(data?.message);
+              setTicketCallReschedulerPatient(data?.message?.ticketdetails);
               setAlarmCallReschedulerList([
                 ...alarmCallReschedulerList,
                 callRescheduleDetail
@@ -978,7 +1002,7 @@ const Ticket = () => {
               justifyContent="center"
               alignItems="center"
             >
-              <SpinnerCircularFixed	
+              <SpinnerDotted
                 size={100}
                 thickness={100}
                 speed={50}
@@ -988,7 +1012,7 @@ const Ticket = () => {
               <Box mt={2} fontSize="16px" fontWeight="bold">
                 {' '}
                 {/* Add margin-top to space text below the spinner */}
-                Downloading Please Wait ...
+                Please Wait ...
               </Box>
             </Box>
           </Box>

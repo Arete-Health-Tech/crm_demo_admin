@@ -33,7 +33,7 @@ export const selectedFiltersStateDiago: iTicketFilter = {
   //  ....
   admissionType: [],
   diagnosticsType: [],
-  dateRange: ['', ''],
+  dateRange: [],
   status: [],
   followUp: null
 };
@@ -45,7 +45,7 @@ export const selectedFiltersStateFollowUp: iTicketFilter = {
   //  ....
   admissionType: [],
   diagnosticsType: [],
-  dateRange: ['', ''],
+  dateRange: [],
   status: [],
   followUp: null
 };
@@ -135,60 +135,60 @@ export function selectedFiltersReducerDiago(
 ): iTicketFilter {
   if (action.type === filterActions.STAGES) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateDiago,
       stageList: action.payload
     };
   }
 
   if (action.type === filterActions.REPRESENTATIVE) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateDiago,
       representative: action.payload
     };
   }
   if (action.type === filterActions.RESULTS) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateDiago,
       results: action.payload
     };
   }
   //  if (action.type === filterActions.LOSE) {
   //   return {
-  //     ...selectedFiltersState,
+  //     ...selectedFiltersStateDiago,
   //     lose: action.payload
   //   };
   // }
 
   if (action.type === filterActions.ADMISSIONTYPE) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateDiago,
       admissionType: action.payload
     };
   }
   if (action.type === filterActions.DIAGNOSTICSTYPE) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateDiago,
       diagnosticsType: action.payload
     };
   }
 
   if (action.type === filterActions.DATERANGE) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateDiago,
       dateRange: action.payload
     };
   }
 
   if (action.type === filterActions.STATUS) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateDiago,
       status: action.payload
     };
   }
 
   if (action.type === filterActions.FOLLOWUP) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateDiago,
       followUp: action.payload
     };
   }
@@ -201,60 +201,60 @@ export function selectedFiltersReducerFollowUp(
 ): iTicketFilter {
   if (action.type === filterActions.STAGES) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateFollowUp,
       stageList: action.payload
     };
   }
 
   if (action.type === filterActions.REPRESENTATIVE) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateFollowUp,
       representative: action.payload
     };
   }
   if (action.type === filterActions.RESULTS) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateFollowUp,
       results: action.payload
     };
   }
   //  if (action.type === filterActions.LOSE) {
   //   return {
-  //     ...selectedFiltersState,
+  //     ...selectedFiltersStateFollowUp,
   //     lose: action.payload
   //   };
   // }
 
   if (action.type === filterActions.ADMISSIONTYPE) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateFollowUp,
       admissionType: action.payload
     };
   }
   if (action.type === filterActions.DIAGNOSTICSTYPE) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateFollowUp,
       diagnosticsType: action.payload
     };
   }
 
   if (action.type === filterActions.DATERANGE) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateFollowUp,
       dateRange: action.payload
     };
   }
 
   if (action.type === filterActions.STATUS) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateFollowUp,
       status: action.payload
     };
   }
 
   if (action.type === filterActions.FOLLOWUP) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateFollowUp,
       followUp: action.payload
     };
   }

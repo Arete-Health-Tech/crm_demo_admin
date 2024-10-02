@@ -1,4 +1,4 @@
-import { filterActions } from './actions/filterAction';
+import { filterActions, filterActionsDiago, filterActionsFollowUp } from './actions/filterAction';
 import { iTicketFilter } from '../../../types/store/ticket';
 
 export interface ticketFilterTypes {
@@ -133,60 +133,60 @@ export function selectedFiltersReducerDiago(
   selectedFiltersStateDiago: iTicketFilter,
   action: actionTypeDiago
 ): iTicketFilter {
-  if (action.type === filterActions.STAGES) {
+  if (action.type === filterActionsDiago.STAGES) {
     return {
       ...selectedFiltersStateDiago,
       stageList: action.payload
     };
   }
 
-  if (action.type === filterActions.REPRESENTATIVE) {
+  if (action.type === filterActionsDiago.REPRESENTATIVE) {
     return {
       ...selectedFiltersStateDiago,
       representative: action.payload
     };
   }
-  if (action.type === filterActions.RESULTS) {
+  if (action.type === filterActionsDiago.RESULTS) {
     return {
       ...selectedFiltersStateDiago,
       results: action.payload
     };
   }
-  //  if (action.type === filterActions.LOSE) {
+  //  if (action.type === filterActionsDiago.LOSE) {
   //   return {
   //     ...selectedFiltersStateDiago,
   //     lose: action.payload
   //   };
   // }
 
-  if (action.type === filterActions.ADMISSIONTYPE) {
+  if (action.type === filterActionsDiago.ADMISSIONTYPE) {
     return {
       ...selectedFiltersStateDiago,
       admissionType: action.payload
     };
   }
-  if (action.type === filterActions.DIAGNOSTICSTYPE) {
+  if (action.type === filterActionsDiago.DIAGNOSTICSTYPE) {
     return {
       ...selectedFiltersStateDiago,
       diagnosticsType: action.payload
     };
   }
 
-  if (action.type === filterActions.DATERANGE) {
+  if (action.type === filterActionsDiago.DATERANGE) {
     return {
       ...selectedFiltersStateDiago,
       dateRange: action.payload
     };
   }
 
-  if (action.type === filterActions.STATUS) {
+  if (action.type === filterActionsDiago.STATUS) {
     return {
       ...selectedFiltersStateDiago,
       status: action.payload
     };
   }
 
-  if (action.type === filterActions.FOLLOWUP) {
+  if (action.type === filterActionsDiago.FOLLOWUP) {
     return {
       ...selectedFiltersStateDiago,
       followUp: action.payload
@@ -199,60 +199,60 @@ export function selectedFiltersReducerFollowUp(
   selectedFiltersStateFollowUp: iTicketFilter,
   action: actionTypeFollowup
 ): iTicketFilter {
-  if (action.type === filterActions.STAGES) {
+  if (action.type === filterActionsFollowUp.STAGES) {
     return {
       ...selectedFiltersStateFollowUp,
       stageList: action.payload
     };
   }
 
-  if (action.type === filterActions.REPRESENTATIVE) {
+  if (action.type === filterActionsFollowUp.REPRESENTATIVE) {
     return {
       ...selectedFiltersStateFollowUp,
       representative: action.payload
     };
   }
-  if (action.type === filterActions.RESULTS) {
+  if (action.type === filterActionsFollowUp.RESULTS) {
     return {
       ...selectedFiltersStateFollowUp,
       results: action.payload
     };
   }
-  //  if (action.type === filterActions.LOSE) {
+  //  if (action.type === filterActionsFollowUp.LOSE) {
   //   return {
   //     ...selectedFiltersStateFollowUp,
   //     lose: action.payload
   //   };
   // }
 
-  if (action.type === filterActions.ADMISSIONTYPE) {
+  if (action.type === filterActionsFollowUp.ADMISSIONTYPE) {
     return {
       ...selectedFiltersStateFollowUp,
       admissionType: action.payload
     };
   }
-  if (action.type === filterActions.DIAGNOSTICSTYPE) {
+  if (action.type === filterActionsFollowUp.DIAGNOSTICSTYPE) {
     return {
       ...selectedFiltersStateFollowUp,
       diagnosticsType: action.payload
     };
   }
 
-  if (action.type === filterActions.DATERANGE) {
+  if (action.type === filterActionsFollowUp.DATERANGE) {
     return {
       ...selectedFiltersStateFollowUp,
       dateRange: action.payload
     };
   }
 
-  if (action.type === filterActions.STATUS) {
+  if (action.type === filterActionsFollowUp.STATUS) {
     return {
       ...selectedFiltersStateFollowUp,
       status: action.payload
     };
   }
 
-  if (action.type === filterActions.FOLLOWUP) {
+  if (action.type === filterActionsFollowUp.FOLLOWUP) {
     return {
       ...selectedFiltersStateFollowUp,
       followUp: action.payload

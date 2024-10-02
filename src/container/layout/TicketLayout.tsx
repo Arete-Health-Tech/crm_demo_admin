@@ -291,7 +291,7 @@ const Ticket = () => {
       await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
     };
     data();
-  }, [localStorage.getItem('location'), localStorage.getItem('ticketType')]);
+  }, [localStorage.getItem('location')]);
 
   // const handleSeachName = (
   //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
@@ -630,7 +630,6 @@ const Ticket = () => {
           reminderDetail &&
           reminderDetail.date <= currentTime.getTime() &&
           reminderDetail.date + 11000 > currentTime.getTime()
-          // isAlamredReminderExist(reminderDetail)
         ) {
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
@@ -641,59 +640,6 @@ const Ticket = () => {
                       reminderDetail?.ticket
                     )
                   : await getticketRescedulerAbove(reminderDetail?.ticket);
-              // await getTicketHandler(
-              //   searchByName,
-              //   pageNumber,
-              //   'false',
-              //   newFilter
-              // );
-
-              // const newData = await getTicketForAdmisions(
-              //   UNDEFINED,
-              //   1,
-              //   'false',
-              //   filterTickets,
-              //   reminderDetail?.ticket,
-              //   true,
-              //   phoneNumber
-              // );
-              // let pageNumber = page;
-              // setTickets(data.tickets)
-              // setTicketCount(data.count)
-              // const tiketIndex = ticketCache[1].findIndex((currentData) => {
-              //   console.log(
-              //     'id check:',
-              //     currentData?._id === reminderDetail.ticket
-              //   );
-              //   return currentData?._id === reminderDetail?.ticket;
-              // });
-              // if(tiketIndex > -1){
-              //   let cacheList =  ticketCache[1];
-              //   let removedTicket = cacheList.splice(tiketIndex,1)
-              //   setTicketCache ({...ticketCache,1:[...removedTicket,...cacheList]})
-              // }else{
-              // setTicketCache({
-              //   ...ticketCache,
-              //   1: [data?.tickets[0], ...ticketCache[1]]
-              // });
-              // }
-
-              // if (tiketIndex > -1) {
-              //   let cacheList = ticketCache[1];
-              //   let removedTicket = cacheList.splice(tiketIndex, 1);
-              //   setTicketCache({
-              //     ...ticketCache,
-              //     1: [...removedTicket, ...cacheList]
-              //   });
-              //   setTickets([...removedTicket, ...cacheList]);
-              // } else {
-
-              //   setTickets([data?.tickets[0], ...ticketCache[1]]);
-              //   setTicketCache({
-              //     ...ticketCache,
-              //     1: [data?.tickets[0], ...ticketCache[1]]
-              //   });
-              // }
               if (reminderDetail.ticketType === 'admission') {
                 setTaskTypeForReminder('Admission');
               }
@@ -730,8 +676,6 @@ const Ticket = () => {
   }, [showReminderModal]);
 
   useEffect(() => {
-    let pageNumber = page;
-    console.log(pageNumber);
     clearAllInterval(AllIntervals);
     callRescheduler?.forEach((callRescheduleDetail, index) => {
       let alarmInterval: any;
@@ -739,12 +683,13 @@ const Ticket = () => {
       alarmInterval = setInterval(() => {
         const currentTime = new Date();
         if (
-          callReschedulerList &&
+          callRescheduleDetail &&
           callRescheduleDetail.date <= currentTime.getTime() &&
           callRescheduleDetail.date + 11000 > currentTime.getTime()
           // isAlamredReminderExist(reminderDetail)
         ) {
           (async () => {
+            console.log("inside the condition")
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
               const data =
                 callRescheduleDetail.ticketType === 'admission'

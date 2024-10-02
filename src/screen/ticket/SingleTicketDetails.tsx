@@ -91,8 +91,6 @@
 // import CloseIcon from '@mui/icons-material/Close';
 // import ArrowForwardIosTwoToneIcon from '@mui/icons-material/ArrowForwardIosTwoTone';
 // import VaccinesOutlinedIcon from '@mui/icons-material/VaccinesOutlined';
-
-// import AWS from 'aws-sdk';
 // import CustomModal from './widgets/CustomModal';
 // import { apiClient } from '../../api/apiClient';
 // import ReschedulerAll from './widgets/ReschedulerAll';

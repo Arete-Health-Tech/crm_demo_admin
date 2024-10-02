@@ -79,11 +79,11 @@ export const ticketFilterCount = (
   ) {
     locationCount =
       filteredLocation == 'Amritsar' ||
-        filteredLocation == 'Mohali' ||
-        filteredLocation == 'Hoshiarpur' ||
-        filteredLocation == 'Nawanshahr' ||
-        filteredLocation == 'Hoshiarpur' ||
-        filteredLocation == 'Khanna'
+      filteredLocation == 'Mohali' ||
+      filteredLocation == 'Hoshiarpur' ||
+      filteredLocation == 'Nawanshahr' ||
+      filteredLocation == 'Hoshiarpur' ||
+      filteredLocation == 'Khanna'
         ? 1
         : 0;
   } else {
@@ -541,12 +541,8 @@ const TicketFilter = (props: {
   };
 
   useEffect(() => {
-    const handleClear = async () => {
-      await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-    };
     handleClearFilter();
     handleApplyFilter();
-    handleClear();
   }, [localStorage.getItem('ticketType')]);
 
   const handleToggleChange = (event, newValue: any) => {
@@ -609,7 +605,7 @@ const TicketFilter = (props: {
           <StyledBadge
             invisible={filterCount <= 0}
             badgeContent={filterCount}
-          // color="primary"
+            // color="primary"
           >
             <FilterList sx={{ color: '#080F1A' }} />
           </StyledBadge>

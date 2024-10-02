@@ -1053,7 +1053,7 @@ const TicketFilter = (props: {
                     style: { fontFamily: 'Outfit,san-serif', fontSize: '14px' }
                   }}
                   inputProps={{
-                    max: new Date().toISOString().split('T')[0],
+                    // max: new Date().toISOString().split('T')[0],
                     style: { fontFamily: 'Outfit,san-serif', fontSize: '14px' }
                   }}
                 />
@@ -1078,8 +1078,8 @@ const TicketFilter = (props: {
                     style: { fontFamily: 'Outfit,san-serif', fontSize: '14px' }
                   }}
                   inputProps={{
-                    max: new Date().toISOString().split('T')[0],
-                    min: new Date(dateRange[0]).toDateString().split('T')[0],
+                    // max: new Date().toISOString().split('T')[0],
+                    // min: new Date(dateRange[0]).toDateString().split('T')[0],
                     style: { fontFamily: 'Outfit,san-serif', fontSize: '14px' }
                   }}
                 />

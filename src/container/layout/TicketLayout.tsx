@@ -260,8 +260,6 @@ const Ticket = () => {
   const fetchTicketsOnEmpthySearch = async () => {
     setSearchName(UNDEFINED);
     setSearchByName(UNDEFINED);
-    // setTicketCount(ticketCache["count"]);
-    // setTickets(ticketCache[1]);
     setPage(1);
     setPageNumber(1);
     await getTicketHandler(UNDEFINED, 1, 'false', newFilter);

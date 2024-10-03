@@ -544,8 +544,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
 
                             <Stack>
                                 <ShowPrescription
-                                    image={currentTicket?.prescription[0]?.image}
-                                    image1={currentTicket?.prescription[0]?.image1}
+                                    image={currentTicket?.prescription[0]?.image?.split('?')[0]}
+                                    image1={currentTicket?.prescription[0]?.image1?.split('?')[0]}
                                 /></Stack>
                         </>
                     )}

@@ -749,7 +749,7 @@ const TicketFilter = (props: {
             </Box>
           </Box>
 
-          <Box px={3}>
+          {/* <Box px={3}>
             <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
               Result (This filter cannot be used in combination with any other
               filter, To be used independently only)
@@ -786,7 +786,7 @@ const TicketFilter = (props: {
                 LOST
               </ToggleButton>
             </ToggleButtonGroup>
-          </Box>
+          </Box> */}
           {/* <Box px={3}>
               <Stack sx={{ fontFamily: 'Outfit, sans-serif', fontWeight: '500' }}>
                 Doctor Appointment Follow-up Date (This filter cannot be used in
@@ -828,7 +828,7 @@ const TicketFilter = (props: {
                 }}
               >DND
               </ToggleButton> */}
-              {localStorage.getItem('ticketType') !== 'Follow-Up' && (
+              {/* {localStorage.getItem('ticketType') !== 'Follow-Up' && (
                 <ToggleButton
                   value="dnp"
                   sx={{
@@ -838,7 +838,7 @@ const TicketFilter = (props: {
                 >
                   DNP
                 </ToggleButton>
-              )}
+              )} */}
               <ToggleButton
                 value="todayTask"
                 sx={{

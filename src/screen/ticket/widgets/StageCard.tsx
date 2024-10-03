@@ -443,13 +443,18 @@ const StageCard = (props: Props) => {
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       {lastModifiedDate > -1 && (
-        <Stack sx={{ color: "#000", fontFamily: `"Outfit",san-serif`, fontSize: "12px" }}>
+        <Stack
+          sx={{
+            color: '#000',
+            fontFamily: `"Outfit",san-serif`,
+            fontSize: '12px'
+          }}
+        >
           {`Last update ${lastModifiedDate} days ago`}
         </Stack>
       )}
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Box sx={{ width: '100%', mr: 1 }}>
-
           {/* <LinearProgress
             variant="determinate"
             value={progressCount}
@@ -463,7 +468,7 @@ const StageCard = (props: Props) => {
 
           {/* Updated Divided Progress Bar */}
 
-          <Box className={isSwitchView ? "switchViewSteps" : "steps"}>
+          <Box className={isSwitchView ? 'switchViewSteps' : 'steps'}>
             <ul className="nav">
               {/* {steps && steps.map((step, i) => {
                 return (
@@ -487,12 +492,19 @@ const StageCard = (props: Props) => {
               {validStageList.map(({ name, code }: iStage, index) => {
                 const isCurrentStage = changeStageName === name;
                 const isNextStage = nextStage === name;
-                const isPreviousStage = validStageList.findIndex(stage => stage.name === changeStageName) >= index;
+                const isPreviousStage =
+                  validStageList.findIndex(
+                    (stage) => stage.name === changeStageName
+                  ) >= index;
 
                 return (
                   <li
                     key={code}
-                    className={`${isCurrentStage || isNextStage || isPreviousStage ? "active done" : ""}`}
+                    className={`${
+                      isCurrentStage || isNextStage || isPreviousStage
+                        ? 'active done'
+                        : ''
+                    }`}
                     onClick={() => {
                       if (isNextStage) {
                         handleStages(name);
@@ -501,7 +513,8 @@ const StageCard = (props: Props) => {
                       }
                     }}
                   >
-                    <LightTooltip title={name}
+                    <LightTooltip
+                      title={name}
                       disableInteractive
                       placement="top"
                       TransitionComponent={Zoom}
@@ -515,7 +528,6 @@ const StageCard = (props: Props) => {
               })}
             </ul>
           </Box>
-
         </Box>
 
         {/* <Box sx={{ minWidth: 35 }}>
@@ -523,7 +535,6 @@ const StageCard = (props: Props) => {
             {progressCount}%
           </Typography>
         </Box> */}
-
       </Box>
       <Box
         p={1}
@@ -532,31 +543,30 @@ const StageCard = (props: Props) => {
           alignItems: 'center',
           marginBottom: '7px',
           marginTop: '12px',
-          justifyContent: "space-between"
+          justifyContent: 'space-between'
         }}
       >
         <Box display="flex" flexDirection="row">
-
           <Stack>
-            <Box
-              component="div"
-              display="flex"
-              flexDirection="row"
-            >
-              <span style={{
-                fontFamily: `"OutFit",sans-serif`,
-                fontSize: "14px",
-                marginRight: '6px',
-                fontWeight: "400",
-                color: "#0566FF"
-              }}>
+            <Box component="div" display="flex" flexDirection="row">
+              <span
+                style={{
+                  fontFamily: `"OutFit",sans-serif`,
+                  fontSize: '14px',
+                  marginRight: '6px',
+                  fontWeight: '400',
+                  color: '#0566FF'
+                }}
+              >
                 Current Stage
               </span>
-              <span style={{
-                marginTop: '2px',
-              }}>
+              <span
+                style={{
+                  marginTop: '2px'
+                }}
+              >
                 <img src={RightArrowIcon} />
-              </span> {' '}
+              </span>{' '}
             </Box>
           </Stack>
           {/* <Stack marginRight="5px !important">
@@ -612,7 +622,7 @@ const StageCard = (props: Props) => {
                   >
                     {name}
                   </Box>
-                )
+                );
               }
               // }
               // return (
@@ -633,51 +643,43 @@ const StageCard = (props: Props) => {
               // );
             })}
           </Box>
-
-
         </Box>
 
-        {!isAuditor && <Box display="flex" flexDirection="row">
-          <button
-            className='Won-Btn won'
-            onClick={handleOpen}
-          >
-            WON
-          </button>
-          <button
-            className='Won-Btn lost'
-            onClick={handleOpenLose}
-          >
-            LOST
-          </button>
-        </Box>
-
-        }
+        {!isAuditor && localStorage.getItem('ticketType') !== 'Follow-Up' && (
+          <Box display="flex" flexDirection="row">
+            <button className="Won-Btn won" onClick={handleOpen}>
+              WON
+            </button>
+            <button className="Won-Btn lost" onClick={handleOpenLose}>
+              LOST
+            </button>
+          </Box>
+        )}
       </Box>
 
       <Box>
         {/* Won Modal */}
         <Modal
           open={open}
-          onClose={() => { }}
+          onClose={() => {}}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
           <Box className="reminder-modal-container">
             <Stack
-              className='reminder-modal-title'
+              className="reminder-modal-title"
               direction="row"
               spacing={1}
               display="flex"
               alignItems="center"
             >
-              <Stack className='reminder-modal-title' sx={{ fontSize: "18px !important" }}>
+              <Stack
+                className="reminder-modal-title"
+                sx={{ fontSize: '18px !important' }}
+              >
                 Verify Payment
               </Stack>
-              <Stack
-                className='modal-close'
-                onClick={handleClose}
-              >
+              <Stack className="modal-close" onClick={handleClose}>
                 <img src={CloseModalIcon} />
               </Stack>
             </Stack>
@@ -692,45 +694,62 @@ const StageCard = (props: Props) => {
                 style: {
                   fontSize: '14px',
                   color: 'rgba(128, 128, 128, 0.744)',
-                  fontFamily: `"Outfit",sans-serif`,
+                  fontFamily: `"Outfit",sans-serif`
                 }
               }}
               InputProps={{
                 style: {
                   fontSize: '14px',
                   color: '#080F1A',
-                  fontFamily: `"Outfit",sans-serif`,
+                  fontFamily: `"Outfit",sans-serif`
                 }
               }}
             />
 
-            <Stack className='Or-line'> <p className='Or'>OR</p></Stack>
+            <Stack className="Or-line">
+              {' '}
+              <p className="Or">OR</p>
+            </Stack>
 
             <Box className="file-upload">
               <Stack className="file-upload-title">
-                <label htmlFor="file-upload" style={{ display: "flex", flexDirection: "row" }}> <img className='img-upload' src={UploadFileIcon} /> Upload Receipt sent by hospital</label>
+                <label
+                  htmlFor="file-upload"
+                  style={{ display: 'flex', flexDirection: 'row' }}
+                >
+                  {' '}
+                  <img className="img-upload" src={UploadFileIcon} /> Upload
+                  Receipt sent by hospital
+                </label>
                 <input
                   id="file-upload"
                   type="file"
                   onChange={handleFileChange}
                 />{' '}
               </Stack>
-              <Stack className="file-upload-Sub" marginTop="12px">Upload one .txt, .doc, .pdf, .docx, .png, .jpg</Stack>
+              <Stack className="file-upload-Sub" marginTop="12px">
+                Upload one .txt, .doc, .pdf, .docx, .png, .jpg
+              </Stack>
               <Stack className="file-upload-Sub">Max file size 5mb</Stack>
             </Box>
 
-            {fileName !== "" ? (
+            {fileName !== '' ? (
               <Box className="Uploaded-file">
-                <Stack className='Uploaded-Box'><img src={documentIcon} /></Stack>
+                <Stack className="Uploaded-Box">
+                  <img src={documentIcon} />
+                </Stack>
                 <Box display="flex" flexDirection="column">
                   <Stack className="file-upload-title">{fileName}</Stack>
-                  <Stack className="file-upload-Sub">Uploading Completing</Stack>
+                  <Stack className="file-upload-Sub">
+                    Uploading Completing
+                  </Stack>
                 </Box>
-                <Stack p={1} sx={{ marginLeft: "250px" }}><img src={CheckedActiveIcon} /></Stack>
+                <Stack p={1} sx={{ marginLeft: '250px' }}>
+                  <img src={CheckedActiveIcon} />
+                </Stack>
               </Box>
             ) : (
-              <>
-              </>
+              <></>
             )}
 
             <Box
@@ -741,28 +760,23 @@ const StageCard = (props: Props) => {
                 width: '100%'
               }}
             >
-              <button
-                className='reminder-cancel-btn'
-                onClick={handleClose}
-              >
+              <button className="reminder-cancel-btn" onClick={handleClose}>
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
-                className='reminder-btn'
-                type='submit'
+                className="reminder-btn"
+                type="submit"
                 disabled={disableWonButton}
                 style={{
-                  marginLeft: "10px",
-                  backgroundColor: disableWonButton ? "#F6F7F9" : "#0566FF",
-                  color: disableWonButton ? "#647491" : "#FFF",
-
+                  marginLeft: '10px',
+                  backgroundColor: disableWonButton ? '#F6F7F9' : '#0566FF',
+                  color: disableWonButton ? '#647491' : '#FFF'
                 }}
               >
                 Mark as Won
               </button>
             </Box>
-
           </Box>
         </Modal>
 
@@ -770,40 +784,39 @@ const StageCard = (props: Props) => {
 
         <Modal
           open={openLose}
-          onClose={() => { }}
+          onClose={() => {}}
           aria-labelledby="modal-modal-title"
           aria-describedby="modal-modal-description"
         >
-          <Box
-            className="reminder-modal-container"
-          >
+          <Box className="reminder-modal-container">
             <Stack
-              className='reminder-modal-title'
+              className="reminder-modal-title"
               direction="row"
               spacing={1}
               display="flex"
               alignItems="center"
             >
-              <Stack className='reminder-modal-title' sx={{ fontSize: "18px !important" }}>
+              <Stack
+                className="reminder-modal-title"
+                sx={{ fontSize: '18px !important' }}
+              >
                 Reason for closing lead
               </Stack>
-              <Stack
-                className='modal-close'
-                onClick={handleCloseLose}
-              >
+              <Stack className="modal-close" onClick={handleCloseLose}>
                 <img src={CloseModalIcon} />
               </Stack>
             </Stack>
 
             <Box>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label"
+                <InputLabel
+                  id="demo-simple-select-label"
                   sx={{
                     fontSize: '14px',
                     color: 'rgba(128, 128, 128, 0.744)',
-                    fontFamily: `"Outfit",sans-serif`,
-
-                  }}>
+                    fontFamily: `"Outfit",sans-serif`
+                  }}
+                >
                   {' '}
                   Reason for closing lead
                 </InputLabel>
@@ -819,96 +832,110 @@ const StageCard = (props: Props) => {
                   sx={{
                     fontSize: '14px',
                     color: '#080F1A',
-                    fontFamily: `"Outfit",sans-serif`,
+                    fontFamily: `"Outfit",sans-serif`
                   }}
                 >
-                  <MenuItem sx={{
-                    fontSize: '14px',
-                    color: '#080F1A',
-                    fontFamily: `"Outfit",sans-serif`,
-                  }}
-                    value={"Too expensive / Have a better pricing"}>
+                  <MenuItem
+                    sx={{
+                      fontSize: '14px',
+                      color: '#080F1A',
+                      fontFamily: `"Outfit",sans-serif`
+                    }}
+                    value={'Too expensive / Have a better pricing'}
+                  >
                     Too expensive / Have a better pricing
                   </MenuItem>
                   <MenuItem
                     sx={{
                       fontSize: '14px',
                       color: '#080F1A',
-                      fontFamily: `"Outfit",sans-serif`,
+                      fontFamily: `"Outfit",sans-serif`
                     }}
-                    value={"Not Responding Anymore"}>
+                    value={'Not Responding Anymore'}
+                  >
                     Not Responding Anymore
                   </MenuItem>
                   <MenuItem
                     sx={{
                       fontSize: '14px',
                       color: '#080F1A',
-                      fontFamily: `"Outfit",sans-serif`,
+                      fontFamily: `"Outfit",sans-serif`
                     }}
-                    value={"Adopted alternative medicines"}>
+                    value={'Adopted alternative medicines'}
+                  >
                     Adopted alternative medicines
                   </MenuItem>
                   <MenuItem
                     sx={{
                       fontSize: '14px',
                       color: '#080F1A',
-                      fontFamily: `"Outfit",sans-serif`,
+                      fontFamily: `"Outfit",sans-serif`
                     }}
-                    value={"No Further Treatment Advised"}>
+                    value={'No Further Treatment Advised'}
+                  >
                     No Further Treatment Advised
                   </MenuItem>
                   <MenuItem
                     sx={{
                       fontSize: '14px',
                       color: '#080F1A',
-                      fontFamily: `"Outfit",sans-serif`,
+                      fontFamily: `"Outfit",sans-serif`
                     }}
-                    value={"Bed not available"}>
+                    value={'Bed not available'}
+                  >
                     Bed not available
                   </MenuItem>
                   <MenuItem
                     sx={{
                       fontSize: '14px',
                       color: '#080F1A',
-                      fontFamily: `"Outfit",sans-serif`,
+                      fontFamily: `"Outfit",sans-serif`
                     }}
-                    value={"Prescription not clear / Wrong prescription uploaded / Detail Mismatch"}>
-                    Prescription not clear / Wrong prescription uploaded / Detail Mismatch
+                    value={
+                      'Prescription not clear / Wrong prescription uploaded / Detail Mismatch'
+                    }
+                  >
+                    Prescription not clear / Wrong prescription uploaded /
+                    Detail Mismatch
                   </MenuItem>
                   <MenuItem
                     sx={{
                       fontSize: '14px',
                       color: '#080F1A',
-                      fontFamily: `"Outfit",sans-serif`,
+                      fontFamily: `"Outfit",sans-serif`
                     }}
-                    value={"Duplicate lead"}>
+                    value={'Duplicate lead'}
+                  >
                     Duplicate lead
                   </MenuItem>
                   <MenuItem
                     sx={{
                       fontSize: '14px',
                       color: '#080F1A',
-                      fontFamily: `"Outfit",sans-serif`,
+                      fontFamily: `"Outfit",sans-serif`
                     }}
-                    value={"Wrong Number"}>
+                    value={'Wrong Number'}
+                  >
                     Wrong Number
                   </MenuItem>
                   <MenuItem
                     sx={{
                       fontSize: '14px',
                       color: '#080F1A',
-                      fontFamily: `"Outfit",sans-serif`,
+                      fontFamily: `"Outfit",sans-serif`
                     }}
-                    value={"Patient Expired"}>
+                    value={'Patient Expired'}
+                  >
                     Patient Expired
                   </MenuItem>
                   <MenuItem
                     sx={{
                       fontSize: '14px',
                       color: '#080F1A',
-                      fontFamily: `"Outfit",sans-serif`,
+                      fontFamily: `"Outfit",sans-serif`
                     }}
-                    value={"Chose another hospital - Which Hospital"}>
+                    value={'Chose another hospital - Which Hospital'}
+                  >
                     Chose another hospital - Which Hospital ?
                     <TextField
                       id="hospitalName"
@@ -930,22 +957,18 @@ const StageCard = (props: Props) => {
                 width: '100%'
               }}
             >
-              <button
-                className='reminder-cancel-btn'
-                onClick={handleCloseLose}
-              >
+              <button className="reminder-cancel-btn" onClick={handleCloseLose}>
                 Cancel
               </button>
               <button
                 onClick={handleSubmit}
-                className='reminder-btn'
-                type='submit'
+                className="reminder-btn"
+                type="submit"
                 disabled={disableLostButton}
                 style={{
-                  marginLeft: "10px",
-                  backgroundColor: disableLostButton ? "#F6F7F9" : "#0566FF",
-                  color: disableLostButton ? "#647491" : "#FFF",
-
+                  marginLeft: '10px',
+                  backgroundColor: disableLostButton ? '#F6F7F9' : '#0566FF',
+                  color: disableLostButton ? '#647491' : '#FFF'
                 }}
               >
                 Mark as Lost
@@ -976,9 +999,10 @@ const StageCard = (props: Props) => {
                   <img src={NotActiveIcon} alt="NotActiveIcon" />
                 )
               }
-
-
-            > <span className="stepper-label">{label.name}</span></StepLabel>
+            >
+              {' '}
+              <span className="stepper-label">{label.name}</span>
+            </StepLabel>
           </Step>
         ))}
       </Stepper>

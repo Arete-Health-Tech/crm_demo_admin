@@ -168,7 +168,7 @@ const Ticket = () => {
   const { representative } = useReprentativeStore();
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
-  const [searchName, setSearchName] = useState<string>(UNDEFINED);
+  const [searchName, setSearchName] = useState<string>("");
   const [totalEstimateValue, setTotalEstimateValue] = useState(0);
   const [phone, setPhone] = useState(null);
 
@@ -258,7 +258,7 @@ const Ticket = () => {
   }, [tickets, searchByName]);
 
   const fetchTicketsOnEmpthySearch = async () => {
-    setSearchName(UNDEFINED);
+    setSearchName("");
     setSearchByName(UNDEFINED);
     setPage(1);
     setPageNumber(1);
@@ -279,7 +279,7 @@ const Ticket = () => {
   useEffect(() => {
     console.log(newFilter, 'newFilter');
     const data = async () => {
-      setSearchName(UNDEFINED);
+      setSearchName("");
       setSearchByName(UNDEFINED);
       setSearchError('Type to search & Enter');
       // setTicketCount(ticketCache["count"]);
@@ -304,6 +304,7 @@ const Ticket = () => {
   // };
 
   const handleSearchKeyPress = async (e: any) => {
+    console.log(e);
     if (e.key === 'Enter') {
       setTickets([]);
 
@@ -405,6 +406,13 @@ const Ticket = () => {
     })();
     setPageNumber(1);
     setIsAuditor(false);
+     setSearchName('');
+     setSearchByName(UNDEFINED);
+     setSearchError('Type to search & Enter');
+     // setTicketCount(ticketCache["count"]);
+     // setTickets(ticketCache[1]);
+     setPage(1);
+     setPageNumber(1);
   }, [localStorage.getItem('ticketType')]);
 
   // const isAlamredReminderExist = (reminder: iReminder) => {
@@ -687,7 +695,7 @@ const Ticket = () => {
           // isAlamredReminderExist(reminderDetail)
         ) {
           (async () => {
-            console.log("inside the condition")
+            console.log('inside the condition');
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
               const data =
                 callRescheduleDetail.ticketType === 'admission'

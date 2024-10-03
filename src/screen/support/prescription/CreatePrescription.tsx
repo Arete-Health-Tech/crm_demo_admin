@@ -1037,39 +1037,28 @@ const CreatePrescription = () => {
               {validations.doctor.message}
             </FormHelperText>
             {popUp && (
-
               <Snackbar
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 open={popUp}
-                autoHideDuration={4000} onClose={() => setPopUp(false)}
+                autoHideDuration={4000}
+                onClose={() => setPopUp(false)}
               >
-                <Alert severity="warning" >
-                  <Stack display={'flex'} flexDirection={"column"}>
-                    <Stack>
-                      {validations.department.message}
-                    </Stack>
+                <Alert severity="warning">
+                  <Stack display={'flex'} flexDirection={'column'}>
+                    <Stack>{validations.department.message}</Stack>
                     <Stack>{validations.doctor.message}</Stack>
-                    <Stack>
-                      {validations.image.message}
-                    </Stack>
-
+                    <Stack>{validations.image.message}</Stack>
                   </Stack>
                 </Alert>
               </Snackbar>
-            )
-            }
+            )}
           </Box>
           <Box my={1.5}>
             <Typography color="gray" id="demo-simple-select-label">
               Admission Type
             </Typography>
             <Stack flexWrap={'wrap'} flexDirection="row">
-              {[
-                'none',
-                'Surgery',
-                'MM',
-                'DC'
-              ].map((item) => (
+              {['none', 'Surgery', 'MM', 'DC'].map((item) => (
                 <Button
                   size="small"
                   sx={{ m: 0.4 }}
@@ -1104,7 +1093,9 @@ const CreatePrescription = () => {
                 ))}
               </Stack>
             ) : (
-              prescription.admission !== 'none' && prescription.admission !== 'MM' && prescription.admission !== 'DC' && (
+              prescription.admission !== 'none' &&
+              prescription.admission !== 'MM' &&
+              prescription.admission !== 'DC' && (
                 <Box my={1.5}>
                   <Autocomplete
                     size="small"
@@ -1125,17 +1116,18 @@ const CreatePrescription = () => {
                   <FormHelperText error={validations.service.value}>
                     {validations.service.message}
                   </FormHelperText>
-
                 </Box>
               )
             )}
             <TextField
               label="Remark"
               size="small"
-              // value={value} 
-              onChange={(event) => changePrescriptionValue('remarks', event.target.value)}
+              // value={value}
+              onChange={(event) =>
+                changePrescriptionValue('remarks', event.target.value)
+              }
               fullWidth
-              sx={{ marginTop: "10px" }}
+              sx={{ marginTop: '10px' }}
             />
           </Box>
           {/* <Box my={1.5}>
@@ -1218,43 +1210,43 @@ const CreatePrescription = () => {
                 sx={{ m: 0.4 }}
                 onClick={() => {
                   setDiagnostics([]);
-                  changePrescriptionValue('diagnostics', [])
+                  changePrescriptionValue('diagnostics', []);
                 }}
                 variant={diagnostics.length === 0 ? 'contained' : 'outlined'}
               >
                 None
               </Button>
-              {['CT-Scan',
+              {[
+                'CT-Scan',
                 'PET-CT',
                 // 'EEG',
                 // 'EMG',
                 'MRI',
                 'Lab',
                 'X-RAY',
-                'USG'].map(
-                  (item) => (
-                    <Button
-                      size="small"
-                      sx={{ m: 0.4 }}
-                      key={item}
-                      onClick={() => {
-                        const diag = new Set(diagnostics);
-                        if (diag.has(item)) {
-                          diag.delete(item);
-                        } else {
-                          diag.add(item);
-                        }
-                        setDiagnostics(Array.from(diag));
-                        changePrescriptionValue('diagnostics', Array.from(diag))
-                      }}
-                      variant={
-                        new Set(diagnostics).has(item) ? 'contained' : 'outlined'
-                      }
-                    >
-                      {item}
-                    </Button>
-                  )
-                )}
+                'USG'
+              ].map((item) => (
+                <Button
+                  size="small"
+                  sx={{ m: 0.4 }}
+                  key={item}
+                  onClick={() => {
+                    const diag = new Set(diagnostics);
+                    if (diag.has(item)) {
+                      diag.delete(item);
+                    } else {
+                      diag.add(item);
+                    }
+                    setDiagnostics(Array.from(diag));
+                    changePrescriptionValue('diagnostics', Array.from(diag));
+                  }}
+                  variant={
+                    new Set(diagnostics).has(item) ? 'contained' : 'outlined'
+                  }
+                >
+                  {item}
+                </Button>
+              ))}
             </Stack>
           </Box>
           <Box my={1.5}>
@@ -1265,7 +1257,11 @@ const CreatePrescription = () => {
               <Button
                 size="small"
                 sx={{ m: 0.4 }}
-                variant={selectedPharmacy === 'Pharmacy Advised' ? 'contained' : 'outlined'}
+                variant={
+                  selectedPharmacy === 'Pharmacy Advised'
+                    ? 'contained'
+                    : 'outlined'
+                }
                 onClick={() => {
                   setSelectedPharmacy('Pharmacy Advised');
                   changePrescriptionValue('isPharmacy', 'Pharmacy Advised');
@@ -1276,7 +1272,9 @@ const CreatePrescription = () => {
               <Button
                 size="small"
                 sx={{ m: 0.4 }}
-                variant={selectedPharmacy === 'Not Advised' ? 'contained' : 'outlined'}
+                variant={
+                  selectedPharmacy === 'Not Advised' ? 'contained' : 'outlined'
+                }
                 onClick={() => {
                   setSelectedPharmacy('Not Advised');
                   changePrescriptionValue('isPharmacy', 'Not Advised');
@@ -1292,7 +1290,7 @@ const CreatePrescription = () => {
               Follow Up Date
             </Typography>
             <TextField
-              inputProps={{ inputProps: { min: new Date() } }}
+              inputProps={{ min: new Date().toISOString().split('T')[0] }}
               value={prescription.followUp}
               onChange={(e) =>
                 changePrescriptionValue('followUp', e.target.value)
@@ -1350,66 +1348,97 @@ const CreatePrescription = () => {
                     </Typography>
                     <Stack spacing={0.5}>
                       {prescription.image.length < 2 && (
-                        <Stack display={'flex'} flexDirection={"column"} gap={"5px"}>
-                          {!isUploaded && <Button
-                            onClick={() => { setOpenCamera(true); setIsCaptured(true) }}
-                            fullWidth
-                            variant="outlined"
-                            startIcon={prescription.image.length == 0 ? <CameraAltIcon /> : <AddIcon />}
-                          >
-                            {prescription.image.length == 0 ? "Capture" : "Add More"}
-                          </Button>}
+                        <Stack
+                          display={'flex'}
+                          flexDirection={'column'}
+                          gap={'5px'}
+                        >
+                          {!isUploaded && (
+                            <Button
+                              onClick={() => {
+                                setOpenCamera(true);
+                                setIsCaptured(true);
+                              }}
+                              fullWidth
+                              variant="outlined"
+                              startIcon={
+                                prescription.image.length == 0 ? (
+                                  <CameraAltIcon />
+                                ) : (
+                                  <AddIcon />
+                                )
+                              }
+                            >
+                              {prescription.image.length == 0
+                                ? 'Capture'
+                                : 'Add More'}
+                            </Button>
+                          )}
                           {/* Upload Button */}
 
-                          {prescription.image.length == 0 && <Button
-                            variant="outlined"
-                            component="label"
-                            startIcon={<UploadIcon />}
-                            fullWidth
-                          >
-                            Upload
-                            <input
-                              type="file"
-                              hidden
-                              accept="image/jpeg, image/png, image/jpg"
-                              onChange={(e) => { handleFileChange(e); }}
-                            />
-                          </Button>}
+                          {prescription.image.length == 0 && (
+                            <Button
+                              variant="outlined"
+                              component="label"
+                              startIcon={<UploadIcon />}
+                              fullWidth
+                            >
+                              Upload
+                              <input
+                                type="file"
+                                hidden
+                                accept="image/jpeg, image/png, image/jpg"
+                                onChange={(e) => {
+                                  handleFileChange(e);
+                                }}
+                              />
+                            </Button>
+                          )}
 
                           {/* ------ */}
                         </Stack>
                       )}
                       {prescription.image.length > 0 && (
                         <>
-                          {!isUploaded && <Button
-                            fullWidth
-                            variant="outlined"
-                            startIcon={<Undo />}
-                            onClick={() => (changePrescriptionValue('image', []), setOpenCamera(true))}
-                          >
-                            Retake
-                          </Button>}
-                          {!isCaptured && prescription.image.length !== 2 && <Button
-                            variant="outlined"
-                            component="label"
-                            startIcon={<UploadIcon />}
-                            fullWidth
-                          >
-                            Upload Again
-                            <input
-                              type="file"
-                              hidden
-                              accept="image/*"
-                              onChange={handleFileChange}
-                            />
-                          </Button>}
+                          {!isUploaded && (
+                            <Button
+                              fullWidth
+                              variant="outlined"
+                              startIcon={<Undo />}
+                              onClick={() => (
+                                changePrescriptionValue('image', []),
+                                setOpenCamera(true)
+                              )}
+                            >
+                              Retake
+                            </Button>
+                          )}
+                          {!isCaptured && prescription.image.length !== 2 && (
+                            <Button
+                              variant="outlined"
+                              component="label"
+                              startIcon={<UploadIcon />}
+                              fullWidth
+                            >
+                              Upload Again
+                              <input
+                                type="file"
+                                hidden
+                                accept="image/*"
+                                onChange={handleFileChange}
+                              />
+                            </Button>
+                          )}
                           <Button
                             fullWidth
                             variant="outlined"
                             color="error"
                             startIcon={<Delete />}
-                            onClick={() => { changePrescriptionValue('image', []); setIsCaptured(false); setIsUploaded(false); }
-                            }
+                            onClick={() => {
+                              changePrescriptionValue('image', []);
+                              setIsCaptured(false);
+                              setIsUploaded(false);
+                            }}
                           >
                             Delete
                           </Button>
@@ -1419,30 +1448,44 @@ const CreatePrescription = () => {
                   </CardContent>
                 </Box>
               </Grid>
-              {prescription.image.length > 0 ? prescription.image.map((item) => {
-                return (<>
-                  <Grid item>
-                    <CardMedia
-                      component="img"
-                      sx={{ width: '70px', objectFit: 'contain', height: '70px', display: 'flex', marginLeft: '10px', marginTop: 6 }}
-                      image={item}
-                      alt="Prescription Image"
-                    />
-                  </Grid>
-                </>)
-              }) :
+              {prescription.image.length > 0 ? (
+                prescription.image.map((item) => {
+                  return (
+                    <>
+                      <Grid item>
+                        <CardMedia
+                          component="img"
+                          sx={{
+                            width: '70px',
+                            objectFit: 'contain',
+                            height: '70px',
+                            display: 'flex',
+                            marginLeft: '10px',
+                            marginTop: 6
+                          }}
+                          image={item}
+                          alt="Prescription Image"
+                        />
+                      </Grid>
+                    </>
+                  );
+                })
+              ) : (
                 <>
                   <Grid item xs={6}>
-                    < CardMedia
+                    <CardMedia
                       component="img"
-                      sx={{ width: '150px', objectFit: 'contain', height: '150px' }}
-                      image='https://www.grouphealth.ca/wp-content/uploads/2018/05/placeholder-image.png'
+                      sx={{
+                        width: '150px',
+                        objectFit: 'contain',
+                        height: '150px'
+                      }}
+                      image="https://www.grouphealth.ca/wp-content/uploads/2018/05/placeholder-image.png"
                       alt="Prescription Image"
                     />
                   </Grid>
                 </>
-
-              }
+              )}
             </Grid>
             <FormHelperText error={validations.image.value}>
               {validations.image.message}
@@ -1476,7 +1519,6 @@ const CreatePrescription = () => {
         }}
       >
         {prescription.image.length < 2 && openCamera ? (
-
           // <Webcam
           //   style={{ height: '90vh' }}
           //   audio={false}
@@ -1491,7 +1533,11 @@ const CreatePrescription = () => {
             idealResolution={{ width: 1280, height: 720 }} // Set higher resolution
             isImageMirror={false}
             imageCompression={0.97} // Adjust JPEG quality (0.97 is high quality)
-            onTakePhoto={(dataUri) => (changePrescriptionValue('image', dataUri), setOpenCamera(false), toast.success('Photo Clicked Successfully!'))}
+            onTakePhoto={(dataUri) => (
+              changePrescriptionValue('image', dataUri),
+              setOpenCamera(false),
+              toast.success('Photo Clicked Successfully!')
+            )}
             imageType="jpg" // Specify image type (optional, default is 'png')
             // imageCompressionFactor={0.8} // Specify image compression factor (optional, default is 0.92)
             isMaxResolution={false}
@@ -1500,13 +1546,14 @@ const CreatePrescription = () => {
           <Box sx={{ display: 'flex' }}>
             {prescription.image.map((item) => {
               return (
-                <div className='d-flex justify-content-between'>
+                <div className="d-flex justify-content-between">
                   <img
                     src={item}
                     style={{ width: '40vw', height: '80vh', margin: '10px' }}
-                    alt="" />
+                    alt=""
+                  />
                 </div>
-              )
+              );
             })}
           </Box>
         )}

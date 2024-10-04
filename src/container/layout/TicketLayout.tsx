@@ -168,7 +168,7 @@ const Ticket = () => {
   const { representative } = useReprentativeStore();
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
-  const [searchName, setSearchName] = useState<string>("");
+  const [searchName, setSearchName] = useState<string>('');
   const [totalEstimateValue, setTotalEstimateValue] = useState(0);
   const [phone, setPhone] = useState(null);
 
@@ -258,7 +258,7 @@ const Ticket = () => {
   }, [tickets, searchByName]);
 
   const fetchTicketsOnEmpthySearch = async () => {
-    setSearchName("");
+    setSearchName('');
     setSearchByName(UNDEFINED);
     setPage(1);
     setPageNumber(1);
@@ -279,7 +279,7 @@ const Ticket = () => {
   useEffect(() => {
     console.log(newFilter, 'newFilter');
     const data = async () => {
-      setSearchName("");
+      setSearchName('');
       setSearchByName(UNDEFINED);
       setSearchError('Type to search & Enter');
       // setTicketCount(ticketCache["count"]);
@@ -390,30 +390,6 @@ const Ticket = () => {
   // };
 
   // window.onload = redirectTicket;
-
-  useEffect(() => {
-    (async function () {
-      // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
-      await getAllNotesWithoutTicketId();
-      await getStagesHandler();
-      await getSubStagesHandler();
-      await getDoctorsHandler();
-      await getDepartmentsHandler();
-      await getAllReminderHandler();
-      await getAllCallReschedulerHandler();
-      await getAllTaskCountHandler();
-      await getAllServiceFromDbHandler();
-    })();
-    setPageNumber(1);
-    setIsAuditor(false);
-     setSearchName('');
-     setSearchByName(UNDEFINED);
-     setSearchError('Type to search & Enter');
-     // setTicketCount(ticketCache["count"]);
-     // setTickets(ticketCache[1]);
-     setPage(1);
-     setPageNumber(1);
-  }, [localStorage.getItem('ticketType')]);
 
   // const isAlamredReminderExist = (reminder: iReminder) => {
   //   const result = reminderList?.findIndex((data) => data === reminder?._id);
@@ -930,6 +906,31 @@ const Ticket = () => {
       socket.disconnect();
     };
   });
+
+  useEffect(() => {
+    (async function () {
+      // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      await getAllNotesWithoutTicketId();
+      await getStagesHandler();
+      await getSubStagesHandler();
+      await getDoctorsHandler();
+      await getDepartmentsHandler();
+      await getAllReminderHandler();
+      await getAllCallReschedulerHandler();
+      await getAllTaskCountHandler();
+      await getAllServiceFromDbHandler();
+    })();
+    setPageNumber(1);
+    setIsAuditor(false);
+    setSearchName('');
+    setSearchByName(UNDEFINED);
+    setSearchError('Type to search & Enter');
+    // setTicketCount(ticketCache["count"]);
+    // setTickets(ticketCache[1]);
+    setPage(1);
+    setPageNumber(1);
+    getAllCallReschedulerHandler();
+  }, [localStorage.getItem('ticketType')]);
 
   return (
     <>

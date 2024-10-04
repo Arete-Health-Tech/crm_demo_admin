@@ -24,6 +24,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 import { useEffect, useState, useRef, useReducer } from 'react';
 import {
+  getAllCallReschedulerHandler,
   getAllReminderHandler,
   getAllTaskCountHandler,
   getAllWhtsappCountHandler,
@@ -60,7 +61,6 @@ import {
 import useServiceStore from '../../store/serviceStore';
 import './styles.css';
 import {
-  getAllCallReschedulerHandler,
   getAuditorCommentCount,
   getTicket,
   getTicketAfterNotification,
@@ -929,7 +929,6 @@ const Ticket = () => {
     // setTickets(ticketCache[1]);
     setPage(1);
     setPageNumber(1);
-    getAllCallReschedulerHandler();
   }, [localStorage.getItem('ticketType')]);
 
   return (

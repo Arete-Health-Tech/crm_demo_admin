@@ -817,6 +817,7 @@ const NSingleTicketDetails = (props: Props) => {
 
   // This function is for calling the api of delete lead
   const handleLeadDelete = async () => {
+    console.log("inside lead delete function")
     setDeleteModal(false);
     await deleteTicket(ticketID);
     getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);

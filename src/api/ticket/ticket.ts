@@ -34,7 +34,9 @@ export const getTicket = async (
         : localStorage.getItem('ticketType') === 'Follow-Up'
         ? '/followUp/FollowUpTickets'
         : '/ticket/'
-    }?page=${pageNumber}&name=${name}&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
+    }?page=${pageNumber}&name=${
+      name !== '' ? name : 'undefined'
+    }&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
     &specialty=${localStorage.getItem(
       'location'
     )}&specialtyforFilter=${filteredLocation}`

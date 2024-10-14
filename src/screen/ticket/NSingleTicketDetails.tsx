@@ -837,7 +837,7 @@ const NSingleTicketDetails = (props: Props) => {
           : '/ticket/'
       }`
     );
-    setDownloadDisable(true);
+    setDownloadDisable(false);
   };
 
   //This function is for assigne ticket to different representative

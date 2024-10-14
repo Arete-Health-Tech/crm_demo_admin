@@ -546,7 +546,7 @@ const Ticket = () => {
   // }
   useEffect(() => {
     const refetchTickets = async () => {
-      let pageNumber = page;
+      // let pageNumber = page;
       if (ticketID) {
       } else {
         await getTicketHandler(searchName, pageNumber, 'false', newFilter);

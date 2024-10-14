@@ -91,6 +91,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
   const {
     tickets,
     filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
     searchByName,
     pageNumber,
     viewEstimates,
@@ -100,7 +102,14 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     isAuditor,
     setDownloadDisable
   } = useTicketStore();
-
+ const newFilter =
+   localStorage.getItem('ticketType') === 'Admission'
+     ? filterTickets
+     : localStorage.getItem('ticketType') === 'Diagnostics'
+     ? filterTicketsDiago
+     : localStorage.getItem('ticketType') === 'Follow-Up'
+     ? filterTicketsFollowUp
+     : filterTickets;
   const initialPatientData: patientData = {
     uhid: '',
     firstName: '',
@@ -297,7 +306,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
       }
     };
     await updateConusmerData(updatedData, ticketID);
-    await getTicketHandler(searchByName, pageNumber, 'false', filterTickets);
+    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     setIsEditing(false);
     setDownloadDisable(false);
   };

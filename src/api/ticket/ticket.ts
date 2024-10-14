@@ -7,8 +7,7 @@ import {
 } from '../../types/store/ticket';
 import { apiClient } from '../apiClient';
 import useTicketStore from '../../store/ticketStore';
-
-const { ticketType, setDownloadDisable } = useTicketStore.getState();
+// const { ticketType, setDownloadDisable } = useTicketStore.getState();
 
 export const getTicket = async (
   name: string,
@@ -22,7 +21,6 @@ export const getTicket = async (
   won?: any,
   lose?: any
 ) => {
-  setDownloadDisable(true)
   const params = new URLSearchParams(selectedFilters).toString();
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
@@ -41,7 +39,6 @@ export const getTicket = async (
       'location'
     )}&specialtyforFilter=${filteredLocation}`
   );
-  setDownloadDisable(false)
   return data;
 };
 export const getAllTicket = async () => {

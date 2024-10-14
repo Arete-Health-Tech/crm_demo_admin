@@ -54,7 +54,8 @@ const CustomModal = () => {
     pageNumber,
     searchByName,
     setIsModalOpenCall,
-    setAgentLogin
+    setAgentLogin,
+    setDownloadDisable
   } = useTicketStore();
   const [timer, setTimer] = useState(0);
 
@@ -152,6 +153,7 @@ const CustomModal = () => {
   }, [showForm, stoppedTimer]);
 
   const handleFormSubmit = async () => {
+    setDownloadDisable(true);
     try {
       setFormData((prevData) => ({
         ...prevData,
@@ -229,6 +231,7 @@ const CustomModal = () => {
     } catch (error) {
       console.log(error);
     }
+    setDownloadDisable(false);
   };
 
   useEffect(() => {

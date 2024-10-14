@@ -160,6 +160,7 @@ const Ticket = () => {
     viewEstimates,
     allAuditCommentCount,
     setAllAuditCommentCount,
+    setDownloadDisable,
     downloadDisable
   } = useTicketStore();
   const { user } = useUserStore.getState();
@@ -214,19 +215,19 @@ const Ticket = () => {
 
   const navigate = useNavigate();
   const currentRoute = useMatch(NAVIGATE_TO_TICKET);
-  const redirectTicket = () => {
-    navigate(
-      `${
-        localStorage.getItem('ticketType') === 'Admission'
-          ? '/admission/'
-          : localStorage.getItem('ticketType') === 'Diagnostics'
-          ? '/diagnostics/'
-          : localStorage.getItem('ticketType') === 'Follow-Up'
-          ? '/follow-up/'
-          : '/ticket/'
-      }`
-    );
-  };
+  // const redirectTicket = () => {
+  //   navigate(
+  //     `${
+  //       localStorage.getItem('ticketType') === 'Admission'
+  //         ? '/admission/'
+  //         : localStorage.getItem('ticketType') === 'Diagnostics'
+  //         ? '/diagnostics/'
+  //         : localStorage.getItem('ticketType') === 'Follow-Up'
+  //         ? '/follow-up/'
+  //         : '/ticket/'
+  //     }`
+  //   );
+  // };
 
   const newFilter =
     localStorage.getItem('ticketType') === 'Admission'
@@ -279,6 +280,7 @@ const Ticket = () => {
   useEffect(() => {
     console.log(newFilter, 'newFilter');
     const data = async () => {
+      setDownloadDisable(true);
       setSearchName('');
       setSearchByName(UNDEFINED);
       setSearchError('Type to search & Enter');
@@ -287,6 +289,7 @@ const Ticket = () => {
       setPage(1);
       setPageNumber(1);
       await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      setDownloadDisable(false);
     };
     data();
   }, [localStorage.getItem('location')]);
@@ -804,6 +807,7 @@ const Ticket = () => {
   }, [ticketID]);
 
   const handleOnClose = async () => {
+    setDownloadDisable(true);
     if (ticketID) {
       // localStorage.getItem('ticketType') === 'Admission'
       //   ? await validateTicket(ticketID)
@@ -825,6 +829,7 @@ const Ticket = () => {
         navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
       }
     }
+    setDownloadDisable(false);
   };
 
   const [isAdminUser, setIsAdminUser] = useState(false);
@@ -908,6 +913,7 @@ const Ticket = () => {
   });
 
   useEffect(() => {
+    setDownloadDisable(true);
     (async function () {
       // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
       await getAllNotesWithoutTicketId();
@@ -929,6 +935,7 @@ const Ticket = () => {
     // setTickets(ticketCache[1]);
     setPage(1);
     setPageNumber(1);
+    setDownloadDisable(false);
   }, [localStorage.getItem('ticketType')]);
 
   return (
@@ -993,12 +1000,18 @@ const Ticket = () => {
                 className="Ticket-Assignee-title"
                 sx={{
                   marginLeft: '3px',
-                  fontSize: '24px !important',
+                  fontSize: '20px !important',
                   fontStyle: 'normal',
                   fontWeight: '500'
                 }}
               >
-                Tickets
+                {localStorage.getItem('ticketType') === 'Admission'
+                  ? 'Admission Ticket'
+                  : localStorage.getItem('ticketType') === 'Diagnostics'
+                  ? 'Diagnostics Ticket'
+                  : localStorage.getItem('ticketType') === 'Follow-Up'
+                  ? 'Follow-up Ticket'
+                  : 'Tickets'}
               </Stack>
               <Stack display={'flex'} flexDirection={'row'}>
                 <Stack>

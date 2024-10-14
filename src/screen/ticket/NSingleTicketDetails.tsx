@@ -212,6 +212,7 @@ const NSingleTicketDetails = (props: Props) => {
     estimates,
     isSwitchView,
     setIsSwitchView,
+    setDownloadDisable,
     allWhtsappCount
   } = useTicketStore();
   const { doctors, departments, stages } = useServiceStore();
@@ -795,6 +796,7 @@ const NSingleTicketDetails = (props: Props) => {
   }, []);
 
   const handleProbability = async (value) => {
+    setDownloadDisable(true);
     await updateTicketProbability(value, ticketID);
     setProbabilityModal(false);
     await getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
@@ -813,11 +815,13 @@ const NSingleTicketDetails = (props: Props) => {
         }${ticketID}`
       );
     }
+    setDownloadDisable(false);
   };
 
   // This function is for calling the api of delete lead
   const handleLeadDelete = async () => {
-    console.log("inside lead delete function")
+    setDownloadDisable(true);
+    console.log('inside lead delete function');
     setDeleteModal(false);
     await deleteTicket(ticketID);
     getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
@@ -833,10 +837,12 @@ const NSingleTicketDetails = (props: Props) => {
           : '/ticket/'
       }`
     );
+    setDownloadDisable(true);
   };
 
   //This function is for assigne ticket to different representative
   const handleAddAssigne = async (assigneeId: string) => {
+    setDownloadDisable(true);
     const res = await assignedToTicket(ticketID, assigneeId);
     getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
     if (isSwitchView) {
@@ -854,10 +860,12 @@ const NSingleTicketDetails = (props: Props) => {
         }${ticketID}`
       );
     }
+    setDownloadDisable(false);
   };
 
   //This function is for remove assigne ticket from the representative
   const handleRemoveAssigne = async (assigneeId: string) => {
+    setDownloadDisable(true);
     const res = await removeFromTicket(ticketID, assigneeId);
     getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
     if (isSwitchView) {
@@ -875,6 +883,7 @@ const NSingleTicketDetails = (props: Props) => {
         }${ticketID}`
       );
     }
+    setDownloadDisable(true);
   };
 
   // const handleMarkAsRead = async (ticketID: string | undefined) => {

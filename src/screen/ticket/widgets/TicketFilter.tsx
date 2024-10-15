@@ -718,12 +718,26 @@ const TicketFilter = (props: {
                 size="medium"
                 onChange={handleRepresentative}
                 value={currentReperesentative}
-                sx={{ height: '35px' }}
+                sx={{
+                  height: '35px',
+                  textTransform: 'capitalize',
+                  fontFamily: 'Outfit,sans-serif'
+                }}
               >
                 {
                   // representativeLabel?.some(rep => rep.role === "REPRESENTATIVE")
                   representativeLabel?.map(({ id, label }, index) => {
-                    return <MenuItem value={id}>{label}</MenuItem>;
+                    return (
+                      <MenuItem
+                        value={id}
+                        sx={{
+                          textTransform: 'capitalize',
+                          fontFamily: 'Outfit,sans-serif'
+                        }}
+                      >
+                        {label}
+                      </MenuItem>
+                    );
                   })
                 }
               </Select>

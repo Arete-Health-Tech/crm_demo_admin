@@ -82,6 +82,8 @@ import styles from './SingleTicketDetails.module.css';
 import ShowPrescription from './widgets/ShowPrescriptionModal';
 import {
   assignedToTicket,
+  deleteDiagnosticsTicket,
+  deleteFollowUpTicket,
   deleteTicket,
   getAllWhatsAppCount,
   removeFromTicket,
@@ -834,7 +836,16 @@ const NSingleTicketDetails = (props: Props) => {
   const handleLeadDelete = async () => {
     setDownloadDisable(true);
     setDeleteModal(false);
-    await deleteTicket(ticketID);
+
+    const ticketType = localStorage.getItem('ticketType');
+    if (ticketType === 'Diagnostics') {
+      await deleteDiagnosticsTicket(ticketID);
+    } else if (ticketType === 'Follow-Up') {
+      await deleteFollowUpTicket(ticketID);
+    } else {
+      await deleteTicket(ticketID);
+    }
+
     getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     await validateTicket(ticketID);
     navigate(

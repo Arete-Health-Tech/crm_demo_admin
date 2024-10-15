@@ -80,11 +80,11 @@ export const ticketFilterCount = (
   ) {
     locationCount =
       filteredLocation == 'Amritsar' ||
-        filteredLocation == 'Mohali' ||
-        filteredLocation == 'Hoshiarpur' ||
-        filteredLocation == 'Nawanshahr' ||
-        filteredLocation == 'Hoshiarpur' ||
-        filteredLocation == 'Khanna'
+      filteredLocation == 'Mohali' ||
+      filteredLocation == 'Hoshiarpur' ||
+      filteredLocation == 'Nawanshahr' ||
+      filteredLocation == 'Hoshiarpur' ||
+      filteredLocation == 'Khanna'
         ? 1
         : 0;
   } else {
@@ -269,7 +269,10 @@ const TicketFilter = (props: {
     const value = e.target.value;
     if (value) {
       setCurrentRepresentative(value);
-      dispatchFilterDiago({ type: filterActionsDiago.REPRESENTATIVE, payload: value });
+      dispatchFilterDiago({
+        type: filterActionsDiago.REPRESENTATIVE,
+        payload: value
+      });
     }
   };
 
@@ -500,9 +503,18 @@ const TicketFilter = (props: {
       await validateTicket(ticketID);
     }
     dispatchFilterDiago({ type: filterActionsDiago.STAGES, payload: [] });
-    dispatchFilterDiago({ type: filterActionsDiago.REPRESENTATIVE, payload: null });
-    dispatchFilterDiago({ type: filterActionsDiago.ADMISSIONTYPE, payload: [] });
-    dispatchFilterDiago({ type: filterActionsDiago.DIAGNOSTICSTYPE, payload: [] });
+    dispatchFilterDiago({
+      type: filterActionsDiago.REPRESENTATIVE,
+      payload: null
+    });
+    dispatchFilterDiago({
+      type: filterActionsDiago.ADMISSIONTYPE,
+      payload: []
+    });
+    dispatchFilterDiago({
+      type: filterActionsDiago.DIAGNOSTICSTYPE,
+      payload: []
+    });
     dispatchFilterDiago({ type: filterActionsDiago.DATERANGE, payload: [] });
     dispatchFilterDiago({ type: filterActionsDiago.RESULTS, payload: null });
     dispatchFilterDiago({ type: filterActionsDiago.STATUS, payload: [] });
@@ -612,7 +624,7 @@ const TicketFilter = (props: {
           <StyledBadge
             invisible={filterCount <= 0}
             badgeContent={filterCount}
-          // color="primary"
+            // color="primary"
           >
             <FilterList sx={{ color: '#080F1A' }} />
           </StyledBadge>
@@ -721,12 +733,26 @@ const TicketFilter = (props: {
                 size="medium"
                 onChange={handleRepresentative}
                 value={currentReperesentative}
-                sx={{ height: '35px' }}
+                sx={{
+                  height: '35px',
+                  textTransform: 'capitalize',
+                  fontFamily: 'Outfit,sans-serif'
+                }}
               >
                 {
                   // representativeLabel?.some(rep => rep.role === "REPRESENTATIVE")
                   representativeLabel?.map(({ id, label }, index) => {
-                    return <MenuItem value={id}>{label}</MenuItem>;
+                    return (
+                      <MenuItem
+                        value={id}
+                        sx={{
+                          textTransform: 'capitalize',
+                          fontFamily: 'Outfit,sans-serif'
+                        }}
+                      >
+                        {label}
+                      </MenuItem>
+                    );
                   })
                 }
               </Select>

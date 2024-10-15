@@ -345,6 +345,16 @@ export const deleteTicket = async (ticketID: string | undefined) => {
   return Promise.resolve(data);
 };
 
+export const deleteDiagnosticsTicket = async (ticketID: string | undefined) => {
+  const { data } = await apiClient.delete(`/diagnostics/deleteTicket/${ticketID}`);
+  return Promise.resolve(data);
+}; 
+
+export const deleteFollowUpTicket = async (ticketID: string | undefined) => {
+  const { data } = await apiClient.delete(`/followUp/deleteTicket/${ticketID}`);
+  return Promise.resolve(data);
+}; 
+
 export const assignedToTicket = async (
   ticketID: string | undefined,
   representativeid: string | undefined

@@ -799,7 +799,7 @@ const NSingleTicketDetails = (props: Props) => {
     setDownloadDisable(true);
     await updateTicketProbability(value, ticketID);
     setProbabilityModal(false);
-    await getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
+    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {
@@ -824,7 +824,7 @@ const NSingleTicketDetails = (props: Props) => {
     console.log('inside lead delete function');
     setDeleteModal(false);
     await deleteTicket(ticketID);
-    getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
+    getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     await validateTicket(ticketID);
     navigate(
       `${
@@ -844,7 +844,7 @@ const NSingleTicketDetails = (props: Props) => {
   const handleAddAssigne = async (assigneeId: string) => {
     setDownloadDisable(true);
     const res = await assignedToTicket(ticketID, assigneeId);
-    getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
+    getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {
@@ -867,7 +867,7 @@ const NSingleTicketDetails = (props: Props) => {
   const handleRemoveAssigne = async (assigneeId: string) => {
     setDownloadDisable(true);
     const res = await removeFromTicket(ticketID, assigneeId);
-    getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
+    getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {

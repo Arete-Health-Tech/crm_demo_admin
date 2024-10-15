@@ -37,7 +37,13 @@ import TicketCard from '../../screen/ticket/widgets/TicketCard';
 import { iCallRescheduler, iReminder, iTicket } from '../../types/store/ticket';
 import { getDoctorsHandler } from '../../api/doctor/doctorHandler';
 import { getDepartmentsHandler } from '../../api/department/departmentHandler';
-import { Outlet, useMatch, useNavigate, useParams } from 'react-router-dom';
+import {
+  Outlet,
+  useLocation,
+  useMatch,
+  useNavigate,
+  useParams
+} from 'react-router-dom';
 import DefaultScreen from '../../components/DefaultScreen';
 import { ArrowBack } from '@mui/icons-material';
 import TicketFilter from '../../screen/ticket/widgets/TicketFilter';
@@ -530,12 +536,16 @@ const Ticket = () => {
   //   const copiedFilterTickets = { ...filterTickets };
   //   await getTicketHandler(UNDEFINED, 1, 'false', copiedFilterTickets);
   // }
+  const location = useLocation();
+  console.log(location.pathname);
   useEffect(() => {
     const refetchTickets = async () => {
       // let pageNumber = page;
       if (!ticketID) {
-        (localStorage.getItem('ticketType') === 'Diagnostics' ||
-          localStorage.getItem('ticketType') === 'Follow-Up') &&
+        ((localStorage.getItem('ticketType') === 'Diagnostics' &&
+          location.pathname.includes('diagnostics')) ||
+          (localStorage.getItem('ticketType') === 'Follow-Up' &&
+            location.pathname.includes('follow-up'))) &&
           (await getTicketHandler(searchName, pageNumber, 'false', newFilter));
         localStorage.getItem('ticketType') === 'Admission' &&
           (await getTicketAfterNotification(
@@ -548,12 +558,18 @@ const Ticket = () => {
     };
 
     // socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-    if (localStorage.getItem('ticketType') === 'Diagnostics') {
+    if (
+      localStorage.getItem('ticketType') === 'Diagnostics' &&
+      location.pathname.includes('diagnostics')
+    ) {
       socket.on(
         socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
         refetchTickets
       );
-    } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+    } else if (
+      localStorage.getItem('ticketType') === 'Follow-Up' &&
+      location.pathname.includes('follow-up')
+    ) {
       socket.on(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
     }
     // else if (localStorage.getItem('ticketType') === 'Admission') {
@@ -561,12 +577,18 @@ const Ticket = () => {
     // }
 
     return () => {
-      if (localStorage.getItem('ticketType') === 'Diagnostics') {
+      if (
+        localStorage.getItem('ticketType') === 'Diagnostics' &&
+        location.pathname.includes('diagnostics')
+      ) {
         socket.off(
           socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
           refetchTickets
         );
-      } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+      } else if (
+        localStorage.getItem('ticketType') === 'Follow-Up' &&
+        location.pathname.includes('follow-up')
+      ) {
         socket.off(
           socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
           refetchTickets

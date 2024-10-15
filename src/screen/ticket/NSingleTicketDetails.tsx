@@ -212,7 +212,7 @@ const NSingleTicketDetails = (props: Props) => {
     estimates,
     isSwitchView,
     setIsSwitchView,
-    setDownloadDisable, 
+    setDownloadDisable,
     allWhtsappCount
   } = useTicketStore();
   const { doctors, departments, stages } = useServiceStore();
@@ -289,7 +289,6 @@ const NSingleTicketDetails = (props: Props) => {
       ? filterTicketsFollowUp
       : filterTickets;
 
-  console.log(newFilter);
   useEffect(() => {
     /* @ts-ignore */
     setPrescription(structuredClone(initialPrescription));
@@ -319,7 +318,7 @@ const NSingleTicketDetails = (props: Props) => {
       console.log(error);
     }
   };
-
+  console.log(pageNumber, 'nsingleticket details');
   const handelUploadType = async () => {
     setDisableButton(true);
     const validationCheck = validation();
@@ -339,12 +338,11 @@ const NSingleTicketDetails = (props: Props) => {
         );
         setDisableButton(false);
         setAmissionTypeClicked(true);
-        getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
+        getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       } catch (error) {
         setDisableButton(false);
         setAmissionTypeClicked(true);
-        getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
-        console.error('Error occurred:', error);
+        getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       }
 
       // const url = ticketID !== undefined ? `/ticket/${ticketID}` : `/ticket`;
@@ -558,17 +556,31 @@ const NSingleTicketDetails = (props: Props) => {
       if (ticketData === undefined && ticketID !== undefined) {
         await validateTicket(ticketID);
         if (!isSwitchView) {
-          navigate(
-            `${
-              localStorage.getItem('ticketType') === 'Admission'
-                ? '/admission/'
-                : localStorage.getItem('ticketType') === 'Diagnostics'
-                ? '/diagnostics/'
-                : localStorage.getItem('ticketType') === 'Follow-Up'
-                ? '/follow-up/'
-                : '/ticket/'
-            }`
-          );
+          if (ticketID) {
+            navigate(
+              `${
+                localStorage.getItem('ticketType') === 'Admission'
+                  ? '/admission/'
+                  : localStorage.getItem('ticketType') === 'Diagnostics'
+                  ? '/diagnostics/'
+                  : localStorage.getItem('ticketType') === 'Follow-Up'
+                  ? '/follow-up/'
+                  : '/ticket/'
+              }${ticketID}`
+            );
+          } else {
+            navigate(
+              `${
+                localStorage.getItem('ticketType') === 'Admission'
+                  ? '/admission/'
+                  : localStorage.getItem('ticketType') === 'Diagnostics'
+                  ? '/diagnostics/'
+                  : localStorage.getItem('ticketType') === 'Follow-Up'
+                  ? '/follow-up/'
+                  : '/ticket/'
+              }`
+            );
+          }
         } else {
           navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
         }
@@ -821,7 +833,6 @@ const NSingleTicketDetails = (props: Props) => {
   // This function is for calling the api of delete lead
   const handleLeadDelete = async () => {
     setDownloadDisable(true);
-    console.log('inside lead delete function');
     setDeleteModal(false);
     await deleteTicket(ticketID);
     getTicketHandler(searchByName, pageNumber, 'false', newFilter);
@@ -912,7 +923,7 @@ const NSingleTicketDetails = (props: Props) => {
     await getAllWhtsappCountHandler();
     await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
   };
-
+  console.log(pageNumber);
   useEffect(() => {
     // Check if socket is connected
     if (!socket.connected) {

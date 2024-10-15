@@ -17,7 +17,7 @@ import { getDepartmentsHandler } from '../../../api/department/departmentHandler
 import { iCallRescheduler, iReminder } from '../../../types/store/ticket';
 import { socketEventConstants } from '../../../constantUtils/socketEventsConstants';
 import { apiClient, socket } from '../../../api/apiClient';
-import { getTicket } from '../../../api/ticket/ticket';
+import { getTicket, getTicketAfterNotification } from '../../../api/ticket/ticket';
 import { getAllStageCountHandler } from '../../../api/dashboard/dashboardHandler';
 import { Box, Chip, Modal, Stack, Typography } from '@mui/material';
 import styles from './switchView.module.css';
@@ -345,28 +345,52 @@ function SwitchViewTable() {
     });
     AllIntervals = [];
   };
-
   useEffect(() => {
     const refetchTickets = async () => {
-      const copiedFilterTickets = { ...newFilter };
-      let pageNumber = page;
-      if (ticketID) {
-      } else {
-        await getTicketHandler(
-          searchName,
-          pageNumber,
-          'false',
-          copiedFilterTickets
-        );
+      console.log('refetch called');
+      // let pageNumber = page;
+      if (!ticketID) {
+        await getTicketHandler(searchName, pageNumber, 'false', newFilter);
+        localStorage.getItem('ticketType') === 'Admission' &&
+          (await getTicketAfterNotification(
+            searchName,
+            pageNumber,
+            'false',
+            newFilter
+          ));
       }
     };
 
-    socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    // socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    if (localStorage.getItem('ticketType') === 'Diagnostics') {
+      socket.on(
+        socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
+        refetchTickets
+      );
+    } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+      socket.on(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
+    } else if (localStorage.getItem('ticketType') === 'Admission') {
+      socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    }
 
     return () => {
-      socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+      if (localStorage.getItem('ticketType') === 'Diagnostics') {
+        socket.off(
+          socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
+          refetchTickets
+        );
+      } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+        socket.off(
+          socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
+          refetchTickets
+        );
+      } else if (localStorage.getItem('ticketType') === 'Admission') {
+        socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+      }
+      // socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
-  }, [newFilter, page, searchName]);
+  }, [pageNumber, searchName]);
+
 
   useEffect(() => {
     clearAllInterval(AllIntervals);
@@ -679,6 +703,8 @@ function SwitchViewTable() {
       return 0;
     }
   };
+ console.log(page,'sssssss');
+ console.log(pageNumber,'sssssss');
 
   return (
     <>

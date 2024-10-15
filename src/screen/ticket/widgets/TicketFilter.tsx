@@ -493,6 +493,9 @@ const TicketFilter = (props: {
   };
 
   const handleClearFilter = async () => {
+    if (ticketID) {
+      await validateTicket(ticketID);
+    }
     dispatchFilter({ type: filterActions.STAGES, payload: [] });
     dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
     dispatchFilter({ type: filterActions.ADMISSIONTYPE, payload: [] });

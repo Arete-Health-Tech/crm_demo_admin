@@ -496,6 +496,9 @@ const TicketFilter = (props: {
   };
 
   const handleClearFilter = async () => {
+    if (ticketID) {
+      await validateTicket(ticketID);
+    }
     dispatchFilterDiago({ type: filterActionsDiago.STAGES, payload: [] });
     dispatchFilterDiago({ type: filterActionsDiago.REPRESENTATIVE, payload: null });
     dispatchFilterDiago({ type: filterActionsDiago.ADMISSIONTYPE, payload: [] });
@@ -545,12 +548,8 @@ const TicketFilter = (props: {
   };
 
   useEffect(() => {
-    const handleClear = async () => {
-      await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-    };
     handleClearFilter();
     handleApplyFilter();
-    handleClear();
   }, [localStorage.getItem('ticketType')]);
 
   const handleToggleChange = (event, newValue: any) => {

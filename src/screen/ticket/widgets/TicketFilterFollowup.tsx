@@ -499,6 +499,9 @@ const TicketFilter = (props: {
   };
 
   const handleClearFilter = async () => {
+    if (ticketID) {
+      await validateTicket(ticketID);
+    }
     dispatchFilterFollowUp({ type: filterActionsFollowUp.STAGES, payload: [] });
     dispatchFilterFollowUp({
       type: filterActionsFollowUp.REPRESENTATIVE,

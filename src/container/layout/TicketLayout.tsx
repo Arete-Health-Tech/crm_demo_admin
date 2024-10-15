@@ -278,7 +278,6 @@ const Ticket = () => {
   }, []);
 
   useEffect(() => {
-    console.log(newFilter, 'newFilter');
     const data = async () => {
       setDownloadDisable(true);
       setSearchName('');
@@ -288,26 +287,13 @@ const Ticket = () => {
       // setTickets(ticketCache[1]);
       setPage(1);
       setPageNumber(1);
-      await getTicketHandler(searchByName, 1, 'false', newFilter);
+      await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
       setDownloadDisable(false);
     };
     data();
   }, [localStorage.getItem('location')]);
 
-  // const handleSeachName = (
-  //   e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-  // ) => {
-  //   const value = e.target.value;
-  //   if (value) {
-  //     inputSearch.current = value
-  //   }
-  //   if (value === '') {
-  //     fetchTicketsOnEmpthySearch();
-  //   }
-  // };
-
   const handleSearchKeyPress = async (e: any) => {
-    console.log(e);
     setSearchByName(searchName);
     if (e.key === 'Enter') {
       setTickets([]);
@@ -405,8 +391,8 @@ const Ticket = () => {
   const handleCloseModal = async () => {
     const result = await getAllReminderHandler();
     setTimeout(() => {
-      setPage(1);
-      setPageNumber(1);
+      setPage(pageNumber);
+      setPageNumber(pageNumber);
       let list = alarmReminderedList;
       list.splice(0, 1);
       setShowReminderModal(false);
@@ -419,8 +405,8 @@ const Ticket = () => {
     const result = await getAllCallReschedulerHandler();
 
     setTimeout(() => {
-      setPage(1);
-      setPageNumber(1);
+      setPage(pageNumber);
+      setPageNumber(pageNumber);
       let list = alarmCallReschedulerList;
       list.splice(0, 1);
       setShowCallReschedulerModal(false);
@@ -547,15 +533,17 @@ const Ticket = () => {
   useEffect(() => {
     const refetchTickets = async () => {
       // let pageNumber = page;
-      if (ticketID) {
-      } else {
-        await getTicketHandler(searchName, pageNumber, 'false', newFilter);
-        await getTicketAfterNotification(
-          searchName,
-          pageNumber,
-          'false',
-          newFilter
-        );
+      if (!ticketID) {
+        (localStorage.getItem('ticketType') === 'Diagnostics' ||
+          localStorage.getItem('ticketType') === 'Follow-Up') &&
+          (await getTicketHandler(searchName, pageNumber, 'false', newFilter));
+        localStorage.getItem('ticketType') === 'Admission' &&
+          (await getTicketAfterNotification(
+            searchName,
+            pageNumber,
+            'false',
+            newFilter
+          ));
       }
     };
 
@@ -567,9 +555,10 @@ const Ticket = () => {
       );
     } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
       socket.on(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
-    } else if (localStorage.getItem('ticketType') === 'Admission') {
-      socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     }
+    // else if (localStorage.getItem('ticketType') === 'Admission') {
+    //   socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    // }
 
     return () => {
       if (localStorage.getItem('ticketType') === 'Diagnostics') {
@@ -582,12 +571,13 @@ const Ticket = () => {
           socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
           refetchTickets
         );
-      } else if (localStorage.getItem('ticketType') === 'Admission') {
-        socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
       }
+      // else if (localStorage.getItem('ticketType') === 'Admission') {
+      //   socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+      // }
       // socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
-  }, [newFilter, pageNumber, searchName]);
+  }, [pageNumber, searchName]);
 
   // useEffect(() => {
   //   const refetchTickets = async () => {
@@ -600,13 +590,11 @@ const Ticket = () => {
   //     socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
   //   };
   // }, []);
-  console.log(page);
 
   useEffect(() => {
     clearAllInterval(AllIntervals);
 
     reminders?.forEach((reminderDetail, index) => {
-      console.log(reminderDetail);
       let alarmInterval: any;
 
       alarmInterval = setInterval(() => {
@@ -618,7 +606,6 @@ const Ticket = () => {
         ) {
           (async () => {
             if (!reminderList.includes(reminderDetail._id)) {
-              console.log(reminders);
               const data =
                 reminderDetail.ticketType === 'admission'
                   ? await getticketRescedulerAboveAdmission(
@@ -651,7 +638,7 @@ const Ticket = () => {
 
   const handleCallToasterReminder = async () => {
     handleCallReminderToast();
-    await getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
+    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
   };
 
   useEffect(() => {
@@ -674,7 +661,6 @@ const Ticket = () => {
           // isAlamredReminderExist(reminderDetail)
         ) {
           (async () => {
-            console.log('inside the condition');
             if (!callReschedulerList.includes(callRescheduleDetail?._id)) {
               const data =
                 callRescheduleDetail.ticketType === 'admission'
@@ -720,7 +706,7 @@ const Ticket = () => {
 
   const handleCallToasterRescheduler = async () => {
     handleCallReschedulerToast();
-    await getTicketHandler(UNDEFINED, pageNumber, 'false', newFilter);
+    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
   };
 
   useEffect(() => {
@@ -740,37 +726,6 @@ const Ticket = () => {
   //   status: [],
   //   followUp: null,
   // };
-
-  const backToDashboard = () => {
-    getTicketHandler(UNDEFINED, 1, 'false', initialFilters);
-    setFilterTickets(initialFilters);
-    navigate('/');
-  };
-
-  const totalEstimate = (ticketID: any) => {
-    if (viewEstimates.length !== 0) {
-      if (viewEstimates[viewEstimates.length - 1]?.ticket === ticketID) {
-        return viewEstimates[viewEstimates.length - 1]?.total;
-      } else {
-        return 0;
-      }
-    } else {
-      return 0;
-    }
-  };
-
-  const open = Boolean(anchorEl);
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-
-  const handleClose = (item) => {
-    if (item) {
-      setSelectedItem(item);
-    }
-    setAnchorEl(null);
-  };
 
   //This function call the api to get all the ticket id with their whtsapp message count
   const getAllWhtsappMsgCount = async () => {
@@ -856,8 +811,6 @@ const Ticket = () => {
             rep.phone === phoneNumber && rep.Unit === '66d5535689e33e0601248a79'
         );
 
-        console.log(nawanshahrFound, 'found--------');
-
         if (amritsarFound) {
           setIsAdminUser(false);
         } else if (hoshiarpurFound) {
@@ -937,6 +890,8 @@ const Ticket = () => {
     setPageNumber(1);
     setDownloadDisable(false);
   }, [localStorage.getItem('ticketType')]);
+  console.log(page);
+  console.log(pageNumber);
 
   return (
     <>

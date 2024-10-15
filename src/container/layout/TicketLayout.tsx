@@ -308,6 +308,7 @@ const Ticket = () => {
 
   const handleSearchKeyPress = async (e: any) => {
     console.log(e);
+    setSearchByName(searchName);
     if (e.key === 'Enter') {
       setTickets([]);
 
@@ -318,7 +319,6 @@ const Ticket = () => {
         return;
       }
       await getTicketHandler(searchName, 1, 'false', newFilter);
-      setSearchByName(searchName);
       setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
       setPageNumber(1);
       setPage(1);
@@ -587,7 +587,7 @@ const Ticket = () => {
       }
       // socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
-  }, [newFilter, page, searchName]);
+  }, [newFilter, pageNumber, searchName]);
 
   // useEffect(() => {
   //   const refetchTickets = async () => {

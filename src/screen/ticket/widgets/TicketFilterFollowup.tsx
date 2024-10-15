@@ -160,7 +160,8 @@ const TicketFilter = (props: {
     setIsAuditorFilterOn,
     setFilteredLocation,
     filteredLocation,
-    setFilterTicketsFollowUp
+    setFilterTicketsFollowUp,
+    setDownloadDisable
   } = useTicketStore();
 
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
@@ -456,7 +457,7 @@ const TicketFilter = (props: {
     //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
-
+    setDownloadDisable(true);
     setIsFilterOpen(false);
     setPageNumber(1);
     setFilterTicketsFollowUp(selectedFilters);
@@ -493,6 +494,7 @@ const TicketFilter = (props: {
         }`
       );
     }
+    setDownloadDisable(false);
     console.log('filter dtata', selectedFilters);
   };
 

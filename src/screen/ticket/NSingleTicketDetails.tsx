@@ -212,7 +212,7 @@ const NSingleTicketDetails = (props: Props) => {
     estimates,
     isSwitchView,
     setIsSwitchView,
-    setDownloadDisable,
+    setDownloadDisable, 
     allWhtsappCount
   } = useTicketStore();
   const { doctors, departments, stages } = useServiceStore();

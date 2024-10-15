@@ -263,7 +263,7 @@ const Ticket = () => {
     setSearchByName(UNDEFINED);
     setPage(1);
     setPageNumber(1);
-    await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+    await getTicketHandler(searchByName, 1, 'false', newFilter);
   };
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -288,7 +288,7 @@ const Ticket = () => {
       // setTickets(ticketCache[1]);
       setPage(1);
       setPageNumber(1);
-      await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      await getTicketHandler(searchByName, 1, 'false', newFilter);
       setDownloadDisable(false);
     };
     data();

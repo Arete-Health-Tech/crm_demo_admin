@@ -540,6 +540,7 @@ const Ticket = () => {
   useEffect(() => {
     const refetchTickets = async () => {
       // let pageNumber = page;
+      
       if (ticketID) {
          await validateTicket(ticketID);
          if (!isSwitchView) {

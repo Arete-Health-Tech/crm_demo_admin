@@ -556,31 +556,17 @@ const NSingleTicketDetails = (props: Props) => {
       if (ticketData === undefined && ticketID !== undefined) {
         await validateTicket(ticketID);
         if (!isSwitchView) {
-          if (ticketID) {
-            navigate(
-              `${
-                localStorage.getItem('ticketType') === 'Admission'
-                  ? '/admission/'
-                  : localStorage.getItem('ticketType') === 'Diagnostics'
-                  ? '/diagnostics/'
-                  : localStorage.getItem('ticketType') === 'Follow-Up'
-                  ? '/follow-up/'
-                  : '/ticket/'
-              }${ticketID}`
-            );
-          } else {
-            navigate(
-              `${
-                localStorage.getItem('ticketType') === 'Admission'
-                  ? '/admission/'
-                  : localStorage.getItem('ticketType') === 'Diagnostics'
-                  ? '/diagnostics/'
-                  : localStorage.getItem('ticketType') === 'Follow-Up'
-                  ? '/follow-up/'
-                  : '/ticket/'
-              }`
-            );
-          }
+          navigate(
+            `${
+              localStorage.getItem('ticketType') === 'Admission'
+                ? '/admission/'
+                : localStorage.getItem('ticketType') === 'Diagnostics'
+                ? '/diagnostics/'
+                : localStorage.getItem('ticketType') === 'Follow-Up'
+                ? '/follow-up/'
+                : '/ticket/'
+            }`
+          );
         } else {
           navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
         }
@@ -923,6 +909,7 @@ const NSingleTicketDetails = (props: Props) => {
     await getAllWhtsappCountHandler();
     await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
   };
+  
   console.log(pageNumber);
   useEffect(() => {
     // Check if socket is connected

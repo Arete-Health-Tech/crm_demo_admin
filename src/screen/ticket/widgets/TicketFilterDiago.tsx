@@ -33,7 +33,7 @@ import {
   ticketFilterTypes
 } from '../ticketStateReducers/filter';
 import { filterActionsDiago } from '../ticketStateReducers/actions/filterAction';
-import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
+import { NAVIGATE_TO_SWITCHVIEW_TICKET, NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import {
   getAuditFilterTicketsHandler,
   getTicketHandler
@@ -496,9 +496,6 @@ const TicketFilter = (props: {
   };
 
   const handleClearFilter = async () => {
-    if (ticketID) {
-      await validateTicket(ticketID);
-    }
     dispatchFilterDiago({ type: filterActionsDiago.STAGES, payload: [] });
     dispatchFilterDiago({ type: filterActionsDiago.REPRESENTATIVE, payload: null });
     dispatchFilterDiago({ type: filterActionsDiago.ADMISSIONTYPE, payload: [] });

@@ -397,8 +397,8 @@ const Ticket = () => {
   const handleCloseModal = async () => {
     const result = await getAllReminderHandler();
     setTimeout(() => {
-      setPage(pageNumber);
-      setPageNumber(pageNumber);
+      // setPage(pageNumber);
+      // setPageNumber(pageNumber);
       let list = alarmReminderedList;
       list.splice(0, 1);
       setShowReminderModal(false);
@@ -411,8 +411,8 @@ const Ticket = () => {
     const result = await getAllCallReschedulerHandler();
 
     setTimeout(() => {
-      setPage(pageNumber);
-      setPageNumber(pageNumber);
+      // setPage(pageNumber);
+      // setPageNumber(pageNumber);
       let list = alarmCallReschedulerList;
       list.splice(0, 1);
       setShowCallReschedulerModal(false);
@@ -537,7 +537,6 @@ const Ticket = () => {
   //   await getTicketHandler(UNDEFINED, 1, 'false', copiedFilterTickets);
   // }
   const location = useLocation();
-  console.log(location.pathname);
   useEffect(() => {
     const refetchTickets = async () => {
       // let pageNumber = page;
@@ -600,6 +599,27 @@ const Ticket = () => {
       // socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
   }, [pageNumber, searchName]);
+  // useEffect(() => {
+  //   const closeSingleTicket =async () => {
+  //     await validateTicket(ticketID);
+  //      if (!isSwitchView) {
+  //        navigate(
+  //          `${
+  //            localStorage.getItem('ticketType') === 'Admission'
+  //              ? '/admission/'
+  //              : localStorage.getItem('ticketType') === 'Diagnostics'
+  //              ? '/diagnostics/'
+  //              : localStorage.getItem('ticketType') === 'Follow-Up'
+  //              ? '/follow-up'
+  //              : '/ticket/'
+  //          }`
+  //        );
+  //      } else {
+  //        navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
+  //      }
+  //   };
+  //   closeSingleTicket();
+  // }, [pageNumber]);
 
   // useEffect(() => {
   //   const refetchTickets = async () => {
@@ -786,9 +806,6 @@ const Ticket = () => {
   const handleOnClose = async () => {
     setDownloadDisable(true);
     if (ticketID) {
-      // localStorage.getItem('ticketType') === 'Admission'
-      //   ? await validateTicket(ticketID)
-      //   : await validateTicketDiago(ticketID);
       await validateTicket(ticketID);
       if (!isSwitchView) {
         navigate(
@@ -912,8 +929,6 @@ const Ticket = () => {
     setPageNumber(1);
     setDownloadDisable(false);
   }, [localStorage.getItem('ticketType')]);
-  console.log(page);
-  console.log(pageNumber);
 
   return (
     <>

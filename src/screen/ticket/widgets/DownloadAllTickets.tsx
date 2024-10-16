@@ -188,9 +188,7 @@ const DownloadAllTickets = (props: Props) => {
             : returnedDate(ticket?.prescription[0]?.followUp),
         capturedBy:
           ticket?.creator[0]?.firstName + ' ' + ticket?.creator[0]?.lastName,
-        prescriptionCreatedAt: `${dayjs(
-          ticket.prescription[0].createdAt
-        ).format('DD/MMM/YYYY , HHMM ')} hrs`,
+        prescriptionCreatedAt:  ticket?.prescription[0]?.created_Date,
         prescriptionLink: ticket?.prescription[0]?.image,
         prescriptionLink1: ticket?.prescription[0]?.image1,
         Lead_disposition: ticket

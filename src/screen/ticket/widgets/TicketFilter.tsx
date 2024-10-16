@@ -32,7 +32,7 @@ import {
   ticketFilterTypes
 } from '../ticketStateReducers/filter';
 import { filterActions } from '../ticketStateReducers/actions/filterAction';
-import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
+import { NAVIGATE_TO_SWITCHVIEW_TICKET, NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import {
   getAuditFilterTicketsHandler,
   getTicketHandler
@@ -493,9 +493,6 @@ const TicketFilter = (props: {
   };
 
   const handleClearFilter = async () => {
-    if (ticketID) {
-      await validateTicket(ticketID);
-    }
     dispatchFilter({ type: filterActions.STAGES, payload: [] });
     dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
     dispatchFilter({ type: filterActions.ADMISSIONTYPE, payload: [] });

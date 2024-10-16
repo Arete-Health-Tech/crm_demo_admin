@@ -540,6 +540,24 @@ const Ticket = () => {
   useEffect(() => {
     const refetchTickets = async () => {
       // let pageNumber = page;
+      if (ticketID) {
+         await validateTicket(ticketID);
+         if (!isSwitchView) {
+           navigate(
+             `${
+               localStorage.getItem('ticketType') === 'Admission'
+                 ? '/admission/'
+                 : localStorage.getItem('ticketType') === 'Diagnostics'
+                 ? '/diagnostics/'
+                 : localStorage.getItem('ticketType') === 'Follow-Up'
+                 ? '/follow-up/'
+                 : '/ticket/'
+             }`
+           );
+         } else {
+           navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
+         }
+       }
       if (!ticketID) {
         ((localStorage.getItem('ticketType') === 'Diagnostics' &&
           location.pathname.includes('diagnostics')) ||

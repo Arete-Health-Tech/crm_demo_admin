@@ -271,7 +271,7 @@ const Audit: React.FC = () => {
       }
     };
 
-    socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    // socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
 
     return () => {
       socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);

@@ -536,69 +536,52 @@ const Ticket = () => {
   //   const copiedFilterTickets = { ...filterTickets };
   //   await getTicketHandler(UNDEFINED, 1, 'false', copiedFilterTickets);
   // }
-  const location = useLocation();
-  // useEffect(() => {
-  //   const refetchTickets = async () => {
-  //     // let pageNumber = page;
-  //     if (!ticketID) {
-  //       ((localStorage.getItem('ticketType') === 'Diagnostics' &&
-  //         location.pathname.includes('diagnostics')) ||
-  //         (localStorage.getItem('ticketType') === 'Follow-Up' &&
-  //           location.pathname.includes('follow-up'))) &&
-  //         (await getTicketHandler(searchName, pageNumber, 'false', newFilter));
-  //       localStorage.getItem('ticketType') === 'Admission' &&
-  //         (await getTicketAfterNotification(
-  //           searchName,
-  //           pageNumber,
-  //           'false',
-  //           newFilter
-  //         ));
-  //     }
-  //   };
+  useEffect(() => {
+    const refetchTickets = async () => {
+      // let pageNumber = page;
+      if (!ticketID && ticketID == undefined) {
+        await getTicketHandler(searchName, pageNumber, 'false', newFilter);
+        localStorage.getItem('ticketType') === 'Admission' &&
+          (await getTicketAfterNotification(
+            searchName,
+            pageNumber,
+            'false',
+            newFilter
+          ));
+      }
+    };
 
-  //   // socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-  //   if (
-  //     localStorage.getItem('ticketType') === 'Diagnostics' &&
-  //     location.pathname.includes('diagnostics')
-  //   ) {
-  //     socket.on(
-  //       socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
-  //       refetchTickets
-  //     );
-  //   } else if (
-  //     localStorage.getItem('ticketType') === 'Follow-Up' &&
-  //     location.pathname.includes('follow-up')
-  //   ) {
-  //     socket.on(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
-  //   }
-  //   // else if (localStorage.getItem('ticketType') === 'Admission') {
-  //   //   socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-  //   // }
+    // socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    if (localStorage.getItem('ticketType') === 'Diagnostics') {
+      socket.on(
+        socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
+        refetchTickets
+      );
+    } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+      socket.on(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
+    }
+    // else if (localStorage.getItem('ticketType') === 'Admission') {
+    //   socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    // }
 
-  //   return () => {
-  //     if (
-  //       localStorage.getItem('ticketType') === 'Diagnostics' &&
-  //       location.pathname.includes('diagnostics')
-  //     ) {
-  //       socket.off(
-  //         socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
-  //         refetchTickets
-  //       );
-  //     } else if (
-  //       localStorage.getItem('ticketType') === 'Follow-Up' &&
-  //       location.pathname.includes('follow-up')
-  //     ) {
-  //       socket.off(
-  //         socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
-  //         refetchTickets
-  //       );
-  //     }
-  //     // else if (localStorage.getItem('ticketType') === 'Admission') {
-  //     //   socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-  //     // }
-  //     // socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-  //   };
-  // }, [pageNumber, searchName]);
+    return () => {
+      if (localStorage.getItem('ticketType') === 'Diagnostics') {
+        socket.off(
+          socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
+          refetchTickets
+        );
+      } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+        socket.off(
+          socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
+          refetchTickets
+        );
+      }
+      // else if (localStorage.getItem('ticketType') === 'Admission') {
+      //   socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+      // }
+      // socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+    };
+  }, [pageNumber, searchName]);
 
   // useEffect(() => {
   //   const refetchTickets = async () => {

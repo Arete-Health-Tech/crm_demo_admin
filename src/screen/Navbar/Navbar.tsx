@@ -583,7 +583,8 @@ const Navbar = ({ children }) => {
                                 </Stack>
                                 */}
                                 <Stack className={styles.nav_Icon}>
-                                    <Stack onClick={() => goToPage('/upload-file')}
+                                    <Stack
+                                        onClick={() => goToPage('/upload-file')}
                                         sx={{
                                             display: "flex",
                                             justifyContent: "center",
@@ -616,7 +617,7 @@ const Navbar = ({ children }) => {
                             <Stack>
                                 <Stack
 
-                                    onClick={() => goToPage('/configuration/agents')}
+                                    // onClick={() => goToPage('/configuration/agents')}
                                     sx={{
                                         display: "flex",
                                         justifyContent: "center",

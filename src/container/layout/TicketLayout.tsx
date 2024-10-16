@@ -642,7 +642,7 @@ const Ticket = () => {
 
   const handleCallToasterReminder = async () => {
     handleCallReminderToast();
-    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
   };
 
   useEffect(() => {
@@ -710,7 +710,7 @@ const Ticket = () => {
 
   const handleCallToasterRescheduler = async () => {
     handleCallReschedulerToast();
-    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
   };
 
   useEffect(() => {

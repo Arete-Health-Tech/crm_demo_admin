@@ -83,7 +83,7 @@ import ShowPrescription from './widgets/ShowPrescriptionModal';
 import {
   assignedToTicket,
   deleteTicket,
-    deleteDiagnosticsTicket,
+  deleteDiagnosticsTicket,
   deleteFollowUpTicket,
   getAllWhatsAppCount,
   removeFromTicket,
@@ -280,6 +280,12 @@ const NSingleTicketDetails = (props: Props) => {
       prev[field] = value;
       return { ...prev };
     });
+    if (field === 'service' && value) {
+      setValidations((prev) => ({
+        ...prev,
+        service: defaultValidation // Clear service validation error
+      }));
+    }
   };
 
   const newFilter =
@@ -295,17 +301,26 @@ const NSingleTicketDetails = (props: Props) => {
     /* @ts-ignore */
     setPrescription(structuredClone(initialPrescription));
   }, []);
-
   const validation = () => {
     const admission = prescription.admission === '';
+    const service =
+      !prescription?.service || prescription.service?._id === null;
+
+    // Set validation messages for both fields
     setValidations((prev) => {
       prev.admission = admission
-        ? { message: 'Invalid Value', value: true }
+        ? { message: 'Admission is required', value: true }
         : defaultValidation;
+
+      prev.service = service
+        ? { message: 'Service is required', value: true }
+        : defaultValidation;
+
       return { ...prev };
     });
 
-    return admission === false;
+    // Return true only if both admission and service are valid
+    return !admission && !service;
   };
   const handleInternal = (item: string) => {
     setButtonVariant(item);
@@ -823,7 +838,7 @@ const NSingleTicketDetails = (props: Props) => {
     setDownloadDisable(true);
     setDeleteModal(false);
 
-       const ticketType = localStorage.getItem('ticketType');
+    const ticketType = localStorage.getItem('ticketType');
     if (ticketType === 'Diagnostics') {
       await deleteDiagnosticsTicket(ticketID);
     } else if (ticketType === 'Follow-Up') {
@@ -920,7 +935,7 @@ const NSingleTicketDetails = (props: Props) => {
     await getAllWhtsappCountHandler();
     await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
   };
-  
+
   console.log(pageNumber);
   useEffect(() => {
     // Check if socket is connected

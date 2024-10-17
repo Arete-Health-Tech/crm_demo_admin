@@ -41,7 +41,6 @@
 // import { Camera, FACING_MODES } from 'react-html5-camera-photo';
 // import 'react-html5-camera-photo/build/css/index.css';
 
-
 // type iPrescription = {
 //   department: string;
 //   // subDepartment: string;
@@ -93,7 +92,6 @@
 
 //   const [selectedPharmacy, setSelectedPharmacy] = useState('Pharmacy Advised');
 //   const [scannedResult, setScannedResult] = useState(null);
-
 
 //   const findService = async (query: string) => {
 //     try {
@@ -186,11 +184,6 @@
 //     );
 //   };
 
-
-
-
-
-
 //   const handelUploadPrescription = async () => {
 //     setDisableButton(true);
 //     const validationCheck = validation();
@@ -221,18 +214,12 @@
 //     })();
 //   }, []);
 
-
-
-
 //   // console.log(prescription)
-
 
 //   const handleInternal = (item: string) => {
 //     // console.log('this is response');
 //     setButtonVariant(item);
 //   };
-
-
 
 //   // const videoConstraints = {
 //   //   width: 1280,
@@ -240,8 +227,6 @@
 //   //   facingMode: 'environment', // or 'environment' for back camera
 //   //   screenshotQuality: 1, // Adjust screenshot quality here
 //   // } as MediaTrackConstraints;
-
-
 
 //   return (
 //     <>
@@ -720,14 +705,7 @@
 // };
 
 // export default CreatePrescription;
-import {
-  Check,
-  Close,
-  Delete,
-  Label,
-  Undo,
-  Upload
-} from '@mui/icons-material';
+import { Check, Close, Delete, Label, Undo, Upload } from '@mui/icons-material';
 import CameraAltIcon from '@mui/icons-material/CameraAlt';
 import {
   MenuItem,
@@ -793,7 +771,7 @@ const initialPrescription = {
   doctor: '',
   admission: 'Surgery',
   symptoms: null,
-  remarks: " ",
+  remarks: ' ',
   condition: null,
   medicines: [],
   followUp: new Date(),
@@ -844,20 +822,32 @@ const CreatePrescription = () => {
   });
 
   const changePrescriptionValue = (field: any, value: any) => {
+    // Reset doctor when department changes
+    if (field === 'department') {
+      setPrescription((prev: any) => ({
+        ...prev,
+        department: value, // Update department value
+        doctor: '' // Reset doctor field to an empty string
+      }));
+      return; // Exit after resetting department and doctor
+    }
+
+    // Handle other field updates (e.g., image)
     setPrescription((prev: any) => {
-      if (field == "image") {
+      if (field === 'image') {
+        // If there are new images, append to the existing ones
         if (value.length > 0) {
           return { ...prev, [field]: [...prev[field], value] };
         } else {
-          return { ...prev, [field]: [] }
+          // Clear the image array if no images are provided
+          return { ...prev, [field]: [] };
         }
-      } else {
-        prev[field] = value;
-        return { ...prev };
       }
+
+      // For other fields, update the state normally
+      return { ...prev, [field]: value };
     });
   };
-
   useEffect(() => {
     setPrescription(structuredClone(initialPrescription));
   }, []);
@@ -953,7 +943,7 @@ const CreatePrescription = () => {
     const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
 
     if (file && !validTypes.includes(file.type)) {
-      toast.error("format error, upload only jpeg, png, jpg ");
+      toast.error('format error, upload only jpeg, png, jpg ');
       setIsUploaded(false);
       return;
     }
@@ -962,12 +952,11 @@ const CreatePrescription = () => {
       const reader = new FileReader();
       reader.onloadend = () => {
         changePrescriptionValue('image', reader.result);
-        toast.success("Photo Uploaded From Gallary Successfully");
+        toast.success('Photo Uploaded From Gallary Successfully');
         setIsUploaded(true);
       };
       reader.readAsDataURL(file);
     }
-
   };
 
   const [isUploaded, setIsUploaded] = useState(false);
@@ -1024,6 +1013,9 @@ const CreatePrescription = () => {
                 </li>
               )}
               fullWidth
+              value={
+                doctors.find((item) => item._id === prescription.doctor) || null
+              }
               onChange={(_, newValue) =>
                 changePrescriptionValue('doctor', newValue!._id!)
               }

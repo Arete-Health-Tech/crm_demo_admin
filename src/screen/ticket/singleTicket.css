@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
 
 /* Single Ticket Detail Component CSS */
-
+.MuiPickersBasePicker-clearButton {
+  display: none !important;
+}
 .switch-main-layout {
   height: 99.5vh;
   display: flex;

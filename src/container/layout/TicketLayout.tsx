@@ -954,7 +954,7 @@ const Ticket = () => {
                 className="Ticket-Assignee-title"
                 sx={{
                   marginLeft: '3px',
-                  fontSize: '20px !important',
+                  fontSize: '18px !important',
                   fontStyle: 'normal',
                   fontWeight: '500'
                 }}
@@ -984,8 +984,8 @@ const Ticket = () => {
                       direction="row"
                       alignItems="center"
                       marginTop="3px"
-                      paddingLeft="1rem"
-                      paddingRight={isAdminUser ? '0rem' : '0.8rem'}
+                      paddingLeft="0.5rem"
+                      paddingRight={isAdminUser ? '0rem' : '0.4rem'}
                     >
                       <span>
                         {localStorage.getItem('location') == ''

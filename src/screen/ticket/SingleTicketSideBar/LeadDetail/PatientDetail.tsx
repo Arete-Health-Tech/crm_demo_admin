@@ -102,14 +102,14 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     isAuditor,
     setDownloadDisable
   } = useTicketStore();
- const newFilter =
-   localStorage.getItem('ticketType') === 'Admission'
-     ? filterTickets
-     : localStorage.getItem('ticketType') === 'Diagnostics'
-     ? filterTicketsDiago
-     : localStorage.getItem('ticketType') === 'Follow-Up'
-     ? filterTicketsFollowUp
-     : filterTickets;
+  const newFilter =
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
   const initialPatientData: patientData = {
     uhid: '',
     firstName: '',
@@ -466,7 +466,10 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                       onChange={(e) => {
                         setPatientData((prev) => ({
                           ...prev,
-                          followUp: e.target.value.toString()
+                          followUp:
+                            e.target.value !== ''
+                              ? e.target.value.toString()
+                              : `null`
                         }));
                         console.log(e.target.value);
                       }}

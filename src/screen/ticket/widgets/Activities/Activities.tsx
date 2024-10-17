@@ -202,7 +202,7 @@ const Activities = () => {
                                     <img src={activityIcon} alt="" style={{ marginRight: 4 }} />
                                     <div className={styles.otherContent}>
                                         <div id="content-container" dangerouslySetInnerHTML={{ __html: hanleEstimateText(value) }} />
-                                        <div className={styles.time}>{extractDateTime(value)}</div>
+                                        {/* <div className={styles.time}>{extractDateTime(value)}</div> */}
                                     </div>
                                 </div>
                             )}

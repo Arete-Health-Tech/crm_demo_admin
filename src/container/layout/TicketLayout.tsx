@@ -439,9 +439,9 @@ const Ticket = () => {
           Reminder{' '}
           {(ticketCallReminderConsumerData?.firstName || '').toUpperCase()}
           {(ticketCallReminderConsumerData?.lastName || '').toUpperCase()}
-          {taskTypeForReminder === 'Admission'
+          {/* {taskTypeForReminder === 'Admission'
             ? '(Admission)'
-            : '(Diagnostics)'}
+            : '(Diagnostics)'} */}
         </div>
         <div
           style={{
@@ -488,9 +488,9 @@ const Ticket = () => {
               ).toUpperCase()}${(
                 ticketCallReschedulerConsumerData?.lastName || ''
               ).toUpperCase()} `}
-              {taskTypeForRecheduler === 'Admission'
+              {/* {taskTypeForRecheduler === 'Admission'
                 ? '(Admission)'
-                : '(Diagnostics)'}
+                : '(Diagnostics)'} */}
             </Typography>
           )}{' '}
         </div>

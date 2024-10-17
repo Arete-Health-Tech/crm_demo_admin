@@ -280,35 +280,40 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
   }, [ticketID, tickets]);
 
   const handleSubmit = async (event) => {
-    setDownloadDisable(true);
-    event.preventDefault();
-    const date =
-      PatientData.followUp !== 'null'
-        ? new Date(PatientData.followUp).toISOString()
-        : PatientData.followUp;
-    const updatedData = {
-      consumer: {
-        uid: PatientData.uhid,
-        firstName: PatientData.firstName,
-        lastName: PatientData.lastName,
-        gender:
-          PatientData.gender === 'Male'
-            ? 'M'
-            : PatientData.gender === 'Female'
-            ? 'F'
-            : '',
-        age: PatientData.age
-      },
-      prescription: {
-        doctor: PatientData.doctor,
-        departments: [PatientData.department],
-        followUp: date
-      }
-    };
-    await updateConusmerData(updatedData, ticketID);
-    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
-    setIsEditing(false);
-    setDownloadDisable(false);
+    try {
+      setDownloadDisable(true);
+      event.preventDefault();
+      const date =
+        PatientData.followUp !== 'null'
+          ? new Date(PatientData.followUp).toISOString()
+          : PatientData.followUp;
+      const updatedData = {
+        consumer: {
+          uid: PatientData.uhid,
+          firstName: PatientData.firstName,
+          lastName: PatientData.lastName,
+          gender:
+            PatientData.gender === 'Male'
+              ? 'M'
+              : PatientData.gender === 'Female'
+              ? 'F'
+              : '',
+          age: PatientData.age
+        },
+        prescription: {
+          doctor: PatientData.doctor,
+          departments: [PatientData.department],
+          followUp: date
+        }
+      };
+      await updateConusmerData(updatedData, ticketID);
+      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+      setIsEditing(false);
+      setDownloadDisable(false);
+    } catch (error) {
+      setDownloadDisable(false);
+      setIsEditing(false);
+    }
   };
 
   const fetchPdfUrl = async () => {

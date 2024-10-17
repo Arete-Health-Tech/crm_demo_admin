@@ -280,12 +280,6 @@ const NSingleTicketDetails = (props: Props) => {
       prev[field] = value;
       return { ...prev };
     });
-    if (field === 'service' && value) {
-      setValidations((prev) => ({
-        ...prev,
-        service: defaultValidation // Clear service validation error
-      }));
-    }
   };
 
   const newFilter =
@@ -302,25 +296,40 @@ const NSingleTicketDetails = (props: Props) => {
     setPrescription(structuredClone(initialPrescription));
   }, []);
   const validation = () => {
-    const admission = prescription.admission === '';
-    const service =
-      !prescription?.service || prescription.service?._id === null;
+    if (prescription.admission === 'MM' || prescription.admission === 'DC') {
+      const admission = false;
+      setValidations((prev) => {
+        prev.admission = admission
+          ? { message: 'Admission is required', value: true }
+          : defaultValidation;
 
-    // Set validation messages for both fields
-    setValidations((prev) => {
-      prev.admission = admission
-        ? { message: 'Admission is required', value: true }
-        : defaultValidation;
+        return { ...prev };
+      });
+      return !admission;
+    } else if (
+      prescription.admission === '' ||
+      prescription.admission === 'Surgery'
+    ) {
+      const admission = prescription.admission === '';
+      const service =
+        !prescription?.service || prescription.service?._id === null;
 
-      prev.service = service
-        ? { message: 'Service is required', value: true }
-        : defaultValidation;
+      // Set validation messages for both fields
+      setValidations((prev) => {
+        prev.admission = admission
+          ? { message: 'Admission is required', value: true }
+          : defaultValidation;
 
-      return { ...prev };
-    });
+        prev.service = service
+          ? { message: 'Service is required', value: true }
+          : defaultValidation;
 
-    // Return true only if both admission and service are valid
-    return !admission && !service;
+        return { ...prev };
+      });
+
+      // Return true only if both admission and service are valid
+      return !admission && !service;
+    }
   };
   const handleInternal = (item: string) => {
     setButtonVariant(item);

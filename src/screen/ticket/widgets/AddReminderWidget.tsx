@@ -32,6 +32,7 @@ import { fontSize } from 'pdfkit';
 import NotifyToggle from '../../../assets/NotifyToggle.svg';
 import NotNotifyToggle from '../../../assets/NotNotifyToggle.svg';
 import useTicketStore from '../../../store/ticketStore';
+import { toast } from 'react-toastify';
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -139,23 +140,29 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
   }, [date, time, reminderData.title]);
 
   const addReminder = async () => {
-    setDownloadDisable(true);
-    const result = await createNewReminderHandler({
-      ...reminderData,
-      ticket: ticketID
-    });
-    setReminderData({
-      date: 0,
-      title: '',
-      description: '',
-      ticket: ticketID!
-    });
-    setDate('');
-    setTime('');
-    setIsModalOpen(false);
-    await getAllReminderHandler();
-    await getAllTaskCountHandler();
-    setDownloadDisable(false);
+    try {
+      setDownloadDisable(true);
+      await createNewReminderHandler({
+        ...reminderData,
+        ticket: ticketID
+      });
+      setReminderData({
+        date: 0,
+        title: '',
+        description: '',
+        ticket: ticketID!
+      });
+      setDate('');
+      setTime('');
+      setIsModalOpen(false);
+      await getAllReminderHandler();
+      await getAllTaskCountHandler();
+      setDownloadDisable(false);
+    } catch (error) {
+      toast('Invalid time ...')
+      setTime('');
+      setDownloadDisable(false);
+    }
   };
 
   const closeModal = () => {

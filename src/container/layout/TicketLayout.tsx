@@ -652,6 +652,7 @@ const Ticket = () => {
   }, [showReminderModal]);
 
   useEffect(() => {
+    console.log("inside useffect of rescheudler")
     clearAllInterval(AllIntervals);
     callRescheduler?.forEach((callRescheduleDetail, index) => {
       let alarmInterval: any;

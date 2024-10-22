@@ -582,7 +582,7 @@ const Navbar = ({ children }) => {
                                     </Stack>
                                 </Stack>
                                 */}
-                                <Stack className={styles.nav_Icon}>
+                                {/* <Stack className={styles.nav_Icon}>
                                     <Stack
                                         onClick={() => goToPage('/upload-file')}
                                         sx={{
@@ -607,7 +607,7 @@ const Navbar = ({ children }) => {
                                             {location.pathname.includes('/upload-file') ? (<img src={UploadFileIcon} alt="upload-file" />) : (<img src={UploadFileIcon} alt="upload-file" />)}
                                         </LightTooltip>
                                     </Stack>
-                                </Stack>
+                                </Stack> */}
                             </Box>
                         </Box>
 

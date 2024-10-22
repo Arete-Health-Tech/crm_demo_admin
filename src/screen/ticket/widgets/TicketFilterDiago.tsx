@@ -33,7 +33,11 @@ import {
   ticketFilterTypes
 } from '../ticketStateReducers/filter';
 import { filterActionsDiago } from '../ticketStateReducers/actions/filterAction';
-import { NAVIGATE_TO_SWITCHVIEW_TICKET, NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
+import {
+  NAVIGATE_TO_SWITCHVIEW_TICKET,
+  NAVIGATE_TO_TICKET,
+  UNDEFINED
+} from '../../../constantUtils/constant';
 import {
   getAuditFilterTicketsHandler,
   getTicketHandler
@@ -80,11 +84,11 @@ export const ticketFilterCount = (
   ) {
     locationCount =
       filteredLocation == 'Amritsar' ||
-        filteredLocation == 'Mohali' ||
-        filteredLocation == 'Hoshiarpur' ||
-        filteredLocation == 'Nawanshahr' ||
-        filteredLocation == 'Hoshiarpur' ||
-        filteredLocation == 'Khanna'
+      filteredLocation == 'Mohali' ||
+      filteredLocation == 'Hoshiarpur' ||
+      filteredLocation == 'Nawanshahr' ||
+      filteredLocation == 'Hoshiarpur' ||
+      filteredLocation == 'Khanna'
         ? 1
         : 0;
   } else {
@@ -269,7 +273,10 @@ const TicketFilter = (props: {
     const value = e.target.value;
     if (value) {
       setCurrentRepresentative(value);
-      dispatchFilterDiago({ type: filterActionsDiago.REPRESENTATIVE, payload: value });
+      dispatchFilterDiago({
+        type: filterActionsDiago.REPRESENTATIVE,
+        payload: value
+      });
     }
   };
 
@@ -497,9 +504,18 @@ const TicketFilter = (props: {
 
   const handleClearFilter = async () => {
     dispatchFilterDiago({ type: filterActionsDiago.STAGES, payload: [] });
-    dispatchFilterDiago({ type: filterActionsDiago.REPRESENTATIVE, payload: null });
-    dispatchFilterDiago({ type: filterActionsDiago.ADMISSIONTYPE, payload: [] });
-    dispatchFilterDiago({ type: filterActionsDiago.DIAGNOSTICSTYPE, payload: [] });
+    dispatchFilterDiago({
+      type: filterActionsDiago.REPRESENTATIVE,
+      payload: null
+    });
+    dispatchFilterDiago({
+      type: filterActionsDiago.ADMISSIONTYPE,
+      payload: []
+    });
+    dispatchFilterDiago({
+      type: filterActionsDiago.DIAGNOSTICSTYPE,
+      payload: []
+    });
     dispatchFilterDiago({ type: filterActionsDiago.DATERANGE, payload: [] });
     dispatchFilterDiago({ type: filterActionsDiago.RESULTS, payload: null });
     dispatchFilterDiago({ type: filterActionsDiago.STATUS, payload: [] });
@@ -609,7 +625,7 @@ const TicketFilter = (props: {
           <StyledBadge
             invisible={filterCount <= 0}
             badgeContent={filterCount}
-          // color="primary"
+            // color="primary"
           >
             <FilterList sx={{ color: '#080F1A' }} />
           </StyledBadge>
@@ -704,30 +720,32 @@ const TicketFilter = (props: {
                 ))}
               </FormGroup>
             </Box>
-            <Box py={2} px={4}>
-              <Stack
-                sx={{
-                  fontFamily: 'Outfit,sans-serif',
-                  fontSize: '14px',
-                  fontWeight: 'bold'
-                }}
-              >
-                Assigned To
-              </Stack>
-              <Select
-                size="medium"
-                onChange={handleRepresentative}
-                value={currentReperesentative}
-                sx={{ height: '35px' }}
-              >
-                {
-                  // representativeLabel?.some(rep => rep.role === "REPRESENTATIVE")
-                  representativeLabel?.map(({ id, label }, index) => {
-                    return <MenuItem value={id}>{label}</MenuItem>;
-                  })
-                }
-              </Select>
-            </Box>
+            {user?.role === 'ADMIN' && (
+              <Box py={2} px={4}>
+                <Stack
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  Assigned To
+                </Stack>
+                <Select
+                  size="medium"
+                  onChange={handleRepresentative}
+                  value={currentReperesentative}
+                  sx={{ height: '35px' }}
+                >
+                  {
+                    // representativeLabel?.some(rep => rep.role === "REPRESENTATIVE")
+                    representativeLabel?.map(({ id, label }, index) => {
+                      return <MenuItem value={id}>{label}</MenuItem>;
+                    })
+                  }
+                </Select>
+              </Box>
+            )}
           </Box>
 
           <Box px={3}>

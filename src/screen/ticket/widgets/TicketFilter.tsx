@@ -32,7 +32,11 @@ import {
   ticketFilterTypes
 } from '../ticketStateReducers/filter';
 import { filterActions } from '../ticketStateReducers/actions/filterAction';
-import { NAVIGATE_TO_SWITCHVIEW_TICKET, NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
+import {
+  NAVIGATE_TO_SWITCHVIEW_TICKET,
+  NAVIGATE_TO_TICKET,
+  UNDEFINED
+} from '../../../constantUtils/constant';
 import {
   getAuditFilterTicketsHandler,
   getTicketHandler
@@ -701,30 +705,32 @@ const TicketFilter = (props: {
                 ))}
               </FormGroup>
             </Box>
-            <Box py={2} px={4}>
-              <Stack
-                sx={{
-                  fontFamily: 'Outfit,sans-serif',
-                  fontSize: '14px',
-                  fontWeight: 'bold'
-                }}
-              >
-                Assigned To
-              </Stack>
-              <Select
-                size="medium"
-                onChange={handleRepresentative}
-                value={currentReperesentative}
-                sx={{ height: '35px' }}
-              >
-                {
-                  // representativeLabel?.some(rep => rep.role === "REPRESENTATIVE")
-                  representativeLabel?.map(({ id, label }, index) => {
-                    return <MenuItem value={id}>{label}</MenuItem>;
-                  })
-                }
-              </Select>
-            </Box>
+            {user?.role === 'ADMIN' && (
+              <Box py={2} px={4}>
+                <Stack
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '14px',
+                    fontWeight: 'bold'
+                  }}
+                >
+                  Assigned To
+                </Stack>
+                <Select
+                  size="medium"
+                  onChange={handleRepresentative}
+                  value={currentReperesentative}
+                  sx={{ height: '35px' }}
+                >
+                  {
+                    // representativeLabel?.some(rep => rep.role === "REPRESENTATIVE")
+                    representativeLabel?.map(({ id, label }, index) => {
+                      return <MenuItem value={id}>{label}</MenuItem>;
+                    })
+                  }
+                </Select>
+              </Box>
+            )}
           </Box>
 
           <Box px={3}>

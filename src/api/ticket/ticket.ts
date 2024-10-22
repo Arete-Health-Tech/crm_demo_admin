@@ -186,8 +186,11 @@ export const getAllNotesByTicketId = async (ticketId: string) => {
   return data;
 };
 
-export const createNewNote = async (note: iNote) => {
-  const { data } = await apiClient.post('/ticket/note', note);
+export const createNewNote = async (note: iNote, disposition: string) => {
+  const { data } = await apiClient.post('/ticket/note', {
+    ...note,
+    'disposition': disposition
+  });
   return data;
 };
 

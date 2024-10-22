@@ -79,7 +79,7 @@ const NotesWidget = (props: Props) => {
         text: note,
         ticket: ticketID!
       };
-      await createNotesHandler(data);
+      await createNotesHandler(data,'');
       setTimeout(() => {
         (async () => {
           const result = await getTicketHandler(

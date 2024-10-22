@@ -282,9 +282,9 @@ export const getAllNotesHandler = async (ticketId: string) => {
   setNotes(notes);
 };
 
-export const createNotesHandler = async (note: iNote) => {
+export const createNotesHandler = async (note: iNote, disposition: string) => {
   const { notes, setNotes } = useTicketStore.getState();
-  const noteAdded = await createNewNote(note);
+  const noteAdded = await createNewNote(note, disposition);
   setNotes([...notes, noteAdded]);
   return Promise.resolve(noteAdded);
 };

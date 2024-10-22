@@ -170,6 +170,7 @@ const Ticket = () => {
     downloadDisable
   } = useTicketStore();
   const { user } = useUserStore.getState();
+  console.log(user);
   const phoneNumber = user?.phone;
 
   const { representative } = useReprentativeStore();
@@ -300,22 +301,32 @@ const Ticket = () => {
   }, [localStorage.getItem('location')]);
 
   const handleSearchKeyPress = async (e: any) => {
-    setSearchByName(searchName);
-    if (e.key === 'Enter') {
-      setTickets([]);
+     if (e.key === 'Enter' && searchName === '') {
+       fetchTicketsOnEmpthySearch();
+       setSearchError('Type to search & Enter');
+       return;
+     } else if (e.key === 'Enter') {
+       await getTicketHandler(searchName, 1, 'false', newFilter);
+       setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
+       setPageNumber(1);
+       setPage(1);
+     }
+    // setSearchByName(searchName);
+    // if (e.key === 'Enter') {
+    //   setTickets([]);
 
-      if (searchName === '') {
-        fetchTicketsOnEmpthySearch();
-        setSearchError('Type to search & Enter');
-        // redirectTicket();
-        return;
-      }
-      await getTicketHandler(searchName, 1, 'false', newFilter);
-      setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
-      setPageNumber(1);
-      setPage(1);
-      // redirectTicket();
-    }
+    //   if (searchName === '') {
+    //     fetchTicketsOnEmpthySearch();
+    //     setSearchError('Type to search & Enter');
+    //     // redirectTicket();
+    //     return;
+    //   }
+    //   await getTicketHandler(searchName, 1, 'false', newFilter);
+    //   setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
+    //   setPageNumber(1);
+    //   setPage(1);
+    //   // redirectTicket();
+    // }
   };
 
   // const checkFilterLength = () => {
@@ -652,7 +663,7 @@ const Ticket = () => {
   }, [showReminderModal]);
 
   useEffect(() => {
-    console.log("inside useffect of rescheudler")
+    console.log('inside useffect of rescheudler');
     clearAllInterval(AllIntervals);
     callRescheduler?.forEach((callRescheduleDetail, index) => {
       let alarmInterval: any;
@@ -1079,13 +1090,16 @@ const Ticket = () => {
                     )}
                   </Box>
                 </Stack>
-                <Stack>
-                  <DownloadAllTickets />
-                </Stack>
+                {user?.role === 'ADMIN' && (
+                  <Stack>
+                    <DownloadAllTickets />
+                  </Stack>
+                )}
                 <Stack
                   sx={{
                     marginTop: '5px',
                     marginRight: '10px',
+                    marginLeft: '15px',
                     cursor: 'pointer'
                   }}
                   onClick={() => {

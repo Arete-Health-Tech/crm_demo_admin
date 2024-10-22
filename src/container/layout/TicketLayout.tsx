@@ -1102,6 +1102,7 @@ const Ticket = () => {
                   sx={{
                     marginTop: '5px',
                     marginRight: '10px',
+                    marginLeft: '15px',
                     cursor: 'pointer'
                   }}
                   onClick={() => {

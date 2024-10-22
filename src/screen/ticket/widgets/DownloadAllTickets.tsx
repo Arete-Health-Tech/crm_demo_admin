@@ -151,10 +151,12 @@ const DownloadAllTickets = (props: Props) => {
           ticket?.consumer[0]?.lastName && ticket?.consumer[0]?.lastName,
         uhid: ticket?.consumer[0]?.uid,
         gender: ticket?.consumer[0]?.gender,
-        phone: ticket?.consumer[0]?.phone,
+        phone: `${ticket?.consumer[0]?.phone}`,
         age: ageSetter(ticket?.consumer[0]?.dob),
         location: ticket?.specialty ? ticket?.specialty : 'Mohali',
-        stage: stageSetter(ticket?.stage) ? stageSetter(ticket?.stage) : '',
+        stage: stageSetter(ticket?.stage[0]?._id)
+          ? stageSetter(ticket?.stage[0]?._id)
+          : '',
         department: departmentSetter(ticket?.prescription[0]?.departments[0]),
         doctor: doctorSetter(ticket?.prescription[0]?.doctor),
         admissionType: ticket.prescription[0].admission
@@ -166,7 +168,9 @@ const DownloadAllTickets = (props: Props) => {
         isPharmacy: ticket?.prescription[0]?.isPharmacy
           ? 'Advised'
           : 'No Advised',
-        assigned: handleAssigne(ticket.assigned).join(' '),
+        assigned:
+          handleAssigne(ticket?.assigned[0]?._id).join(' ') ||
+          ticket?.assigned[0]?.firstName,
         CTScan: ticket?.prescription[0]?.diagnostics.includes('CT-Scan')
           ? 'Yes'
           : 'No',
@@ -188,7 +192,7 @@ const DownloadAllTickets = (props: Props) => {
             : returnedDate(ticket?.prescription[0]?.followUp),
         capturedBy:
           ticket?.creator[0]?.firstName + ' ' + ticket?.creator[0]?.lastName,
-        prescriptionCreatedAt:  ticket?.prescription[0]?.created_Date,
+        prescriptionCreatedAt: ticket?.prescription[0]?.created_Date,
         prescriptionLink: ticket?.prescription[0]?.image,
         prescriptionLink1: ticket?.prescription[0]?.image1,
         Lead_disposition: ticket

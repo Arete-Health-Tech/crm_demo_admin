@@ -179,7 +179,7 @@ const CustomModal = () => {
           ucid: ucid,
           stoppedTimer: stoppedTimer
         };
-        await createNotesHandler(data);
+        await createNotesHandler(data, formData.select);
         setNote('');
       }
       // This is for second opinion start

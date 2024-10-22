@@ -63,7 +63,6 @@ const NotesWidget = (props: Props) => {
   const { ticketID } = useParams();
   const { user, setUser } = useUserStore();
 
-
   const newFilter =
     localStorage.getItem('ticketType') === 'Admission'
       ? filterTickets
@@ -79,7 +78,7 @@ const NotesWidget = (props: Props) => {
         text: note,
         ticket: ticketID!
       };
-      await createNotesHandler(data);
+      await createNotesHandler(data, '');
       setTimeout(() => {
         (async () => {
           const result = await getTicketHandler(
@@ -100,7 +99,7 @@ const NotesWidget = (props: Props) => {
     if (note !== '<p><br></p>') {
       const updatedNoteData = {
         note: note,
-        ticketId: notesClickedData?._id,
+        ticketId: notesClickedData?._id
         // noteId: notesClickedData?._id
       };
       await updateNotes(updatedNoteData);
@@ -112,7 +111,7 @@ const NotesWidget = (props: Props) => {
             'false',
             newFilter
           );
-          setNotesClickedData(null)
+          setNotesClickedData(null);
           await getAllNotesHandler(ticketID as string);
           props.setTicketUpdateFlag(result);
         })();
@@ -131,9 +130,9 @@ const NotesWidget = (props: Props) => {
     const noteId = { ticketId: notesClickedData._id };
     try {
       await deleteNotes(noteId);
-      setDeleteModal(false)
+      setDeleteModal(false);
     } catch (error) {
-      toast.error("something went wrong Please try again later")
+      toast.error('something went wrong Please try again later');
     }
     setTimeout(() => {
       (async () => {
@@ -143,7 +142,7 @@ const NotesWidget = (props: Props) => {
           'false',
           newFilter
         );
-        setNotesClickedData(null)
+        setNotesClickedData(null);
         await getAllNotesHandler(ticketID as string);
         props.setTicketUpdateFlag(result);
       })();
@@ -151,7 +150,7 @@ const NotesWidget = (props: Props) => {
 
     setNote('');
     setNotesModal(false);
-  }
+  };
 
   useEffect(() => {
     const fetchNotes = async () => {
@@ -183,7 +182,7 @@ const NotesWidget = (props: Props) => {
           </Box>
         ) : notes.length > 0 && notesClickedData === null ? (
           <Box
-            height={isAuditor ? "56vh" : "36vh"}
+            height={isAuditor ? '56vh' : '36vh'}
             sx={{
               overflowY: 'scroll',
               '&::-webkit-scrollbar ': {
@@ -220,13 +219,16 @@ const NotesWidget = (props: Props) => {
                         height={'1.25rem'}
                         width={'1.25rem'}
                       >
-                        <Avatar sx={{
-                          fontSize: '8px', bgcolor: 'orange',
-                          height: '1rem',
-                          width: '1rem',
-                          margin: '0.3rem',
-                          marginTop: '8px'
-                        }}>
+                        <Avatar
+                          sx={{
+                            fontSize: '8px',
+                            bgcolor: 'orange',
+                            height: '1rem',
+                            width: '1rem',
+                            margin: '0.3rem',
+                            marginTop: '8px'
+                          }}
+                        >
                           {user?.firstName[0]?.toUpperCase()}
                           {user?.lastName[0]?.toUpperCase()}
                         </Avatar>
@@ -257,29 +259,33 @@ const NotesWidget = (props: Props) => {
             justifyContent={'center'}
             height="36vh"
             sx={{
-              borderBottomLeftRadius: "20px",
-              borderBottomRightRadius: "20px"
+              borderBottomLeftRadius: '20px',
+              borderBottomRightRadius: '20px'
             }}
           >
-            <Stack sx={{
-              alignItems: "center",
-              textAlign: "center",
-              // marginTop: "30px",
-
-            }}><img width={'200px'} height={'200px'} src={NotFoundIcon} />
+            <Stack
+              sx={{
+                alignItems: 'center',
+                textAlign: 'center'
+                // marginTop: "30px",
+              }}
+            >
+              <img width={'200px'} height={'200px'} src={NotFoundIcon} />
             </Stack>
-            <Box textAlign={'center'} sx={{
-              font: "bold",
-              fontSize: "24px",
-              fontFamily: "Outfit,sans-serif"
-            }}>
+            <Box
+              textAlign={'center'}
+              sx={{
+                font: 'bold',
+                fontSize: '24px',
+                fontFamily: 'Outfit,sans-serif'
+              }}
+            >
               No Notes Available
             </Box>
-
           </Box>
         ) : (
           <Box
-            height={"36vh"}
+            height={'36vh'}
             sx={{
               overflowY: 'scroll',
               '&::-webkit-scrollbar ': {
@@ -293,54 +299,64 @@ const NotesWidget = (props: Props) => {
                 alt=""
                 onClick={() => setNotesClickedData(null)}
               />
-              {!isAuditor && <div>
-                <IconButton
-                  aria-label="more"
-                  aria-controls="simple-menu"
-                  aria-haspopup="true"
-                  onClick={handleClick}
-                >
-                  <MoreHorizIcon />
-                </IconButton>
-                <Menu
-                  id="simple-menu"
-                  anchorEl={anchorEl}
-                  keepMounted
-                  open={open}
-                  onClose={handleClose}
-                  PaperProps={{
-                    style: {
-                      maxHeight: 48 * 4.5,
-                      width: '15ch',
-                      borderRadius: 20
-                    }
-                  }}
-                >
-                  <MenuItem
-                    onClick={handleClose}
-                    style={{ color: '#080F1A', fontFamily: 'Outfit,san-serif' }}
-                    onClickCapture={() => (
-                      setIsNoteEdited(true),
-                      setNotesModal(true),
-                      setNote(notesClickedData.text)
-                    )}
+              {!isAuditor && (
+                <div>
+                  <IconButton
+                    aria-label="more"
+                    aria-controls="simple-menu"
+                    aria-haspopup="true"
+                    onClick={handleClick}
                   >
-                    Edit
-                  </MenuItem>
-                  <MenuItem
-                    onClick={() => {
-                      setDeleteModal(true);
-                      setOpen(false);
+                    <MoreHorizIcon />
+                  </IconButton>
+                  <Menu
+                    id="simple-menu"
+                    anchorEl={anchorEl}
+                    keepMounted
+                    open={open}
+                    onClose={handleClose}
+                    PaperProps={{
+                      style: {
+                        maxHeight: 48 * 4.5,
+                        width: '15ch',
+                        borderRadius: 20
+                      }
                     }}
-                    style={{ color: '#F94839', fontFamily: 'Outfit,san-serif' }}
                   >
-                    Delete
-                  </MenuItem>
-                </Menu>
-              </div>}
+                    <MenuItem
+                      onClick={handleClose}
+                      style={{
+                        color: '#080F1A',
+                        fontFamily: 'Outfit,san-serif'
+                      }}
+                      onClickCapture={() => (
+                        setIsNoteEdited(true),
+                        setNotesModal(true),
+                        setNote(notesClickedData.text)
+                      )}
+                    >
+                      Edit
+                    </MenuItem>
+                    <MenuItem
+                      onClick={() => {
+                        setDeleteModal(true);
+                        setOpen(false);
+                      }}
+                      style={{
+                        color: '#F94839',
+                        fontFamily: 'Outfit,san-serif'
+                      }}
+                    >
+                      Delete
+                    </MenuItem>
+                  </Menu>
+                </div>
+              )}
             </Box>
             <Box className={styles.ClickedNoteText}>
-              <Box className={styles.insideNoteText}>{ReactHtmlParser(notesClickedData.text)}</Box>
+              <Box className={styles.insideNoteText}>
+                {ReactHtmlParser(notesClickedData.text)}
+              </Box>
               <Box className={styles.notesDate}>
                 {dayjs(notesClickedData.createdAt).format(
                   'DD MMM YYYY hh:mm A'
@@ -350,38 +366,40 @@ const NotesWidget = (props: Props) => {
           </Box>
         )}
 
-        {!isAuditor && <Box
-          height="15vh"
-          bottom={2}
-          borderTop={2.5}
-          borderColor="#317AE2"
-          bgcolor="white"
-        >
+        {!isAuditor && (
           <Box
-            display={'flex'}
-            justifyContent={'end'}
-            marginTop={1}
-            paddingRight={2}
+            height="15vh"
+            bottom={2}
+            borderTop={2.5}
+            borderColor="#317AE2"
+            bgcolor="white"
           >
-            <img src={expandIcon} alt="" />
+            <Box
+              display={'flex'}
+              justifyContent={'end'}
+              marginTop={1}
+              paddingRight={2}
+            >
+              <img src={expandIcon} alt="" />
+            </Box>
+            <Box
+              display={'flex'}
+              justifyContent={'center'}
+              color={'#647491'}
+              fontFamily={'Outfit, sans-serif'}
+              fontSize={'1rem'}
+              fontWeight={400}
+            >
+              This a guided text will be added
+            </Box>
+            <Box
+              className={styles.initiateCallButton}
+              onClick={() => setNotesModal(true)}
+            >
+              <span>Create a note</span>
+            </Box>
           </Box>
-          <Box
-            display={'flex'}
-            justifyContent={'center'}
-            color={'#647491'}
-            fontFamily={'Outfit, sans-serif'}
-            fontSize={'1rem'}
-            fontWeight={400}
-          >
-            This a guided text will be added
-          </Box>
-          <Box
-            className={styles.initiateCallButton}
-            onClick={() => setNotesModal(true)}
-          >
-            <span>Create a note</span>
-          </Box>
-        </Box>}
+        )}
       </Box>
 
       {/* MODAL for create note and edit note */}
@@ -467,7 +485,8 @@ const NotesWidget = (props: Props) => {
             </Stack>
           </Stack>
           <Box className={styles.deleteNoteText}>
-            Are you sure want to delete this permanently, this action is irreversible.
+            Are you sure want to delete this permanently, this action is
+            irreversible.
           </Box>
           <Box className={styles.DeleteNotesFooter}>
             <Box
@@ -476,16 +495,12 @@ const NotesWidget = (props: Props) => {
             >
               Cancel
             </Box>
-            <Box
-              className={styles.DeleteNoteButton}
-              onClick={handleNoteDelete}
-            >
+            <Box className={styles.DeleteNoteButton} onClick={handleNoteDelete}>
               Delete
             </Box>
           </Box>
         </Box>
       </Modal>
-
     </>
   );
 };

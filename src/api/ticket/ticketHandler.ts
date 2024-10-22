@@ -32,7 +32,7 @@ export const getTicketHandler = async (
   downloadAll: 'true' | 'false' = 'false',
   selectedFilters: iTicketFilter | null,
   ticketId: string = UNDEFINED,
-  fetchUpdated: boolean = false,
+  fetchUpdated: boolean = false
 ) => {
   const {
     setTickets,
@@ -110,7 +110,7 @@ export const getAllAuditTicketHandler = async (
   downloadAll: 'true' | 'false' = 'false',
   selectedFilters: iTicketFilter | null,
   ticketId: string = UNDEFINED,
-  fetchUpdated: boolean = false,
+  fetchUpdated: boolean = false
 ) => {
   const {
     setTickets,
@@ -248,9 +248,8 @@ export const createTicketHandler = async (prescription: iCreateTicket) => {
   prescriptionData.append(
     'diagnostics',
     JSON.stringify(prescription.diagnostics)
-
   );
-  prescriptionData.append("remarks", prescription.remarks);
+  prescriptionData.append('remarks', prescription.remarks);
   prescription.service &&
     prescriptionData.append('service', prescription.service._id);
   /* @ts-ignore */
@@ -282,9 +281,9 @@ export const getAllNotesHandler = async (ticketId: string) => {
   setNotes(notes);
 };
 
-export const createNotesHandler = async (note: iNote) => {
+export const createNotesHandler = async (note: iNote, disposition: string) => {
   const { notes, setNotes } = useTicketStore.getState();
-  const noteAdded = await createNewNote(note);
+  const noteAdded = await createNewNote(note, disposition);
   setNotes([...notes, noteAdded]);
   return Promise.resolve(noteAdded);
 };
@@ -338,10 +337,6 @@ export const getAllWhtsappCountHandler = async () => {
   const allWhtsappCount = await getAllWhatsAppCount();
   setAllWhtsappCount(allWhtsappCount);
 };
-
-
-
-
 
 export const createTimerHandler = async (
   timerData: iTimer,

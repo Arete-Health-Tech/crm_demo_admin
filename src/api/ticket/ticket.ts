@@ -186,8 +186,11 @@ export const getAllNotesByTicketId = async (ticketId: string) => {
   return data;
 };
 
-export const createNewNote = async (note: iNote) => {
-  const { data } = await apiClient.post('/ticket/note', note);
+export const createNewNote = async (note: iNote, disposition: string) => {
+  const { data } = await apiClient.post('/ticket/note', {
+    ...note,
+    'disposition': disposition
+  });
   return data;
 };
 
@@ -346,14 +349,16 @@ export const deleteTicket = async (ticketID: string | undefined) => {
 };
 
 export const deleteDiagnosticsTicket = async (ticketID: string | undefined) => {
-  const { data } = await apiClient.delete(`/diagnostics/deleteTicket/${ticketID}`);
+  const { data } = await apiClient.delete(
+    `/diagnostics/deleteTicket/${ticketID}`
+  );
   return Promise.resolve(data);
-}; 
+};
 
 export const deleteFollowUpTicket = async (ticketID: string | undefined) => {
   const { data } = await apiClient.delete(`/followUp/deleteTicket/${ticketID}`);
   return Promise.resolve(data);
-}; 
+};
 
 export const assignedToTicket = async (
   ticketID: string | undefined,

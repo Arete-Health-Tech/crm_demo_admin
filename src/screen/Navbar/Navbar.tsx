@@ -1,18 +1,12 @@
 import * as React from 'react';
 import {
-    styled,
-    Theme,
-    CSSObject,
-    createTheme,
-    ThemeProvider
+  styled,
+  Theme,
+  CSSObject,
+  createTheme,
+  ThemeProvider
 } from '@mui/material/styles';
-import {
-    Tooltip,
-    Zoom,
-    TooltipProps,
-    tooltipClasses,
-
-} from '@mui/material';
+import { Tooltip, Zoom, TooltipProps, tooltipClasses } from '@mui/material';
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import List from '@mui/material/List';
@@ -26,7 +20,7 @@ import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import Taskscopy from '../../assets/Tasks copy.svg';
 import Tasks from '../../assets/Tasks.svg';
 import ticketIcon from '../../assets/ticket_icon.svg';
-import Diagnostics from "../../assets/Diagnostics.svg";
+import Diagnostics from '../../assets/Diagnostics.svg';
 import DiagnosticsActive from '../../assets/DiagnosticsActive.svg';
 import Dashboard from '../../assets/Dashboard.svg';
 import pharmacy from '../../assets/Pharmacy.svg';
@@ -71,229 +65,230 @@ import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
 import BackupTableIcon from '@mui/icons-material/BackupTable';
 import DataObjectOutlinedIcon from '@mui/icons-material/DataObjectOutlined';
 import {
-    AccountTreeOutlined,
-    CloudSyncOutlined,
-    DocumentScannerOutlined,
-    FormatListNumberedOutlined,
-    QuickreplyOutlined,
-    SchemaOutlined
+  AccountTreeOutlined,
+  CloudSyncOutlined,
+  DocumentScannerOutlined,
+  FormatListNumberedOutlined,
+  QuickreplyOutlined,
+  SchemaOutlined
 } from '@mui/icons-material';
 import { StackedBarChartSharp } from '@mui/icons-material';
 import useTicketStore from '../../store/ticketStore';
 
-
 const drawerWidth = 72;
 
 const openedMixin = (theme: Theme): CSSObject => ({
-    width: drawerWidth,
-    transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.enteringScreen
-    }),
-    overflowX: 'hidden'
+  width: drawerWidth,
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen
+  }),
+  overflowX: 'hidden'
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
-    transition: theme.transitions.create('width', {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen
-    }),
-    overflowX: 'hidden',
-    // width: `calc(${theme.spacing(7)} + 1px)`,
-    [theme.breakpoints.up('sm')]: {
-        width: `calc(${theme.spacing(7)} + 1px)`
-    }
+  transition: theme.transitions.create('width', {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen
+  }),
+  overflowX: 'hidden',
+  // width: `calc(${theme.spacing(7)} + 1px)`,
+  [theme.breakpoints.up('sm')]: {
+    width: `calc(${theme.spacing(7)} + 1px)`
+  }
 });
 
 const DrawerHeader = styled('div')(({ theme }) => ({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: theme.spacing(0, 1),
-    ...theme.mixins.toolbar
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  padding: theme.spacing(0, 1),
+  ...theme.mixins.toolbar
 }));
 
 const Drawer = styled(MuiDrawer, {
-    shouldForwardProp: (prop) => prop !== 'open'
+  shouldForwardProp: (prop) => prop !== 'open'
 })(({ theme, open }) => ({
-    width: drawerWidth,
-    flexShrink: 0,
-    whiteSpace: 'nowrap',
-    boxSizing: 'border-box',
-    ...(open && {
-        ...openedMixin(theme),
-        '& .MuiDrawer-paper': openedMixin(theme)
-    }),
-    ...(!open && {
-        ...closedMixin(theme),
-        '& .MuiDrawer-paper': closedMixin(theme)
-    })
+  width: drawerWidth,
+  flexShrink: 0,
+  whiteSpace: 'nowrap',
+  boxSizing: 'border-box',
+  ...(open && {
+    ...openedMixin(theme),
+    '& .MuiDrawer-paper': openedMixin(theme)
+  }),
+  ...(!open && {
+    ...closedMixin(theme),
+    '& .MuiDrawer-paper': closedMixin(theme)
+  })
 }));
 
 const StyledBadge = styled(Badge)(({ theme }) => ({
-    '& .MuiBadge-badge': {
-        backgroundColor: '#44b700',
-        color: '#44b700',
-        boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
-        '&::after': {
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            width: '100%',
-            height: '100%',
-            // borderRadius: '50%',
-            animation: 'ripple 1.2s infinite ease-in-out',
-            border: '1px solid currentColor',
-            content: '""'
-        }
-    },
-    '@keyframes ripple': {
-        '0%': {
-            transform: 'scale(.8)',
-            opacity: 1
-        },
-        '100%': {
-            transform: 'scale(2.4)',
-            opacity: 0
-        }
+  '& .MuiBadge-badge': {
+    backgroundColor: '#44b700',
+    color: '#44b700',
+    boxShadow: `0 0 0 2px ${theme.palette.background.paper}`,
+    '&::after': {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      // borderRadius: '50%',
+      animation: 'ripple 1.2s infinite ease-in-out',
+      border: '1px solid currentColor',
+      content: '""'
     }
+  },
+  '@keyframes ripple': {
+    '0%': {
+      transform: 'scale(.8)',
+      opacity: 1
+    },
+    '100%': {
+      transform: 'scale(2.4)',
+      opacity: 0
+    }
+  }
 }));
 
 const theme = createTheme({
-    components: {
-        MuiTooltip: {
-            styleOverrides: {
-                tooltip: {
-                    backgroundColor: '#0066CC',
-                    color: 'white',
-                    fontSize: '0.5rem'
-                }
-            }
+  components: {
+    MuiTooltip: {
+      styleOverrides: {
+        tooltip: {
+          backgroundColor: '#0066CC',
+          color: 'white',
+          fontSize: '0.5rem'
         }
+      }
     }
+  }
 });
 
-
 const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
-    <Tooltip {...props} classes={{ popper: className }} />
+  <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
-    [`& .${tooltipClasses.tooltip}`]: {
-        backgroundColor: '#0566FF',
-        color: '#ffffff',
-        fontSize: 12,
-        fontFamily: `"Outfit",sans-serif`,
-    },
+  [`& .${tooltipClasses.tooltip}`]: {
+    backgroundColor: '#0566FF',
+    color: '#ffffff',
+    fontSize: 12,
+    fontFamily: `"Outfit",sans-serif`
+  }
 }));
 
 const sidebarMenu = [
-    {
-        title: 'Department',
-        icon: departmentDeafultIcon,
-        icon1: departmentIcon,
-        link: '/department',
-        submenu: [
-            {
-                title: 'Doctors',
-                icon: doctorIconDefault,
-                icon1: doctorIcon,
-                link: '/doctors'
-            },
-            {
-                title: 'Wards',
-                icon: wardIconDeault,
-                icon1: wardIcon,
-                link: '/wards'
-            }
-        ]
-    },
-    {
-        title: 'Services',
-        icon: serviceIconDefault,
-        icon1: serviceIcon,
-        link: '/services',
-        submenu: [
-            {
-                title: 'Tags',
-                icon: tagIconDefault,
-                icon1: tagIcon,
-                link: '/tags'
-            },
-            {
-                title: 'Scripts',
-                icon: scriptIconDefault,
-                icon1: scriptIcon,
+  {
+    title: 'Department',
+    icon: departmentDeafultIcon,
+    icon1: departmentIcon,
+    link: '/department',
+    submenu: [
+      {
+        title: 'Doctors',
+        icon: doctorIconDefault,
+        icon1: doctorIcon,
+        link: '/doctors'
+      },
+      {
+        title: 'Wards',
+        icon: wardIconDeault,
+        icon1: wardIcon,
+        link: '/wards'
+      }
+    ]
+  },
+  {
+    title: 'Services',
+    icon: serviceIconDefault,
+    icon1: serviceIcon,
+    link: '/services',
+    submenu: [
+      {
+        title: 'Tags',
+        icon: tagIconDefault,
+        icon1: tagIcon,
+        link: '/tags'
+      },
+      {
+        title: 'Scripts',
+        icon: scriptIconDefault,
+        icon1: scriptIcon,
 
-                link: '/scripts'
-            }
-        ]
-    },
-    // {
-    //     title: 'Stages',
-    //     icon: stageIconDefault,
-    //     icon1: stageIcon,
-    //     link: '/stages'
-    // },
-    {
-        title: 'WhatsappFlow',
-        icon: whtsappFlowIconDefault,
-        icon1: whtsappFlowIcon,
-        link: '/flow',
-        submenu: [
-            {
-                title: 'Add Node Replies',
-                icon: addNodeIconDefault,
-                icon1: addNodeIcon,
-                link: '/node-replies'
-            },
-            {
-                title: 'Add Node Lists',
-                icon: addNodeListIconDefault,
-                icon1: addNodeListIcon,
-                link: '/node-lists'
-            },
-            {
-                title: 'Node Connector',
-                icon: nodeConnectorIconDefault,
-                icon1: nodeConnectorIcon,
-                link: '/connector'
-            }
-        ]
-    },
+        link: '/scripts'
+      }
+    ]
+  },
+  // {
+  //     title: 'Stages',
+  //     icon: stageIconDefault,
+  //     icon1: stageIcon,
+  //     link: '/stages'
+  // },
+  {
+    title: 'WhatsappFlow',
+    icon: whtsappFlowIconDefault,
+    icon1: whtsappFlowIcon,
+    link: '/flow',
+    submenu: [
+      {
+        title: 'Add Node Replies',
+        icon: addNodeIconDefault,
+        icon1: addNodeIcon,
+        link: '/node-replies'
+      },
+      {
+        title: 'Add Node Lists',
+        icon: addNodeListIconDefault,
+        icon1: addNodeListIcon,
+        link: '/node-lists'
+      },
+      {
+        title: 'Node Connector',
+        icon: nodeConnectorIconDefault,
+        icon1: nodeConnectorIcon,
+        link: '/connector'
+      }
+    ]
+  }
 ];
 
-
 const Navbar = ({ children }) => {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [open, setOpen] = React.useState(false);
-    const { setTicketType } = useTicketStore();
-    const [expandedMenu, setExpandedMenu] = React.useState(null);
-    const {
-        isSwitchView,
-        setIsSwitchView,
-    } = useTicketStore();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [open, setOpen] = React.useState(false);
+  const { setTicketType } = useTicketStore();
+  const [expandedMenu, setExpandedMenu] = React.useState(null);
+  const { isSwitchView, setIsSwitchView } = useTicketStore();
 
-    const goToPage = (path) => {
-        navigate(path);
-    };
+  const goToPage = (path) => {
+    navigate(path);
+  };
 
-    const handleGoToTicket = (e) => {
-        if (isSwitchView) {
-            goToPage('/switchView');
-        } else {
-            goToPage(e === "Diagnostics" ? '/diagnostics' : e === "Admission" ? '/admission' : e === "Follow-Up" ? '/follow-up' : "");
-        }
+  const handleGoToTicket = (e) => {
+    if (isSwitchView) {
+      goToPage('/switchView');
+    } else {
+      goToPage(
+        e === 'Diagnostics'
+          ? '/diagnostics'
+          : e === 'Admission'
+          ? '/admission'
+          : e === 'Follow-Up'
+          ? '/follow-up'
+          : ''
+      );
     }
+  };
 
-    const handleMenuClick = (title) => {
-        setExpandedMenu(expandedMenu === title ? null : title);
-    };
+  const handleMenuClick = (title) => {
+    setExpandedMenu(expandedMenu === title ? null : title);
+  };
 
-
-    return (
-        <>
-            <Box sx={{ display: 'flex', height: '100vh', }}>
-                {/* <Drawer variant="permanent"
+  return (
+    <>
+      <Box sx={{ display: 'flex', height: '100vh' }}>
+        {/* <Drawer variant="permanent"
                     open={open}
                     sx={{
                         width: "15vw",
@@ -304,153 +299,204 @@ const Navbar = ({ children }) => {
                             backgroundColor: '#F6F7F9'
                         },
                     }}> */}
-                <Box sx={{
+        <Box
+          sx={{
+            boxSizing: 'border-box',
+            width: '4.4%',
+            backgroundColor: '#F6F7F9',
+            borderRight: '1px solid #D4DBE5'
+          }}
+        >
+          <Box
+            // bgcolor={'#F6F7F9'}
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              height: '100%'
+            }}
+          >
+            <Box
+              display={'flex'}
+              flexDirection={'column'}
+              gap={'10px !important'}
+              justifyContent={'center'}
+              sx={{ alignItems: 'center' }}
+            >
+              <Stack
+                sx={{
+                  display: 'flex',
+                  height: '54px',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  gap: '24px'
+                }}
+              >
+                <img src={Logo} alt="Logo" />
+              </Stack>
+              <Box className={styles.navbarItem}>
+                <Stack className={styles.nav_Icon}>
+                  <Stack
+                    onClick={() => {
+                      localStorage.setItem('ticketType', '');
+                      goToPage('/');
+                    }}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: '24px',
+                      width: '3.3vw',
+                      height: '6.8vh',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      backgroundColor:
+                        location.pathname === '/' ? '#DAE8FF' : 'transparent',
+                      '&:hover': {
+                        background: '#E1E6EE'
+                      }
+                    }}
+                  >
+                    <LightTooltip
+                      title="Dashboard"
+                      disableInteractive
+                      placement="right"
+                      TransitionComponent={Zoom}
+                    >
+                      {location.pathname === '/' ? (
+                        <img src={ActiveDashBoard} alt="Dashboard" />
+                      ) : (
+                        <img src={Dashboard} alt="Dashboard" />
+                      )}
+                    </LightTooltip>
+                  </Stack>
+                </Stack>
+                <Stack className={styles.nav_Icon}>
+                  <Stack
+                    // onClick={() => goToPage('/ticket')}
+                    onClick={() => {
+                      localStorage.setItem('ticketType', 'Admission');
+                      handleGoToTicket('Admission');
+                    }}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: '24px',
+                      width: '3.3vw',
+                      height: '6.8vh',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      backgroundColor:
+                        location.pathname.includes('admission') ||
+                        localStorage.getItem('ticketType') === 'Admission'
+                          ? '#DAE8FF'
+                          : 'transparent',
+                      '&:hover': {
+                        background: '#E1E6EE'
+                      }
+                    }}
+                  >
+                    <LightTooltip
+                      title="Admission"
+                      disableInteractive
+                      placement="right"
+                      TransitionComponent={Zoom}
+                    >
+                      {location.pathname.includes('admission') ||
+                      localStorage.getItem('ticketType') === 'Admission' ? (
+                        <img src={admissionActive} alt="Ticket" />
+                      ) : (
+                        <img src={admission} alt="Ticket" />
+                      )}
+                    </LightTooltip>
+                  </Stack>
+                </Stack>
+                <Stack className={styles.nav_Icon}>
+                  <Stack
+                    // onClick={() => goToPage('/ticket')}
+                    onClick={() => {
+                      localStorage.setItem('ticketType', 'Diagnostics');
+                      handleGoToTicket('Diagnostics');
+                    }}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: '24px',
+                      width: '3.3vw',
+                      height: '6.8vh',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      backgroundColor:
+                        location.pathname.includes('diagnostics') ||
+                        localStorage.getItem('ticketType') === 'Diagnostics'
+                          ? '#DAE8FF'
+                          : 'transparent',
+                      '&:hover': {
+                        background: '#E1E6EE'
+                      }
+                    }}
+                  >
+                    <LightTooltip
+                      title="Diagnostics"
+                      disableInteractive
+                      placement="right"
+                      TransitionComponent={Zoom}
+                    >
+                      {location.pathname.includes('diagnostics') ||
+                      localStorage.getItem('ticketType') === 'Diagnostics' ? (
+                        <img src={DiagnosticsActive} alt="Ticket" />
+                      ) : (
+                        <img src={Diagnostics} alt="Ticket" />
+                      )}
+                    </LightTooltip>
+                  </Stack>
+                </Stack>
+                <Stack className={styles.nav_Icon}>
+                  <Stack
+                    // onClick={() => goToPage('/ticket')}
+                    onClick={() => {
+                      localStorage.setItem('ticketType', 'Follow-Up');
+                      handleGoToTicket('Follow-Up');
+                    }}
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      gap: '24px',
+                      width: '3.3vw',
+                      height: '6.8vh',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      backgroundColor:
+                        location.pathname.includes('follow-up') ||
+                        localStorage.getItem('ticketType') === 'Follow-Up'
+                          ? '#DAE8FF'
+                          : 'transparent',
+                      '&:hover': {
+                        background: '#E1E6EE'
+                      }
+                    }}
+                  >
+                    <LightTooltip
+                      title="Follow-Up"
+                      disableInteractive
+                      placement="right"
+                      TransitionComponent={Zoom}
+                    >
+                      {location.pathname.includes('follow-up') ||
+                      localStorage.getItem('ticketType') === 'Follow-Up' ? (
+                        <img src={FollowupActive} alt="Ticket" />
+                      ) : (
+                        <img src={Followup} alt="Ticket" />
+                      )}
+                    </LightTooltip>
+                  </Stack>
+                </Stack>
+                {/* this stack is for doctors,department,WhatsappFlow starts */}
 
-                    boxSizing: 'border-box',
-                    width: "4.4%",
-                    backgroundColor: '#F6F7F9',
-                    borderRight: '1px solid #D4DBE5'
-
-                }}>
-                    <Box
-                        // bgcolor={'#F6F7F9'}
-                        sx={{ display: 'flex', flexDirection: "column", justifyContent: "space-between", height: "100%" }}>
-
-                        <Box display={'flex'} flexDirection={'column'} gap={"10px !important"} justifyContent={"center"} sx={{ alignItems: "center" }} >
-                            <Stack sx={{
-                                display: "flex",
-                                height: "54px",
-                                justifyContent: "center",
-                                alignItems: "center",
-                                gap: "24px",
-
-                            }}>
-                                <img src={Logo} alt="Logo" />
-                            </Stack>
-                            <Box className={styles.navbarItem}>
-                                <Stack className={styles.nav_Icon}>
-                                    <Stack
-                                        onClick={() => { localStorage.setItem('ticketType', ''); goToPage('/') }}
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            gap: "24px",
-                                            width: "3.3vw",
-                                            height: "6.8vh",
-                                            borderRadius: "8px",
-                                            cursor: 'pointer',
-                                            backgroundColor: location.pathname === '/' ? '#DAE8FF' : 'transparent',
-                                            '&:hover': {
-                                                background: '#E1E6EE'
-                                            }
-                                        }}>
-                                        <LightTooltip title="Dashboard"
-                                            disableInteractive
-                                            placement="right"
-                                            TransitionComponent={Zoom}
-                                        >
-                                            {location.pathname === '/' ? (<img src={ActiveDashBoard} alt="Dashboard" />) : (<img src={Dashboard} alt="Dashboard" />)}
-
-                                        </LightTooltip>
-                                    </Stack>
-                                </Stack>
-                                <Stack className={styles.nav_Icon}>
-                                    <Stack
-                                        // onClick={() => goToPage('/ticket')}
-                                        onClick={() => { localStorage.setItem("ticketType", "Admission"); handleGoToTicket("Admission") }}
-
-
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            gap: "24px",
-                                            width: "3.3vw",
-                                            height: "6.8vh",
-                                            borderRadius: "8px",
-                                            cursor: 'pointer',
-                                            backgroundColor: location.pathname.includes('admission') || localStorage.getItem('ticketType') === 'Admission' ? '#DAE8FF' : 'transparent',
-                                            '&:hover': {
-                                                background: '#E1E6EE'
-                                            }
-                                        }}>
-                                        <LightTooltip title="Admission"
-                                            disableInteractive
-                                            placement="right"
-                                            TransitionComponent={Zoom}
-                                        >
-
-                                            {location.pathname.includes('admission') || localStorage.getItem('ticketType') === 'Admission' ? (<img src={admissionActive} alt="Ticket" />) : (<img src={admission} alt="Ticket" />)}
-
-                                        </LightTooltip>
-                                    </Stack>
-                                </Stack>
-                                <Stack className={styles.nav_Icon}>
-                                    <Stack
-                                        // onClick={() => goToPage('/ticket')}
-                                        onClick={() => { localStorage.setItem("ticketType", "Diagnostics"); handleGoToTicket("Diagnostics") }}
-
-
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            gap: "24px",
-                                            width: "3.3vw",
-                                            height: "6.8vh",
-                                            borderRadius: "8px",
-                                            cursor: 'pointer',
-                                            backgroundColor: location.pathname.includes('diagnostics') || localStorage.getItem('ticketType') === 'Diagnostics' ? '#DAE8FF' : 'transparent',
-                                            '&:hover': {
-                                                background: '#E1E6EE'
-                                            }
-                                        }}>
-                                        <LightTooltip title="Diagnostics"
-                                            disableInteractive
-                                            placement="right"
-                                            TransitionComponent={Zoom}
-                                        >
-
-                                            {location.pathname.includes('diagnostics') || localStorage.getItem('ticketType') === 'Diagnostics' ? (<img src={DiagnosticsActive} alt="Ticket" />) : (<img src={Diagnostics} alt="Ticket" />)}
-
-                                        </LightTooltip>
-                                    </Stack>
-                                </Stack>
-                                <Stack className={styles.nav_Icon}>
-                                    <Stack
-                                        // onClick={() => goToPage('/ticket')}
-                                        onClick={() => { localStorage.setItem("ticketType", "Follow-Up"); handleGoToTicket("Follow-Up") }}
-
-
-                                        sx={{
-                                            display: "flex",
-                                            justifyContent: "center",
-                                            alignItems: "center",
-                                            gap: "24px",
-                                            width: "3.3vw",
-                                            height: "6.8vh",
-                                            borderRadius: "8px",
-                                            cursor: 'pointer',
-                                            backgroundColor: location.pathname.includes('follow-up') || localStorage.getItem('ticketType') === 'Follow-Up' ? '#DAE8FF' : 'transparent',
-                                            '&:hover': {
-                                                background: '#E1E6EE'
-                                            }
-                                        }}>
-                                        <LightTooltip title="Follow-Up"
-                                            disableInteractive
-                                            placement="right"
-                                            TransitionComponent={Zoom}
-                                        >
-
-                                            {location.pathname.includes('follow-up') || localStorage.getItem('ticketType') === 'Follow-Up' ? (<img src={FollowupActive} alt="Ticket" />) : (<img src={Followup} alt="Ticket" />)}
-
-                                        </LightTooltip>
-                                    </Stack>
-                                </Stack>
-                                {/* this stack is for doctors,department,WhatsappFlow starts */}
-
-                                {/* <Stack className={styles.nav_Icon}>
+                {/* <Stack className={styles.nav_Icon}>
                                     {sidebarMenu.map((item) => (
                                         <Stack key={item.title} >
                                             <Stack
@@ -527,9 +573,9 @@ const Navbar = ({ children }) => {
                                     ))}
                                 </Stack> */}
 
-                                {/* this stack is for doctors,department,WhatsappFlow end */}
+                {/* this stack is for doctors,department,WhatsappFlow end */}
 
-                                {/* <Stack className={styles.nav_Icon}>
+                {/* <Stack className={styles.nav_Icon}>
                                     <Stack onClick={() => goToPage('/OrderList')}
                                         sx={{
                                             display: "flex",
@@ -556,7 +602,7 @@ const Navbar = ({ children }) => {
                                         </LightTooltip>
                                     </Stack>
                                 </Stack> */}
-                                {/* <Stack className={styles.nav_Icon}>
+                {/* <Stack className={styles.nav_Icon}>
                                     <Stack onClick={() => goToPage('/Tasks')}
                                         sx={{
                                             display: "flex",
@@ -582,7 +628,8 @@ const Navbar = ({ children }) => {
                                     </Stack>
                                 </Stack>
                                 */}
-                                <Stack className={styles.nav_Icon}>
+
+                {/* <Stack className={styles.nav_Icon}>
                                     <Stack
                                         onClick={() => goToPage('/upload-file')}
                                         sx={{
@@ -607,74 +654,85 @@ const Navbar = ({ children }) => {
                                             {location.pathname.includes('/upload-file') ? (<img src={UploadFileIcon} alt="upload-file" />) : (<img src={UploadFileIcon} alt="upload-file" />)}
                                         </LightTooltip>
                                     </Stack>
-                                </Stack>
-                            </Box>
-                        </Box>
-
-
-                        {/* <Box sx={{ flexGrow: 1 }} /> */}
-                        <Box display={'flex'} flexDirection={'column'} justifyContent={"center"} sx={{ alignItems: "center" }}>
-                            <Stack>
-                                <Stack
-
-                                    // onClick={() => goToPage('/configuration/agents')}
-                                    sx={{
-                                        display: "flex",
-                                        justifyContent: "center",
-                                        alignItems: "center",
-                                        gap: "24px",
-                                        width: "3.3vw",
-                                        height: "6.8vh",
-                                        borderRadius: "8px",
-                                        cursor: 'pointer',
-                                        backgroundColor: location.pathname.includes('/configuration')
-                                            ? '#DAE8FF' : 'transparent',
-                                        '&:hover': {
-                                            background: '#E1E6EE'
-                                        }
-                                    }}
-                                >
-                                    <LightTooltip title="Configuration"
-                                        disableInteractive
-                                        placement="right"
-                                        TransitionComponent={Zoom}
-                                    >
-                                        {location.pathname.includes('/configuration')
-                                            ?
-                                            (<img src={SettingActive} alt="Configuration" />) : (<img src={Taskscopy} alt="Configuration" />)}
-
-                                    </LightTooltip>
-                                </Stack>
-                            </Stack>
-                            <Stack
-                                sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    justifyContent: 'center',
-                                    pb: 2,
-                                    cursor: 'pointer',
-                                }}
-                            >
-                                <LightTooltip title="Logout"
-                                    disableInteractive
-                                    placement="right"
-                                    TransitionComponent={Zoom}
-                                >
-                                    <Logout />
-                                </LightTooltip>
-                            </Stack>
-                        </Box>
-                    </Box>
-                </Box>
-                {/* </Drawer> */}
-                <Box component="main" className={styles.main}
-                // sx={{ flexGrow: 1 }}
-                >
-                    {children}
-                </Box>
+                                </Stack> */}
+              </Box>
             </Box>
-        </>
-    );
+
+            {/* <Box sx={{ flexGrow: 1 }} /> */}
+            <Box
+              display={'flex'}
+              flexDirection={'column'}
+              justifyContent={'center'}
+              sx={{ alignItems: 'center' }}
+            >
+              <Stack>
+                <Stack
+                  // onClick={() => goToPage('/configuration/agents')}
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    gap: '24px',
+                    width: '3.3vw',
+                    height: '6.8vh',
+                    borderRadius: '8px',
+                    cursor: 'pointer',
+                    backgroundColor: location.pathname.includes(
+                      '/configuration'
+                    )
+                      ? '#DAE8FF'
+                      : 'transparent',
+                    '&:hover': {
+                      background: '#E1E6EE'
+                    }
+                  }}
+                >
+                  <LightTooltip
+                    title="Configuration"
+                    disableInteractive
+                    placement="right"
+                    TransitionComponent={Zoom}
+                  >
+                    {location.pathname.includes('/configuration') ? (
+                      <img src={SettingActive} alt="Configuration" />
+                    ) : (
+                      <img src={Taskscopy} alt="Configuration" />
+                    )}
+                  </LightTooltip>
+                </Stack>
+              </Stack>
+              <Stack
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  pb: 2,
+                  cursor: 'pointer'
+                }}
+              >
+                <LightTooltip
+                  title="Logout"
+                  disableInteractive
+                  placement="right"
+                  TransitionComponent={Zoom}
+                >
+                  <Logout />
+                </LightTooltip>
+              </Stack>
+            </Box>
+          </Box>
+        </Box>
+        {/* </Drawer> */}
+        <Box
+          component="main"
+          className={styles.main}
+          // sx={{ flexGrow: 1 }}
+        >
+          {children}
+        </Box>
+      </Box>
+    </>
+  );
 };
 
 export default Navbar;

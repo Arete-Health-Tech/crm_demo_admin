@@ -300,22 +300,31 @@ const Ticket = () => {
   }, [localStorage.getItem('location')]);
 
   const handleSearchKeyPress = async (e: any) => {
-    setSearchByName(searchName);
-    if (e.key === 'Enter') {
-      setTickets([]);
-
-      if (searchName === '') {
-        fetchTicketsOnEmpthySearch();
-        setSearchError('Type to search & Enter');
-        // redirectTicket();
-        return;
-      }
+    if (e.key === 'Enter' && searchName === '') {
+      fetchTicketsOnEmpthySearch();
+      setSearchError('Type to search & Enter');
+      return;
+    } else if (e.key === 'Enter') {
       await getTicketHandler(searchName, 1, 'false', newFilter);
       setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
       setPageNumber(1);
       setPage(1);
-      // redirectTicket();
     }
+    // setSearchByName(searchName);
+    // if (e.key === 'Enter') {
+    //   setTickets([]);
+
+    //   if (searchName === '') {
+    //     fetchTicketsOnEmpthySearch();
+    //     setSearchError('Type to search & Enter');
+    //     // redirectTicket();
+    //     return;
+    //   }
+    //   await getTicketHandler(searchName, 1, 'false', newFilter);
+    //   setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
+    //   setPageNumber(1);
+    //   setPage(1);
+    // }
   };
 
   // const checkFilterLength = () => {
@@ -652,7 +661,7 @@ const Ticket = () => {
   }, [showReminderModal]);
 
   useEffect(() => {
-    console.log("inside useffect of rescheudler")
+    console.log('inside useffect of rescheudler');
     clearAllInterval(AllIntervals);
     callRescheduler?.forEach((callRescheduleDetail, index) => {
       let alarmInterval: any;
@@ -968,7 +977,11 @@ const Ticket = () => {
                   ? 'Follow-up Ticket'
                   : 'Tickets'}
               </Stack>
-              <Stack display={'flex'} flexDirection={'row'}>
+              <Stack
+                display={'flex'}
+                flexDirection={'row'}
+                gap={`${user?.role === 'REPRESENTATIVE' && '20px'}`}
+              >
                 <Stack>
                   <Box
                     height="100%"
@@ -1079,9 +1092,12 @@ const Ticket = () => {
                     )}
                   </Box>
                 </Stack>
-                <Stack>
-                  <DownloadAllTickets />
-                </Stack>
+                {user?.role === 'ADMIN' && (
+                  <Stack>
+                    <DownloadAllTickets />
+                  </Stack>
+                )}
+
                 <Stack
                   sx={{
                     marginTop: '5px',

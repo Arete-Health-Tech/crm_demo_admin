@@ -17,7 +17,10 @@ import { getDepartmentsHandler } from '../../../api/department/departmentHandler
 import { iCallRescheduler, iReminder } from '../../../types/store/ticket';
 import { socketEventConstants } from '../../../constantUtils/socketEventsConstants';
 import { apiClient, socket } from '../../../api/apiClient';
-import { getTicket, getTicketAfterNotification } from '../../../api/ticket/ticket';
+import {
+  getTicket,
+  getTicketAfterNotification
+} from '../../../api/ticket/ticket';
 import { getAllStageCountHandler } from '../../../api/dashboard/dashboardHandler';
 import { Box, Chip, Modal, Stack, Typography } from '@mui/material';
 import styles from './switchView.module.css';
@@ -391,7 +394,6 @@ function SwitchViewTable() {
     };
   }, [pageNumber, searchName]);
 
-
   useEffect(() => {
     clearAllInterval(AllIntervals);
 
@@ -703,15 +705,23 @@ function SwitchViewTable() {
       return 0;
     }
   };
- console.log(page,'sssssss');
- console.log(pageNumber,'sssssss');
+  console.log(page, 'sssssss');
+  console.log(pageNumber, 'sssssss');
 
   return (
     <>
       <Box className={styles.SwitchView_container}>
         {/* Switch View Head */}
         <Box className={styles.SwitchView_filters_container}>
-          <Stack className={styles.SwitchView_container_title}>Tickets</Stack>
+          <Stack className={styles.SwitchView_container_title}>
+            {localStorage.getItem('ticketType') === 'Admission'
+              ? 'Admission Ticket'
+              : localStorage.getItem('ticketType') === 'Diagnostics'
+              ? 'Diagnostics Ticket'
+              : localStorage.getItem('ticketType') === 'Follow-Up'
+              ? 'Follow-up Ticket'
+              : 'Tickets'}
+          </Stack>
 
           <Stack display={'flex'} flexDirection={'row'}>
             <Stack>

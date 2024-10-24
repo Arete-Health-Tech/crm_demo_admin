@@ -454,7 +454,7 @@ const TicketFilter = (props: {
     //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
-    setDownloadDisable(false);
+    setDownloadDisable(true);
     setIsFilterOpen(false);
     setPageNumber(1);
     setFilterTicketsDiago(selectedFilters);

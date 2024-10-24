@@ -461,7 +461,7 @@ const TicketFilter = (props: {
     //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
-    setDownloadDisable(false);
+    setDownloadDisable(true);
     setIsFilterOpen(false);
     setPageNumber(1);
     setFilterTicketsDiago(selectedFilters);
@@ -726,7 +726,8 @@ const TicketFilter = (props: {
                   sx={{
                     fontFamily: 'Outfit,sans-serif',
                     fontSize: '14px',
-                    fontWeight: 'bold'
+                    fontWeight: 'bold',
+                    textTransform: 'capitalize'
                   }}
                 >
                   Assigned To
@@ -735,12 +736,26 @@ const TicketFilter = (props: {
                   size="medium"
                   onChange={handleRepresentative}
                   value={currentReperesentative}
-                  sx={{ height: '35px' }}
+                  sx={{
+                    height: '35px',
+                    textTransform: 'capitalize',
+                    fontFamily: 'Outfit,sans-serif'
+                  }}
                 >
                   {
                     // representativeLabel?.some(rep => rep.role === "REPRESENTATIVE")
                     representativeLabel?.map(({ id, label }, index) => {
-                      return <MenuItem value={id}>{label}</MenuItem>;
+                      return (
+                        <MenuItem
+                          value={id}
+                          sx={{
+                            textTransform: 'capitalize',
+                            fontFamily: 'Outfit,sans-serif'
+                          }}
+                        >
+                          {label}
+                        </MenuItem>
+                      );
                     })
                   }
                 </Select>

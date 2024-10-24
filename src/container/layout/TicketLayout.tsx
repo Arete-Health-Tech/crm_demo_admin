@@ -301,16 +301,16 @@ const Ticket = () => {
   }, [localStorage.getItem('location')]);
 
   const handleSearchKeyPress = async (e: any) => {
-     if (e.key === 'Enter' && searchName === '') {
-       fetchTicketsOnEmpthySearch();
-       setSearchError('Type to search & Enter');
-       return;
-     } else if (e.key === 'Enter') {
-       await getTicketHandler(searchName, 1, 'false', newFilter);
-       setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
-       setPageNumber(1);
-       setPage(1);
-     }
+    if (e.key === 'Enter' && searchName === '') {
+      fetchTicketsOnEmpthySearch();
+      setSearchError('Type to search & Enter');
+      return;
+    } else if (e.key === 'Enter') {
+      await getTicketHandler(searchName, 1, 'false', newFilter);
+      setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
+      setPageNumber(1);
+      setPage(1);
+    }
     // setSearchByName(searchName);
     // if (e.key === 'Enter') {
     //   setTickets([]);
@@ -325,7 +325,6 @@ const Ticket = () => {
     //   setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
     //   setPageNumber(1);
     //   setPage(1);
-    //   // redirectTicket();
     // }
   };
 
@@ -952,7 +951,7 @@ const Ticket = () => {
         >
           <Box
             px={1}
-            height={'17vh'}
+            height={'16vh'}
             display={'flex'}
             flexDirection={'column'}
             justifyContent={'space-between'}
@@ -966,7 +965,7 @@ const Ticket = () => {
                 className="Ticket-Assignee-title"
                 sx={{
                   marginLeft: '3px',
-                  fontSize: '18px !important',
+                  fontSize: '19px !important',
                   fontStyle: 'normal',
                   fontWeight: '500'
                 }}
@@ -979,7 +978,11 @@ const Ticket = () => {
                   ? 'Follow-up Ticket'
                   : 'Tickets'}
               </Stack>
-              <Stack display={'flex'} flexDirection={'row'}>
+              <Stack
+                display={'flex'}
+                flexDirection={'row'}
+                gap={`${user?.role === 'REPRESENTATIVE' && '20px'}`}
+              >
                 <Stack>
                   <Box
                     height="100%"
@@ -996,10 +999,24 @@ const Ticket = () => {
                       direction="row"
                       alignItems="center"
                       marginTop="3px"
-                      paddingLeft="0.5rem"
-                      paddingRight={isAdminUser ? '0rem' : '0.4rem'}
+                      paddingLeft="0.3rem"
+                      paddingRight={isAdminUser ? '0rem' : '0.1rem'}
+                      fontSize={'12px'}
                     >
-                      <span>
+                      <span
+                        style={{
+                          color: '#080F1A',
+                          fontFamily: `Outfit, sans-serif`,
+                          fontSize: '14px',
+                          fontStyle: 'normal',
+                          fontWeight: '400',
+                          lineHeight: '150%',
+                          maxWidth: '50px',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
                         {localStorage.getItem('location') == ''
                           ? 'All'
                           : localStorage.getItem('location')}
@@ -1016,7 +1033,7 @@ const Ticket = () => {
                       <Stack
                         ref={visibleRef}
                         display={visible ? 'block' : 'none'}
-                        className="ticket-assigneemenu1"
+                        className="ticket_assigneemenu1"
                         bgcolor="white"
                         position="absolute"
                         zIndex="1"
@@ -1095,11 +1112,12 @@ const Ticket = () => {
                     <DownloadAllTickets />
                   </Stack>
                 )}
+
                 <Stack
                   sx={{
-                    marginTop: '5px',
+                    marginTop: '7px',
                     marginRight: '10px',
-                    marginLeft: '15px',
+                    width: '35px',
                     cursor: 'pointer'
                   }}
                   onClick={() => {

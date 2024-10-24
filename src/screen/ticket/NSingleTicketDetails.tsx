@@ -857,7 +857,7 @@ const NSingleTicketDetails = (props: Props) => {
     }
     // await deleteTicket(ticketID);
     getTicketHandler(searchByName, pageNumber, 'false', newFilter);
-    await validateTicket(ticketID);
+    // await validateTicket(ticketID);
     navigate(
       `${
         localStorage.getItem('ticketType') === 'Admission'

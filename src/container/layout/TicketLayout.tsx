@@ -545,54 +545,54 @@ const Ticket = () => {
   //   const copiedFilterTickets = { ...filterTickets };
   //   await getTicketHandler(UNDEFINED, 1, 'false', copiedFilterTickets);
   // }
-   useEffect(() => {
-     const refetchTickets = async (params: string) => {
-       if (ticketID) {
-       } else {
-         await getTicketHandler(searchName, pageNumber, 'false', newFilter);
-         if (localStorage.getItem('ticketType') === 'Admission') {
-           await getTicketAfterNotification(
-             searchName,
-             pageNumber,
-             'false',
-             newFilter
-           );
-         }
-       }
-     };
+  useEffect(() => {
+    const refetchTickets = async (params: string) => {
+      if (ticketID) {
+      } else {
+        await getTicketHandler(searchName, pageNumber, 'false', newFilter);
+        if (localStorage.getItem('ticketType') === 'Admission') {
+          await getTicketAfterNotification(
+            searchName,
+            pageNumber,
+            'false',
+            newFilter
+          );
+        }
+      }
+    };
 
-     // Set up socket listeners
-     if (localStorage.getItem('ticketType') === 'Diagnostics') {
-       socket.on(
-         socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
-         () => refetchTickets
-       );
-     } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
-       socket.on(
-         socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
-         () => refetchTickets
-       );
-     } else if (localStorage.getItem('ticketType') === 'Admission') {
-       socket.on(socketEventConstants.REFETCH_TICKETS, () => refetchTickets);
-     }
+    // Set up socket listeners
+    if (localStorage.getItem('ticketType') === 'Diagnostics') {
+      socket.on(
+        socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
+        () => refetchTickets
+      );
+    } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+      socket.on(
+        socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
+        () => refetchTickets
+      );
+    } else if (localStorage.getItem('ticketType') === 'Admission') {
+      socket.on(socketEventConstants.REFETCH_TICKETS, () => refetchTickets);
+    }
 
-     // Clean up listeners on unmount or dependencies change
-     return () => {
-       if (localStorage.getItem('ticketType') === 'Diagnostics') {
-         socket.off(
-           socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
-           () => refetchTickets
-         );
-       } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
-         socket.off(
-           socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
-           () => refetchTickets
-         );
-       } else if (localStorage.getItem('ticketType') === 'Admission') {
-         socket.off(socketEventConstants.REFETCH_TICKETS, () => refetchTickets);
-       }
-     };
-   }, [pageNumber, searchName]);
+    // Clean up listeners on unmount or dependencies change
+    return () => {
+      if (localStorage.getItem('ticketType') === 'Diagnostics') {
+        socket.off(
+          socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
+          () => refetchTickets
+        );
+      } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+        socket.off(
+          socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
+          () => refetchTickets
+        );
+      } else if (localStorage.getItem('ticketType') === 'Admission') {
+        socket.off(socketEventConstants.REFETCH_TICKETS, () => refetchTickets);
+      }
+    };
+  }, [pageNumber, searchName]);
 
   // useEffect(() => {
   //   const refetchTickets = async () => {
@@ -1003,7 +1003,20 @@ const Ticket = () => {
                       paddingLeft="0.5rem"
                       paddingRight={isAdminUser ? '0rem' : '0.4rem'}
                     >
-                      <span>
+                      <span
+                        style={{
+                          color: '#080F1A',
+                          fontFamily: `Outfit, sans-serif`,
+                          fontSize: '14px',
+                          fontStyle: 'normal',
+                          fontWeight: '400',
+                          lineHeight: '150%',
+                          maxWidth: '50px',
+                          whiteSpace: 'nowrap',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis'
+                        }}
+                      >
                         {localStorage.getItem('location') == ''
                           ? 'All'
                           : localStorage.getItem('location')}
@@ -1105,6 +1118,7 @@ const Ticket = () => {
                     marginTop: '5px',
                     marginRight: '10px',
                     marginLeft: '15px',
+                    width: '35px',
                     cursor: 'pointer'
                   }}
                   onClick={() => {

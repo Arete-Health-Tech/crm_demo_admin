@@ -33,7 +33,11 @@ import {
   ticketFilterTypes
 } from '../ticketStateReducers/filter';
 import { filterActionsFollowUp } from '../ticketStateReducers/actions/filterAction';
-import { NAVIGATE_TO_SWITCHVIEW_TICKET, NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
+import {
+  NAVIGATE_TO_SWITCHVIEW_TICKET,
+  NAVIGATE_TO_TICKET,
+  UNDEFINED
+} from '../../../constantUtils/constant';
 import {
   getAuditFilterTicketsHandler,
   getTicketHandler
@@ -730,7 +734,8 @@ const TicketFilter = (props: {
                 sx={{
                   fontFamily: 'Outfit,sans-serif',
                   fontSize: '14px',
-                  fontWeight: 'bold'
+                  fontWeight: 'bold',
+                  textTransform: 'capitalize'
                 }}
               >
                 Assigned To
@@ -739,12 +744,16 @@ const TicketFilter = (props: {
                 size="medium"
                 onChange={handleRepresentative}
                 value={currentReperesentative}
-                sx={{ height: '35px' }}
+                sx={{ height: '35px', textTransform: 'capitalize' }}
               >
                 {
                   // representativeLabel?.some(rep => rep.role === "REPRESENTATIVE")
                   representativeLabel?.map(({ id, label }, index) => {
-                    return <MenuItem value={id}>{label}</MenuItem>;
+                    return (
+                      <MenuItem value={id} sx={{ textTransform: 'capitalize' }}>
+                        {label}
+                      </MenuItem>
+                    );
                   })
                 }
               </Select>

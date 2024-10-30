@@ -202,14 +202,18 @@ const PatientRecord = ({ isPatient }) => {
 
   const handleEditDiagonsticTest = async (event) => {
     event.preventDefault();
-    const updatedData = {
-      consumer: {},
-      prescription: {
-        diagnostics: diagonstics
-      }
-    };
-    await updateConusmerData(updatedData, ticketID);
-    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+
+    if (diagnostics.length > 0) {
+      const updatedData = {
+        consumer: {},
+        prescription: {
+          diagnostics: diagnostics
+        }
+      };
+      await updateConusmerData(updatedData, ticketID);
+      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    }
+
     setIsDiagonsticTestEditing(false);
   };
 
@@ -365,6 +369,7 @@ const PatientRecord = ({ isPatient }) => {
   };
   const diagnostics = currentTicket?.prescription?.[0]?.diagnostics ?? [];
   const hasDiagnostics = diagnostics.length > 0 && diagnostics[0] !== null;
+
   return (
     <>
       {currentTicket?.prescription[0]?.admission ? (
@@ -692,10 +697,10 @@ const PatientRecord = ({ isPatient }) => {
                         fontSize: '12px'
                       }}
                     >
-                      <MenuItem value="MRI">MRI</MenuItem>
                       <MenuItem value="PET-CT">PET-CT</MenuItem>
-                      <MenuItem value="CT-SCAN">CT-SCAN</MenuItem>
+                      <MenuItem value="CT-Scan">CT-Scan</MenuItem>
                       <MenuItem value="Lab">Lab</MenuItem>
+                      <MenuItem value="MRI">MRI</MenuItem>
                       <MenuItem value="USG">USG</MenuItem>
                       <MenuItem value="X-RAY">X-RAY</MenuItem>
                     </Select>

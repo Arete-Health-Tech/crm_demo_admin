@@ -707,10 +707,16 @@ const PatientRecord = ({ isPatient }) => {
                   </Stack>
                 ) : (
                   <>
-                    <Stack className="dot-list">
-                      <span>&#8226;</span>
-                    </Stack>
-                    <Stack className="Patient-records-data">{diagnostic}</Stack>
+                    {diagnostic && (
+                      <>
+                        <Stack className="dot-list">
+                          <span>&#8226;</span>
+                        </Stack>
+                        <Stack className="Patient-records-data">
+                          {diagnostic}
+                        </Stack>
+                      </>
+                    )}
                   </>
                 )}
               </Box>

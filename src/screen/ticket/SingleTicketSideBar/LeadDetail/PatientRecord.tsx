@@ -132,7 +132,7 @@ const PatientRecord = ({ isPatient }) => {
   const { tickets } = useTicketStore();
   const { allServices, services } = useServiceStore();
   const { ticketID } = useParams();
-
+  console.log(ticketID);
   const newFilter =
     localStorage.getItem('ticketType') === 'Admission'
       ? filterTickets

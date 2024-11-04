@@ -545,7 +545,7 @@ const Ticket = () => {
     const refetchTickets = async () => {
       if (ticketID && pageNumber !== 1) {
         console.log(pageNumber, 'inside useEffect if');
-      } else if ((!ticketID || ticketID) && pageNumber === 1) {
+      } else if ((ticketID || !ticketID) && pageNumber === 1) {
         console.log(pageNumber, 'inside useEffect');
         await getTicketHandler(searchName, pageNumber, 'false', newFilter);
         if (localStorage.getItem('ticketType') === 'Admission') {
@@ -559,31 +559,40 @@ const Ticket = () => {
       }
     };
 
-    // Set up socket listeners
-    if (localStorage.getItem('ticketType') === 'Diagnostics') {
-      socket.on(
-        socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
-        refetchTickets
-      );
-    } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
-      socket.on(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
-    } else if (localStorage.getItem('ticketType') === 'Admission') {
-      socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-    }
+    const initializeSocketListeners = () => {
+      const ticketType = localStorage.getItem('ticketType');
+      if (ticketType === 'Diagnostics') {
+        socket.on(
+          socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
+          refetchTickets
+        );
+      } else if (ticketType === 'Follow-Up') {
+        socket.on(
+          socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
+          refetchTickets
+        );
+      } else if (ticketType === 'Admission') {
+        socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
+      }
+    };
 
-    // Clean up listeners on unmount or dependencies change
+    // Delay the listener setup slightly to ensure resources are ready
+    const timer = setTimeout(initializeSocketListeners, 100);
+
     return () => {
-      if (localStorage.getItem('ticketType') === 'Diagnostics') {
+      clearTimeout(timer);
+      const ticketType = localStorage.getItem('ticketType');
+      if (ticketType === 'Diagnostics') {
         socket.off(
           socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
           refetchTickets
         );
-      } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+      } else if (ticketType === 'Follow-Up') {
         socket.off(
           socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
           refetchTickets
         );
-      } else if (localStorage.getItem('ticketType') === 'Admission') {
+      } else if (ticketType === 'Admission') {
         socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
       }
     };

@@ -252,7 +252,7 @@ const Ticket = () => {
     setPage(pageNo);
     if (pageNo !== page) {
       setTickets([]);
-      await getTicketHandler(searchName, pageNo, 'false', newFilter);
+      await getTicketHandler(UNDEFINED, pageNo, 'false', newFilter);
       setPageNumber(pageNo);
 
       // redirectTicket();
@@ -264,13 +264,13 @@ const Ticket = () => {
     setPage(pageNumber);
   }, [tickets, searchByName]);
 
-  const fetchTicketsOnEmpthySearch = async () => {
-    setSearchName('');
-    setSearchByName(UNDEFINED);
-    setPage(1);
-    setPageNumber(1);
-    await getTicketHandler(searchByName, 1, 'false', newFilter);
-  };
+  // const fetchTicketsOnEmpthySearch = async () => {
+  //   setSearchName('');
+  //   setSearchByName(UNDEFINED);
+  //   setPage(1);
+  //   setPageNumber(1);
+  //   await getTicketHandler(searchByName, 1, 'false', newFilter);
+  // };
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (visibleRef.current && !visibleRef.current.contains(event.target)) {
@@ -299,16 +299,28 @@ const Ticket = () => {
     data();
   }, [localStorage.getItem('location')]);
 
+  useEffect(() => {
+    const data = async () => {
+      await getTicketHandler(searchName, 1, 'false', newFilter);
+      searchName === ''
+        ? setSearchError('Type to search & Enter')
+        : setSearchError(
+            `remove "${searchName.toUpperCase()}" to reset & Enter`
+          );
+      setPageNumber(1);
+      setPage(1);
+    };
+    data();
+  }, [searchByName]);
+
   const handleSearchKeyPress = async (e: any) => {
     if (e.key === 'Enter' && searchName === '') {
-      fetchTicketsOnEmpthySearch();
+      setSearchName('');
+      setSearchByName(UNDEFINED);
       setSearchError('Type to search & Enter');
       return;
     } else if (e.key === 'Enter') {
-      await getTicketHandler(searchName, 1, 'false', newFilter);
-      setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
-      setPageNumber(1);
-      setPage(1);
+      setSearchByName(searchName);
     }
     // setSearchByName(searchName);
     // if (e.key === 'Enter') {
@@ -550,10 +562,10 @@ const Ticket = () => {
           console.log(pageNumber, 'inside useEffect if');
         } else if ((ticketID || !ticketID) && pageNumber === 1) {
           console.log(pageNumber, 'inside useEffect');
-          await getTicketHandler(searchName, pageNumber, 'false', newFilter);
+          await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
           if (localStorage.getItem('ticketType') === 'Admission') {
             await getTicketAfterNotification(
-              searchName,
+              searchByName,
               pageNumber,
               'false',
               newFilter

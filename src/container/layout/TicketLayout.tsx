@@ -637,8 +637,8 @@ const Ticket = () => {
 
   const handleCallToasterReminder = async () => {
     handleCallReminderToast();
-    !ticketID &&
-      (await getTicketHandler(searchByName, pageNumber, 'false', newFilter));
+    pageNumber == 1 &&
+      (await getTicketHandler(searchByName, 1, 'false', newFilter));
   };
 
   useEffect(() => {
@@ -707,8 +707,8 @@ const Ticket = () => {
 
   const handleCallToasterRescheduler = async () => {
     handleCallReschedulerToast();
-    !ticketID &&
-      (await getTicketHandler(searchByName, pageNumber, 'false', newFilter));
+    pageNumber == 1 &&
+      (await getTicketHandler(searchByName, 1, 'false', newFilter));
   };
 
   useEffect(() => {

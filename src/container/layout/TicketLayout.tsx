@@ -541,24 +541,24 @@ const Ticket = () => {
     AllIntervals = [];
   };
 
+  console.log(newFilter.stageList.length < 1);
   useEffect(() => {
     const refetchTickets = async () => {
-      if (ticketID && pageNumber !== 1) {
-        console.log(pageNumber, 'inside useEffect if');
-      } else if (
-        (ticketID || !ticketID) &&
-        pageNumber === 1 &&
-        newFilter.stageList.length === 0
-      ) {
-        console.log(pageNumber, 'inside useEffect');
-        await getTicketHandler(searchName, pageNumber, 'false', newFilter);
-        if (localStorage.getItem('ticketType') === 'Admission') {
-          await getTicketAfterNotification(
-            searchName,
-            pageNumber,
-            'false',
-            newFilter
-          );
+      if (newFilter.stageList.length > 0) {
+        console.log('should not be called');
+        if (ticketID && pageNumber !== 1) {
+          console.log(pageNumber, 'inside useEffect if');
+        } else if ((ticketID || !ticketID) && pageNumber === 1) {
+          console.log(pageNumber, 'inside useEffect');
+          await getTicketHandler(searchName, pageNumber, 'false', newFilter);
+          if (localStorage.getItem('ticketType') === 'Admission') {
+            await getTicketAfterNotification(
+              searchName,
+              pageNumber,
+              'false',
+              newFilter
+            );
+          }
         }
       }
     };

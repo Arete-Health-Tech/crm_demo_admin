@@ -543,8 +543,10 @@ const Ticket = () => {
 
   useEffect(() => {
     const refetchTickets = async () => {
-      if (ticketID) {
-      } else {
+      if (ticketID && pageNumber != 1) {
+        console.log(pageNumber, 'inside useEffect if');
+      } else if ((!ticketID || ticketID) && pageNumber == 1) {
+        console.log(pageNumber, 'inside useEffect');
         await getTicketHandler(searchName, pageNumber, 'false', newFilter);
         if (localStorage.getItem('ticketType') === 'Admission') {
           await getTicketAfterNotification(
@@ -561,15 +563,12 @@ const Ticket = () => {
     if (localStorage.getItem('ticketType') === 'Diagnostics') {
       socket.on(
         socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
-        () => refetchTickets
+        refetchTickets
       );
     } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
-      socket.on(
-        socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
-        () => refetchTickets
-      );
+      socket.on(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
     } else if (localStorage.getItem('ticketType') === 'Admission') {
-      socket.on(socketEventConstants.REFETCH_TICKETS, () => refetchTickets);
+      socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     }
 
     // Clean up listeners on unmount or dependencies change
@@ -577,15 +576,15 @@ const Ticket = () => {
       if (localStorage.getItem('ticketType') === 'Diagnostics') {
         socket.off(
           socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
-          () => refetchTickets
+          refetchTickets
         );
       } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
         socket.off(
           socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
-          () => refetchTickets
+          refetchTickets
         );
       } else if (localStorage.getItem('ticketType') === 'Admission') {
-        socket.off(socketEventConstants.REFETCH_TICKETS, () => refetchTickets);
+        socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
       }
     };
   }, [pageNumber, searchName]);

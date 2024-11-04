@@ -11,7 +11,7 @@ import useTicketStore from '../../store/ticketStore';
 
 export const getTicket = async (
   name: string,
-  pageNumber: number = 1,
+  pageNumber: number,
   downloadAll: string,
   selectedFilters: any,
   ticketId?: string | null,
@@ -195,7 +195,7 @@ export const createNewNote = async (note: iNote, disposition: string) => {
 };
 
 export const getAllReminders = async () => {
-  const { data } = await apiClient.get(`task/allReminder/`);
+  const { data } = await apiClient.get(`task/ticketRemainder/`);
   return data;
 };
 

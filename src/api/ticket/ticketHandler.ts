@@ -28,7 +28,7 @@ import useUserStore from '../../store/userStore';
 
 export const getTicketHandler = async (
   name: string,
-  pageNumber: number = 1,
+  pageNumber: number,
   downloadAll: 'true' | 'false' = 'false',
   selectedFilters: iTicketFilter | null,
   ticketId: string = UNDEFINED,
@@ -42,7 +42,7 @@ export const getTicketHandler = async (
     setEmptyDataText,
     setDownloadTickets,
     setLoaderOn,
-    filteredLocation
+    filteredLocation,
   } = useTicketStore.getState();
   const { user } = useUserStore.getState();
   const phone = user?.phone;

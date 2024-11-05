@@ -283,10 +283,11 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     try {
       setDownloadDisable(true);
       event.preventDefault();
-      const date =
+      let date =
         PatientData.followUp !== 'null'
           ? new Date(PatientData.followUp).toISOString()
           : PatientData.followUp;
+
       const updatedData = {
         consumer: {
           uid: PatientData.uhid,
@@ -303,7 +304,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         prescription: {
           doctor: PatientData.doctor,
           departments: [PatientData.department],
-          followUp: date
+          followUp: date === 'null' || date === null ? null : date
         }
       };
       await updateConusmerData(updatedData, ticketID);

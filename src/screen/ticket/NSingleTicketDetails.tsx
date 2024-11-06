@@ -1365,7 +1365,9 @@ const NSingleTicketDetails = (props: Props) => {
                   Estimation
                 </Stack>
                 <Estimate setTicketUpdateFlag={setTicketUpdateFlag} />
-                <Stack className="gray-border">{/* Borders */}</Stack>
+                {localStorage.getItem('ticketType') !== 'Admission' && (
+                  <Stack className="gray-border">{/* Borders */}</Stack>
+                )}
                 {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     Set Priority
                                 </MenuItem> */}

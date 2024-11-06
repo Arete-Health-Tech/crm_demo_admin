@@ -961,6 +961,13 @@ const CreatePrescription = () => {
 
   const [isUploaded, setIsUploaded] = useState(false);
   const [isCaptured, setIsCaptured] = useState(false);
+  const capitalizeWords = (str: string) =>
+    str
+      .toLowerCase()
+      .split(/[\s.]+/)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ')
+      .replace(/\s\./g, '.');
   return (
     <>
       <Box display={openCamera ? 'none' : 'block'}>
@@ -977,7 +984,7 @@ const CreatePrescription = () => {
                   {option.name}
                 </li>
               )}
-              getOptionLabel={(option) => option.name}
+              getOptionLabel={(option) => capitalizeWords(option.name)}
               options={departments.filter((item) => item.parent === null)}
               renderInput={(params) => (
                 <TextField {...params} label="Department" />
@@ -1022,7 +1029,7 @@ const CreatePrescription = () => {
               options={doctors.filter((item) =>
                 item.departments.includes(prescription.department)
               )}
-              getOptionLabel={(option) => option.name}
+              getOptionLabel={(option) => capitalizeWords(option.name)}
               renderInput={(params) => <TextField {...params} label="Doctor" />}
             />
             <FormHelperText error={validations.doctor.value}>

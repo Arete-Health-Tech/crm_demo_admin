@@ -704,10 +704,19 @@ const PatientRecord = ({ isPatient }) => {
                       <MenuItem value="USG">USG</MenuItem>
                       <MenuItem value="X-RAY">X-RAY</MenuItem>
                     </Select>
+                    <Stack
+                      className="Patient-records-data"
+                      sx={{ marginLeft: '20px', color: 'red' }}
+                      onClick={() => {
+                        removeDiagnosticTest(index);
+                      }}
+                    >
+                      <DeleteIcon />
+                    </Stack>
                   </Stack>
                 ) : (
                   <>
-                    {diagnostic && (
+                    {diagnostic !== '' && (
                       <>
                         <Stack className="dot-list">
                           <span>&#8226;</span>

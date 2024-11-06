@@ -34,9 +34,20 @@ import {
 import CloseIcon from '@mui/icons-material/Close';
 import { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { createEstimateHandler, uploadAndSendEstimateHandler } from '../../../api/estimate/estimateHandler';
-import { searchService, searchServiceAll, searchServicePck } from '../../../api/service/service';
-import { getAllServiceFromDbHandler, getAllServicesHandler, getServicePackedHandler } from '../../../api/service/serviceHandler';
+import {
+  createEstimateHandler,
+  uploadAndSendEstimateHandler
+} from '../../../api/estimate/estimateHandler';
+import {
+  searchService,
+  searchServiceAll,
+  searchServicePck
+} from '../../../api/service/service';
+import {
+  getAllServiceFromDbHandler,
+  getAllServicesHandler,
+  getServicePackedHandler
+} from '../../../api/service/serviceHandler';
 import { getWardsHandler } from '../../../api/ward/wardHandler';
 import useServiceStore from '../../../store/serviceStore';
 import useTicketStore from '../../../store/ticketStore';
@@ -50,15 +61,21 @@ import {
 } from '../../../types/store/service';
 import { iEstimate } from '../../../types/store/ticket';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
-import { NAVIGATE_TO_SWITCHVIEW_TICKET, NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
-import { updateTicketSubStage, validateTicket } from '../../../api/ticket/ticket';
+import {
+  NAVIGATE_TO_SWITCHVIEW_TICKET,
+  NAVIGATE_TO_TICKET,
+  UNDEFINED
+} from '../../../constantUtils/constant';
+import {
+  updateTicketSubStage,
+  validateTicket
+} from '../../../api/ticket/ticket';
 import axios from 'axios';
 import { apiClient } from '../../../api/apiClient';
 import { toast } from 'react-toastify';
-import CloseModalIcon from "../../../assets/Group 48095853.svg"
+import CloseModalIcon from '../../../assets/Group 48095853.svg';
 import UploadEstimate from './UploadEstimate';
 import useUserStore from '../../../store/userStore';
-
 
 type Props = { setTicketUpdateFlag: any };
 
@@ -66,11 +83,10 @@ const drawerWidth = 1100;
 
 const Estimate = (props: Props) => {
   const { tickets, isSwitchView } = useTicketStore();
-  const { user } = useUserStore();
+
   const { ticketID } = useParams();
   const ticket = tickets.find((element) => element._id === ticketID);
-
-
+  const { user } = useUserStore();
   useEffect(() => {
     (async function () {
       await getWardsHandler();
@@ -78,7 +94,6 @@ const Estimate = (props: Props) => {
   }, []);
 
   const [estimateFileds, setEstimateFields] = useState<iEstimate>({
-
     type: 1,
     isEmergency: false,
     wardDays: 0,
@@ -100,9 +115,6 @@ const Estimate = (props: Props) => {
     prescription: ticket?.prescription[0]._id!,
     ticket: ticketID!
   });
-
-
-
 
   type AlertType = {
     services: string;
@@ -145,7 +157,6 @@ const Estimate = (props: Props) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   // D STARTS HERE__________________________
 
-
   const newFilter =
     localStorage.getItem('ticketType') === 'Admission'
       ? filterTickets
@@ -155,13 +166,11 @@ const Estimate = (props: Props) => {
       ? filterTicketsFollowUp
       : filterTickets;
 
-
   const [alert, setAlert] = useState<AlertType>({
     investigation: '',
     procedure: '',
     services: ''
   });
-
 
   const wardICUSetter = (id: string) => {
     return wards.find((ward: IWard) => ward._id === id)?.name;
@@ -264,9 +273,7 @@ const Estimate = (props: Props) => {
       );
       setServices(services);
     })();
-
   }, [searchServiceValue]);
-
 
   useEffect(() => {
     (async function () {
@@ -281,26 +288,16 @@ const Estimate = (props: Props) => {
   // console.log(servicesAll," this is all services from db")
   // console.log(servicesPack," this is all packed services from db");
 
-
-
-
-
-
-
-
-
   const serviceGetter = (id: string | undefined) => {
     return (
-      services &&
-      services.find((service: iService) => service._id === id)?.name
+      services && services.find((service: iService) => service._id === id)?.name
     );
   };
 
   const serviceGetterAll = (id: string | undefined) => {
     return (
       servicesAll &&
-      servicesAll.find((service: iServiceAll) => service._id === id)
-        ?.name
+      servicesAll.find((service: iServiceAll) => service._id === id)?.name
     );
   };
 
@@ -308,12 +305,9 @@ const Estimate = (props: Props) => {
     // console.log(id,'tjo ssdsdsd')
     return (
       servicesPack &&
-      servicesPack.find(
-        (service: iServicePackage) => service._id === id
-      )?.name
+      servicesPack.find((service: iServicePackage) => service._id === id)?.name
     );
   };
-
 
   const handleCreateEstimate = async () => {
     //  console.log(estimateFileds, ' this is results before ');
@@ -321,7 +315,6 @@ const Estimate = (props: Props) => {
       ...estimateFileds,
       ticket: ticketID
     });
-
 
     // console.log(estimateFileds," this is results");
 
@@ -341,7 +334,6 @@ const Estimate = (props: Props) => {
       setErrorMessage('This field is required');
     } else {
       try {
-
         const { data } = await apiClient.post(
           '/ticket/skipEstimate',
           { ticketID },
@@ -376,17 +368,11 @@ const Estimate = (props: Props) => {
         setTextFieldValue('');
 
         setLoading(false);
-
-
-
       } catch (error) {
-
         console.error('Error sending data to server:', error);
-
       }
     }
   };
-
 
   const handleTextFieldChange = (event) => {
     setTextFieldValue(event.target.value);
@@ -394,8 +380,7 @@ const Estimate = (props: Props) => {
 
     if (event.target.value.length > 0) {
       setDisableButton(false);
-    }
-    else {
+    } else {
       setDisableButton(true);
     }
   };
@@ -419,8 +404,8 @@ const Estimate = (props: Props) => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => {
     setOpen(false);
-    setTextFieldValue("");
-  }
+    setTextFieldValue('');
+  };
 
   const handleOnClose = async () => {
     if (ticketID) {
@@ -440,10 +425,8 @@ const Estimate = (props: Props) => {
       } else {
         navigate(NAVIGATE_TO_SWITCHVIEW_TICKET);
       }
-
     }
   };
-
 
   const handleButtonClick = () => {
     fileInputRef.current?.click();
@@ -451,30 +434,42 @@ const Estimate = (props: Props) => {
   };
 
   const handleEstimateDrawer = () => {
-    setIsEstimateOpen(false)
-  }
+    setIsEstimateOpen(false);
+  };
 
   const menuItemStyles = {
-    color: "var(--Text-Black, #080F1A)",
+    color: 'var(--Text-Black, #080F1A)',
     fontFamily: `"Outfit", sans-serif`,
-    fontSize: "14px",
-    fontStyle: "normal",
-    fontWeight: "400",
-    lineHeight: "150%",
+    fontSize: '14px',
+    fontStyle: 'normal',
+    fontWeight: '400',
+    lineHeight: '150%'
   };
 
   return (
     <>
       <>
         {/* <MenuItem sx={menuItemStyles} onClick={() => setIsEstimateOpen(true)} > <Stack >Create Estimation</Stack></MenuItem> */}
-        <UploadEstimate />
-        {user?.role !== "ADMIN" && <MenuItem sx={menuItemStyles} onClick={handleOpen} > Skip Estimate</MenuItem>}
-        <MenuItem sx={{
-          color: " #F94839",
-          fontFamily: `"Outfit", sans-serif`,
-          fontSize: "14px",
-
-        }} onClick={handleOnClose}>Close Lead</MenuItem>
+        {localStorage.getItem('ticketType') !== 'Diagnostics' && (
+          <UploadEstimate />
+        )}
+        {localStorage.getItem('ticketType') !== 'Diagnostics' &&
+          user?.role !== 'ADMIN' && (
+            <MenuItem sx={menuItemStyles} onClick={handleOpen}>
+              {' '}
+              Skip Estimate
+            </MenuItem>
+          )}
+        <MenuItem
+          sx={{
+            color: ' #F94839',
+            fontFamily: `"Outfit", sans-serif`,
+            fontSize: '14px'
+          }}
+          onClick={handleOnClose}
+        >
+          Close Lead
+        </MenuItem>
       </>
 
       {/* <div>
@@ -529,27 +524,22 @@ const Estimate = (props: Props) => {
       </div> */}
       {/* Modal of Skip Estimation */}
 
-
-      <Modal
-        open={open}
-        onClose={() => { }}
-        aria-labelledby="modal-modal-title"
-      >
+      <Modal open={open} onClose={() => {}} aria-labelledby="modal-modal-title">
         <Box className="reminder-modal-container">
           <Stack
-            className='reminder-modal-title'
+            className="reminder-modal-title"
             direction="row"
             spacing={1}
             display="flex"
             alignItems="center"
           >
-            <Stack className='reminder-modal-title' sx={{ fontSize: "18px !important" }}>
+            <Stack
+              className="reminder-modal-title"
+              sx={{ fontSize: '18px !important' }}
+            >
               Reason for skipping estimation
             </Stack>
-            <Stack
-              className='modal-close'
-              onClick={handleClose}
-            >
+            <Stack className="modal-close" onClick={handleClose}>
               <img src={CloseModalIcon} />
             </Stack>
           </Stack>
@@ -558,7 +548,7 @@ const Estimate = (props: Props) => {
               <Stack spacing={2}>
                 <TextareaAutosize
                   required
-                  className='textarea-autosize'
+                  className="textarea-autosize"
                   id="outlined-required"
                   aria-label="minimum height"
                   placeholder="Add Comment"
@@ -579,29 +569,26 @@ const Estimate = (props: Props) => {
                   width: '100%'
                 }}
               >
-                <button
-                  className='reminder-cancel-btn'
-                  onClick={handleClose}
-                >
+                <button className="reminder-cancel-btn" onClick={handleClose}>
                   Cancel
                 </button>
                 <button
-                  className='reminder-btn'
-                  type='submit'
+                  className="reminder-btn"
+                  type="submit"
                   disabled={disableButton}
                   style={{
-                    marginLeft: "10px",
-                    backgroundColor: disableButton ? "#F6F7F9" : "#0566FF",
-                    color: disableButton ? "#647491" : "#FFF",
-
-                  }}>
+                    marginLeft: '10px',
+                    backgroundColor: disableButton ? '#F6F7F9' : '#0566FF',
+                    color: disableButton ? '#647491' : '#FFF'
+                  }}
+                >
                   Skip Estimation
                 </button>
               </Box>
             </form>
           </div>
         </Box>
-      </Modal >
+      </Modal>
 
       {/* -------------------- */}
 
@@ -614,19 +601,20 @@ const Estimate = (props: Props) => {
           '& .MuiDrawer-paper': {
             boxSizing: 'border-box',
             width: drawerWidth,
-            borderTopLeftRadius: "15px",
-            borderBottomLeftRadius: "15px",
-          },
+            borderTopLeftRadius: '15px',
+            borderBottomLeftRadius: '15px'
+          }
         }}
         anchor="right"
         open={isEstimateOpen}
         onClose={handleEstimateDrawer}
         aria-labelledby="modal-modal-title"
       >
-        <Box
-          className="Create_estimate_Modal_Head"
-        >
-          <Stack className='reminder-modal-title' sx={{ fontSize: "18px !important" }}>
+        <Box className="Create_estimate_Modal_Head">
+          <Stack
+            className="reminder-modal-title"
+            sx={{ fontSize: '18px !important' }}
+          >
             Create Estimation
           </Stack>
 
@@ -648,10 +636,8 @@ const Estimate = (props: Props) => {
           </button> */}
 
           {/* ------ End ------ */}
-
         </Box>
-        <Stack direction="row" height={'100vh'} overflow="hidden" >
-
+        <Stack direction="row" height={'100vh'} overflow="hidden">
           {/* <Box width="30%" position="static" sx={{ offsetDistance: '10vh' }}>
             <img
               src={ticket?.prescription[0].image}
@@ -661,7 +647,7 @@ const Estimate = (props: Props) => {
           </Box> */}
 
           <Box className="create-estimation-prescription">
-            <Stack className='prescription-image'>
+            <Stack className="prescription-image">
               <img
                 src={ticket?.prescription[0].image}
                 alt="prescription"
@@ -672,20 +658,19 @@ const Estimate = (props: Props) => {
             </Stack>
           </Box>
 
-          <Box className="create-estimation-detail"
+          <Box
+            className="create-estimation-detail"
             display={!isPreview ? 'block' : 'none'}
             sx={{
               overflowY: 'scroll',
               '&::-webkit-scrollbar': {
-                width: 0,
+                width: 0
               },
-              paddingBottom: "50px"
+              paddingBottom: '50px'
             }}
-
           >
-
             <Box my={2} bgcolor="white" borderRadius={3} p={3}>
-              <Stack className='Create-Estimate-title'>
+              <Stack className="Create-Estimate-title">
                 Select Service Type
               </Stack>
 
@@ -705,11 +690,13 @@ const Estimate = (props: Props) => {
                       color="primary"
                       onClick={() => handleServiceType(item.value)}
                       style={{
-                        backgroundColor: clickedIndex === item.value ? '#0566FF' : '#F6F7F9',
-                        color: clickedIndex === item.value ? '#FFFFFF' : '#000000',
+                        backgroundColor:
+                          clickedIndex === item.value ? '#0566FF' : '#F6F7F9',
+                        color:
+                          clickedIndex === item.value ? '#FFFFFF' : '#000000',
                         fontFamily: `"Outfit",sans-serif`,
-                        borderColor: "none",
-                        fontSize: "14px",
+                        borderColor: 'none',
+                        fontSize: '14px'
                       }}
                     />
                   );
@@ -718,19 +705,21 @@ const Estimate = (props: Props) => {
             </Box>
 
             <Box my={2} bgcolor="white" borderRadius={3} p={2}>
-              <Stack className='Create-Estimate-title'>
-                Ward Details
-              </Stack>
+              <Stack className="Create-Estimate-title">Ward Details</Stack>
 
               <Stack display="flex" spacing={1}>
                 <Box>
                   <FormControl fullWidth size="medium">
-                    <InputLabel id="demo-simple-select-label" style={{
-
-                      fontFamily: `"Outfit",san-serif`,
-                      color: "var(--Text- Light - Grey, #647491)",
-                      fontSize: "14px"
-                    }}>Ward</InputLabel>
+                    <InputLabel
+                      id="demo-simple-select-label"
+                      style={{
+                        fontFamily: `"Outfit",san-serif`,
+                        color: 'var(--Text- Light - Grey, #647491)',
+                        fontSize: '14px'
+                      }}
+                    >
+                      Ward
+                    </InputLabel>
                     <Select
                       labelId="demo-simple-select-label"
                       id="demo-simple-select"
@@ -742,19 +731,21 @@ const Estimate = (props: Props) => {
                           ward: e.target.value
                         });
                       }}
-
                     >
                       {wards
                         .filter((ward: IWard) => ward.type === 0)
                         .map((item: IWard, index: number) => {
                           return (
-                            <MenuItem value={item._id}
+                            <MenuItem
+                              value={item._id}
                               sx={{
                                 fontSize: '14px',
                                 color: '#080F1A',
-                                fontFamily: `"Outfit",sans-serif`,
+                                fontFamily: `"Outfit",sans-serif`
                               }}
-                            >{item.name}</MenuItem>
+                            >
+                              {item.name}
+                            </MenuItem>
                           );
                         })}
                     </Select>
@@ -778,20 +769,21 @@ const Estimate = (props: Props) => {
                         InputLabelProps={{
                           style: {
                             fontFamily: `"Outfit",san-serif`,
-                            color: "var(--Text- Light - Grey, #647491)",
-                            fontSize: "14px"
+                            color: 'var(--Text- Light - Grey, #647491)',
+                            fontSize: '14px'
                           }
                         }}
                         InputProps={{
                           style: {
                             fontFamily: `"Outfit",san-serif`,
-                            color: "var(--Text- Light - Grey, #647491)",
-                            fontSize: "14px"
+                            color: 'var(--Text- Light - Grey, #647491)',
+                            fontSize: '14px'
                           }
                         }}
                         placeholder="5"
                         sx={{ borderRadius: 40 }}
-                      /></Stack>
+                      />
+                    </Stack>
                     <Stack width="49%">
                       <TextField
                         fullWidth
@@ -808,36 +800,38 @@ const Estimate = (props: Props) => {
                         InputLabelProps={{
                           style: {
                             fontFamily: `"Outfit",san-serif`,
-                            color: "var(--Text- Light - Grey, #647491)",
-                            fontSize: "14px"
+                            color: 'var(--Text- Light - Grey, #647491)',
+                            fontSize: '14px'
                           }
                         }}
                         InputProps={{
                           style: {
                             fontFamily: `"Outfit",san-serif`,
-                            color: "var(--Text- Light - Grey, #647491)",
-                            fontSize: "14px"
+                            color: 'var(--Text- Light - Grey, #647491)',
+                            fontSize: '14px'
                           }
                         }}
                         sx={{ borderRadius: 40 }}
                       />
                     </Stack>
-
                   </Box>
                 )}
               </Stack>
 
               <Stack direction="row" spacing={2} my={1}>
                 <FormControl required>
-                  <FormLabel id="demo-row-radio-buttons-group-label"
+                  <FormLabel
+                    id="demo-row-radio-buttons-group-label"
                     sx={{
-                      color: "#000",
+                      color: '#000',
                       fontSize: '14px',
                       fontFamily: `"Outfit", sans-serif`,
-                      marginTop: "12px"
-
-                    }}>
-                    <span style={{ color: "#000" }}>Is it a Emergency Admission?</span>
+                      marginTop: '12px'
+                    }}
+                  >
+                    <span style={{ color: '#000' }}>
+                      Is it a Emergency Admission?
+                    </span>
                   </FormLabel>
                   <RadioGroup
                     row
@@ -852,34 +846,42 @@ const Estimate = (props: Props) => {
                   >
                     <FormControlLabel
                       value="true"
-                      control={<Radio sx={{
-                        '&.Mui-checked': {
-                          color: "#0566ff",
-                        },
-                      }} />}
+                      control={
+                        <Radio
+                          sx={{
+                            '&.Mui-checked': {
+                              color: '#0566ff'
+                            }
+                          }}
+                        />
+                      }
                       label="Yes"
                       sx={{
                         '& .MuiFormControlLabel-label': {
                           fontFamily: '"Outfit", sans-serif',
                           fontSize: '14px',
-                          color: '#000',
-                        },
+                          color: '#000'
+                        }
                       }}
                     />
                     <FormControlLabel
                       value="false"
-                      control={<Radio sx={{
-                        '&.Mui-checked': {
-                          color: "#0566ff",
-                        },
-                      }} />}
+                      control={
+                        <Radio
+                          sx={{
+                            '&.Mui-checked': {
+                              color: '#0566ff'
+                            }
+                          }}
+                        />
+                      }
                       label="No"
                       sx={{
                         '& .MuiFormControlLabel-label': {
                           fontFamily: '"Outfit", sans-serif',
                           fontSize: '14px',
-                          color: '#000',
-                        },
+                          color: '#000'
+                        }
                       }}
                     />
                   </RadioGroup>
@@ -895,20 +897,30 @@ const Estimate = (props: Props) => {
             </Box> */}
 
             <Box my={1} bgcolor="white" borderRadius={3} p={2}>
-              <Stack className='Create-Estimate-title' display="flex" flexDirection="row">
-                Payment Mode<span style={{ textTransform: "capitalize", marginLeft: "4px" }}> (optional)</span>
+              <Stack
+                className="Create-Estimate-title"
+                display="flex"
+                flexDirection="row"
+              >
+                Payment Mode
+                <span
+                  style={{ textTransform: 'capitalize', marginLeft: '4px' }}
+                >
+                  {' '}
+                  (optional)
+                </span>
               </Stack>
               <Stack direction="row" spacing={2} my={1}>
                 <FormControl required>
                   <FormLabel
                     id="payment-type"
                     sx={{
-                      color: "#000",
+                      color: '#000',
                       fontSize: '14px',
                       fontFamily: `"Outfit", sans-serif`,
-                      marginTop: "8px"
-
-                    }}>
+                      marginTop: '8px'
+                    }}
+                  >
                     Select a preferred payment mode
                   </FormLabel>
                   <RadioGroup
@@ -924,60 +936,70 @@ const Estimate = (props: Props) => {
                   >
                     <FormControlLabel
                       value="0"
-                      control={<Radio sx={{
-                        '&.Mui-checked': {
-                          color: "#0566ff",
-                        },
-                      }}
-                      />}
+                      control={
+                        <Radio
+                          sx={{
+                            '&.Mui-checked': {
+                              color: '#0566ff'
+                            }
+                          }}
+                        />
+                      }
                       label="Cash"
                       sx={{
                         '& .MuiFormControlLabel-label': {
                           fontFamily: '"Outfit", sans-serif',
                           fontSize: '14px',
-                          color: '#000',
-                        },
+                          color: '#000'
+                        }
                       }}
-
                     />
                     <FormControlLabel
                       value="1"
-                      control={<Radio sx={{
-                        '&.Mui-checked': {
-                          color: "#0566ff",
-                        },
-                      }} />}
+                      control={
+                        <Radio
+                          sx={{
+                            '&.Mui-checked': {
+                              color: '#0566ff'
+                            }
+                          }}
+                        />
+                      }
                       label="Insurance"
                       sx={{
                         '& .MuiFormControlLabel-label': {
                           fontFamily: '"Outfit", sans-serif',
                           fontSize: '14px',
-                          color: '#000',
-                        },
+                          color: '#000'
+                        }
                       }}
                     />
                     <FormControlLabel
                       value="2"
-                      control={<Radio sx={{
-                        '&.Mui-checked': {
-                          color: "#0566ff",
-                        },
-                      }} />}
+                      control={
+                        <Radio
+                          sx={{
+                            '&.Mui-checked': {
+                              color: '#0566ff'
+                            }
+                          }}
+                        />
+                      }
                       label="CGHS/ECHS"
                       sx={{
                         '& .MuiFormControlLabel-label': {
                           fontFamily: '"Outfit", sans-serif',
                           fontSize: '14px',
-                          color: '#000',
-                        },
+                          color: '#000'
+                        }
                       }}
                     />
                   </RadioGroup>
                 </FormControl>
               </Stack>
               {estimateFileds.paymentType === 1 && (
-                <Box sx={{ display: 'flex', flexDirection: 'column' }} >
-                  <Stack sx={{ marginBottom: "10px" }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                  <Stack sx={{ marginBottom: '10px' }}>
                     <TextField
                       label="Insurance Company Name"
                       size="medium"
@@ -992,12 +1014,16 @@ const Estimate = (props: Props) => {
                       InputLabelProps={{
                         style: {
                           fontFamily: `"Outfit",sans-serif`,
-                          fontSize: "14px"
+                          fontSize: '14px'
                         }
                       }}
                     />
                   </Stack>
-                  <Stack display="flex" flexDirection="row" justifyContent="space-between">
+                  <Stack
+                    display="flex"
+                    flexDirection="row"
+                    justifyContent="space-between"
+                  >
                     <Stack width="49%">
                       <TextField
                         label="Policy Number"
@@ -1013,7 +1039,7 @@ const Estimate = (props: Props) => {
                         InputLabelProps={{
                           style: {
                             fontFamily: `"Outfit",sans-serif`,
-                            fontSize: "14px"
+                            fontSize: '14px'
                           }
                         }}
                       />
@@ -1033,14 +1059,12 @@ const Estimate = (props: Props) => {
                         InputLabelProps={{
                           style: {
                             fontFamily: `"Outfit",sans-serif`,
-                            fontSize: "14px"
+                            fontSize: '14px'
                           }
                         }}
                       />
                     </Stack>
                   </Stack>
-
-
                 </Box>
               )}
             </Box>
@@ -1049,7 +1073,7 @@ const Estimate = (props: Props) => {
                 {/* <Typography fontWeight={500} my={1}>
                   Services Details
                 </Typography> */}
-                <Stack className='Create-Estimate-title'>
+                <Stack className="Create-Estimate-title">
                   Services Details
                 </Stack>
                 <Stack display="flex" direction="column" spacing={2}>
@@ -1067,11 +1091,15 @@ const Estimate = (props: Props) => {
                         setServiceObject({ ...serviceObject, id: value?._id! })
                       }
                       renderOption={(props, option) => (
-                        <li {...props} style={{
-                          textTransform: 'capitalize', fontSize: '14px',
-                          color: '#080F1A',
-                          fontFamily: `"Outfit",sans-serif`,
-                        }} >
+                        <li
+                          {...props}
+                          style={{
+                            textTransform: 'capitalize',
+                            fontSize: '14px',
+                            color: '#080F1A',
+                            fontFamily: `"Outfit",sans-serif`
+                          }}
+                        >
                           {option.name}
                         </li>
                       )}
@@ -1087,8 +1115,8 @@ const Estimate = (props: Props) => {
                           InputLabelProps={{
                             style: {
                               fontFamily: `"Outfit",san-serif`,
-                              color: "var(--Text- Light - Grey, #647491)",
-                              fontSize: "14px"
+                              color: 'var(--Text- Light - Grey, #647491)',
+                              fontSize: '14px'
                             }
                           }}
                         />
@@ -1098,14 +1126,17 @@ const Estimate = (props: Props) => {
                   <Stack display="flex" flexDirection="column">
                     <Stack>
                       <FormControl required>
-                        <FormLabel id="payment-type"
+                        <FormLabel
+                          id="payment-type"
                           sx={{
-                            color: "#000",
+                            color: '#000',
                             fontSize: '14px',
                             fontFamily: `"Outfit", sans-serif`,
-                            marginTop: "8px"
-
-                          }}><span style={{ color: "#000" }}>Is On Same Site</span></FormLabel>
+                            marginTop: '8px'
+                          }}
+                        >
+                          <span style={{ color: '#000' }}>Is On Same Site</span>
+                        </FormLabel>
                         <RadioGroup
                           row
                           aria-labelledby="is-same-site"
@@ -1119,34 +1150,42 @@ const Estimate = (props: Props) => {
                         >
                           <FormControlLabel
                             value="0"
-                            control={<Radio sx={{
-                              '&.Mui-checked': {
-                                color: "#0566ff",
-                              },
-                            }} />}
+                            control={
+                              <Radio
+                                sx={{
+                                  '&.Mui-checked': {
+                                    color: '#0566ff'
+                                  }
+                                }}
+                              />
+                            }
                             label="Yes"
                             sx={{
                               '& .MuiFormControlLabel-label': {
                                 fontFamily: '"Outfit", sans-serif',
                                 fontSize: '14px',
-                                color: '#000',
-                              },
+                                color: '#000'
+                              }
                             }}
                           />
                           <FormControlLabel
                             value="1"
-                            control={<Radio sx={{
-                              '&.Mui-checked': {
-                                color: "#0566ff",
-                              },
-                            }} />}
+                            control={
+                              <Radio
+                                sx={{
+                                  '&.Mui-checked': {
+                                    color: '#0566ff'
+                                  }
+                                }}
+                              />
+                            }
                             label="No"
                             sx={{
                               '& .MuiFormControlLabel-label': {
                                 fontFamily: '"Outfit", sans-serif',
                                 fontSize: '14px',
-                                color: '#000',
-                              },
+                                color: '#000'
+                              }
                             }}
                           />
                         </RadioGroup>
@@ -1154,15 +1193,14 @@ const Estimate = (props: Props) => {
                     </Stack>
 
                     <Stack width="20%">
-                      <button className='Add-Service-btn'
-                        onClick={addServiceToArray}>
+                      <button
+                        className="Add-Service-btn"
+                        onClick={addServiceToArray}
+                      >
                         Add Service
                       </button>
                     </Stack>
                   </Stack>
-
-
-
                 </Stack>
                 {estimateFileds.service.length > 0 && (
                   <Stack
@@ -1174,8 +1212,9 @@ const Estimate = (props: Props) => {
                     {estimateFileds.service.map((item, index: number) => (
                       <Chip
                         color="primary"
-                        label={`${serviceGetterAll(item.id)}/ ${item.isSameSite ? 'Same Site' : 'Different Site'
-                          }`}
+                        label={`${serviceGetterAll(item.id)}/ ${
+                          item.isSameSite ? 'Same Site' : 'Different Site'
+                        }`}
                         variant="outlined"
                         sx={{ textTransform: 'capitalize' }}
                         onDelete={() => deleteService(index)}
@@ -1196,7 +1235,7 @@ const Estimate = (props: Props) => {
                 {/* <Typography fontWeight={500} my={1}>
                   Services Details
                   </Typography> */}
-                <Stack className='Create-Estimate-title'>
+                <Stack className="Create-Estimate-title">
                   Services Details
                 </Stack>
                 <Stack display="flex" direction="column" spacing={3}>
@@ -1214,11 +1253,15 @@ const Estimate = (props: Props) => {
                         setServiceObject({ ...serviceObject, id: value?._id! })
                       }
                       renderOption={(props, option) => (
-                        <li {...props} style={{
-                          textTransform: 'capitalize', fontSize: '14px',
-                          color: '#080F1A',
-                          fontFamily: `"Outfit",sans-serif`
-                        }}>
+                        <li
+                          {...props}
+                          style={{
+                            textTransform: 'capitalize',
+                            fontSize: '14px',
+                            color: '#080F1A',
+                            fontFamily: `"Outfit",sans-serif`
+                          }}
+                        >
                           {option.name}
                         </li>
                       )}
@@ -1234,7 +1277,7 @@ const Estimate = (props: Props) => {
                           InputLabelProps={{
                             style: {
                               fontFamily: `"Outfit",sans-serif`,
-                              fontSize: "14px"
+                              fontSize: '14px'
                             }
                           }}
                         />
@@ -1243,14 +1286,19 @@ const Estimate = (props: Props) => {
                     <Stack display="flex" flexDirection="column" py={2}>
                       <Stack>
                         <FormControl required>
-                          <FormLabel id="payment-type" sx={{
-                            color: "#000",
-                            fontSize: '14px',
-                            fontFamily: `"Outfit", sans-serif`,
-                            marginTop: "8px"
-
-                          }}>
-                            <span style={{ color: "#000" }}> Is On Same Site</span>
+                          <FormLabel
+                            id="payment-type"
+                            sx={{
+                              color: '#000',
+                              fontSize: '14px',
+                              fontFamily: `"Outfit", sans-serif`,
+                              marginTop: '8px'
+                            }}
+                          >
+                            <span style={{ color: '#000' }}>
+                              {' '}
+                              Is On Same Site
+                            </span>
                           </FormLabel>
                           <RadioGroup
                             row
@@ -1259,40 +1307,49 @@ const Estimate = (props: Props) => {
                             onChange={(e) => {
                               setServiceObject({
                                 ...serviceObject,
-                                isSameSite: e.target.value === '0' ? true : false
+                                isSameSite:
+                                  e.target.value === '0' ? true : false
                               });
                             }}
                           >
                             <FormControlLabel
                               value="0"
-                              control={<Radio sx={{
-                                '&.Mui-checked': {
-                                  color: "#0566ff",
-                                },
-                              }} />}
+                              control={
+                                <Radio
+                                  sx={{
+                                    '&.Mui-checked': {
+                                      color: '#0566ff'
+                                    }
+                                  }}
+                                />
+                              }
                               label="Yes"
                               sx={{
                                 '& .MuiFormControlLabel-label': {
                                   fontFamily: '"Outfit", sans-serif',
                                   fontSize: '14px',
-                                  color: '#000',
-                                },
+                                  color: '#000'
+                                }
                               }}
                             />
                             <FormControlLabel
                               value="1"
-                              control={<Radio sx={{
-                                '&.Mui-checked': {
-                                  color: "#0566ff",
-                                },
-                              }} />}
+                              control={
+                                <Radio
+                                  sx={{
+                                    '&.Mui-checked': {
+                                      color: '#0566ff'
+                                    }
+                                  }}
+                                />
+                              }
                               label="No"
                               sx={{
                                 '& .MuiFormControlLabel-label': {
                                   fontFamily: '"Outfit", sans-serif',
                                   fontSize: '14px',
-                                  color: '#000',
-                                },
+                                  color: '#000'
+                                }
                               }}
                             />
                           </RadioGroup>
@@ -1302,8 +1359,10 @@ const Estimate = (props: Props) => {
                   </Button> */}
                       </Stack>
                       <Stack width="20%">
-                        <button className='Add-Service-btn'
-                          onClick={addServiceToArray}>
+                        <button
+                          className="Add-Service-btn"
+                          onClick={addServiceToArray}
+                        >
                           Add Service
                         </button>
                       </Stack>
@@ -1320,14 +1379,15 @@ const Estimate = (props: Props) => {
                     {estimateFileds.service.map((item, index: number) => (
                       <Chip
                         color="primary"
-                        label={`${serviceGetterAllPackage(item.id)}/ ${item.isSameSite ? 'Same Site' : 'Different Site'
-                          }`}
+                        label={`${serviceGetterAllPackage(item.id)}/ ${
+                          item.isSameSite ? 'Same Site' : 'Different Site'
+                        }`}
                         variant="outlined"
                         sx={{
                           textTransform: 'capitalize',
                           fontFamily: '"Outfit", sans-serif',
                           fontSize: '14px',
-                          color: '#000',
+                          color: '#000'
                         }}
                         onDelete={() => deleteService(index)}
                       />
@@ -1337,11 +1397,15 @@ const Estimate = (props: Props) => {
                 {alert?.services.length > 0 && (
                   <Stack my={1} width="50%">
                     <Alert variant="outlined" severity="warning">
-                      <span style={{
-                        fontFamily: '"Outfit", sans-serif',
-                        fontSize: '14px',
-                        color: '#000',
-                      }}>{alert?.services}</span>
+                      <span
+                        style={{
+                          fontFamily: '"Outfit", sans-serif',
+                          fontSize: '14px',
+                          color: '#000'
+                        }}
+                      >
+                        {alert?.services}
+                      </span>
                     </Alert>
                   </Stack>
                 )}
@@ -1478,9 +1542,19 @@ const Estimate = (props: Props) => {
                 />
               </Stack>
             </Box> */}
-            <Box my={1} bgcolor="white" borderRadius={3} p={2} >
-              <Stack className='Create-Estimate-title' display="flex" flexDirection="row">
-                Other Charges <span style={{ textTransform: "capitalize", marginLeft: "4px" }}> (optional)</span>
+            <Box my={1} bgcolor="white" borderRadius={3} p={2}>
+              <Stack
+                className="Create-Estimate-title"
+                display="flex"
+                flexDirection="row"
+              >
+                Other Charges{' '}
+                <span
+                  style={{ textTransform: 'capitalize', marginLeft: '4px' }}
+                >
+                  {' '}
+                  (optional)
+                </span>
               </Stack>
               <Stack direction="row" spacing={2}>
                 <TextField
@@ -1497,13 +1571,13 @@ const Estimate = (props: Props) => {
                   InputLabelProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                   inputProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                 />
@@ -1521,13 +1595,13 @@ const Estimate = (props: Props) => {
                   InputLabelProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                   inputProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                 />
@@ -1545,13 +1619,13 @@ const Estimate = (props: Props) => {
                   InputLabelProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                   inputProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                 />
@@ -1569,13 +1643,13 @@ const Estimate = (props: Props) => {
                   InputLabelProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                   inputProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                 />
@@ -1595,13 +1669,13 @@ const Estimate = (props: Props) => {
                   InputLabelProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                   inputProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                 />
@@ -1619,13 +1693,13 @@ const Estimate = (props: Props) => {
                   InputLabelProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                   inputProps={{
                     style: {
                       fontFamily: `"Outfit",sans-serif`,
-                      fontSize: "14px"
+                      fontSize: '14px'
                     }
                   }}
                 />
@@ -1736,8 +1810,8 @@ const Estimate = (props: Props) => {
                     {estimateFileds.paymentType === 0
                       ? 'Cash'
                       : estimateFileds.paymentType === 1
-                        ? 'Insurance'
-                        : 'CGHS | ECHS'}
+                      ? 'Insurance'
+                      : 'CGHS | ECHS'}
                   </Typography>
 
                   {estimateFileds.paymentType === 1 && (
@@ -1784,8 +1858,9 @@ const Estimate = (props: Props) => {
                         <Chip
                           size="small"
                           color="primary"
-                          label={`${serviceGetterAll(item.id)}/ ${item.isSameSite ? 'Same Site' : 'Different Site'
-                            }`}
+                          label={`${serviceGetterAll(item.id)}/ ${
+                            item.isSameSite ? 'Same Site' : 'Different Site'
+                          }`}
                           variant="outlined"
                           sx={{ textTransform: 'capitalize', mx: 1 }}
                         />
@@ -1860,8 +1935,9 @@ const Estimate = (props: Props) => {
                         <Chip
                           size="small"
                           color="primary"
-                          label={`${serviceGetterAllPackage(item.id)}/ ${item.isSameSite ? 'Same Site' : 'Different Site'
-                            }`}
+                          label={`${serviceGetterAllPackage(item.id)}/ ${
+                            item.isSameSite ? 'Same Site' : 'Different Site'
+                          }`}
                           variant="outlined"
                           sx={{ textTransform: 'capitalize', mx: 1 }}
                         />
@@ -1926,10 +2002,15 @@ const Estimate = (props: Props) => {
                 </Box> */}
                 </Stack>
               )}
-              <Stack my={1} p={1} borderRadius={2} bgcolor="#f1f1f1"
+              <Stack
+                my={1}
+                p={1}
+                borderRadius={2}
+                bgcolor="#f1f1f1"
                 sx={{
-                  marginBottom: "100px"
-                }}>
+                  marginBottom: '100px'
+                }}
+              >
                 <Typography variant="body2" fontWeight={500}>
                   Other Charges
                 </Typography>
@@ -1956,25 +2037,24 @@ const Estimate = (props: Props) => {
               </Stack>
             </Stack>
           </Box>
-
         </Stack>
 
         <Box className="Create-Estimate-Button">
           <button
-            className='reminder-cancel-btn'
+            className="reminder-cancel-btn"
             onClick={handleEstimateDrawer}
           >
             Cancel
           </button>
-          < button
-            className='reminder-btn'
+          <button
+            className="reminder-btn"
             onClick={handleCreateEstimate}
-            style={{ margin: "0px 10px 0px 10px" }}
+            style={{ margin: '0px 10px 0px 10px' }}
           >
             Send Estimate
           </button>
         </Box>
-      </Drawer >
+      </Drawer>
       {/* ------------------------------- */}
     </>
   );

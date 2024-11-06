@@ -44,6 +44,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import dayjs from 'dayjs';
 import DownloadAllTickets from '../widgets/DownloadAllTickets';
 import { isNull } from 'util';
+import useUserStore from '../../../store/userStore';
 
 const datePickerStyle = {
   backgroundColor: '#E1E6EE',
@@ -151,6 +152,7 @@ const baseLossStyle = {
 let AllIntervals: any[] = [];
 
 function SwitchViewTable() {
+  const { user } = useUserStore();
   const { ticketID } = useParams();
   const { doctors, departments, allServices, stages } = useServiceStore();
   const {
@@ -724,9 +726,11 @@ function SwitchViewTable() {
           </Stack>
 
           <Stack display={'flex'} flexDirection={'row'}>
-            <Stack>
-              <DownloadAllTickets />
-            </Stack>
+            {user?.role !== 'REPRESENTATIVE' && (
+              <Stack>
+                <DownloadAllTickets />
+              </Stack>
+            )}
             <Stack
               sx={{
                 marginTop: '5px',

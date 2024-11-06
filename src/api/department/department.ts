@@ -4,6 +4,7 @@ export const getDepartments = async (parent?: boolean) => {
   const { data } = await apiClient.get(
     `/department?parent=${parent ? true : false}`
   );
+  console.log( data, "api" );
   return data;
 };
 

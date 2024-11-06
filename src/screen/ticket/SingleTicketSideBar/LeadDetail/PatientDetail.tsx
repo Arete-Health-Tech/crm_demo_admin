@@ -282,6 +282,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
   const handleSubmit = async (event) => {
     try {
       setDownloadDisable(true);
+      
       event.preventDefault();
       let date =
         PatientData.followUp !== 'null'

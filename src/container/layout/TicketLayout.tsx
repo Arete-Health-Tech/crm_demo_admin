@@ -565,19 +565,17 @@ const Ticket = () => {
   };
 
   function hasChanges(currentState) {
-    return JSON.stringify(initialStateForFilter) === JSON.stringify(currentState)
-    
+    return (
+      JSON.stringify(initialStateForFilter) === JSON.stringify(currentState)
+    );
   }
 
   console.log(typeof hasChanges(newFilter));
   useEffect(() => {
     const refetchTickets = async () => {
-      // if (newFilter.stageList.length > 0) {
-      console.log('should not be called', typeof hasChanges(newFilter));
-      // if (ticketID && pageNumber !== 1 && hasChanges(newFilter) === 'true') {
-      //   console.log(pageNumber, 'inside useEffect if');
-      // } else
-      console.log(pageNumber);
+      console.log('typeof hasChanges(newFilter)', typeof hasChanges(newFilter));
+      console.log(pageNumber, 'pageNumber');
+      console.log(localStorage.getItem('ticketType') === 'Diagnostics','localStorage.getItem');
       if (
         pageNumber === 1 &&
         hasChanges(newFilter) &&
@@ -594,7 +592,6 @@ const Ticket = () => {
           );
         }
       }
-      // }
     };
 
     const initializeSocketListeners = () => {

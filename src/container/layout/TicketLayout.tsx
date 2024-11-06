@@ -565,30 +565,25 @@ const Ticket = () => {
   };
 
   function hasChanges(currentState) {
-    if (
-      JSON.stringify(initialStateForFilter) === JSON.stringify(currentState)
-    ) {
-      return 'true';
-    } else {
-      return 'false';
-    }
+    return JSON.stringify(initialStateForFilter) === JSON.stringify(currentState)
+    
   }
 
-  console.log(newFilter.stageList.length < 1);
+  console.log(typeof hasChanges(newFilter));
   useEffect(() => {
     const refetchTickets = async () => {
       // if (newFilter.stageList.length > 0) {
-      console.log('should not be called', hasChanges(newFilter));
+      console.log('should not be called', typeof hasChanges(newFilter));
       // if (ticketID && pageNumber !== 1 && hasChanges(newFilter) === 'true') {
       //   console.log(pageNumber, 'inside useEffect if');
       // } else
       console.log(pageNumber);
       if (
         pageNumber === 1 &&
-        hasChanges(newFilter) == 'true' &&
+        hasChanges(newFilter) &&
         localStorage.getItem('ticketType') === 'Diagnostics'
       ) {
-        console.log(pageNumber,"inside if");
+        console.log(pageNumber, 'inside if');
         await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         if (localStorage.getItem('ticketType') === 'Admission') {
           await getTicketAfterNotification(

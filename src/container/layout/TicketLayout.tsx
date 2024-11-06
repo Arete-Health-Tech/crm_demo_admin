@@ -873,6 +873,7 @@ const Ticket = () => {
   }, [phone]);
 
   useEffect(() => {
+    setPageNumber(1);
     const fetchData = async () => {
       try {
         const data = await getAuditorCommentCount(); // Resolve the promise here

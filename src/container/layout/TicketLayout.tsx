@@ -585,7 +585,7 @@ const Ticket = () => {
       console.log(pageNumber);
       if (
         pageNumber === 1 &&
-        hasChanges(newFilter) === 'true' &&
+        hasChanges(newFilter) == 'true' &&
         localStorage.getItem('ticketType') === 'Diagnostics'
       ) {
         console.log(pageNumber,"inside if");

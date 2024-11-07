@@ -571,6 +571,7 @@ const Ticket = () => {
   }
 
   console.log(typeof hasChanges(newFilter));
+  
   useEffect(() => {
     const refetchTickets = async () => {
       console.log('typeof hasChanges(newFilter)', typeof hasChanges(newFilter));

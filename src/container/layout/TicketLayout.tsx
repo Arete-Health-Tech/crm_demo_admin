@@ -575,12 +575,17 @@ const Ticket = () => {
     const refetchTickets = async () => {
       console.log('typeof hasChanges(newFilter)', typeof hasChanges(newFilter));
       console.log(pageNumber, 'pageNumber');
-      console.log(localStorage.getItem('ticketType') === 'Diagnostics','localStorage.getItem');
+      console.log(
+        localStorage.getItem('ticketType') === 'Diagnostics',
+        'localStorage.getItem'
+      );
       if (
         pageNumber === 1 &&
         hasChanges(newFilter) &&
-        localStorage.getItem('ticketType') === 'Diagnostics'
+        localStorage.getItem('ticketType') === 'Diagnostics' &&
+        !ticketID
       ) {
+        console.log(pageNumber, 'inside if');
         console.log(pageNumber, 'inside if');
         await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         if (localStorage.getItem('ticketType') === 'Admission') {

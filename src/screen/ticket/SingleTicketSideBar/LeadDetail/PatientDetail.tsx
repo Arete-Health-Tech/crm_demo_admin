@@ -412,6 +412,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
           {isEditing ? (
             <Box>
               <Box>
+                {/* UHID */}
                 <Box className="Patient-detail-Head">
                   <Stack className="Patient-detail-title">UHID</Stack>
                   {/* <Stack component='div' className='Patient-detail-data'>#{PatientData.uhid}</Stack> */}
@@ -445,16 +446,91 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                     />
                   </Stack>
                 </Box>
+                {/* First Name */}
                 <Box className="Patient-detail-Head">
-                  <Stack className="Patient-detail-title">Remark</Stack>
+                  <Stack className="Patient-detail-title">First Name</Stack>
                   <Stack component="div" className="Patient-detail-data">
-                    {PatientData.remarks}
+                    <TextField
+                      id="firstName"
+                      type="text"
+                      label="First Name"
+                      variant="outlined"
+                      size="small"
+                      inputProps={{ style: { fontSize: '14px' } }}
+                      value={PatientData.firstName}
+                      onChange={(e) =>
+                        setPatientData((prev) => ({
+                          ...prev,
+                          firstName: e.target.value
+                        }))
+                      }
+                      InputProps={{
+                        style: {
+                          textTransform: 'capitalize',
+                          fontSize: '14px',
+                          fontFamily: 'Outfit,sans-serif'
+                        }
+                      }}
+                    />
                   </Stack>
                 </Box>
-                {/* < Box className='Patient-detail-Head'>
-                                    <Stack className='Patient-detail-title'>Followup Date</Stack>
-                                    <Stack component='div' className='Patient-detail-data'>{PatientData.followUp}</Stack>
-                                </Box> */}
+                {/* Last Name */}
+                <Box className="Patient-detail-Head">
+                  <Stack className="Patient-detail-title">Last Name</Stack>
+                  <Stack component="div" className="Patient-detail-data">
+                    <TextField
+                      id="lastName"
+                      type="text"
+                      label="Last Name"
+                      variant="outlined"
+                      size="small"
+                      inputProps={{ style: { fontSize: '14px' } }}
+                      value={PatientData.lastName}
+                      onChange={(e) =>
+                        setPatientData((prev) => ({
+                          ...prev,
+                          lastName: e.target.value
+                        }))
+                      }
+                      InputProps={{
+                        style: {
+                          textTransform: 'capitalize',
+                          fontSize: '14px',
+                          fontFamily: 'Outfit,sans-serif'
+                        }
+                      }}
+                    />
+                  </Stack>
+                </Box>
+                {/* Age */}
+                <Box className="Patient-detail-Head">
+                  <Stack className="Patient-detail-title">Age</Stack>
+                  <Stack component="div" className="Patient-detail-data">
+                    <TextField
+                      id="age"
+                      type="number"
+                      label="Age"
+                      variant="outlined"
+                      size="small"
+                      inputProps={{ style: { fontSize: '14px' } }}
+                      value={PatientData.age}
+                      onChange={(e) =>
+                        setPatientData((prev) => ({
+                          ...prev,
+                          age: e.target.value
+                        }))
+                      }
+                      InputProps={{
+                        style: {
+                          textTransform: 'capitalize',
+                          fontSize: '14px',
+                          fontFamily: 'Outfit,sans-serif'
+                        }
+                      }}
+                    />
+                  </Stack>
+                </Box>
+                {/* FollowUp */}
                 <Box className="Patient-detail-Head">
                   <Stack className="Patient-detail-title">FollowUp Date</Stack>
                   <Stack component="div" className="Patient-detail-data">
@@ -489,88 +565,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                     />
                   </Stack>
                 </Box>
-                <Box className="Patient-detail-Head">
-                  <Stack className="Patient-detail-title">First Name</Stack>
-                  <Stack component="div" className="Patient-detail-data">
-                    <TextField
-                      id="firstName"
-                      type="text"
-                      label="First Name"
-                      variant="outlined"
-                      size="small"
-                      inputProps={{ style: { fontSize: '14px' } }}
-                      value={PatientData.firstName}
-                      onChange={(e) =>
-                        setPatientData((prev) => ({
-                          ...prev,
-                          firstName: e.target.value
-                        }))
-                      }
-                      InputProps={{
-                        style: {
-                          textTransform: 'capitalize',
-                          fontSize: '14px',
-                          fontFamily: 'Outfit,sans-serif'
-                        }
-                      }}
-                    />
-                  </Stack>
-                </Box>
-
-                <Box className="Patient-detail-Head">
-                  <Stack className="Patient-detail-title">Last Name</Stack>
-                  <Stack component="div" className="Patient-detail-data">
-                    <TextField
-                      id="lastName"
-                      type="text"
-                      label="Last Name"
-                      variant="outlined"
-                      size="small"
-                      inputProps={{ style: { fontSize: '14px' } }}
-                      value={PatientData.lastName}
-                      onChange={(e) =>
-                        setPatientData((prev) => ({
-                          ...prev,
-                          lastName: e.target.value
-                        }))
-                      }
-                      InputProps={{
-                        style: {
-                          textTransform: 'capitalize',
-                          fontSize: '14px',
-                          fontFamily: 'Outfit,sans-serif'
-                        }
-                      }}
-                    />
-                  </Stack>
-                </Box>
-                <Box className="Patient-detail-Head">
-                  <Stack className="Patient-detail-title">Age</Stack>
-                  <Stack component="div" className="Patient-detail-data">
-                    <TextField
-                      id="age"
-                      type="number"
-                      label="Age"
-                      variant="outlined"
-                      size="small"
-                      inputProps={{ style: { fontSize: '14px' } }}
-                      value={PatientData.age}
-                      onChange={(e) =>
-                        setPatientData((prev) => ({
-                          ...prev,
-                          age: e.target.value
-                        }))
-                      }
-                      InputProps={{
-                        style: {
-                          textTransform: 'capitalize',
-                          fontSize: '14px',
-                          fontFamily: 'Outfit,sans-serif'
-                        }
-                      }}
-                    />
-                  </Stack>
-                </Box>
+                {/* Gender */}
                 <Box className="Patient-detail-Head">
                   <Stack className="Patient-detail-title">Gender</Stack>
                   <Stack component="div" className="Patient-detail-data">
@@ -616,6 +611,18 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                     </FormControl>
                   </Stack>
                 </Box>
+                {/* Remark */}
+                <Box className="Patient-detail-Head">
+                  <Stack className="Patient-detail-title">Remark</Stack>
+                  <Stack component="div" className="Patient-detail-data">
+                    {PatientData.remarks}
+                  </Stack>
+                </Box>
+                {/* < Box className='Patient-detail-Head'>
+                                    <Stack className='Patient-detail-title'>Followup Date</Stack>
+                                    <Stack component='div' className='Patient-detail-data'>{PatientData.followUp}</Stack>
+                                </Box> */}
+
                 <Box className="Patient-detail-Head">
                   <Stack className="Patient-detail-title">Department</Stack>
                   <Stack component="div" className="Patient-detail-data">

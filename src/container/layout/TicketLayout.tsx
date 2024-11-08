@@ -252,7 +252,7 @@ const Ticket = () => {
     setPage(pageNo);
     if (pageNo !== page) {
       setTickets([]);
-      await getTicketHandler(UNDEFINED, pageNo, 'false', newFilter);
+      await getTicketHandler(searchByName, pageNo, 'false', newFilter);
       setPageNumber(pageNo);
 
       // redirectTicket();
@@ -301,8 +301,8 @@ const Ticket = () => {
 
   useEffect(() => {
     const data = async () => {
-      await getTicketHandler(searchName, 1, 'false', newFilter);
-      searchName === ''
+      await getTicketHandler(searchByName, 1, 'false', newFilter);
+      searchByName === '' || searchByName === 'undefined'
         ? setSearchError('Type to search & Enter')
         : setSearchError(
             `remove "${searchName.toUpperCase()}" to reset & Enter`
@@ -570,8 +570,8 @@ const Ticket = () => {
     );
   }
 
-  console.log(typeof hasChanges(newFilter));
-  
+  console.log(searchByName, 'searchByName outside useffect');
+
   useEffect(() => {
     const refetchTickets = async () => {
       console.log('typeof hasChanges(newFilter)', typeof hasChanges(newFilter));
@@ -580,12 +580,12 @@ const Ticket = () => {
         localStorage.getItem('ticketType') === 'Diagnostics',
         'localStorage.getItem'
       );
+      console.log(searchByName, 'searchByName inside useffect');
       if (
         pageNumber === 1 &&
         hasChanges(newFilter) &&
         localStorage.getItem('ticketType') === 'Diagnostics'
       ) {
-        console.log(pageNumber, 'inside if');
         console.log(pageNumber, 'inside if');
         await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         if (localStorage.getItem('ticketType') === 'Admission') {
@@ -636,7 +636,7 @@ const Ticket = () => {
         socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
       }
     };
-  }, [pageNumber, searchName]);
+  }, [pageNumber, searchByName]);
 
   useEffect(() => {
     clearAllInterval(AllIntervals);

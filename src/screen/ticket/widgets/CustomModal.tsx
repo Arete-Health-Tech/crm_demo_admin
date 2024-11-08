@@ -98,7 +98,7 @@ const CustomModal = () => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
     setCurrentTicket(fetchTicket);
   }, [ticketID]);
-  
+
   useEffect(() => {
     if (
       currentTicket?.opinion !== undefined &&
@@ -499,17 +499,19 @@ const CustomModal = () => {
                     Disposition
                   </Stack>
                   <Stack className="calling-btn">
-                    <button
-                      className="call-Button"
-                      style={{
-                        backgroundColor: isButtonClicked('DNP')
-                          ? '#DAE8FF'
-                          : '#F6F7F9'
-                      }}
-                      onClick={() => handleButtonClick('DNP')}
-                    >
-                      DNP
-                    </button>
+                    {localStorage.getItem('ticketType') !== 'Follow-Up' && (
+                      <button
+                        className="call-Button"
+                        style={{
+                          backgroundColor: isButtonClicked('DNP')
+                            ? '#DAE8FF'
+                            : '#F6F7F9'
+                        }}
+                        onClick={() => handleButtonClick('DNP')}
+                      >
+                        DNP
+                      </button>
+                    )}
                     <button
                       className="call-Button"
                       style={{
@@ -521,17 +523,19 @@ const CustomModal = () => {
                     >
                       DND
                     </button>
-                    <button
-                      className="call-Button"
-                      style={{
-                        backgroundColor: isButtonClicked('Rescheduled Call')
-                          ? '#DAE8FF'
-                          : '#F6F7F9'
-                      }}
-                      onClick={() => handleButtonClick('Rescheduled Call')}
-                    >
-                      Reschedule Call
-                    </button>
+                    {localStorage.getItem('ticketType') !== 'Follow-Up' && (
+                      <button
+                        className="call-Button"
+                        style={{
+                          backgroundColor: isButtonClicked('Rescheduled Call')
+                            ? '#DAE8FF'
+                            : '#F6F7F9'
+                        }}
+                        onClick={() => handleButtonClick('Rescheduled Call')}
+                      >
+                        Reschedule Call
+                      </button>
+                    )}
 
                     <button
                       style={{

@@ -221,6 +221,11 @@ const CustomModal = () => {
       if (result !== undefined && result !== null) {
         setFormData({ select: '' });
         setDialogOpen(false);
+
+        // Temporary
+        handleCloseModal();
+        // ====
+
         setShowForm(false);
         setTimer(0);
         setChipOpen(false);
@@ -295,6 +300,18 @@ const CustomModal = () => {
     }
   };
 
+  // temporary code
+
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpenModal = () => {
+    startTimer();
+    setOpenModal(true);
+  };
+  const handleCloseModal = () => {
+    stopTimer();
+    setOpenModal(false);
+  };
+
   return (
     <div>
       {chipOpen == true ? (
@@ -311,7 +328,8 @@ const CustomModal = () => {
           <span
             className="maximize-icon"
             onClick={() => {
-              setShowForm(true);
+              // setShowForm(true);
+              handleOpenModal();
             }}
           >
             <img src={MaximizeIcon} alt="" />
@@ -322,6 +340,7 @@ const CustomModal = () => {
           className="Callbutton"
           onClick={() => {
             startTimer();
+            handleOpenModal();
           }}
         >
           <img src={CallButtonIcon} alt="" />
@@ -419,7 +438,8 @@ const CustomModal = () => {
           }
         }}
         anchor="right"
-        open={showForm} //showForm
+        // open={showForm} //showForm
+        open={openModal} //showForm
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
       >
@@ -767,7 +787,13 @@ const CustomModal = () => {
                 justifyContent="space-between"
                 gap={'10px'}
               >
-                <button className="reminder-cancel-btn" onClick={handleClose}>
+                <button
+                  className="reminder-cancel-btn"
+                  onClick={() => {
+                    // handleClose();
+                    handleCloseModal();
+                  }}
+                >
                   Cancel
                 </button>
                 <button

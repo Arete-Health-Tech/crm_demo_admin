@@ -98,6 +98,7 @@ const CustomModal = () => {
     const fetchTicket = tickets.find((element) => ticketID === element._id);
     setCurrentTicket(fetchTicket);
   }, [ticketID]);
+  
   useEffect(() => {
     if (
       currentTicket?.opinion !== undefined &&

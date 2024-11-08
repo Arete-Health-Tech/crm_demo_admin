@@ -433,6 +433,13 @@ export const getActivityData = async (ticketId: string | undefined) => {
   return Promise.resolve(data);
 };
 
+// Notes Added For activity
+
+export const createNoteActivity = async (notesData) => {
+  await apiClient.post( '/activity/getNotes', notesData );
+};
+
+
 export const getAuditTickets = async () => {
   const data = await apiClient.get(`/ticket/getAuditComments`);
   return Promise.resolve(data);

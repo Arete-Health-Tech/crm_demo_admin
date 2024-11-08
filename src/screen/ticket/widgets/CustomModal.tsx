@@ -21,6 +21,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import {
+  createNoteActivityHandler,
   createNotesHandler,
   createTimerHandler,
   getTicketHandler
@@ -179,7 +180,12 @@ const CustomModal = () => {
           ucid: ucid,
           stoppedTimer: stoppedTimer
         };
+        const notesForActivity = {
+          ticket: ticketID!,
+          notes: note
+        };
         await createNotesHandler(data, formData.select);
+        await createNoteActivityHandler(notesForActivity);
         setNote('');
       }
       // This is for second opinion start

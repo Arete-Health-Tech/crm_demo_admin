@@ -21,7 +21,8 @@ import {
   getAuditTickets,
   getAllWhatsAppCount,
   getAuditTicket,
-  getAllTicket
+  getAllTicket,
+  createNoteActivity
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -286,6 +287,12 @@ export const createNotesHandler = async (note: iNote, disposition: string) => {
   const noteAdded = await createNewNote(note, disposition);
   setNotes([...notes, noteAdded]);
   return Promise.resolve(noteAdded);
+};
+// Notes Add in Activity
+
+export const createNoteActivityHandler = async (notesData) => {
+await createNoteActivity(notesData);
+ 
 };
 
 export const getAllReminderHandler = async () => {

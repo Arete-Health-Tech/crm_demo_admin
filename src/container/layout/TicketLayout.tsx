@@ -931,6 +931,7 @@ const Ticket = () => {
     setIsAuditor(false);
     setSearchName('');
     setSearchByName(UNDEFINED);
+    localStorage.setItem('location', '');
     setSearchError('Type to search & Enter');
     // setTicketCount(ticketCache["count"]);
     // setTickets(ticketCache[1]);

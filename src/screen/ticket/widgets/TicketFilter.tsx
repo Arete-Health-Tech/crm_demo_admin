@@ -495,6 +495,39 @@ const TicketFilter = (props: {
     }
     setDownloadDisable(false);
   };
+  const handleApplyFilterOnTicketTypeChange = async () => {
+    // setTicketFilters({
+    //   stageList: selectedStageList,
+    //   admissionType: admissionType,
+    //   diagnosticType: diagnosticsType,
+    //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
+    //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
+    // });
+    setDownloadDisable(true);
+    setIsFilterOpen(false);
+    setPageNumber(1);
+    setFilterTickets(selectedFilters);
+    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    // console.log(isAmritsarUser, "selected again")
+    setFilterCount(0);
+
+    props.setPage(1);
+    if (ticketID) {
+      await validateTicket(ticketID);
+      navigate(
+        `${
+          localStorage.getItem('ticketType') === 'Admission'
+            ? '/admission/'
+            : localStorage.getItem('ticketType') === 'Diagnostics'
+            ? '/diagnostics/'
+            : localStorage.getItem('ticketType') === 'Follow-Up'
+            ? '/follow-up/'
+            : '/ticket/'
+        }`
+      );
+    }
+    setDownloadDisable(false);
+  };
 
   const handleClearFilter = async () => {
     dispatchFilter({ type: filterActions.STAGES, payload: [] });
@@ -547,7 +580,7 @@ const TicketFilter = (props: {
 
   useEffect(() => {
     handleClearFilter();
-    handleApplyFilter();
+    handleApplyFilterOnTicketTypeChange();
   }, [localStorage.getItem('ticketType')]);
 
   const handleToggleChange = (event, newValue: any) => {

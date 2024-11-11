@@ -230,7 +230,7 @@ const CustomModal = () => {
         setDialogOpen(false);
 
         // Temporary
-        handleCloseModal();
+        // handleCloseModal();
         // ====
 
         setShowForm(false);
@@ -309,15 +309,15 @@ const CustomModal = () => {
 
   // temporary code
 
-  const [openModal, setOpenModal] = useState(false);
-  const handleOpenModal = () => {
-    startTimer();
-    setOpenModal(true);
-  };
-  const handleCloseModal = () => {
-    stopTimer();
-    setOpenModal(false);
-  };
+  // const [openModal, setOpenModal] = useState(false);
+  // const handleOpenModal = () => {
+  //   startTimer();
+  //   setOpenModal(true);
+  // };
+  // const handleCloseModal = () => {
+  //   stopTimer();
+  //   setOpenModal(false);
+  // };
 
   return (
     <div>
@@ -335,8 +335,9 @@ const CustomModal = () => {
           <span
             className="maximize-icon"
             onClick={() => {
-              // setShowForm(true);
-              handleOpenModal();
+              setShowForm(true);
+              // temporary
+              // handleOpenModal();
             }}
           >
             <img src={MaximizeIcon} alt="" />
@@ -347,7 +348,8 @@ const CustomModal = () => {
           className="Callbutton"
           onClick={() => {
             startTimer();
-            handleOpenModal();
+            // temporary
+            // handleOpenModal();
           }}
         >
           <img src={CallButtonIcon} alt="" />
@@ -445,8 +447,8 @@ const CustomModal = () => {
           }
         }}
         anchor="right"
-        // open={showForm} //showForm
-        open={openModal} //showForm
+        open={showForm} //showForm
+        // open={openModal} //showForm
         onClose={handleClose}
         aria-labelledby="modal-modal-title"
       >
@@ -801,8 +803,9 @@ const CustomModal = () => {
                 <button
                   className="reminder-cancel-btn"
                   onClick={() => {
-                    // handleClose();
-                    handleCloseModal();
+                    handleClose();
+                    // temporary
+                    // handleCloseModal();
                   }}
                 >
                   Cancel

@@ -250,7 +250,8 @@ const TicketFilter = (props: {
       }
     })();
   }, []);
-
+  
+  console.log(filterCount);
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     if (selectedFilters.stageList.includes(value)) {

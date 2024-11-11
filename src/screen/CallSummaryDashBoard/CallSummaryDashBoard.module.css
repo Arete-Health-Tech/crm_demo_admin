@@ -1,0 +1,342 @@
+.call_Summary_dashboard_container {
+  background-color: #f6f7f9;
+  width: 100%;
+  height: 100%;
+  padding: 30px 2%;
+  display: flex;
+  flex-direction: column !important;
+  gap: 30px;
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.call_Summary_dashboard_container_head {
+  width: 100%;
+  display: flex;
+  flex-direction: column !important;
+  gap: 20px;
+  height: auto;
+}
+
+.container_head {
+  width: 100%;
+  display: flex;
+  flex-direction: row !important;
+  justify-content: space-between;
+}
+.container_head_title {
+  font-size: 24px;
+  padding: 10px 0;
+  position: relative;
+}
+
+.container_head_title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 70%;
+  border-bottom: 2px solid black;
+}
+.container_head_title span {
+  color: rgb(255, 60, 0);
+  display: contents;
+}
+
+.container_head_btn {
+  background-color: rgba(108, 103, 103, 0.555);
+  font-size: 20px;
+  padding: 5px 25px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  border-radius: 8px;
+  border: 2px solid rgb(186, 177, 177);
+  color: #fff;
+}
+
+.container_head_filter {
+  width: 100%;
+  display: flex;
+  flex-direction: row !important;
+  justify-content: space-between;
+}
+
+.date_filters {
+  display: flex;
+  flex-direction: row !important ;
+  min-width: 160px;
+  height: 50px;
+  align-items: center;
+  border-radius: 8px;
+  border: 2px solid rgba(186, 177, 177, 0.518);
+  background: #fff;
+  justify-content: space-between;
+  cursor: pointer;
+  color: #000;
+}
+
+.agent_filter {
+  background-color: #fff;
+  font-size: 20px;
+  padding: 5px 25px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  border-radius: 8px;
+  border: 2px solid rgba(186, 177, 177, 0.518);
+  color: black;
+}
+
+/* Common Css Between These Three Component ----------------------------------------*/
+.call_Summary_dashboard {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column !important;
+  gap: 20px;
+}
+
+/* today's Task css  */
+.todat_task {
+  width: 40%;
+  display: flex;
+  flex-direction: row !important;
+  padding: 10px 0px;
+  background-color: #fff;
+  border-radius: 8px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.todat_task_total {
+  align-items: center;
+  width: 50%;
+  border-right: 1px solid rgba(128, 128, 128, 0.346);
+  display: flex;
+  flex-direction: column !important;
+  gap: 10px;
+}
+
+.todat_task_completed {
+  align-items: center;
+  width: 50%;
+  display: flex;
+  flex-direction: column !important;
+  gap: 10px;
+}
+
+/* commmon today task  */
+.todat_task_common_head {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.todat_task_common_count {
+  font-size: 21px;
+  font-weight: 300;
+}
+
+/* end Common today task */
+
+/* End of today task */
+
+/* Calling Answer attempted data  */
+
+.calling_data {
+  width: 100%;
+  display: flex;
+  flex-direction: row !important;
+  padding: 10px 0px;
+  background-color: #fff;
+  border-radius: 8px;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.call_attempted {
+  padding: 10px 0px;
+  width: 30%;
+  align-items: center;
+  border-right: 1px solid rgba(128, 128, 128, 0.346);
+  display: flex;
+  justify-content: center;
+  flex-direction: row !important;
+  gap: 20px;
+}
+
+.call_answered {
+  padding: 10px 0px;
+  width: 30%;
+  align-items: center;
+  border-right: 1px solid rgba(128, 128, 128, 0.346);
+  display: flex;
+  justify-content: center;
+  flex-direction: row !important;
+  gap: 20px;
+}
+.call_not_answered {
+  padding: 10px 0px;
+  width: 30%;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  flex-direction: row !important;
+  gap: 20px;
+}
+
+/* common */
+.call_common_img {
+  width: 46px;
+  height: 35px;
+  /* border: 1px solid black; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.call_common_img img {
+  width: 40px;
+  height: 45px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+.call_common_head {
+  font-size: 20px;
+  font-weight: 450;
+}
+.call_common_count {
+  font-size: 21px;
+  font-weight: 300;
+}
+/* ----- */
+
+/* End Of Calling Answer attempted data  */
+
+/* Call Answered  And Not Answered  */
+
+.answered_notAnswered {
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  flex-direction: row !important;
+}
+
+.answered_call {
+  width: 49%;
+  display: flex;
+  flex-direction: column !important;
+  border-radius: 8px;
+  background-color: #fff;
+}
+
+.answered_call_head {
+  height: 40px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.296);
+  padding: 10px 10px;
+  font-size: 18px;
+}
+
+.answered_call_content {
+  padding: 40px 0;
+  display: flex;
+  flex-direction: row !important;
+  justify-content: space-around;
+}
+
+.answered_call_division {
+  width: 50%;
+  display: flex;
+  flex-direction: column !important;
+  justify-content: center;
+}
+
+.answered_call_division_count {
+  padding: 0px 0 4px 0;
+  width: 80%;
+  display: flex;
+  flex-direction: row !important;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.304);
+  justify-content: space-between;
+}
+
+.division_count_title {
+  font-size: 18px;
+  font-weight: 350;
+}
+.division_count_value {
+  font-size: 18px;
+  color: #0097b2;
+  font-weight: 600;
+}
+.answered_call_total_count {
+  display: flex;
+  flex-direction: column !important;
+  width: 50%;
+  justify-content: center;
+}
+
+.answered_call_total_count_value {
+  text-align: center;
+  font-size: 30px;
+}
+.answered_call_total_count_title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 350;
+}
+
+/* End Call Answered  And Not Answered   */
+
+/* Graph -------*/
+
+.line_graph_container {
+  width: 100%;
+  display: flex;
+  flex-direction: row !important;
+  justify-content: space-between;
+}
+
+.line_graph {
+  width: 49%;
+  background-color: #fff;
+  border-radius: 8px;
+}
+
+.line_graph_head {
+  height: 40px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.296);
+  padding: 10px 10px;
+  font-size: 18px;
+}
+
+.bar_graph_component {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 0 0 0;
+}
+
+/* ........................ ---------------------------------------*/
+
+/* Admission Level Css */
+
+.admission_Summary_dashboard {
+  display: flex;
+  flex-direction: column !important;
+  gap: 30px;
+}
+
+/* ............... */
+
+/* Followup Level Css */
+
+.followup_Summary_dashboard {
+  display: flex;
+  flex-direction: column !important;
+  gap: 30px;
+}
+
+/* ............... */

@@ -37,6 +37,10 @@
   height: 51vh;
   overflow-y: scroll;
 }
+.activityfollowUp {
+  height: 75vh;
+  overflow-y: scroll;
+}
 
 .auditActivity::-webkit-scrollbar {
   width: 5px;

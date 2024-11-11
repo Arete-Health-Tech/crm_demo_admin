@@ -1400,14 +1400,16 @@ const NSingleTicketDetails = (props: Props) => {
 
           {/* Stage Card Start Here */}
 
-          <Box p={1} height="27vh">
-            <Box bgcolor={'white'} p={1.5} borderRadius={2}>
-              <StageCard
-                currentTicket={currentTicket}
-                setTicketUpdateFlag={setTicketUpdateFlag}
-              />
+          {localStorage.getItem('ticketType') !== 'Follow-Up' && (
+            <Box p={1} height="27vh">
+              <Box bgcolor={'white'} p={1.5} borderRadius={2}>
+                <StageCard
+                  currentTicket={currentTicket}
+                  setTicketUpdateFlag={setTicketUpdateFlag}
+                />
+              </Box>
             </Box>
-          </Box>
+          )}
 
           <Box height="0" position="relative" bgcolor="#F1F5F7">
             <TabContext value={value}>

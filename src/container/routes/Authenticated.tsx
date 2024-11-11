@@ -27,7 +27,7 @@ import AgentLogin from '../../screen/agent/AgentLogin';
 import FileUpload from '../../screen/fileUpload/fileUpload';
 import ConfigurationBar from '../../screen/configuration/ConfigurationBar';
 import Configuration from './Configuration';
-
+import CallSummaryDashboard from '../../screen/CallSummaryDashBoard/CallSummaryDashboard';
 
 type Props = {};
 
@@ -37,8 +37,11 @@ const Authenticated = (props: Props) => {
       <AgentLogin>
         <Navbar>
           <Routes>
+            {/* New Dashboard */}
+            {/* <Route path="/" element={<CallSummaryDashboard />}> */}
             <Route path="/" element={<DashboardLayout />}>
               <Route index element={<Dashboard />} />
+
               <Route path="department" element={<DepartmentLayout />}>
                 <Route index element={<Department />} />
               </Route>
@@ -71,11 +74,7 @@ const Authenticated = (props: Props) => {
               path="OrderList/orderDetails/:uid"
               element={<OrderDetailContainer />}
             />
-            <Route
-              index
-              path="/switchView"
-              element={<SwitchViewTable />}
-            />
+            <Route index path="/switchView" element={<SwitchViewTable />} />
             <Route
               index
               path="/switchView/:ticketID"

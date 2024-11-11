@@ -1,7 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import { Send } from '@mui/icons-material';
-import { Box, Stack, Typography, TextField, Button, CircularProgress } from '@mui/material';
+import {
+  Box,
+  Stack,
+  Typography,
+  TextField,
+  Button,
+  CircularProgress
+} from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import { database } from '../../../../utils/firebase';
 import {
@@ -33,7 +40,11 @@ import NotFoundIcon from '../../../../assets/NotFoundTask.svg';
 import { Avatar } from '@mui/material';
 import { io } from 'socket.io-client';
 import { markAsRead } from '../../../../api/flow/flow';
-import { getAllWhtsappCountHandler, getTicketHandler, getAllAuditTicketHandler } from '../../../../api/ticket/ticketHandler';
+import {
+  getAllWhtsappCountHandler,
+  getTicketHandler,
+  getAllAuditTicketHandler
+} from '../../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../../constantUtils/constant';
 type Props = { ticketId: string | undefined };
 
@@ -71,7 +82,6 @@ const MessagingWidget = (props: Props) => {
       ? filterTicketsFollowUp
       : filterTickets;
 
-
   function getConsumerIdByDataId(dataArray, dataIdToMatch) {
     for (const obj of dataArray) {
       if (obj._id === dataIdToMatch) {
@@ -89,7 +99,7 @@ const MessagingWidget = (props: Props) => {
   }
 
   const handleMarkAsRead = async (ticketID: string | undefined) => {
-    await markAsRead(ticketID)
+    await markAsRead(ticketID);
     await getAllWhtsappCountHandler();
     if (isAuditor) {
       await getAllAuditTicketHandler(
@@ -101,10 +111,9 @@ const MessagingWidget = (props: Props) => {
     } else {
       await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     }
+  };
 
-  }
-
-  //This function call the api to get all the ticket id with their whtsapp message count 
+  //This function call the api to get all the ticket id with their whtsapp message count
   const getAllWhtsappMsgCount = async () => {
     await getAllWhtsappCountHandler();
     if (isAuditor) {
@@ -114,16 +123,10 @@ const MessagingWidget = (props: Props) => {
         'false',
         newFilter
       );
+    } else {
+      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     }
-    else {
-      await getTicketHandler(
-        searchByName,
-        pageNumber,
-        'false',
-        newFilter
-      );
-    }
-  }
+  };
   useEffect(() => {
     // Check if socket is connected
     if (!socket.connected) {
@@ -132,8 +135,8 @@ const MessagingWidget = (props: Props) => {
     // Listen for the 'newMessage' event
     socket.on('newMessage', async (data) => {
       setMessages((prevMessages) => [...prevMessages, data.message]);
-      getAllWhtsappMsgCount()
-      handleMarkAsRead(props.ticketId)
+      getAllWhtsappMsgCount();
+      handleMarkAsRead(props.ticketId);
     });
 
     // Clean up the socket connection on component unmount
@@ -144,9 +147,8 @@ const MessagingWidget = (props: Props) => {
   }, [ticketID]);
 
   useEffect(() => {
-    handleMarkAsRead(ticketID)
-  }, [ticketID])
-
+    handleMarkAsRead(ticketID);
+  }, [ticketID]);
 
   useEffect(() => {
     if (ticketID) {
@@ -170,24 +172,22 @@ const MessagingWidget = (props: Props) => {
     }
   }, [ticketID]);
 
-
   const handleKeyPress = (e: any) => {
     if (e.key === 'Enter' && sendMessage.trim() !== '') {
-      setIsDisabled(true)
+      setIsDisabled(true);
       handleSendMessage();
     }
   };
   const handleSendMessage = async () => {
-    setIsDisabled(true)
+    setIsDisabled(true);
     await sendTextMessage(sendMessage, consumerId, ticketID as string);
     setSendMessage('');
-    setIsDisabled(false)
+    setIsDisabled(false);
   };
 
   const handleImageUpload = () => {
     fileInputRef.current?.click();
   };
-
 
   const handleFileSelect = async (event) => {
     const selectedFile = event.target.files[0];
@@ -222,8 +222,6 @@ const MessagingWidget = (props: Props) => {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
     }
   }, [messages]);
-
-
 
   useEffect(() => {
     // Adjust the height on initial render
@@ -260,25 +258,39 @@ const MessagingWidget = (props: Props) => {
 
         <Stack
           direction="column"
-          height={whtsappExpanded ? '80vh' : isAuditor ? '58vh' : '55vh'}
-
+          height={
+            whtsappExpanded
+              ? '80vh'
+              : isAuditor
+              ? '58vh'
+              : localStorage.getItem('ticketType') !== 'Follow-Up'
+              ? '55vh'
+              : '76vh'
+          }
           position="relative"
           bgcolor="white"
-          sx={{ borderBottomLeftRadius: "18px" }}
+          sx={{ borderBottomLeftRadius: '18px' }}
         >
           <Box
             ref={containerRef}
-            height={whtsappExpanded ? '70vh' : isAuditor ? '58vh' : '45vh'}
+            height={
+              whtsappExpanded
+                ? '70vh'
+                : isAuditor
+                ? '58vh'
+                : localStorage.getItem('ticketType') !== 'Follow-Up'
+                ? '40vh'
+                : '66vh'
+            }
             sx={{
               backgroundImage: `url(${bgWhatsapp})`,
               overflowY: 'auto'
-
             }}
             className={styles.whtsappMessageBox}
           >
-            {messages
-              ? messages.length > 0
-                ? messages.map((message, index) => (
+            {messages ? (
+              messages.length > 0 ? (
+                messages.map((message, index) => (
                   <Stack
                     key={index}
                     direction="column"
@@ -353,15 +365,17 @@ const MessagingWidget = (props: Props) => {
                             {dayjs(message.createdAt).format(
                               'DD MMM YYYY hh:mm A'
                             )}
-
                           </Typography>
-                          <Avatar sx={{
-                            fontSize: '8px', bgcolor: 'orange',
-                            height: '1rem',
-                            width: '1rem',
-                            margin: '0.3rem',
-                            marginTop: '8px'
-                          }}>
+                          <Avatar
+                            sx={{
+                              fontSize: '8px',
+                              bgcolor: 'orange',
+                              height: '1rem',
+                              width: '1rem',
+                              margin: '0.3rem',
+                              marginTop: '8px'
+                            }}
+                          >
                             {user?.firstName[0]?.toUpperCase()}
                             {user?.lastName[0]?.toUpperCase()}
                           </Avatar>
@@ -370,100 +384,141 @@ const MessagingWidget = (props: Props) => {
                     )}
                   </Stack>
                 ))
-                : (<>
+              ) : (
+                <>
                   {/* No Messages Available */}
                   <Box
-                    // className="NotFound-Page"
+                    className="NotFound-Page"
                     display={'flex'}
                     flexDirection={'column'}
                     justifyContent={'center'}
                   >
-                    <Stack sx={{
-                      alignItems: "center",
-                      textAlign: "center",
-                      marginTop: "30px",
-
-                    }}><img width={'200px'} height={'200px'} src={NotFoundIcon} />
+                    <Stack
+                      sx={{
+                        alignItems: 'center',
+                        textAlign: 'center'
+                        // marginTop: '30px'
+                      }}
+                    >
+                      <img
+                        width={'200px'}
+                        height={'200px'}
+                        src={NotFoundIcon}
+                      />
                     </Stack>
-                    <Box textAlign={'center'} sx={{
-                      font: "bold",
-                      fontSize: "24px",
-                      fontFamily: "Outfit,sans-serif"
-                    }}>
+                    <Box
+                      textAlign={'center'}
+                      sx={{
+                        font: 'bold',
+                        fontSize: '24px',
+                        fontFamily: 'Outfit,sans-serif'
+                      }}
+                    >
                       No Message Available
                     </Box>
-
                   </Box>
-                </>)
-              : (<Box className="NotFound-Page">
+                </>
+              )
+            ) : (
+              <Box className="NotFound-Page">
                 <CircularProgress />
-              </Box>)
-            }
+              </Box>
+            )}
           </Box>
 
-          {!isAuditor && <Box borderTop={2.5} borderColor="#317AE2" bottom={0} bgcolor="white"
-            sx={{ height: "10vh", borderBottomLeftRadius: "18px" }}>
-            <Stack p={"0px 8px 0px 8px"} spacing={4} >
-              <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-              >
-                <Box style={{
-                  cursor: 'pointer',
-                  marginLeft: -20,
-                  height: '100%',
-                  alignSelf: 'flex-end'
-                }}>
-                  <Button
-                    onClick={handleImageUpload}
-                  >
-                    <img src={Attachment} alt="" />
-                  </Button>
-                  <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    style={{ display: 'none', border: 'none' }}
-                    onChange={handleFileSelect}
-                    ref={fileInputRef}
-                  />
-                </Box>
-                <textarea
-                  ref={textareaRef}
-                  value={sendMessage}
-                  className={styles.replytextArea}
-                  onChange={(e) => {
-                    setSendMessage(e.target.value);
-                    if (textareaRef.current) {
-                      textareaRef.current.style.height = 'auto';
-                      textareaRef.current.style.height = `${Math.min(
-                        textareaRef.current.scrollHeight,
-                        window.innerHeight * 0.1
-                      )}px`;
-                    }
-                  }}
-                  onKeyPress={(e) => { if (!isDisabled) { handleKeyPress(e) } }}
-                  placeholder="Enter a Message"
-                />
+          {!isAuditor && (
+            <Box
+              borderTop={2.5}
+              borderColor="#317AE2"
+              bottom={0}
+              bgcolor="white"
+              sx={{ height: '10vh', borderBottomLeftRadius: '18px' }}
+            >
+              <Stack p={'0px 8px 0px 8px'} spacing={4}>
                 <Box
-                  className={sendMessage ? styles.sendButtonActive : styles.sendButton}
-                  onClick={() => { if (!isDisabled) { handleSendMessage() } }}
+                  display="flex"
+                  justifyContent="space-between"
+                  alignItems="center"
                 >
-                  <Typography sx={{ cursor: "pointer" }} className={sendMessage ? styles.sendButtonTextActive : styles.sendButtonText}>
-                    Send
-                  </Typography>
-                </Box>
-                {!whtsappExpanded && (
-                  <img
-                    src={expandIcon}
-                    alt=""
-                    style={{ width: '1rem', marginLeft: 10, cursor: 'pointer', alignSelf: 'flex-end', marginBottom: '0.5rem' }}
-                    onClick={() => setWhtsappExpanded(true)}
+                  <Box
+                    style={{
+                      cursor: 'pointer',
+                      marginLeft: -20,
+                      height: '100%',
+                      alignSelf: 'flex-end'
+                    }}
+                  >
+                    <Button onClick={handleImageUpload}>
+                      <img src={Attachment} alt="" />
+                    </Button>
+                    <input
+                      type="file"
+                      accept="image/*,.pdf"
+                      style={{ display: 'none', border: 'none' }}
+                      onChange={handleFileSelect}
+                      ref={fileInputRef}
+                    />
+                  </Box>
+                  <textarea
+                    ref={textareaRef}
+                    value={sendMessage}
+                    className={styles.replytextArea}
+                    onChange={(e) => {
+                      setSendMessage(e.target.value);
+                      if (textareaRef.current) {
+                        textareaRef.current.style.height = 'auto';
+                        textareaRef.current.style.height = `${Math.min(
+                          textareaRef.current.scrollHeight,
+                          window.innerHeight * 0.1
+                        )}px`;
+                      }
+                    }}
+                    onKeyPress={(e) => {
+                      if (!isDisabled) {
+                        handleKeyPress(e);
+                      }
+                    }}
+                    placeholder="Enter a Message"
                   />
-                )}
-              </Box>
-            </Stack>
-          </Box>}
+                  <Box
+                    className={
+                      sendMessage ? styles.sendButtonActive : styles.sendButton
+                    }
+                    onClick={() => {
+                      if (!isDisabled) {
+                        handleSendMessage();
+                      }
+                    }}
+                  >
+                    <Typography
+                      sx={{ cursor: 'pointer' }}
+                      className={
+                        sendMessage
+                          ? styles.sendButtonTextActive
+                          : styles.sendButtonText
+                      }
+                    >
+                      Send
+                    </Typography>
+                  </Box>
+                  {!whtsappExpanded && (
+                    <img
+                      src={expandIcon}
+                      alt=""
+                      style={{
+                        width: '1rem',
+                        marginLeft: 10,
+                        cursor: 'pointer',
+                        alignSelf: 'flex-end',
+                        marginBottom: '0.5rem'
+                      }}
+                      onClick={() => setWhtsappExpanded(true)}
+                    />
+                  )}
+                </Box>
+              </Stack>
+            </Box>
+          )}
         </Stack>
       </Box>
     </>

@@ -153,7 +153,8 @@ const PatientRecord = ({ isPatient }) => {
         );
       }
     };
-
+    setIsDiagonsticTestEditing(false);
+    setIsEditing(false);
     getTicketInfo(ticketID);
   }, [ticketID, tickets, diagonsticsTest]);
 
@@ -267,6 +268,11 @@ const PatientRecord = ({ isPatient }) => {
         ]
       });
     }
+  };
+
+  const handleCancelDiagno = async () => {
+    setIsDiagonsticTestEditing(false);
+    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
   };
 
   const [admissionTypeClicked, setAmissionTypeClicked] = useState(true);
@@ -643,7 +649,9 @@ const PatientRecord = ({ isPatient }) => {
                   <Stack display="flex" flexDirection="row" gap="5px">
                     <button
                       className="cancel-btn"
-                      onClick={() => setIsDiagonsticTestEditing(false)}
+                      onClick={() => {
+                        handleCancelDiagno();
+                      }}
                     >
                       cancel
                     </button>
@@ -678,57 +686,59 @@ const PatientRecord = ({ isPatient }) => {
           </Box>
           {diagnostics.map((diagnostic, index) => (
             <React.Fragment key={index}>
-              <Box className="Patient-records-Head">
-                {isDiagonsticTestEditing ? (
+              {/* <Box className="Patient-records-Head"> */}
+              {isDiagonsticTestEditing ? (
+                <Stack
+                  className="Patient-records-data"
+                  direction="row"
+                  alignItems="center"
+                >
+                  <Select
+                    labelId="Diagnostics Test"
+                    id="Diagnostics Test"
+                    value={diagnostic}
+                    onChange={(e) => handleDiagnosticChange(e, index)}
+                    variant="outlined"
+                    size="small"
+                    style={{
+                      fontFamily: 'Outfit,sans-serif',
+                      fontSize: '12px'
+                    }}
+                  >
+                    <MenuItem value="PET-CT">PET-CT</MenuItem>
+                    <MenuItem value="CT-Scan">CT-Scan</MenuItem>
+                    <MenuItem value="Lab">Lab</MenuItem>
+                    <MenuItem value="MRI">MRI</MenuItem>
+                    <MenuItem value="USG">USG</MenuItem>
+                    <MenuItem value="X-RAY">X-RAY</MenuItem>
+                  </Select>
                   <Stack
                     className="Patient-records-data"
-                    direction="row"
-                    alignItems="center"
+                    sx={{ marginLeft: '20px', color: 'red' }}
+                    onClick={() => {
+                      removeDiagnosticTest(index);
+                    }}
                   >
-                    <Select
-                      labelId="Diagnostics Test"
-                      id="Diagnostics Test"
-                      value={diagnostic}
-                      onChange={(e) => handleDiagnosticChange(e, index)}
-                      variant="outlined"
-                      size="small"
-                      style={{
-                        fontFamily: 'Outfit,sans-serif',
-                        fontSize: '12px'
-                      }}
-                    >
-                      <MenuItem value="PET-CT">PET-CT</MenuItem>
-                      <MenuItem value="CT-Scan">CT-Scan</MenuItem>
-                      <MenuItem value="Lab">Lab</MenuItem>
-                      <MenuItem value="MRI">MRI</MenuItem>
-                      <MenuItem value="USG">USG</MenuItem>
-                      <MenuItem value="X-RAY">X-RAY</MenuItem>
-                    </Select>
-                    <Stack
-                      className="Patient-records-data"
-                      sx={{ marginLeft: '20px', color: 'red' }}
-                      onClick={() => {
-                        removeDiagnosticTest(index);
-                      }}
-                    >
-                      <DeleteIcon />
-                    </Stack>
+                    <DeleteIcon />
                   </Stack>
-                ) : (
-                  <>
-                    {diagnostic !== '' && (
-                      <>
+                </Stack>
+              ) : (
+                <>
+                  {diagnostic !== '' && (
+                    <>
+                      <Box className="Patient-records-Head">
                         <Stack className="dot-list">
                           <span>&#8226;</span>
                         </Stack>
                         <Stack className="Patient-records-data">
                           {diagnostic}
                         </Stack>
-                      </>
-                    )}
-                  </>
-                )}
-              </Box>
+                      </Box>
+                    </>
+                  )}
+                </>
+              )}
+              {/* </Box> */}
             </React.Fragment>
           ))}
         </Box>

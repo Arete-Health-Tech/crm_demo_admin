@@ -180,15 +180,28 @@ const NotesWidget = (props: Props) => {
 
   return (
     <>
-      <Box height="95%" position="relative" bgcolor="white" p={1}>
+      <Box height="95%" position="relative" bgcolor="white" py={2}>
         {loading ? (
           // <Box height="36vh">Loading... </Box>
-          <Box height="36vh" className="NotFound-Page">
+          <Box
+            height={
+              localStorage.getItem('ticketType') !== 'Follow-Up'
+                ? '40vh'
+                : '66vh'
+            }
+            className="NotFound-Page"
+          >
             <CircularProgress />
           </Box>
         ) : notes.length > 0 && notesClickedData === null ? (
           <Box
-            height={isAuditor ? '56vh' : '36vh'}
+            height={
+              isAuditor
+                ? '56vh'
+                : localStorage.getItem('ticketType') !== 'Follow-Up'
+                ? '36vh'
+                : '66vh'
+            }
             sx={{
               overflowY: 'scroll',
               '&::-webkit-scrollbar ': {
@@ -263,7 +276,12 @@ const NotesWidget = (props: Props) => {
             display={'flex'}
             flexDirection={'column'}
             justifyContent={'center'}
-            height="36vh"
+            // marginTop={'20px'}
+            height={
+              localStorage.getItem('ticketType') !== 'Follow-Up'
+                ? '40vh'
+                : '66vh'
+            }
             sx={{
               borderBottomLeftRadius: '20px',
               borderBottomRightRadius: '20px'
@@ -291,7 +309,11 @@ const NotesWidget = (props: Props) => {
           </Box>
         ) : (
           <Box
-            height={'36vh'}
+            height={
+              localStorage.getItem('ticketType') !== 'Follow-Up'
+                ? '36vh'
+                : '66vh'
+            }
             sx={{
               overflowY: 'scroll',
               '&::-webkit-scrollbar ': {

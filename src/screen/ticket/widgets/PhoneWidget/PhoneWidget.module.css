@@ -119,6 +119,10 @@
   height: 40vh;
   overflow: scroll;
 }
+.phoneBoxFollow {
+  height: 66vh;
+  overflow: scroll;
+}
 
 .AuditorphoneBox {
   height: 57vh;

@@ -376,7 +376,6 @@ const Navbar = ({ children }) => {
                     onClick={() => {
                       localStorage.setItem('ticketType', 'Admission');
                       handleGoToTicket('Admission');
-                      setPageNumber(2)
                     }}
                     sx={{
                       display: 'flex',
@@ -418,7 +417,6 @@ const Navbar = ({ children }) => {
                     onClick={() => {
                       localStorage.setItem('ticketType', 'Diagnostics');
                       handleGoToTicket('Diagnostics');
-                      setPageNumber(2)
                     }}
                     sx={{
                       display: 'flex',
@@ -460,7 +458,6 @@ const Navbar = ({ children }) => {
                     onClick={() => {
                       localStorage.setItem('ticketType', 'Follow-Up');
                       handleGoToTicket('Follow-Up');
-                      setPageNumber(2)
                     }}
                     sx={{
                       display: 'flex',

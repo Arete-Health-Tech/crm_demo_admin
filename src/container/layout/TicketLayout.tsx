@@ -927,7 +927,6 @@ const Ticket = () => {
       await getAllTaskCountHandler();
       await getAllServiceFromDbHandler();
     })();
-    setPageNumber(1);
     setIsAuditor(false);
     setSearchName('');
     setSearchByName(UNDEFINED);

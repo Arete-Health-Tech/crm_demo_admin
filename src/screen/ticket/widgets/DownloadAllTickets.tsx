@@ -157,8 +157,12 @@ const DownloadAllTickets = (props: Props) => {
         stage: stageSetter(ticket?.stage[0]?._id)
           ? stageSetter(ticket?.stage[0]?._id)
           : '',
-        department: departmentSetter(ticket?.prescription[0]?.departments[0]),
-        doctor: doctorSetter(ticket?.prescription[0]?.doctor),
+        department:
+          departmentSetter(ticket?.prescription[0]?.departments[0]) ||
+          ticket?.prescription[0]?.departmentDetails[0]?.name,
+        doctor:
+          doctorSetter(ticket?.prescription[0]?.doctor) ||
+          ticket?.prescription[0]?.doctorDetails[0]?.name,
         admissionType: ticket.prescription[0].admission
           ? ticket.prescription[0].admission
           : 'Not Advised',

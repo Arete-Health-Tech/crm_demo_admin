@@ -117,30 +117,30 @@ const CustomModal = () => {
   }, [currentTicket]);
 
   const startTimer = async () => {
-    const returnedData = await callAgent(currentTicket?.consumer[0]?.phone);
-    // const returnedData = await callAgent(currentTicket?.consumer[0]?.phone)
-    if (returnedData.status == 'Agent is not available') {
-      toast.error('Agent is not loggedIn');
-      setAgentLogin(true);
-    } else if (
-      returnedData.status == 'queued successfully' ||
-      returnedData.status == 'Customer Number is in DND'
-    ) {
-      if (timerRef.current !== null) {
-        clearInterval(timerRef.current);
-      }
-      timerRef.current = setInterval(() => {
-        setTimer((prevTimer) => prevTimer + 1);
-      }, 1000);
-      setUCID(returnedData.ucid);
-      setChipOpen(true);
-      setDialogOpen(true);
-    } else {
-      toast.error(returnedData.status);
-      setAgentLogin(true);
-    }
-    // setChipOpen(true);
-    // setDialogOpen(true);
+    // const returnedData = await callAgent(currentTicket?.consumer[0]?.phone);
+    // // const returnedData = await callAgent(currentTicket?.consumer[0]?.phone)
+    // if (returnedData.status == 'Agent is not available') {
+    //   toast.error('Agent is not loggedIn');
+    //   setAgentLogin(true);
+    // } else if (
+    //   returnedData.status == 'queued successfully' ||
+    //   returnedData.status == 'Customer Number is in DND'
+    // ) {
+    //   if (timerRef.current !== null) {
+    //     clearInterval(timerRef.current);
+    //   }
+    //   timerRef.current = setInterval(() => {
+    //     setTimer((prevTimer) => prevTimer + 1);
+    //   }, 1000);
+    //   setUCID(returnedData.ucid);
+    //   setChipOpen(true);
+    //   setDialogOpen(true);
+    // } else {
+    //   toast.error(returnedData.status);
+    //   setAgentLogin(true);
+    // }
+    setChipOpen(true);
+    setDialogOpen(true);
   };
 
   const stopTimer = () => {

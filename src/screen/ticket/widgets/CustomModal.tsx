@@ -551,6 +551,18 @@ const CustomModal = () => {
                       {' '}
                       Call Complete
                     </button>
+                    <button
+                      style={{
+                        backgroundColor: isButtonClicked('Call Not Connected')
+                          ? '#DAE8FF'
+                          : '#F6F7F9'
+                      }}
+                      onClick={() => handleButtonClick('Call Not Connected')}
+                      className="call-Button"
+                    >
+                      {' '}
+                      Call Not Connected
+                    </button>
                   </Stack>
                 </Stack>
               </Stack>

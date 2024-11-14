@@ -553,15 +553,15 @@ const CustomModal = () => {
                     </button>
                     <button
                       style={{
-                        backgroundColor: isButtonClicked('Call Not Connected')
+                        backgroundColor: isButtonClicked('Wrong Number')
                           ? '#DAE8FF'
                           : '#F6F7F9'
                       }}
-                      onClick={() => handleButtonClick('Call Not Connected')}
+                      onClick={() => handleButtonClick('Wrong Number')}
                       className="call-Button"
                     >
                       {' '}
-                      Call Not Connected
+                      Wrong Number
                     </button>
                   </Stack>
                 </Stack>

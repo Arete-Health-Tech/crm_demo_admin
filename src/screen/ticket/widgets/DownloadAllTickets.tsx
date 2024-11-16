@@ -269,7 +269,8 @@ const DownloadAllTickets = (props: Props) => {
           ticket?.status === 'dnp' ||
           ticket?.status === 'dnd' ||
           ticket?.status === 'CallCompleted' ||
-          ticket?.status === 'RescheduledCall'
+          ticket?.status === 'RescheduledCall'||
+          ticket?.status === "Wrong Number"
             ? ticket?.status
             : 'N/A',
         Call_Recording:

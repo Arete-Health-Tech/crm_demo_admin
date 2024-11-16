@@ -915,6 +915,15 @@ const TicketFilter = (props: {
               >
                 Call Completed
               </ToggleButton>
+              <ToggleButton
+                value="Wrong Number"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                Wrong Number
+              </ToggleButton>
             </ToggleButtonGroup>
           </Box>
           {localStorage.getItem('ticketType') === 'Admission' && (

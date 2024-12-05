@@ -34,14 +34,14 @@ import useTicketStore from '../../../store/ticketStore';
 import { apiClient } from '../../../api/apiClient';
 import { useNavigate, useParams } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
-import CloseModalIcon from "../../../assets/Group 48095853.svg";
-import UploadFileIcon from "../../../assets/UploadFileIcon.svg";
-import ActiveIcon from "../../../assets/CheckedActive.svg"
-import NotActiveIcon from "../../../assets/ActiveIcon.svg"
-import CheckedActiveIcon from "../../../assets/NotActive.svg"
-import RightArrowIcon from "../../../assets/arrow-right.svg"
-import documentIcon from "../../../assets/document-text.svg"
-import "../singleTicket.css";
+import CloseModalIcon from '../../../assets/Group 48095853.svg';
+import UploadFileIcon from '../../../assets/UploadFileIcon.svg';
+import ActiveIcon from '../../../assets/CheckedActive.svg';
+import NotActiveIcon from '../../../assets/ActiveIcon.svg';
+import CheckedActiveIcon from '../../../assets/NotActive.svg';
+import RightArrowIcon from '../../../assets/arrow-right.svg';
+import documentIcon from '../../../assets/document-text.svg';
+import '../singleTicket.css';
 type Props = {
   currentTicket: iTicket | any;
   setTicketUpdateFlag: any;
@@ -64,7 +64,7 @@ const StageCard = (props: Props) => {
   const [paymentIDValue, setPaymentIDValue] = useState('');
   const [noteTextValue, setNoteTextValue] = useState('');
   const [file, setFile] = useState(null);
-  const [fileName, setFileName] = useState("");
+  const [fileName, setFileName] = useState('');
   const [lose, setLose] = useState('');
   const [openLose, setOpenLose] = useState(false);
 
@@ -100,42 +100,40 @@ const StageCard = (props: Props) => {
       ? filterTicketsFollowUp
       : filterTickets;
 
-
   const [steps, setSteps] = useState([
     {
       id: 1,
-      key: "NewLead",
-      label: "New Lead",
-      isDone: true,
+      key: 'NewLead',
+      label: 'New Lead',
+      isDone: true
     },
     {
       id: 2,
-      key: "Contacted",
-      label: "Contacted",
-      isDone: false,
+      key: 'Contacted',
+      label: 'Contacted',
+      isDone: false
     },
     {
       id: 3,
-      key: "Working",
-      label: "Working",
-      isDone: false,
+      key: 'Working',
+      label: 'Working',
+      isDone: false
     },
     {
       id: 4,
-      key: "Orientation",
-      label: "Orientation",
-      isDone: false,
+      key: 'Orientation',
+      label: 'Orientation',
+      isDone: false
     },
     {
       id: 5,
-      key: "Nurturing",
-      label: "Nurturing",
-      isDone: false,
-    },
+      key: 'Nurturing',
+      label: 'Nurturing',
+      isDone: false
+    }
   ]);
 
   const [activeStep, setActiveStep] = useState(steps[0]);
-
 
   const handleHospitalNameChange = (event) => {
     setHospitalName(event.target.value);
@@ -204,22 +202,21 @@ const StageCard = (props: Props) => {
 
       setProgressCount(stageDetail?.code * 20 || 0);
 
-
       if (stageDetail?.code > 0) {
-        const index = activeStep ? steps.findIndex((x) => x.key === activeStep.key) : -1;
+        const index = activeStep
+          ? steps.findIndex((x) => x.key === activeStep.key)
+          : -1;
         if (index !== -1) {
           setSteps((prevSteps) =>
             prevSteps.map((step, i) => ({
               ...step,
-              isDone: i < stageDetail?.code,
+              isDone: i < stageDetail?.code
             }))
           );
         }
       }
 
-
       if (activeStep > steps[0] && progressCount > 0) {
-
         setActiveStep(steps[Math.floor(progressCount / 20) - 1]);
       }
 
@@ -239,7 +236,6 @@ const StageCard = (props: Props) => {
   }, [currentTicket, stages, subStages, changeStageName, ticketID]);
 
   const handleStages = async (name: any) => {
-
     setChangeStageName(name);
     const payload = {
       stageCode: currentStage?.code + 1,
@@ -269,24 +265,29 @@ const StageCard = (props: Props) => {
 
   const handleStagesNotFound = (name: string) => {
     if (changeStageName !== name) {
-      if (changeStageName === "Contacted") {
-        if (name !== "New Lead" && name !== "contacted") {
+      if (changeStageName === 'Contacted') {
+        if (name !== 'New Lead' && name !== 'contacted') {
           toast.warning(`Complete all Sub Stage in ${changeStageName} Stage!`);
         }
-      } else if (changeStageName === "Working") {
-        if (name !== "New Lead" && name !== "Contacted") {
+      } else if (changeStageName === 'Working') {
+        if (name !== 'New Lead' && name !== 'Contacted') {
           toast.warning(`Complete all Sub Stage in ${changeStageName} Stage!`);
         }
-      } else if (changeStageName === "Orientation") {
-        if (name !== "New Lead" && name !== "Contacted" && name !== "Working") {
+      } else if (changeStageName === 'Orientation') {
+        if (name !== 'New Lead' && name !== 'Contacted' && name !== 'Working') {
           toast.warning(`Complete all Sub Stage in ${changeStageName} Stage!`);
         }
-      } else if (changeStageName === "Nurturing") {
-        if (name !== "New Lead" && name !== "Contacted" && name !== "Working" && name !== "Orientation") {
+      } else if (changeStageName === 'Nurturing') {
+        if (
+          name !== 'New Lead' &&
+          name !== 'Contacted' &&
+          name !== 'Working' &&
+          name !== 'Orientation'
+        ) {
           toast.warning(`Complete all Sub Stage in ${changeStageName} Stage!`);
         }
       } else {
-        if (name !== "New Lead") {
+        if (name !== 'New Lead') {
           toast.warning(`Complete all Sub Stage in ${changeStageName} Stage!`);
         }
       }
@@ -298,15 +299,14 @@ const StageCard = (props: Props) => {
   };
 
   const handleClose = () => {
-    setPaymentIDValue("");
-    setFileName("");
+    setPaymentIDValue('');
+    setFileName('');
     setDisableWonButton(true);
     setFile(null);
     setOpen(false);
   };
 
   const handleTextChange = (event) => {
-
     if (event.target.value.length > 0) {
       setDisableWonButton(false);
     } else {
@@ -320,18 +320,14 @@ const StageCard = (props: Props) => {
     setNoteTextValue(event.target.value);
   };
 
-
   const handleFileChange = (event) => {
-
     setFileName(event.target.files[0].name);
     setFile(event.target.files[0]);
 
     if (event.target.value !== null) {
       setDisableWonButton(false);
     }
-
   };
-
 
   const handleSubmit = async () => {
     // Handle form submission logic here
@@ -360,8 +356,19 @@ const StageCard = (props: Props) => {
       isPayloadEmpty = false;
     }
 
+    // if (lose) {
+    //   formdata.append('dropReason', lose);
+    //   isPayloadEmpty = false;
+    // }
+    
     if (lose) {
-      formdata.append('dropReason', lose);
+      if (lose === 'Chose another hospital - Which Hospital' && hospitalName) {
+        const fullReason = `${lose} ${hospitalName}`; // Concatenate the reason with the hospital name
+        console.log('Full Reason:', fullReason); // Debugging
+        formdata.append('dropReason', fullReason); // Append the full reason to formdata
+      } else {
+        formdata.append('dropReason', lose); // Append the reason as is
+      }
       isPayloadEmpty = false;
     }
 
@@ -371,7 +378,6 @@ const StageCard = (props: Props) => {
         headers: {
           'Content-Type': 'multipart/form-data'
         }
-
       });
       setTimeout(() => {
         (async () => {
@@ -396,7 +402,6 @@ const StageCard = (props: Props) => {
       } else {
         redirectTicket();
       }
-
     }
 
     setOpen(false);
@@ -434,11 +439,9 @@ const StageCard = (props: Props) => {
       backgroundColor: '#0566FF',
       color: '#ffffff',
       fontSize: 12,
-      fontFamily: `"Outfit",sans-serif`,
-    },
+      fontFamily: `"Outfit",sans-serif`
+    }
   }));
-
-
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>

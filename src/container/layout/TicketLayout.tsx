@@ -565,6 +565,7 @@ const Ticket = () => {
   };
 
   function hasChanges(currentState) {
+    console.log('current stage----', currentState);
     return (
       JSON.stringify(initialStateForFilter) === JSON.stringify(currentState)
     );

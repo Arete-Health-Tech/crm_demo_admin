@@ -4,14 +4,19 @@ import {
   Box,
   Button,
   Chip,
+  createTheme,
   FormControl,
   Input,
   InputLabel,
   MenuItem,
+  outlinedInputClasses,
   Select,
   Snackbar,
   Stack,
-  TextField
+  TextField,
+  Theme,
+  ThemeProvider,
+  useTheme
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { Form, useParams } from 'react-router-dom';
@@ -26,11 +31,111 @@ import { updateConusmerData } from '../../../../api/ticket/ticket';
 import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
 import { apiClient } from '../../../../api/apiClient';
 import dayjs from 'dayjs';
+import { toast } from 'react-toastify';
+
+const CopyToClipboardIcon = () => (
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      d="M16 12.69V18.08C16 20.42 14.44 21.97 12.11 21.97H5.89C3.56 21.97 2 20.42 2 18.08V10.31C2 7.97004 3.56 6.42004 5.89 6.42004H9.72C10.75 6.42004 11.74 6.83004 12.47 7.56004L14.86 9.94004C15.59 10.67 16 11.66 16 12.69Z"
+      stroke="#292D32"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    <path
+      d="M22 8.24997V13.64C22 15.97 20.44 17.53 18.11 17.53H16V12.69C16 11.66 15.59 10.67 14.86 9.93997L12.47 7.55997C11.74 6.82997 10.75 6.41997 9.72 6.41997H8V5.85997C8 3.52997 9.56 1.96997 11.89 1.96997H15.72C16.75 1.96997 17.74 2.37997 18.47 3.10997L20.86 5.49997C21.59 6.22997 22 7.21997 22 8.24997Z"
+      stroke="#292D32"
+      stroke-width="1.5"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+  </svg>
+);
+
+const customTheme = (outerTheme: Theme) =>
+  createTheme({
+    palette: {
+      mode: outerTheme.palette.mode
+    },
+    components: {
+      MuiTextField: {
+        styleOverrides: {
+          root: {
+            '--TextField-brandBorderColor': '#D4DBE5',
+            '--TextField-brandBorderHoverColor': '#B2BAC2',
+            '--TextField-brandBorderFocusedColor': '#0566FF',
+            fontSize: '12px',
+
+            '& label.Mui-focused': {
+              color: 'grey'
+            }
+          }
+        }
+      },
+      MuiOutlinedInput: {
+        styleOverrides: {
+          notchedOutline: {
+            borderColor: 'none',
+            fontSize: '14px'
+          },
+          root: {
+            [`&:hover .${outlinedInputClasses.notchedOutline}`]: {
+              borderColor: 'var(--TextField-brandBorderHoverColor)'
+            },
+            [`&.Mui-focused .${outlinedInputClasses.notchedOutline}`]: {
+              borderColor: 'var(--TextField-brandBorderFocusedColor)'
+            }
+          }
+        }
+      },
+      MuiFilledInput: {
+        styleOverrides: {
+          root: {
+            '&::before': {
+              borderBottom: 'none'
+            },
+            '&::after': {
+              borderBottom: '2px solid var(--TextField-brandBorderFocusedColor)'
+            },
+            '&:hover:not(.Mui-disabled, .Mui-error):before': {
+              borderBottom: '2px solid var(--TextField-brandBorderHoverColor)'
+            },
+            '&.Mui-focused:after': {
+              borderBottom: '2px solid var(--TextField-brandBorderFocusedColor)'
+            }
+          }
+        }
+      },
+      MuiInput: {
+        styleOverrides: {
+          root: {
+            '&::before': {
+              borderBottom: 'none',
+              fontSize: '14px'
+            },
+            '&:hover:not(.Mui-disabled, .Mui-error):before': {
+              borderBottom: '2px solid var(--TextField-brandBorderHoverColor)'
+            },
+            '&.Mui-focused:after': {
+              borderBottom: '2px solid var(--TextField-brandBorderFocusedColor)'
+            }
+          }
+        }
+      }
+    }
+  });
 
 interface patientData {
   uhid: string;
   firstName: string;
   lastName: string;
+  phone: string;
   age: string;
   gender: string;
   doctor: string;
@@ -86,6 +191,7 @@ interface MyComponentProps {
 }
 
 const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
+  const outerTheme = useTheme();
   const { ticketID } = useParams();
   const { doctors, departments, stages } = useServiceStore();
   const {
@@ -114,6 +220,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     uhid: '',
     firstName: '',
     lastName: '',
+    phone: '',
     age: '',
     gender: '',
     doctor: '',
@@ -160,6 +267,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
   };
   const patientData = [
     { id: 'uhid', label: 'UHID', value: `#${PatientData.uhid}` },
+    { id: 'phone', label: 'Phone No.', value: PatientData.phone },
     {
       id: 'Name',
       label: 'Name',
@@ -247,6 +355,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
       setPatientData((prevData) => ({
         ...prevData,
         uhid: `${fetchTicket?.consumer?.[0]?.uid}`,
+        phone: `${fetchTicket?.consumer?.[0]?.phone}`,
         firstName: `${fetchTicket?.consumer?.[0]?.firstName ?? ''}`,
         lastName: `${fetchTicket?.consumer?.[0]?.lastName ?? ''}`,
         remarks: `${
@@ -277,6 +386,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
       }));
     };
     getTicketInfo(ticketID);
+    setIsEditing(false);
   }, [ticketID, tickets]);
 
   const handleSubmit = async (event) => {
@@ -357,6 +467,18 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
   };
   const today = new Date().toISOString().split('T')[0];
 
+  const handleCopyClick = () => {
+    navigator.clipboard
+      .writeText(PatientData.phone)
+      .then(() => {
+        // alert('Phone number copied to clipboard!');
+        toast.success('Phone number copied to clipboard!');
+      })
+      .catch((err) => {
+        toast.error('Failed to copy phone number: ', err);
+      });
+  };
+
   return (
     <>
       <Box className="Patient-detail">
@@ -422,7 +544,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                       type="text"
                       label="uhid"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                       inputProps={{
                         style: { fontSize: '14px' },
                         onInput: handleInput
@@ -434,16 +556,40 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                           uhid: e.target.value
                         }))
                       }
+                      InputLabelProps={{
+                        style: {
+                          fontSize: '13px',
+                          color: 'grey',
+
+                          fontFamily: `"Outfit",sans-serif`
+                        }
+                      }}
                       InputProps={{
                         style: {
-                          textTransform: 'capitalize',
-                          fontSize: '14px',
-                          fontFamily: 'Outfit,sans-serif'
+                          fontSize: '12px',
+                          // padding: '2px 0',
+
+                          color: 'var(--Text-Black, #080F1A)',
+                          fontFamily: `"Outfit",sans-serif`
                         }
+                      }}
+                      sx={{
+                        width: '75%',
+                        color: '#0566FF',
+                        '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+                          {
+                            borderColor: '#0566FF'
+                          }
                       }}
                       error={!!error}
                       helperText={error}
                     />
+                  </Stack>
+                </Box>
+                <Box className="Patient-detail-Head">
+                  <Stack className="Patient-detail-title">Phone No.</Stack>
+                  <Stack component="div" className="Patient-detail-data">
+                    {currentTicket?.consumer[0].phone}
                   </Stack>
                 </Box>
                 {/* First Name */}
@@ -455,7 +601,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                       type="text"
                       label="First Name"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                       inputProps={{ style: { fontSize: '14px' } }}
                       value={PatientData.firstName}
                       onChange={(e) =>
@@ -464,12 +610,30 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                           firstName: e.target.value
                         }))
                       }
+                      InputLabelProps={{
+                        style: {
+                          fontSize: '13px',
+                          color: 'grey',
+
+                          fontFamily: `"Outfit",sans-serif`
+                        }
+                      }}
                       InputProps={{
                         style: {
-                          textTransform: 'capitalize',
-                          fontSize: '14px',
-                          fontFamily: 'Outfit,sans-serif'
+                          fontSize: '12px',
+                          // padding: '2px 0',
+
+                          color: 'var(--Text-Black, #080F1A)',
+                          fontFamily: `"Outfit",sans-serif`
                         }
+                      }}
+                      sx={{
+                        width: '75%',
+                        color: '#0566FF',
+                        '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+                          {
+                            borderColor: '#0566FF'
+                          }
                       }}
                     />
                   </Stack>
@@ -483,7 +647,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                       type="text"
                       label="Last Name"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                       inputProps={{ style: { fontSize: '14px' } }}
                       value={PatientData.lastName}
                       onChange={(e) =>
@@ -492,12 +656,30 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                           lastName: e.target.value
                         }))
                       }
+                      InputLabelProps={{
+                        style: {
+                          fontSize: '13px',
+                          color: 'grey',
+
+                          fontFamily: `"Outfit",sans-serif`
+                        }
+                      }}
                       InputProps={{
                         style: {
-                          textTransform: 'capitalize',
-                          fontSize: '14px',
-                          fontFamily: 'Outfit,sans-serif'
+                          fontSize: '12px',
+                          // padding: '2px 0',
+
+                          color: 'var(--Text-Black, #080F1A)',
+                          fontFamily: `"Outfit",sans-serif`
                         }
+                      }}
+                      sx={{
+                        width: '75%',
+                        color: '#0566FF',
+                        '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+                          {
+                            borderColor: '#0566FF'
+                          }
                       }}
                     />
                   </Stack>
@@ -511,7 +693,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                       type="number"
                       label="Age"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                       inputProps={{ style: { fontSize: '14px' } }}
                       value={PatientData.age}
                       onChange={(e) =>
@@ -520,12 +702,30 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                           age: e.target.value
                         }))
                       }
+                      InputLabelProps={{
+                        style: {
+                          fontSize: '13px',
+                          color: 'grey',
+
+                          fontFamily: `"Outfit",sans-serif`
+                        }
+                      }}
                       InputProps={{
                         style: {
-                          textTransform: 'capitalize',
-                          fontSize: '14px',
-                          fontFamily: 'Outfit,sans-serif'
+                          fontSize: '12px',
+                          // padding: '2px 0',
+
+                          color: 'var(--Text-Black, #080F1A)',
+                          fontFamily: `"Outfit",sans-serif`
                         }
+                      }}
+                      sx={{
+                        width: '75%',
+                        color: '#0566FF',
+                        '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+                          {
+                            borderColor: '#0566FF'
+                          }
                       }}
                     />
                   </Stack>
@@ -539,7 +739,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                       type="date"
                       label="FollowUp Date"
                       variant="outlined"
-                      size="small"
+                      size="medium"
                       inputProps={{
                         min: today, // Set the min date to today
                         style: { fontSize: '14px' }
@@ -555,12 +755,30 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                         }));
                         console.log(e.target.value);
                       }}
+                      InputLabelProps={{
+                        style: {
+                          fontSize: '13px',
+                          color: 'grey',
+
+                          fontFamily: `"Outfit",sans-serif`
+                        }
+                      }}
                       InputProps={{
                         style: {
-                          textTransform: 'capitalize',
-                          fontSize: '14px',
-                          fontFamily: 'Outfit,sans-serif'
+                          fontSize: '12px',
+                          // padding: '2px 0',
+
+                          color: 'var(--Text-Black, #080F1A)',
+                          fontFamily: `"Outfit",sans-serif`
                         }
+                      }}
+                      sx={{
+                        width: '75%',
+                        color: '#0566FF',
+                        '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+                          {
+                            borderColor: '#0566FF'
+                          }
                       }}
                     />
                   </Stack>
@@ -569,8 +787,30 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 <Box className="Patient-detail-Head">
                   <Stack className="Patient-detail-title">Gender</Stack>
                   <Stack component="div" className="Patient-detail-data">
-                    <FormControl variant="outlined" size="small" fullWidth>
-                      <InputLabel id="gender-label">Gender</InputLabel>
+                    <FormControl
+                      variant="outlined"
+                      size="medium"
+                      sx={{
+                        color: 'grey',
+                        width: '75%',
+                        '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline':
+                          {
+                            color: 'grey',
+                            borderColor: '#0566FF'
+                          }
+                      }}
+                    >
+                      <InputLabel
+                        id="gender-label"
+                        sx={{
+                          textTransform: 'capitalize',
+                          fontSize: '14px',
+                          fontFamily: 'Outfit,sans-serif',
+                          color: 'grey'
+                        }}
+                      >
+                        Gender
+                      </InputLabel>
                       <Select
                         labelId="gender-label"
                         id="gender"
@@ -626,103 +866,109 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                 <Box className="Patient-detail-Head">
                   <Stack className="Patient-detail-title">Department</Stack>
                   <Stack component="div" className="Patient-detail-data">
-                    <Autocomplete
-                      size="small"
-                      fullWidth
-                      value={
-                        departments.find(
-                          (dept) => dept._id === PatientData.department
-                        ) || null
-                      }
-                      onChange={(e, value) =>
-                        setPatientData((prev) => ({
-                          ...prev,
-                          department: value ? `${value._id}` : ''
-                        }))
-                      }
-                      renderOption={(props, option) => (
-                        <li
-                          {...props}
-                          style={{
-                            textTransform: 'capitalize',
-                            fontFamily: 'sans-serif',
-                            fontSize: '12px'
-                          }}
-                        >
-                          {option.name}
-                        </li>
-                      )}
-                      getOptionLabel={(option) => option.name}
-                      options={departments.filter(
-                        (item) => item.parent === null
-                      )}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Department"
-                          InputProps={{
-                            ...params.InputProps,
-                            style: {
+                    <ThemeProvider theme={customTheme(outerTheme)}>
+                      <Autocomplete
+                        sx={{ width: '75%' }}
+                        size="medium"
+                        value={
+                          departments.find(
+                            (dept) => dept._id === PatientData.department
+                          ) || null
+                        }
+                        onChange={(e, value) =>
+                          setPatientData((prev) => ({
+                            ...prev,
+                            department: value ? `${value._id}` : ''
+                          }))
+                        }
+                        renderOption={(props, option) => (
+                          <li
+                            {...props}
+                            style={{
                               textTransform: 'capitalize',
-                              fontSize: '14px',
-                              fontFamily: 'Outfit,sans-serif'
-                            }
-                          }}
-                        />
-                      )}
-                    />
+                              fontFamily: 'sans-serif',
+                              fontSize: '12px'
+                            }}
+                          >
+                            {option.name}
+                          </li>
+                        )}
+                        getOptionLabel={(option) => option.name}
+                        options={departments.filter(
+                          (item) => item.parent === null
+                        )}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Department"
+                            InputProps={{
+                              ...params.InputProps,
+                              style: {
+                                textTransform: 'capitalize',
+                                fontSize: '14px',
+                                fontFamily: 'Outfit,sans-serif'
+                                // padding: '8px 0'
+                              }
+                            }}
+                          />
+                        )}
+                      />
+                    </ThemeProvider>
                   </Stack>
                 </Box>
 
                 <Box className="Patient-detail-Head">
                   <Stack className="Patient-detail-title">Doctor</Stack>
                   <Stack component="div" className="Patient-detail-data">
-                    <Autocomplete
-                      size="small"
-                      disablePortal
-                      renderOption={(props, option) => (
-                        <li
-                          {...props}
-                          style={{
-                            textTransform: 'capitalize',
-                            fontFamily: 'sans-serif',
-                            fontSize: '12px'
-                          }}
-                        >
-                          {option.name}
-                        </li>
-                      )}
-                      fullWidth
-                      value={
-                        doctors.find(
-                          (dept) => dept._id === PatientData.doctor
-                        ) || null
-                      }
-                      onChange={(e, value) =>
-                        setPatientData((prev) => ({
-                          ...prev,
-                          doctor: value ? value._id : ''
-                        }))
-                      }
-                      options={doctors.filter((item) =>
-                        item.departments.includes(PatientData.department)
-                      )}
-                      getOptionLabel={(option) => option.name}
-                      renderInput={(params) => (
-                        <TextField
-                          {...params}
-                          label="Doctor"
-                          InputProps={{
-                            ...params.InputProps,
-                            style: {
+                    <ThemeProvider theme={customTheme(outerTheme)}>
+                      <Autocomplete
+                        size="medium"
+                        disablePortal
+                        renderOption={(props, option) => (
+                          <li
+                            {...props}
+                            style={{
                               textTransform: 'capitalize',
-                              fontSize: '14px',
-                              fontFamily: 'Outfit,sans-serif'
-                            }
-                          }}
-                        />
-                      )}
-                    />
+                              fontFamily: 'sans-serif',
+                              fontSize: '12px'
+                            }}
+                          >
+                            {option.name}
+                          </li>
+                        )}
+                        sx={{ width: '75%' }}
+                        value={
+                          doctors.find(
+                            (dept) => dept._id === PatientData.doctor
+                          ) || null
+                        }
+                        onChange={(e, value) =>
+                          setPatientData((prev) => ({
+                            ...prev,
+                            doctor: value ? value._id : ''
+                          }))
+                        }
+                        options={doctors.filter((item) =>
+                          item.departments.includes(PatientData.department)
+                        )}
+                        getOptionLabel={(option) => option.name}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            label="Doctor"
+                            InputProps={{
+                              ...params.InputProps,
+                              style: {
+                                textTransform: 'capitalize',
+                                fontSize: '14px',
+                                fontFamily: 'Outfit,sans-serif'
+                                // padding: '8px 0'
+                              }
+                            }}
+                          />
+                        )}
+                      />
+                    </ThemeProvider>
                   </Stack>
                 </Box>
               </Box>
@@ -738,23 +984,37 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                       {field.label}
                     </Stack>
                     <Stack component="div" className="Patient-detail-data">
-                      {field.label === 'Department'
-                        ? departmentSetter(field.value)
-                        : field.label === 'Doctor'
-                        ? doctorSetter(field.value)
-                        : field.label === 'Followup Date'
-                        ? `${
-                            field.value === `null`
-                              ? 'Not Mentioned'
-                              : `${String(
-                                  new Date(field.value).getDate()
-                                ).padStart(2, '0')}-${String(
-                                  new Date(field.value).getMonth() + 1
-                                ).padStart(2, '0')}-${new Date(
-                                  field.value
-                                ).getFullYear()}`
-                          }`
-                        : field.value}
+                      {field.label === 'Department' ? (
+                        departmentSetter(field.value)
+                      ) : field.label === 'Doctor' ? (
+                        doctorSetter(field.value)
+                      ) : field.label === 'Followup Date' ? (
+                        `${
+                          field.value === `null`
+                            ? 'Not Mentioned'
+                            : `${String(
+                                new Date(field.value).getDate()
+                              ).padStart(2, '0')}-${String(
+                                new Date(field.value).getMonth() + 1
+                              ).padStart(2, '0')}-${new Date(
+                                field.value
+                              ).getFullYear()}`
+                        }`
+                      ) : field.label === 'Phone No.' ? (
+                        <Box display={'flex'} justifyContent={'space-around'}>
+                          <Stack>{field.value}</Stack>
+                          <Stack
+                            component="div"
+                            className="edit-icon"
+                            sx={{ cursor: 'pointer', marginLeft: '0.5rem' }}
+                            onClick={handleCopyClick}
+                          >
+                            <CopyToClipboardIcon />
+                          </Stack>
+                        </Box>
+                      ) : (
+                        field.value
+                      )}
                     </Stack>
                   </Box>
                 ) : (
@@ -795,7 +1055,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                   ?.hospital
                   ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]
                       ?.hospital
-                  : 'No Data Available'}
+                  : 'N/A'}
               </Stack>
             </Box>
             <Box className="additional-detail-Head">
@@ -805,7 +1065,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                   ?.doctor
                   ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]
                       ?.doctor
-                  : 'No Data Available'}
+                  : 'N/A'}
               </Stack>
             </Box>
             <Box className="additional-detail-Head">
@@ -815,7 +1075,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                   ?.additionalInfo
                   ? currentTicket?.opinion[currentTicket?.opinion?.length - 1]
                       ?.additionalInfo
-                  : 'No Data Available'}
+                  : 'N/A'}
               </Stack>
             </Box>
           </Box>
@@ -839,8 +1099,15 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                   <Box className="additional-detail-Head" key={item}>
                     <Stack
                       className="record-tag pharmacy-tag"
-                      width={'10.2vw'}
-                      sx={{ color: '#080F1A' }}
+                      sx={{
+                        background: '#dae8ff',
+                        padding: '0px 10px',
+                        width: 'fit-content',
+                        color: '#080F1A',
+                        borderRadius: '10px'
+                      }}
+                      // width={'10.2vw'}
+                      // sx={{ color: '#080F1A' }}
                     >
                       {item}
                     </Stack>
@@ -910,7 +1177,11 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
             autoHideDuration={4000}
             onClose={() => setShowAlert(false)}
           >
-            <Alert severity="warning">Please Create an Estimate.</Alert>
+            {isAuditor ? (
+              <Alert severity="warning">Estimate is not available.</Alert>
+            ) : (
+              <Alert severity="warning">Please Create an Estimate.</Alert>
+            )}
           </Snackbar>
         )}
       </Box>

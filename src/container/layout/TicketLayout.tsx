@@ -552,30 +552,42 @@ const Ticket = () => {
     });
     AllIntervals = [];
   };
+  function hasChanges(newFilter, initialState) {
+    const optionalKeys = ['admissionType', 'diagnosticsType'];
+    const filteredInitialState = { ...initialState };
+    const filteredCurrentState = { ...newFilter };
 
-  const initialStateForFilter = {
-    stageList: [],
-    representative: null,
-    results: null,
-    admissionType: [],
-    diagnosticsType: [],
-    dateRange: [],
-    status: [],
-    followUp: null
-  };
+    for (const key of optionalKeys) {
+      // Remove the optional keys from the initial state if not present in current state
+      if (!(key in newFilter)) {
+        delete filteredInitialState[key];
+      }
+    }
 
-  function hasChanges(currentState) {
-    console.log('current stage----', currentState);
+    // Compare the filtered objects
     return (
-      JSON.stringify(initialStateForFilter) === JSON.stringify(currentState)
+      JSON.stringify(filteredInitialState) ===
+      JSON.stringify(filteredCurrentState)
     );
   }
-
   console.log(searchByName, 'searchByName outside useffect');
 
   useEffect(() => {
     const refetchTickets = async () => {
-      console.log('typeof hasChanges(newFilter)', typeof hasChanges(newFilter));
+      const initialStateForFilter = {
+        stageList: [],
+        representative: null,
+        results: null,
+        admissionType: [],
+        diagnosticsType: [],
+        dateRange: [],
+        status: [],
+        followUp: null
+      };
+      console.log(
+        'typeof hasChanges(newFilter)',
+        hasChanges(newFilter, initialStateForFilter)
+      );
       console.log(pageNumber, 'pageNumber');
       console.log(
         localStorage.getItem('ticketType') === 'Diagnostics',
@@ -584,7 +596,7 @@ const Ticket = () => {
       console.log(searchByName, 'searchByName inside useffect');
       if (
         pageNumber === 1 &&
-        hasChanges(newFilter) &&
+        hasChanges(newFilter, initialStateForFilter) &&
         localStorage.getItem('ticketType') === 'Diagnostics'
       ) {
         console.log(pageNumber, 'inside if');

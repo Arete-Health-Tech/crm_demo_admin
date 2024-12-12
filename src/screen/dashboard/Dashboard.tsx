@@ -2,7 +2,6 @@
 // import Loader from '../../components/Loader';
 // import { Box, Card, CardContent, Grid } from '@mui/material';
 
-
 // import ChartTwo from './widgets/ChartTwo';
 // import ChartThree from './widgets/ChartThree';
 // import Diversity2Icon from '@mui/icons-material/Diversity2';
@@ -61,7 +60,6 @@
 //       console.error('Error fetching timer data:', error);
 //       // Handle the error here
 //     });
-
 
 //   getAllTimerStatusHandlerTodaysTask()
 //     .then((timerData) => {
@@ -159,7 +157,6 @@
 //       });
 //   }, []);
 
-
 //   useEffect(() => {
 //     (async () => {
 //       try {
@@ -177,9 +174,6 @@
 //       }
 //     })();
 //   }, [])
-
-
-
 
 //   const cardsData = [
 //     {
@@ -327,7 +321,15 @@ import ChartThree from './widgets/ChartThree';
 import Diversity2Icon from '@mui/icons-material/Diversity2';
 
 import useTicketStore from '../../store/ticketStore';
-import { getAllStageCountHandler, getAllTimerStatusHandlerCallCompleted, getAllTimerStatusHandlerDnd, getAllTimerStatusHandlerPending, getAllTimerStatusHandlerRescheduledCall, getAllTimerStatusHandlerTodaysTask, getAllWonAndLossHandler } from '../../api/dashboard/dashboardHandler';
+import {
+  getAllStageCountHandler,
+  getAllTimerStatusHandlerCallCompleted,
+  getAllTimerStatusHandlerDnd,
+  getAllTimerStatusHandlerPending,
+  getAllTimerStatusHandlerRescheduledCall,
+  getAllTimerStatusHandlerTodaysTask,
+  getAllWonAndLossHandler
+} from '../../api/dashboard/dashboardHandler';
 import { Pie } from 'react-chartjs-2';
 import PieChart from './widgets/PieChart';
 import useServiceStore from '../../store/serviceStore';
@@ -391,11 +393,10 @@ const Dashboard = (props: Props) => {
         console.error('Error fetching timer data:', error);
       });
 
-
     getAllTimerStatusHandlerDnd()
       .then((timerData) => {
         const data = timerData.tickets.length;
-        setDnd(data)
+        setDnd(data);
       })
       .catch((error) => {
         console.error('Error fetching timer data:', error);
@@ -404,7 +405,7 @@ const Dashboard = (props: Props) => {
     getAllTimerStatusHandlerPending()
       .then((timerData) => {
         const data = timerData.tickets.length;
-        setPending(data)
+        setPending(data);
       })
       .catch((error) => {
         console.error('Error fetching timer data:', error);
@@ -413,7 +414,7 @@ const Dashboard = (props: Props) => {
     getAllTimerStatusHandlerTodaysTask()
       .then((timerData) => {
         const data = timerData.tickets.length;
-        setTodaysTask(data)
+        setTodaysTask(data);
       })
       .catch((error) => {
         console.error('Error fetching timer data:', error);
@@ -422,7 +423,7 @@ const Dashboard = (props: Props) => {
     getAllTimerStatusHandlerCallCompleted()
       .then((timerData) => {
         const data = timerData.tickets.length;
-        setCallCompleted(data)
+        setCallCompleted(data);
       })
       .catch((error) => {
         console.error('Error fetching timer data:', error);
@@ -431,92 +432,125 @@ const Dashboard = (props: Props) => {
     getAllTimerStatusHandlerRescheduledCall()
       .then((timerData) => {
         const data = timerData.tickets.length;
-        setReschedule(data)
+        setReschedule(data);
       })
       .catch((error) => {
         console.error('Error fetching timer data:', error);
       });
 
-
     (async () => {
       try {
         const fetchedRepresentative = await getRepresntativesHandler();
         // console.log(fetchedRepresentative, "repressentive");
-        const amritsarFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66a4caeaab18bee54eea0866");
-        const hoshiarpurFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66bf5f702586bb9ea5598451");
-        const nawanshahrFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66bf5f5c2586bb9ea5598450");
-        const khannaFound = fetchedRepresentative?.some(rep => rep.phone === phone && rep.Unit === "66d5535689e33e0601248a79");
+        const amritsarFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phone && rep.Unit === '66a4caeaab18bee54eea0866'
+        );
 
+        const hoshiarpurFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phone && rep.Unit === '66bf5f702586bb9ea5598451'
+        );
+        const nawanshahrFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phone && rep.Unit === '66bf5f5c2586bb9ea5598450'
+        );
+        const khannaFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phone && rep.Unit === '66d5535689e33e0601248a79'
+        );
+        const mohaliFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phone && rep.Unit === '66a8bf565f223ac4d7fb6f38'
+        );
         if (amritsarFound) {
-          localStorage.setItem('location', "Amritsar");
-        }
-        else if (hoshiarpurFound) {
-          localStorage.setItem('location', "Hoshiarpur");
-        }
-        else if (nawanshahrFound) {
-          localStorage.setItem('location', "Nawanshahr");
-        }
-        else if (khannaFound) {
-          localStorage.setItem('location', "Khanna");
-        }
-        else {
-          localStorage.setItem('location', "");
+          localStorage.setItem('location', 'Amritsar');
+        } else if (mohaliFound) {
+          localStorage.setItem('location', 'Mohali');
+        } else if (hoshiarpurFound) {
+          localStorage.setItem('location', 'Hoshiarpur');
+        } else if (nawanshahrFound) {
+          localStorage.setItem('location', 'Nawanshahr');
+        } else if (khannaFound) {
+          localStorage.setItem('location', 'Khanna');
+        } else {
+          localStorage.setItem('location', '');
         }
       } catch (error) {
-        console.error("Error fetching representatives:", error);
+        console.error('Error fetching representatives:', error);
       }
     })();
   }, [phone, stages]);
 
-  const cardsData = useMemo(() => [
-    {
-      id: 1,
-      title: 'DND Leads',
-      content: dnd,
-      color: 'green'
-    },
-    {
-      id: 2,
-      title: 'Lead Pending',
-      content: pending,
-      color: 'blue'
-    },
-    {
-      id: 3,
-      title: 'Today Task Leads',
-      content: todaysTask,
-      color: 'red'
-    },
-    {
-      id: 4,
-      title: ' Call Completed Lead',
-      content: callCompleted,
-      color: 'violet'
-    },
-    {
-      id: 5,
-      title: 'Rescheduled Call',
-      content: reschedule,
-      color: 'pink'
-    }
-  ], [dnd, pending, todaysTask, callCompleted, reschedule]);
+  const cardsData = useMemo(
+    () => [
+      {
+        id: 1,
+        title: 'DND Leads',
+        content: dnd,
+        color: 'green'
+      },
+      {
+        id: 2,
+        title: 'Lead Pending',
+        content: pending,
+        color: 'blue'
+      },
+      {
+        id: 3,
+        title: 'Today Task Leads',
+        content: todaysTask,
+        color: 'red'
+      },
+      {
+        id: 4,
+        title: ' Call Completed Lead',
+        content: callCompleted,
+        color: 'violet'
+      },
+      {
+        id: 5,
+        title: 'Rescheduled Call',
+        content: reschedule,
+        color: 'pink'
+      }
+    ],
+    [dnd, pending, todaysTask, callCompleted, reschedule]
+  );
 
-  const cardsDataBottom = useMemo(() => [
-    { id: 1, title: 'newLead', content: newLead },
-    { id: 2, title: 'contacted', content: contacted },
-    { id: 3, title: 'working', content: working },
-    { id: 4, title: 'orientation', content: orientation },
-    { id: 5, title: 'nurturing', content: nurturing }
-  ], [newLead, contacted, working, orientation, nurturing]);
+  const cardsDataBottom = useMemo(
+    () => [
+      { id: 1, title: 'newLead', content: newLead },
+      { id: 2, title: 'contacted', content: contacted },
+      { id: 3, title: 'working', content: working },
+      { id: 4, title: 'orientation', content: orientation },
+      { id: 5, title: 'nurturing', content: nurturing }
+    ],
+    [newLead, contacted, working, orientation, nurturing]
+  );
 
-  const newLeadContent = cardsDataBottom.find(item => item.title === 'newLead')?.content ?? 0;
-  const contactedContent = cardsDataBottom.find(item => item.title === 'contacted')?.content ?? 0;
-  const workingContent = cardsDataBottom.find(item => item.title === 'working')?.content ?? 0;
-  const orientationContent = cardsDataBottom.find(item => item.title === 'orientation')?.content ?? 0;
-  const nurturingContent = cardsDataBottom.find(item => item.title === 'nurturing')?.content ?? 0;
+  const newLeadContent =
+    cardsDataBottom.find((item) => item.title === 'newLead')?.content ?? 0;
+  const contactedContent =
+    cardsDataBottom.find((item) => item.title === 'contacted')?.content ?? 0;
+  const workingContent =
+    cardsDataBottom.find((item) => item.title === 'working')?.content ?? 0;
+  const orientationContent =
+    cardsDataBottom.find((item) => item.title === 'orientation')?.content ?? 0;
+  const nurturingContent =
+    cardsDataBottom.find((item) => item.title === 'nurturing')?.content ?? 0;
 
   return (
-    <Box bgcolor="#F6F7F9" width={"92.5vw"} height={"93%"} sx={{ display: 'flex', flexDirection: 'column', padding: "0px 0px 0px 150px" }}>
+    <Box
+      bgcolor="#F6F7F9"
+      width={'92.5vw'}
+      height={'93%'}
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '0px 0px 0px 150px'
+      }}
+    >
       <Grid container spacing={1}>
         {cardsData.map((card) => (
           <Grid item key={card.id} xs={12} sm={2} md={2} lg={2} xl={2}>
@@ -528,16 +562,30 @@ const Dashboard = (props: Props) => {
                   padding: '8px'
                 }}
               >
-                <h3 style={{ fontSize: '16px', fontWeight: 'bold', fontFamily: "Outfit,sans-serif" }}>
+                <h3
+                  style={{
+                    fontSize: '16px',
+                    fontWeight: 'bold',
+                    fontFamily: 'Outfit,sans-serif'
+                  }}
+                >
                   {card.title}
                 </h3>
-                <p style={{ fontSize: '16px', fontFamily: "Outfit,sans-serif" }}>{card.content}</p>
+                <p
+                  style={{ fontSize: '16px', fontFamily: 'Outfit,sans-serif' }}
+                >
+                  {card.content}
+                </p>
               </CardContent>
             </Card>
           </Grid>
         ))}
       </Grid>
-      <Grid container spacing={2} sx={{ marginTop: '20px', padding: '30px 50px' }}>
+      <Grid
+        container
+        spacing={2}
+        sx={{ marginTop: '20px', padding: '30px 50px' }}
+      >
         <Grid item xs={12} sm={5}>
           <PieChart
             newLead={newLead}

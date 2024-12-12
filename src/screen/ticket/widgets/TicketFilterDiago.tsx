@@ -59,6 +59,7 @@ export const ticketFilterCount = (
   statusType: string[],
   filteredLocation: string,
   isAmritsarUser: boolean,
+  isMohaliUser: boolean,
   isHoshiarpurUser: boolean,
   isNawanshahrUser: boolean,
   isKhannaUser: boolean,
@@ -80,6 +81,7 @@ export const ticketFilterCount = (
     !isAmritsarUser &&
     !isHoshiarpurUser &&
     !isNawanshahrUser &&
+    !isMohaliUser &&
     !isKhannaUser
   ) {
     locationCount =
@@ -202,6 +204,7 @@ const TicketFilter = (props: {
   const [isNawanshahrUser, SetIsNnawanshahrUser] = useState(false);
   const [isKhannaUser, SetIsKhannaUser] = useState(false);
   const [isAdminUser, setIsAdminUser] = useState(false);
+  const [isMohaliUser, SetIsMohaliUser] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -223,11 +226,18 @@ const TicketFilter = (props: {
           (rep) =>
             rep.phone === phoneNumber && rep.Unit === '66d5535689e33e0601248a79'
         );
+        const mohaliFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phoneNumber && rep.Unit === '66a8bf565f223ac4d7fb6f38'
+        );
 
         if (amritsarFound) {
           // console.log("Its AmritSar User.", matchFound);
           SetIsAmritsarUser(true);
           setFilteredLocation('Amritsar');
+        } else if (mohaliFound) {
+          SetIsMohaliUser(true);
+          setFilteredLocation('Mohali');
         } else if (hoshiarpurFound) {
           SetIsHoshiarpurUser(true);
           setFilteredLocation('Hoshiarpur');
@@ -476,6 +486,7 @@ const TicketFilter = (props: {
         dateRange,
         statusType,
         filteredLocation,
+        isMohaliUser,
         isAmritsarUser,
         isHoshiarpurUser,
         isNawanshahrUser,
@@ -532,6 +543,7 @@ const TicketFilter = (props: {
         statusType,
         filteredLocation,
         isAmritsarUser,
+        isMohaliUser,
         isHoshiarpurUser,
         isNawanshahrUser,
         isKhannaUser,
@@ -552,6 +564,8 @@ const TicketFilter = (props: {
       setFilteredLocation('Amritsar');
     } else if (isHoshiarpurUser) {
       setFilteredLocation('Hoshiarpur');
+    } else if (isMohaliUser) {
+      setFilteredLocation('Mohali');
     } else if (isNawanshahrUser) {
       setFilteredLocation('Nawanshahr');
     } else if (isKhannaUser) {

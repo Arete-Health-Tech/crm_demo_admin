@@ -849,46 +849,58 @@ const Ticket = () => {
 
   const [isAdminUser, setIsAdminUser] = useState(false);
 
-  useEffect(() => {
-    const fetchRepresentatives = async () => {
-      try {
-        const fetchedRepresentative = await getRepresntativesHandler();
+  const fetchRepresentatives = async () => {
+    try {
+      const fetchedRepresentative = await getRepresntativesHandler();
 
-        const amritsarFound = fetchedRepresentative?.some(
-          (rep) =>
-            rep.phone === phoneNumber && rep.Unit === '66a4caeaab18bee54eea0866'
-        );
-        const hoshiarpurFound = fetchedRepresentative?.some(
-          (rep) =>
-            rep.phone === phoneNumber && rep.Unit === '66bf5f702586bb9ea5598451'
-        );
-        const nawanshahrFound = fetchedRepresentative?.some(
-          (rep) =>
-            rep.phone === phoneNumber && rep.Unit === '66bf5f5c2586bb9ea5598450'
-        );
-        const khannaFound = fetchedRepresentative?.some(
-          (rep) =>
-            rep.phone === phoneNumber && rep.Unit === '66d5535689e33e0601248a79'
-        );
+      const mohaliFound = fetchedRepresentative?.some(
+        (rep) =>
+          rep.phone === phoneNumber && rep.Unit === '66a8bf565f223ac4d7fb6f38'
+      );
 
-        if (amritsarFound) {
-          setIsAdminUser(false);
-        } else if (hoshiarpurFound) {
-          setIsAdminUser(false);
-        } else if (nawanshahrFound) {
-          setIsAdminUser(false);
-        } else if (khannaFound) {
-          setIsAdminUser(false);
-        } else {
-          setIsAdminUser(true);
-        }
-      } catch (error) {
-        console.error('Error fetching representatives:', error);
+      const amritsarFound = fetchedRepresentative?.some(
+        (rep) =>
+          rep.phone === phoneNumber && rep.Unit === '66a4caeaab18bee54eea0866'
+      );
+      const hoshiarpurFound = fetchedRepresentative?.some(
+        (rep) =>
+          rep.phone === phoneNumber && rep.Unit === '66bf5f702586bb9ea5598451'
+      );
+      const nawanshahrFound = fetchedRepresentative?.some(
+        (rep) =>
+          rep.phone === phoneNumber && rep.Unit === '66bf5f5c2586bb9ea5598450'
+      );
+      const khannaFound = fetchedRepresentative?.some(
+        (rep) =>
+          rep.phone === phoneNumber && rep.Unit === '66d5535689e33e0601248a79'
+      );
+
+      if (amritsarFound) {
+        localStorage.setItem('location', 'Amritsar');
+        setIsAdminUser(false);
+      } else if (mohaliFound) {
+        localStorage.setItem('location', 'Mohali');
+        setIsAdminUser(false);
+      } else if (hoshiarpurFound) {
+        localStorage.setItem('location', 'Hoshiarpur');
+        setIsAdminUser(false);
+      } else if (nawanshahrFound) {
+        localStorage.setItem('location', 'Nawanshahr');
+        setIsAdminUser(false);
+      } else if (khannaFound) {
+        localStorage.setItem('location', 'Khanna');
+        setIsAdminUser(false);
+      } else {
+        localStorage.setItem('location', '');
+        setIsAdminUser(true);
       }
-    };
-
+    } catch (error) {
+      console.error('Error fetching representatives:', error);
+    }
+  };
+  useEffect(() => {
     fetchRepresentatives();
-  }, [phone]);
+  }, [phone, [localStorage.getItem('ticketType')]]);
 
   useEffect(() => {
     setPageNumber(1);
@@ -928,6 +940,7 @@ const Ticket = () => {
 
   useEffect(() => {
     setDownloadDisable(true);
+    fetchRepresentatives();
     (async function () {
       // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
       await getAllNotesWithoutTicketId();
@@ -943,7 +956,7 @@ const Ticket = () => {
     setIsAuditor(false);
     setSearchName('');
     setSearchByName(UNDEFINED);
-    localStorage.setItem('location', '');
+    // localStorage.setItem('location', '');
     setSearchError('Type to search & Enter');
     // setTicketCount(ticketCache["count"]);
     // setTickets(ticketCache[1]);

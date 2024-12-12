@@ -59,6 +59,7 @@ export const ticketFilterCount = (
   statusType: string[],
   filteredLocation: string,
   isAmritsarUser: boolean,
+  isMohaliUser: boolean,
   isHoshiarpurUser: boolean,
   isNawanshahrUser: boolean,
   isKhannaUser: boolean,
@@ -79,6 +80,7 @@ export const ticketFilterCount = (
   if (
     !isAmritsarUser &&
     !isHoshiarpurUser &&
+    !isMohaliUser &&
     !isNawanshahrUser &&
     !isKhannaUser
   ) {
@@ -202,6 +204,7 @@ const TicketFilter = (props: {
   const [isNawanshahrUser, SetIsNnawanshahrUser] = useState(false);
   const [isKhannaUser, SetIsKhannaUser] = useState(false);
   const [isAdminUser, setIsAdminUser] = useState(false);
+  const [isMohaliUser, SetIsMohaliUser] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -223,11 +226,18 @@ const TicketFilter = (props: {
           (rep) =>
             rep.phone === phoneNumber && rep.Unit === '66d5535689e33e0601248a79'
         );
+        const mohaliFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phoneNumber && rep.Unit === '66a8bf565f223ac4d7fb6f38'
+        );
 
         if (amritsarFound) {
           // console.log("Its AmritSar User.", matchFound);
           SetIsAmritsarUser(true);
           setFilteredLocation('Amritsar');
+        } else if (mohaliFound) {
+          SetIsMohaliUser(true);
+          setFilteredLocation('Mohali');
         } else if (hoshiarpurFound) {
           SetIsHoshiarpurUser(true);
           setFilteredLocation('Hoshiarpur');
@@ -250,7 +260,7 @@ const TicketFilter = (props: {
       }
     })();
   }, []);
-  
+
   console.log(filterCount);
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
@@ -476,6 +486,7 @@ const TicketFilter = (props: {
         dateRange,
         statusType,
         filteredLocation,
+        isMohaliUser,
         isAmritsarUser,
         isHoshiarpurUser,
         isNawanshahrUser,
@@ -540,6 +551,7 @@ const TicketFilter = (props: {
         dateRange,
         statusType,
         filteredLocation,
+        isMohaliUser,
         isAmritsarUser,
         isHoshiarpurUser,
         isNawanshahrUser,
@@ -561,6 +573,8 @@ const TicketFilter = (props: {
       setFilteredLocation('Amritsar');
     } else if (isHoshiarpurUser) {
       setFilteredLocation('Hoshiarpur');
+    } else if (isMohaliUser) {
+      setFilteredLocation('Mohali');
     } else if (isNawanshahrUser) {
       setFilteredLocation('Nawanshahr');
     } else if (isKhannaUser) {
@@ -569,39 +583,39 @@ const TicketFilter = (props: {
       setFilteredLocation('');
     }
   };
- const handleApplyFilterOnTicketTypeChange = async () => {
-   // setTicketFilters({
-   //   stageList: selectedStageList,
-   //   admissionType: admissionType,
-   //   diagnosticType: diagnosticsType,
-   //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
-   //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
-   // });
-   setDownloadDisable(true);
-   setIsFilterOpen(false);
-   setPageNumber(1);
-   setFilterTickets(selectedFilters);
-   await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-   // console.log(isAmritsarUser, "selected again")
-   setFilterCount(0);
+  const handleApplyFilterOnTicketTypeChange = async () => {
+    // setTicketFilters({
+    //   stageList: selectedStageList,
+    //   admissionType: admissionType,
+    //   diagnosticType: diagnosticsType,
+    //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
+    //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
+    // });
+    setDownloadDisable(true);
+    setIsFilterOpen(false);
+    setPageNumber(1);
+    setFilterTickets(selectedFilters);
+    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    // console.log(isAmritsarUser, "selected again")
+    setFilterCount(0);
 
-   props.setPage(1);
-   if (ticketID) {
-     await validateTicket(ticketID);
-     navigate(
-       `${
-         localStorage.getItem('ticketType') === 'Admission'
-           ? '/admission/'
-           : localStorage.getItem('ticketType') === 'Diagnostics'
-           ? '/diagnostics/'
-           : localStorage.getItem('ticketType') === 'Follow-Up'
-           ? '/follow-up/'
-           : '/ticket/'
-       }`
-     );
-   }
-   setDownloadDisable(false);
- };
+    props.setPage(1);
+    if (ticketID) {
+      await validateTicket(ticketID);
+      navigate(
+        `${
+          localStorage.getItem('ticketType') === 'Admission'
+            ? '/admission/'
+            : localStorage.getItem('ticketType') === 'Diagnostics'
+            ? '/diagnostics/'
+            : localStorage.getItem('ticketType') === 'Follow-Up'
+            ? '/follow-up/'
+            : '/ticket/'
+        }`
+      );
+    }
+    setDownloadDisable(false);
+  };
   useEffect(() => {
     handleClearFilter();
     handleApplyFilterOnTicketTypeChange();

@@ -900,7 +900,10 @@ const Ticket = () => {
   };
   useEffect(() => {
     fetchRepresentatives();
-  }, [phone, [localStorage.getItem('ticketType')]]);
+  }, [
+    phone
+    // [ localStorage.getItem( 'ticketType' ) ]
+  ]);
 
   useEffect(() => {
     setPageNumber(1);
@@ -940,7 +943,7 @@ const Ticket = () => {
 
   useEffect(() => {
     setDownloadDisable(true);
-    fetchRepresentatives();
+    // fetchRepresentatives();
     (async function () {
       // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
       await getAllNotesWithoutTicketId();

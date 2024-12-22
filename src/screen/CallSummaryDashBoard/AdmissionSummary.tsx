@@ -13,7 +13,13 @@ import NoData from './../../assets/Error.svg';
 import useTicketStore from '../../store/ticketStore';
 import { SpinnerDotted } from 'spinners-react';
 import useDashboardStore from '../../store/dashboardStore';
-import { getAdmissionTaskCompletedAbove, getTodaysTaskAllAdmission, getTodaysTaskCombinedAnsweredNotAnsweredAdmission, getTodaysTaskCompletedAdmission, getTotalCallAssignedAdmission } from '../../api/dashboard/dashboard';
+import {
+  getAdmissionTaskCompletedAbove,
+  getTodaysTaskAllAdmission,
+  getTodaysTaskCombinedAnsweredNotAnsweredAdmission,
+  getTodaysTaskCompletedAdmission,
+  getTotalCallAssignedAdmission
+} from '../../api/dashboard/dashboard';
 interface TodayTaskForAdmin {
   name: string;
   todaysTaskAnsweredForAdmin: number;
@@ -55,10 +61,8 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
   useEffect(() => {
     (async () => {
       const payload = {
-        StartDate:
-          user?.role === 'ADMIN' ? dateRange[0] : handleDateFormat(new Date()),
-        EndDate:
-          user?.role === 'ADMIN' ? dateRange[1] : handleDateFormat(new Date()),
+        StartDate: '',
+        EndDate: '',
         representativeId:
           user?.role === 'ADMIN' ? selectedAgents._id : user?._id
       };
@@ -118,7 +122,6 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
         const updatedTasks: TodayTaskForAdmin[] = []; // Define the array to hold task data
 
         for (let i = 0; i < fetchAgents.length; i++) {
-
           const rep = fetchAgents[i];
           const payloads = {
             StartDate: dateRange[0],

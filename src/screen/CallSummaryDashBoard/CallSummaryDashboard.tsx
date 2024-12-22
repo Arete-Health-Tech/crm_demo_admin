@@ -103,10 +103,8 @@ const CallSummaryDashboard = () => {
   useEffect(() => {
     (async () => {
       const payload = {
-        StartDate:
-          user?.role === 'ADMIN' ? dateRange[0] : handleDateFormat(new Date()),
-        EndDate:
-          user?.role === 'ADMIN' ? dateRange[1] : handleDateFormat(new Date()),
+        StartDate: '',
+        EndDate: '',
         representativeId:
           user?.role === 'ADMIN' ? selectedAgents._id : user?._id
       };

@@ -1,12 +1,15 @@
-import useTicketStore from "../../store/ticketStore";
-import { getAllStageCount, getAllTimerDnd, getAllTimerRescheduledCall, getAllWonAndLoss, } from "./dashboard";
+import useTicketStore from '../../store/ticketStore';
+import {
+  getAllStageCount,
+  getAllTimerDnd,
+  getAllTimerRescheduledCall,
+  getAllWonAndLoss
+} from './dashboard';
 import { getAllTimerPending } from './dashboard';
 
 import { getAllTimerTodaysTask } from './dashboard';
 
 import { getAllTimerCallCompleted } from './dashboard';
-
-
 
 export const getAllTimerStatusHandlerDnd = async () => {
   const { setStatus } = useTicketStore.getState();
@@ -20,7 +23,6 @@ export const getAllTimerStatusHandlerPending = async () => {
   const timers = await getAllTimerPending();
   setStatus(timers);
   return Promise.resolve(timers);
-
 };
 
 export const getAllTimerStatusHandlerTodaysTask = async () => {
@@ -45,9 +47,8 @@ export const getAllTimerStatusHandlerRescheduledCall = async () => {
 };
 
 export const getAllWonAndLossHandler = async () => {
-
   const timers = await getAllWonAndLoss();
-  console.log("nndfd")
+  console.log('nndfd');
   return timers;
 };
 

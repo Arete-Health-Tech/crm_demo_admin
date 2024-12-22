@@ -38,9 +38,9 @@ const Authenticated = (props: Props) => {
         <Navbar>
           <Routes>
             {/* New Dashboard */}
-            {/* <Route path="/" element={<CallSummaryDashboard />}> */}
-            <Route path="/" element={<DashboardLayout />}>
-              <Route index element={<Dashboard />} />
+            <Route path="/" element={<CallSummaryDashboard />}>
+            {/* <Route path="/" element={<DashboardLayout />}>
+              <Route index element={<Dashboard />} /> */}
 
               <Route path="department" element={<DepartmentLayout />}>
                 <Route index element={<Department />} />

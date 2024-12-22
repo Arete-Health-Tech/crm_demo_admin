@@ -130,7 +130,12 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   ticketType: '',
   setTicketType: (ticketType) => set({ ticketType }),
   downloadDisable: false,
-  setDownloadDisable: (downloadDisable) => set({ downloadDisable })
+  setDownloadDisable: (downloadDisable) => set({ downloadDisable }),
+  dashboardLoader: false,
+  setDashboardLoader: (dashboardLoader) => set({ dashboardLoader }),
+  dashboardLoaderAdmission: false,
+  setDashboardLoaderAdmission: (dashboardLoaderAdmission) =>
+    set({ dashboardLoaderAdmission })
 }));
 
 export default useTicketStore;

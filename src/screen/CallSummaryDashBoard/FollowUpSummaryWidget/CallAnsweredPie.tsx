@@ -3,11 +3,6 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { useDrawingArea } from '@mui/x-charts/hooks';
 import { styled } from '@mui/material/styles';
 
-const data = [
-  { value: 10, label: 'Call Completed ', color: '#0097b2' },
-  { value: 5, label: 'DNP', color: 'rgba(128, 128, 128, 0.296)' }
-];
-
 const size = {
   width: 600,
   height: 210
@@ -29,10 +24,25 @@ function PieCenterLabel({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default function CallAnswered() {
+export default function CallAnswered({ todayTaskAnswered }) {
+  const data = [
+    {
+      value: todayTaskAnswered?.CallCompleted,
+      label: 'Call Completed ',
+      color: '#0097b2'
+    },
+    {
+      value: todayTaskAnswered?.dnp,
+      label: 'DNP',
+      color: 'rgba(128, 128, 128, 0.296)'
+    }
+  ];
+
   return (
     <PieChart series={[{ data, innerRadius: 50 }]} {...size}>
-      <PieCenterLabel>80</PieCenterLabel>
+      <PieCenterLabel>
+        {todayTaskAnswered?.CallCompleted + todayTaskAnswered?.dnp || 0}
+      </PieCenterLabel>
     </PieChart>
   );
 }

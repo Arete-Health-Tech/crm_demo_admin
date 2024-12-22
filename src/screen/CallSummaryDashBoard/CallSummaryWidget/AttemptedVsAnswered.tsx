@@ -2,19 +2,19 @@ import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
 import useUserStore from '../../../store/userStore';
 
-const AttemptedVsAssigned = ({
+const AttemptedVsAnswered = ({
   callAttemmpted,
   callAnswered,
   user,
-  selectedAgents,
-  todayTaskForAdminAdmission
+  todayTaskForAdmin,
+  selectedAgents
 }) => {
   const users = useUserStore.getState();
 
   let data;
 
   if (users?.user?.role === 'ADMIN' && selectedAgents._id === '') {
-    data = todayTaskForAdminAdmission.map((item, index) => ({
+    data = todayTaskForAdmin.map((item, index) => ({
       name: item.name,
       attempted: item.totalcallLAttemptedForAdmin || 0,
       answered: item.totalcallLAnsweredforGraphForAdmin || 0
@@ -54,19 +54,18 @@ const AttemptedVsAssigned = ({
       <Bar
         dataKey="attempted"
         fill="rgba(128, 128, 128, 0.296)"
-        // radius={[0, 10, 10, 0]}
         name="Calls Attempted"
-        stackId="a" // Stack identifier
+        stackId="a"
       />
       <Bar
         dataKey="answered"
         fill="#0097b2"
         radius={[0, 10, 10, 0]}
         name="Calls Answered"
-        stackId="a" // Stack identifier
+        stackId="a"
       />
     </BarChart>
   );
 };
 
-export default AttemptedVsAssigned;
+export default AttemptedVsAnswered;

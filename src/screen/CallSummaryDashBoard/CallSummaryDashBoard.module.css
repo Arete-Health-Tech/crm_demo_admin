@@ -59,7 +59,7 @@
   width: 100%;
   display: flex;
   flex-direction: row !important;
-  justify-content: space-between;
+  justify-content: flex-end;
 }
 
 .date_filters {
@@ -77,6 +77,9 @@
 }
 
 .agent_filter {
+  display: flex;
+  flex-direction: row !important;
+  gap: 5px;
   background-color: #fff;
   font-size: 20px;
   padding: 5px 25px;
@@ -86,6 +89,39 @@
   border-radius: 8px;
   border: 2px solid rgba(186, 177, 177, 0.518);
   color: black;
+  text-transform: capitalize;
+}
+
+.menu_item {
+  display: flex;
+  width: 170px;
+
+  flex-direction: column;
+  align-items: left;
+  position: absolute;
+  top: 160px;
+  right: 30px;
+  border: 1px solid #ebedf0;
+  border-radius: 20px;
+  box-shadow: 2px 2px 5px #e2e4e7;
+  z-index: 1600;
+  /* gap: 5px */
+  padding: 16px 0 16px 0;
+}
+
+.menu_options {
+  color: var(--Text-Black, #080f1a);
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 150%;
+  padding: 10px 0px 0px 16px;
+  text-transform: capitalize;
+  cursor: pointer;
+  /*  */
+}
+.menu_options:hover {
+  background-color: #0000000a;
 }
 
 /* Common Css Between These Three Component ----------------------------------------*/
@@ -225,7 +261,7 @@
 }
 
 .answered_call {
-  width: 49%;
+  width: 100%;
   display: flex;
   flex-direction: column !important;
   border-radius: 8px;
@@ -265,6 +301,7 @@
 .division_count_title {
   font-size: 18px;
   font-weight: 350;
+  text-transform: capitalize;
 }
 .division_count_value {
   font-size: 18px;

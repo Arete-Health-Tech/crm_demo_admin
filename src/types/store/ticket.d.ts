@@ -275,6 +275,10 @@ export interface iTicketStore {
   setTicketType: (ticketType: string) => void;
   downloadDisable: boolean;
   setDownloadDisable: (downloadDisable: boolean) => void;
+   dashboardLoader: boolean;
+  setDashboardLoader: (dashboardLoader: boolean) => void;
+  dashboardLoaderAdmission: boolean;
+  setDashboardLoaderAdmission: (dashboardLoaderAdmission: boolean) => void;
 }
 
 export interface iNote {

@@ -1,11 +1,33 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend } from 'recharts';
+import useUserStore from '../../../store/userStore';
 
-const AttemptedVsAssigned = () => {
-  const data = [
-    { name: 'Meena', answered: 6, attempted: 10 },
-    { name: 'Parul', answered: 8, attempted: 14 }
-  ];
+const AttemptedVsAssigned = ({
+  callAttemmpted,
+  callAnswered,
+  user,
+  selectedAgents,
+  todayTaskForAdminAdmission
+}) => {
+  const users = useUserStore.getState();
+
+  let data;
+
+  if (users?.user?.role === 'ADMIN' && selectedAgents._id === '') {
+    data = todayTaskForAdminAdmission.map((item, index) => ({
+      name: item.name,
+      attempted: item.totalcallLAttemptedForAdmin || 0,
+      answered: item.totalcallLAnsweredforGraphForAdmin || 0
+    }));
+  } else {
+    data = [
+      {
+        name: users?.user?.role === 'ADMIN' ? selectedAgents.firstName : user,
+        attempted: callAttemmpted,
+        answered: callAnswered
+      }
+    ];
+  }
 
   return (
     <BarChart
@@ -30,17 +52,17 @@ const AttemptedVsAssigned = () => {
       <YAxis type="category" dataKey="name" axisLine={false} tickLine={false} />
       <Tooltip />
       <Bar
-        dataKey="answered"
+        dataKey="attempted"
         fill="rgba(128, 128, 128, 0.296)"
         // radius={[0, 10, 10, 0]}
-        name="Calls Answered"
+        name="Calls Attempted"
         stackId="a" // Stack identifier
       />
       <Bar
-        dataKey="attempted"
+        dataKey="answered"
         fill="#0097b2"
         radius={[0, 10, 10, 0]}
-        name="Calls Attempted"
+        name="Calls Answered"
         stackId="a" // Stack identifier
       />
     </BarChart>

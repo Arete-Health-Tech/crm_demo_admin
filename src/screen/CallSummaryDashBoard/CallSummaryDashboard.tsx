@@ -91,7 +91,7 @@ const CallSummaryDashboard = () => {
       setIsMenuOpen(false);
     }
   };
-
+  console.log(callSummaryTotalCallGraphAssigned);
   const handleDateFormat = (e) => {
     return e.toISOString().split('T')[0];
   };
@@ -206,8 +206,14 @@ const CallSummaryDashboard = () => {
             // Push data for this representative
             updatedTasks.push({
               name: rep.firstName, // Representative's name
-              totalCallAssigned: assignedData.counts[0].count, //total assigned call to the representative
-              todaysTaskAnsweredForAdmin: assignedData.counts[0].count || 0, // Answered tasks
+              totalCallAssigned:
+                assignedData.counts.length > 0
+                  ? assignedData.counts[0].count
+                  : 0, //total assigned call to the representative
+              todaysTaskAnsweredForAdmin:
+                assignedData.counts.length > 0
+                  ? assignedData.counts[0].count
+                  : 0, // Answered tasks
               totalcallLAttemptedForAdmin: totalCallAttempted || 0, // Attempted calls
               totalcallLAnsweredforGraphForAdmin:
                 fetchCombined?.answeredCalls || 0 // Answered calls for graph
@@ -227,7 +233,9 @@ const CallSummaryDashboard = () => {
         try {
           // Fetch today's answered task data
           const assignedData = await getTotalCallAssigned(payloads);
-          setCallSummaryTotalCallGraphAssigned(assignedData.counts[0].count);
+          setCallSummaryTotalCallGraphAssigned(
+            assignedData.counts.length > 0 ? assignedData.counts[0].count : 0
+          );
           // Fetch total calls attempted data
           const fetchCombined = await getTodaysTaskCombinedAnsweredNotAnswered(
             payloads
@@ -442,8 +450,8 @@ const CallSummaryDashboard = () => {
           <Box
             position="fixed"
             top={0}
-            left={0}
-            width="100%"
+            left={'5%'}
+            width="95%"
             height="100%"
             display="flex"
             justifyContent="center"
@@ -637,8 +645,8 @@ const CallSummaryDashboard = () => {
                   </Stack>
                   <Stack className={Styles.bar_graph_component}>
                     {todayTaskForAdmin.length > 0 ||
-                    (Number(callSummaryTotalCallGraphAssigned) > 0 &&
-                      Number(callSummaryTotalcallLGraphAttempted) > 0) ? (
+                    Number(callSummaryTotalCallGraphAssigned) > 0 ||
+                    Number(callSummaryTotalcallLGraphAttempted) > 0 ? (
                       <AssignedVsAttemptedGraph
                         callAssigned={callSummaryTotalCallGraphAssigned || 0} // assigned
                         callAttemmpted={callSummaryTotalcallLGraphAttempted}

@@ -7,12 +7,6 @@ import ClickedCallButtonIcon from '../../assets/callNotAnswered.svg';
 import AssignedVsAttemptedGraph from './AdmissionSummaryWidget/AssignedVsAttemptedGraph';
 import AttemptedVsAssigned from './AdmissionSummaryWidget/AttemptedVsAssigned';
 import useUserStore from '../../store/userStore';
-
-import DeafaultGraph from './../../assets/Pie Graph Illustration.svg';
-import NoData from './../../assets/Error.svg';
-import useTicketStore from '../../store/ticketStore';
-import { SpinnerDotted } from 'spinners-react';
-import useDashboardStore from '../../store/dashboardStore';
 import {
   getAdmissionTaskCompletedAbove,
   getTodaysTaskAllAdmission,
@@ -20,6 +14,11 @@ import {
   getTodaysTaskCompletedAdmission,
   getTotalCallAssignedAdmission
 } from '../../api/dashboard/dashboard';
+import DeafaultGraph from './../../assets/Pie Graph Illustration.svg';
+import NoData from './../../assets/Error.svg';
+import useTicketStore from '../../store/ticketStore';
+import { SpinnerDotted } from 'spinners-react';
+import useDashboardStore from '../../store/dashboardStore';
 interface TodayTaskForAdmin {
   name: string;
   todaysTaskAnsweredForAdmin: number;
@@ -165,7 +164,9 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
         try {
           // Fetch today's answered task data
           const answeredData = await getTotalCallAssignedAdmission(payloads);
-          setAdmissionSummaryTotalCallAssigned(answeredData.counts[0].count);
+          setAdmissionSummaryTotalCallAssigned(
+            answeredData.counts.length > 0 ? answeredData.counts[0].count : 0
+          );
           // Fetch total calls attempted data
           const fetchCombined =
             await getTodaysTaskCombinedAnsweredNotAnsweredAdmission(payloads);
@@ -184,7 +185,7 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
       }
     };
     data();
-  }, [selectedAgents]);
+  }, [selectedAgents, fetchAgents]);
 
   return (
     <>
@@ -197,8 +198,8 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
         <Box
           position="fixed"
           top={0}
-          left={0}
-          width="100%"
+          left={'5%'}
+          width="95%"
           height="100%"
           display="flex"
           justifyContent="center"

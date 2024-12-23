@@ -1,4 +1,4 @@
-import { Box, Stack, TextField } from '@mui/material';
+import { Box, CircularProgress, Stack, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Styles from './CallSummaryDashBoard.module.css';
 import Callattempted from '../../assets/callAttempted.svg';
@@ -203,7 +203,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             </Stack>
             <Stack className={Styles.todat_task_common_count}>
               {' '}
-              {followUpSummaryTodayTaskAll || 0}
+              {followUpSummaryTodayTaskAll || <CircularProgress size="30px" />}
             </Stack>
           </Stack>
           <Stack className={Styles.todat_task_completed}>
@@ -212,7 +212,9 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             </Stack>
             <Stack className={Styles.todat_task_common_count}>
               {' '}
-              {followUpTodayCallCompletedAbove || 0}
+              {followUpTodayCallCompletedAbove || (
+                <CircularProgress size="30px" />
+              )}
             </Stack>
           </Stack>
         </Stack>
@@ -227,7 +229,9 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_count}>
               {' '}
               {Number(followUpTodayTaskAnswered ?? 0) +
-                Number(followUpTodayTaskNotAnswered ?? 0)}
+                Number(followUpTodayTaskNotAnswered ?? 0) || (
+                <CircularProgress size="30px" />
+              )}
             </Stack>
           </Stack>
           <Stack className={Styles.call_answered}>
@@ -237,7 +241,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_head}>Call Answered</Stack>
             <Stack className={Styles.call_common_count}>
               {' '}
-              {followUpTodayTaskAnswered || 0}
+              {followUpTodayTaskAnswered || <CircularProgress size="30px" />}
             </Stack>
           </Stack>
           <Stack className={Styles.call_not_answered}>
@@ -247,7 +251,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_head}>Call Not Answered</Stack>
             <Stack className={Styles.call_common_count}>
               {' '}
-              {followUpTodayTaskNotAnswered || 0}
+              {followUpTodayTaskNotAnswered || <CircularProgress size="30px" />}
             </Stack>
           </Stack>
         </Stack>
@@ -260,7 +264,9 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               <Stack className={Styles.answered_call_total_count}>
                 {' '}
                 <Stack className={Styles.answered_call_total_count_value}>
-                  {followUpTodayTaskAnswered || 0}
+                  {followUpTodayTaskAnswered || (
+                    <CircularProgress size="30px" />
+                  )}
                 </Stack>
                 <Stack className={Styles.answered_call_total_count_title}>
                   Call Answered

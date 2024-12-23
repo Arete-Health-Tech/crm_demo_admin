@@ -1,4 +1,4 @@
-import { Box, Stack, TextField } from '@mui/material';
+import { Box, CircularProgress, Stack, TextField } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import Styles from './CallSummaryDashBoard.module.css';
 import Callattempted from '../../assets/callAttempted.svg';
@@ -194,150 +194,125 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
           Admission <span>Level</span>
         </Stack>
       </Stack>
-      {dashboardLoaderAdmission ? (
-        <Box
-          position="fixed"
-          top={0}
-          left={'5%'}
-          width="95%"
-          height="100%"
-          display="flex"
-          justifyContent="center"
-          alignItems="center"
-          bgcolor="rgba(255, 255, 255, 0.5)" // Semi-transparent background
-          zIndex={9999} // Ensure it's on top
-        >
-          <Box
-            display="flex"
-            flexDirection="column" // Arrange spinner and text vertically
-            justifyContent="center"
-            alignItems="center"
-          >
-            <SpinnerDotted
-              size={100}
-              thickness={100}
-              speed={50}
-              color="#007BFF"
-              // secondaryColor="#D9EBFF"
-            />
-            <Box mt={2} fontSize="16px" fontWeight="bold">
-              {' '}
-              {/* Add margin-top to space text below the spinner */}
-              Please Wait ...
-            </Box>
-          </Box>
-        </Box>
-      ) : (
-        <>
-          <Box className={Styles.call_Summary_dashboard}>
-            {/* Today's Task */}
-            <Stack className={Styles.todat_task}>
-              <Stack className={Styles.todat_task_total}>
-                <Stack className={Styles.todat_task_common_head}>
-                  Today's Task
-                </Stack>
-                <Stack className={Styles.todat_task_common_count}>
-                  {admissionSummaryTodayTaskAll || 0}
-                </Stack>
+      <>
+        <Box className={Styles.call_Summary_dashboard}>
+          {/* Today's Task */}
+          <Stack className={Styles.todat_task}>
+            <Stack className={Styles.todat_task_total}>
+              <Stack className={Styles.todat_task_common_head}>
+                Today's Task
               </Stack>
-              <Stack className={Styles.todat_task_completed}>
-                <Stack className={Styles.todat_task_common_head}>
-                  Today's Task Completed
-                </Stack>
-                <Stack className={Styles.todat_task_common_count}>
-                  {admissionSummaryTodayCallCompletedAbove || 0}
-                </Stack>
+              <Stack className={Styles.todat_task_common_count}>
+                {admissionSummaryTodayTaskAll || (
+                  <CircularProgress size="30px" />
+                )}
               </Stack>
             </Stack>
+            <Stack className={Styles.todat_task_completed}>
+              <Stack className={Styles.todat_task_common_head}>
+                Today's Task Completed
+              </Stack>
+              <Stack className={Styles.todat_task_common_count}>
+                {admissionSummaryTodayCallCompletedAbove || (
+                  <CircularProgress size="30px" />
+                )}
+              </Stack>
+            </Stack>
+          </Stack>
 
-            {/* Calling Data */}
-            <Stack className={Styles.calling_data}>
-              <Stack className={Styles.call_attempted}>
-                <Stack className={Styles.call_common_img}>
-                  <img src={Callattempted} alt="" />
-                </Stack>
-                <Stack className={Styles.call_common_head}>
-                  Call Attempted
-                </Stack>
-                <Stack className={Styles.call_common_count}>
-                  {Number(admissionSummaryTodayTaskAnswered) +
-                    Number(admissionSummaryTodayTaskNotAnswered)}
-                </Stack>
+          {/* Calling Data */}
+          <Stack className={Styles.calling_data}>
+            <Stack className={Styles.call_attempted}>
+              <Stack className={Styles.call_common_img}>
+                <img src={Callattempted} alt="" />
               </Stack>
-              <Stack className={Styles.call_answered}>
-                <Stack className={Styles.call_common_img}>
-                  <img src={CallButtonIcon} alt="" />
-                </Stack>
-                <Stack className={Styles.call_common_head}>Call Answered</Stack>
-                <Stack className={Styles.call_common_count}>
-                  {admissionSummaryTodayTaskAnswered || 0}
-                </Stack>
+              <Stack className={Styles.call_common_head}>Call Attempted</Stack>
+              <Stack className={Styles.call_common_count}>
+                {Number(admissionSummaryTodayTaskAnswered) +
+                  Number(admissionSummaryTodayTaskNotAnswered) || (
+                  <CircularProgress size="30px" />
+                )}
               </Stack>
-              <Stack className={Styles.call_not_answered}>
-                <Stack className={Styles.call_common_img}>
-                  <img src={ClickedCallButtonIcon} alt="" />
-                </Stack>
-                <Stack className={Styles.call_common_head}>
-                  Call Not Answered
-                </Stack>
-                <Stack className={Styles.call_common_count}>
+            </Stack>
+            <Stack className={Styles.call_answered}>
+              <Stack className={Styles.call_common_img}>
+                <img src={CallButtonIcon} alt="" />
+              </Stack>
+              <Stack className={Styles.call_common_head}>Call Answered</Stack>
+              <Stack className={Styles.call_common_count}>
+                {admissionSummaryTodayTaskAnswered || (
+                  <CircularProgress size="30px" />
+                )}
+              </Stack>
+            </Stack>
+            <Stack className={Styles.call_not_answered}>
+              <Stack className={Styles.call_common_img}>
+                <img src={ClickedCallButtonIcon} alt="" />
+              </Stack>
+              <Stack className={Styles.call_common_head}>
+                Call Not Answered
+              </Stack>
+              <Stack className={Styles.call_common_count}>
+                {' '}
+                {admissionSummaryTodayTaskNotAnswered || (
+                  <CircularProgress size="30px" />
+                )}
+              </Stack>
+            </Stack>
+          </Stack>
+
+          {/* Call Answered Not Answered */}
+          <Stack className={Styles.answered_notAnswered}>
+            <Stack className={Styles.answered_call}>
+              <Stack className={Styles.answered_call_head}>
+                Calls Answered
+              </Stack>
+              <Stack className={Styles.answered_call_content}>
+                <Stack className={Styles.answered_call_total_count}>
                   {' '}
-                  {admissionSummaryTodayTaskNotAnswered || 0}
+                  <Stack className={Styles.answered_call_total_count_value}>
+                    {admissionSummaryTodayTaskAnswered || (
+                      <CircularProgress size="30px" />
+                    )}
+                  </Stack>
+                  <Stack className={Styles.answered_call_total_count_title}>
+                    Call Answered
+                  </Stack>
                 </Stack>
+                {Object.entries(admissionSummaryTotalAnswered).length !== 0 ? (
+                  <Stack className={Styles.answered_call_division}>
+                    {Object.entries(admissionSummaryTotalAnswered).map(
+                      ([key, value], index) => {
+                        return (
+                          <Stack
+                            className={Styles.answered_call_division_count}
+                            key={index}
+                          >
+                            <Stack className={Styles.division_count_title}>
+                              {key}
+                            </Stack>
+                            <Stack className={Styles.division_count_value}>
+                              {String(value)}
+                            </Stack>
+                          </Stack>
+                        );
+                      }
+                    )}
+                  </Stack>
+                ) : (
+                  <>
+                    <img
+                      src={NoData}
+                      style={{ width: '100px', height: '100px' }}
+                    />
+                    <Stack className={Styles.answered_call_division}>
+                      No data available
+                    </Stack>
+                  </>
+                )}
               </Stack>
             </Stack>
-
-            {/* Call Answered Not Answered */}
-            <Stack className={Styles.answered_notAnswered}>
-              <Stack className={Styles.answered_call}>
-                <Stack className={Styles.answered_call_head}>
-                  Calls Answered
-                </Stack>
-                <Stack className={Styles.answered_call_content}>
-                  <Stack className={Styles.answered_call_total_count}>
-                    {' '}
-                    <Stack className={Styles.answered_call_total_count_value}>
-                      {admissionSummaryTodayTaskAnswered}
-                    </Stack>
-                    <Stack className={Styles.answered_call_total_count_title}>
-                      Call Answered
-                    </Stack>
-                  </Stack>
-                  {Object.entries(admissionSummaryTotalAnswered).length !==
-                  0 ? (
-                    <Stack className={Styles.answered_call_division}>
-                      {Object.entries(admissionSummaryTotalAnswered).map(
-                        ([key, value], index) => {
-                          return (
-                            <Stack
-                              className={Styles.answered_call_division_count}
-                              key={index}
-                            >
-                              <Stack className={Styles.division_count_title}>
-                                {key}
-                              </Stack>
-                              <Stack className={Styles.division_count_value}>
-                                {String(value)}
-                              </Stack>
-                            </Stack>
-                          );
-                        }
-                      )}
-                    </Stack>
-                  ) : (
-                    <>
-                      <img
-                        src={NoData}
-                        style={{ width: '100px', height: '100px' }}
-                      />
-                      <Stack className={Styles.answered_call_division}>
-                        No data available
-                      </Stack>
-                    </>
-                  )}
-                </Stack>
-              </Stack>
-              {/* <Stack className={Styles.answered_call}>
+            {/* <Stack className={Styles.answered_call}>
             <Stack className={Styles.answered_call_head}>
               Calls Not Answered
             </Stack>
@@ -383,84 +358,83 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               )}
             </Stack>
           </Stack> */}
-            </Stack>
-            {/* line Graph */}
-            <Stack className={Styles.line_graph_container}>
-              <Stack className={Styles.line_graph}>
-                <Stack className={Styles.line_graph_head}>
-                  {' '}
-                  Total Calls Assigned Vs. Attempted
-                </Stack>
-                <Stack className={Styles.bar_graph_component}>
-                  {todayTaskForAdminAdmission.length > 0 ||
-                  admissionSummaryTotalCallAssigned ||
-                  admissionSummaryTotalcallLAttempted ? (
-                    <AssignedVsAttemptedGraph
-                      callAssigned={admissionSummaryTotalCallAssigned || 0} // assigned
-                      callAttemmpted={admissionSummaryTotalcallLAttempted || 0}
-                      user={user?.firstName || 'Unknown User'}
-                      selectedAgents={
-                        selectedAgents || { _id: '', firstName: '' }
-                      }
-                      todayTaskForAdminAdmission={
-                        Array.isArray(todayTaskForAdminAdmission)
-                          ? todayTaskForAdminAdmission
-                          : []
-                      }
-                    />
-                  ) : (
-                    <>
-                      <img
-                        src={DeafaultGraph}
-                        style={{ width: '200px', height: '200px' }}
-                      />
-                      <Stack sx={{ marginBottom: '30px' }}>
-                        No data available
-                      </Stack>
-                    </>
-                  )}
-                </Stack>
+          </Stack>
+          {/* line Graph */}
+          <Stack className={Styles.line_graph_container}>
+            <Stack className={Styles.line_graph}>
+              <Stack className={Styles.line_graph_head}>
+                {' '}
+                Total Calls Assigned Vs. Attempted
               </Stack>
+              <Stack className={Styles.bar_graph_component}>
+                {todayTaskForAdminAdmission.length > 0 ||
+                admissionSummaryTotalCallAssigned ||
+                admissionSummaryTotalcallLAttempted ? (
+                  <AssignedVsAttemptedGraph
+                    callAssigned={admissionSummaryTotalCallAssigned || 0} // assigned
+                    callAttemmpted={admissionSummaryTotalcallLAttempted || 0}
+                    user={user?.firstName || 'Unknown User'}
+                    selectedAgents={
+                      selectedAgents || { _id: '', firstName: '' }
+                    }
+                    todayTaskForAdminAdmission={
+                      Array.isArray(todayTaskForAdminAdmission)
+                        ? todayTaskForAdminAdmission
+                        : []
+                    }
+                  />
+                ) : (
+                  <>
+                    <img
+                      src={DeafaultGraph}
+                      style={{ width: '200px', height: '200px' }}
+                    />
+                    <Stack sx={{ marginBottom: '30px' }}>
+                      No data available
+                    </Stack>
+                  </>
+                )}
+              </Stack>
+            </Stack>
 
-              <Stack className={Styles.line_graph}>
-                <Stack className={Styles.line_graph_head}>
-                  {' '}
-                  Total Calls Attempted Vs. Answered
-                </Stack>
-                <Stack className={Styles.bar_graph_component}>
-                  {todayTaskForAdminAdmission.length > 0 ||
-                  admissionSummaryTotalcallLAnsweredforGraph ||
-                  admissionSummaryTotalcallLAttempted ? (
-                    <AttemptedVsAssigned
-                      callAttemmpted={admissionSummaryTotalcallLAttempted}
-                      callAnswered={admissionSummaryTotalcallLAnsweredforGraph}
-                      user={user?.firstName || 'Unknown User'}
-                      selectedAgents={
-                        selectedAgents || { _id: '', firstName: '' }
-                      }
-                      todayTaskForAdminAdmission={
-                        Array.isArray(todayTaskForAdminAdmission)
-                          ? todayTaskForAdminAdmission
-                          : []
-                      }
+            <Stack className={Styles.line_graph}>
+              <Stack className={Styles.line_graph_head}>
+                {' '}
+                Total Calls Attempted Vs. Answered
+              </Stack>
+              <Stack className={Styles.bar_graph_component}>
+                {todayTaskForAdminAdmission.length > 0 ||
+                admissionSummaryTotalcallLAnsweredforGraph ||
+                admissionSummaryTotalcallLAttempted ? (
+                  <AttemptedVsAssigned
+                    callAttemmpted={admissionSummaryTotalcallLAttempted}
+                    callAnswered={admissionSummaryTotalcallLAnsweredforGraph}
+                    user={user?.firstName || 'Unknown User'}
+                    selectedAgents={
+                      selectedAgents || { _id: '', firstName: '' }
+                    }
+                    todayTaskForAdminAdmission={
+                      Array.isArray(todayTaskForAdminAdmission)
+                        ? todayTaskForAdminAdmission
+                        : []
+                    }
+                  />
+                ) : (
+                  <>
+                    <img
+                      src={DeafaultGraph}
+                      style={{ width: '200px', height: '200px' }}
                     />
-                  ) : (
-                    <>
-                      <img
-                        src={DeafaultGraph}
-                        style={{ width: '200px', height: '200px' }}
-                      />
-                      <Stack sx={{ marginBottom: '30px' }}>
-                        No data available
-                      </Stack>
-                    </>
-                  )}
-                </Stack>
+                    <Stack sx={{ marginBottom: '30px' }}>
+                      No data available
+                    </Stack>
+                  </>
+                )}
               </Stack>
             </Stack>
-          </Box>
-        </>
-      )}
+          </Stack>
+        </Box>
+      </>
     </>
   );
 };

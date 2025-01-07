@@ -22,7 +22,7 @@ import {
   tooltipClasses,
   StepIcon
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast, ToastContainer } from 'react-toastify';
 import useServiceStore from '../../../store/serviceStore';
 import { iStage, iSubStage } from '../../../types/store/service';
@@ -59,7 +59,7 @@ const StageCard = (props: Props) => {
   const { ticketID } = useParams();
   const { stages, subStages } = useServiceStore();
   const { isSwitchView, isAuditor } = useTicketStore();
-
+  const uploadFilesRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [paymentIDValue, setPaymentIDValue] = useState('');
   const [noteTextValue, setNoteTextValue] = useState('');
@@ -321,8 +321,13 @@ const StageCard = (props: Props) => {
   };
 
   const handleFileChange = (event) => {
-    setFileName(event.target.files[0].name);
-    setFile(event.target.files[0]);
+    console.log(event.target.files);
+    const files = event.target.files;
+    setFileName(
+      `${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`
+    );
+
+    setFile(files[0]);
 
     if (event.target.value !== null) {
       setDisableWonButton(false);
@@ -360,7 +365,7 @@ const StageCard = (props: Props) => {
     //   formdata.append('dropReason', lose);
     //   isPayloadEmpty = false;
     // }
-    
+
     if (lose) {
       if (lose === 'Chose another hospital - Which Hospital' && hospitalName) {
         const fullReason = `${lose} ${hospitalName}`; // Concatenate the reason with the hospital name
@@ -714,21 +719,27 @@ const StageCard = (props: Props) => {
               <p className="Or">OR</p>
             </Stack>
 
-            <Box className="file-upload">
+            <Box
+              className="file-upload"
+              onClick={() => {
+                if (uploadFilesRef.current && fileName == '') {
+                  uploadFilesRef.current.click(); // Trigger file input
+                }
+              }}
+            >
+              <input
+                id="file-upload"
+                style={{ display: 'none' }}
+                ref={uploadFilesRef}
+                type="file"
+                onClick={(e) => e.stopPropagation()}
+                onChange={handleFileChange}
+              />
               <Stack className="file-upload-title">
-                <label
-                  htmlFor="file-upload"
-                  style={{ display: 'flex', flexDirection: 'row' }}
-                >
-                  {' '}
+                <label style={{ display: 'flex', flexDirection: 'row' }}>
                   <img className="img-upload" src={UploadFileIcon} /> Upload
                   Receipt sent by hospital
                 </label>
-                <input
-                  id="file-upload"
-                  type="file"
-                  onChange={handleFileChange}
-                />{' '}
               </Stack>
               <Stack className="file-upload-Sub" marginTop="12px">
                 Upload one .txt, .doc, .pdf, .docx, .png, .jpg

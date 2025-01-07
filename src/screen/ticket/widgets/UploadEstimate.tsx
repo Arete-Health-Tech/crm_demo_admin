@@ -1,18 +1,28 @@
-import { Box, Button, FormControl, IconButton, InputLabel, MenuItem, Modal, Select, Stack, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormControl,
+  IconButton,
+  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  Stack,
+  TextField,
+  Typography
+} from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import { getTicketHandler } from '../../../api/ticket/ticketHandler';
 import { apiClient } from '../../../api/apiClient';
 import { useParams } from 'react-router-dom';
 import useTicketStore from '../../../store/ticketStore';
-import CloseModalIcon from "../../../assets/Group 48095853.svg"
-import UploadFileIcon from "../../../assets/UploadFileIcon.svg";
-import CheckedActiveIcon from "../../../assets/NotActive.svg";
-import documentIcon from "../../../assets/document-text.svg";
+import CloseModalIcon from '../../../assets/Group 48095853.svg';
+import UploadFileIcon from '../../../assets/UploadFileIcon.svg';
+import CheckedActiveIcon from '../../../assets/NotActive.svg';
+import documentIcon from '../../../assets/document-text.svg';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
-
 
 function UploadEstimate() {
   const { ticketID } = useParams();
@@ -27,11 +37,10 @@ function UploadEstimate() {
   } = useTicketStore();
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
-  const [uploadFileName, setUploadFileName] = useState("");
+  const [uploadFileName, setUploadFileName] = useState('');
   const [noteTextValue, setNoteTextValue] = useState('');
   const [disabled, setDisabled] = useState(true);
   const [selectedOption, setSelectedOption] = useState('');
-
 
   const newFilter =
     localStorage.getItem('ticketType') === 'Admission'
@@ -42,14 +51,8 @@ function UploadEstimate() {
       ? filterTicketsFollowUp
       : filterTickets;
 
-
   const checkIsEmpty = () => {
-    if (
-      file !== null &&
-      noteTextValue.length > 0 &&
-      selectedOption !== ''
-
-    ) {
+    if (file !== null && noteTextValue.length > 0 && selectedOption !== '') {
       setDisabled((_) => false);
     } else {
       setDisabled((_) => true);
@@ -57,15 +60,15 @@ function UploadEstimate() {
   };
 
   const handleButtonClick = () => {
-    setOpen(true)
+    setOpen(true);
   };
 
   const handleClose = () => {
     setOpen(false);
     setNoteTextValue('');
-    setSelectedOption("");
+    setSelectedOption('');
     setFile(null);
-    setUploadFileName("");
+    setUploadFileName('');
   };
 
   // const handleFileChange = (event: any) => {
@@ -74,14 +77,16 @@ function UploadEstimate() {
   // };
 
   const handlePaymentType = (event) => {
-    setSelectedOption(event.target.value)
-  }
+    setSelectedOption(event.target.value);
+  };
 
   const handleFileChange = (event) => {
     const files = event.target.files && event.target.files;
     if (files && files.length > 0) {
       setFile(files[0]);
-      setUploadFileName(`${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`);
+      setUploadFileName(
+        `${files[0].name.slice(0, 25)}.........${files[0].name.slice(-6)}`
+      );
     } else {
       console.error('No file selected.');
     }
@@ -93,9 +98,7 @@ function UploadEstimate() {
 
   useEffect(() => {
     checkIsEmpty();
-
-  }, [noteTextValue, file, selectedOption])
-
+  }, [noteTextValue, file, selectedOption]);
 
   const handleSubmit = async () => {
     const formdata = new FormData();
@@ -131,12 +134,11 @@ function UploadEstimate() {
           'false',
           newFilter
         );
-      })()
+      })();
       setNoteTextValue('');
-      setSelectedOption(" ")
+      setSelectedOption(' ');
       setFile(null);
       setOpen(false);
-
     } catch (error) {
       (async () => {
         const result = await getTicketHandler(
@@ -145,23 +147,22 @@ function UploadEstimate() {
           'false',
           newFilter
         );
-      })()
+      })();
       setNoteTextValue('');
-      setSelectedOption(" ")
+      setSelectedOption(' ');
       setFile(null);
       setOpen(false);
       toast.error('Error occurred while uploading estimate.');
     }
   };
 
-
   const menuItemStyles = {
-    color: "var(--Text-Black, #080F1A)",
+    color: 'var(--Text-Black, #080F1A)',
     fontFamily: `"Outfit", sans-serif`,
-    fontSize: "14px",
-    fontStyle: "normal",
-    fontWeight: "400",
-    lineHeight: "150%",
+    fontSize: '14px',
+    fontStyle: 'normal',
+    fontWeight: '400',
+    lineHeight: '150%'
   };
   const uploadFileRef = useRef<HTMLInputElement>(null);
   return (
@@ -173,55 +174,72 @@ function UploadEstimate() {
         type="file"
         onChange={handleFileChange}
       />{' '}
-      <MenuItem sx={menuItemStyles} onClick={handleButtonClick} ><Stack >Upload Estimate</Stack></MenuItem>
-
-      <Modal
-        open={open}
-        onClose={() => { }}
-        aria-labelledby="modal-modal-title"
-      >
+      <MenuItem sx={menuItemStyles} onClick={handleButtonClick}>
+        <Stack>Upload Estimate</Stack>
+      </MenuItem>
+      <Modal open={open} onClose={() => {}} aria-labelledby="modal-modal-title">
         <Box className="reminder-modal-container">
           <Stack
-            className='reminder-modal-title'
+            className="reminder-modal-title"
             direction="row"
             spacing={1}
             display="flex"
             alignItems="center"
           >
-            <Stack className="Add-Surgery-title">
-              Upload Estimate
-            </Stack>
+            <Stack className="Add-Surgery-title">Upload Estimate</Stack>
 
-            <Stack
-              className='modal-close'
-              onClick={handleClose}
-            >
+            <Stack className="modal-close" onClick={handleClose}>
               <img src={CloseModalIcon} />
             </Stack>
           </Stack>
-          <Box display={"flex"} flexDirection={"column"} gap={"20px"}>
+          <Box display={'flex'} flexDirection={'column'} gap={'20px'}>
             <Stack>
-              <Box className="file-upload" onClick={() => uploadFileRef.current?.click()}>
+              <Box
+                className="file-upload"
+                onClick={() => uploadFileRef.current?.click()}
+              >
                 <Stack className="file-upload-title">
-                  <label htmlFor="file-upload" style={{ display: "flex", flexDirection: "row" }}> <img className='img-upload' src={UploadFileIcon} alt='' /> Upload Receipt sent by hospital</label>
+                  <label
+                    htmlFor="file-upload"
+                    style={{ display: 'flex', flexDirection: 'row' }}
+                  >
+                    {' '}
+                    <img
+                      className="img-upload"
+                      src={UploadFileIcon}
+                      alt=""
+                    />{' '}
+                    Upload Receipt sent by hospital
+                  </label>
                 </Stack>
-                <Stack className="file-upload-Sub" marginTop="12px">Upload one .txt, .doc, .pdf, .docx, .png, .jpg</Stack>
+                <Stack className="file-upload-Sub" marginTop="12px">
+                  Upload one .txt, .doc, .pdf, .docx, .png, .jpg
+                </Stack>
                 <Stack className="file-upload-Sub">Max file size 5mb</Stack>
               </Box>
               {file ? (
                 <Box className="Uploaded-file">
-                  <Stack display={"flex"} flexDirection={'row'} justifyContent={"flex-start"}>
-                    <Stack className='Uploaded-Box'><img src={documentIcon} alt='' /></Stack>
+                  <Stack
+                    display={'flex'}
+                    flexDirection={'row'}
+                    justifyContent={'flex-start'}
+                  >
+                    <Stack className="Uploaded-Box">
+                      <img src={documentIcon} alt="" />
+                    </Stack>
                     <Box>
-                      <Stack className="file-upload-Sub">{uploadFileName}</Stack>
+                      <Stack className="file-upload-Sub">
+                        {uploadFileName}
+                      </Stack>
                       {/* <Stack p={'3px'} className="file-upload-Sub">File Uploaded Successfully</Stack> */}
                     </Box>
                   </Stack>
-                  <Stack p={1} sx={{ marginLeft: "250px" }}><img src={CheckedActiveIcon} alt='' /></Stack>
+                  <Stack p={1} sx={{ marginLeft: '250px' }}>
+                    <img src={CheckedActiveIcon} alt="" />
+                  </Stack>
                 </Box>
               ) : (
-                <>
-                </>
+                <></>
               )}
               {/* <TextField
                 type="file"
@@ -253,25 +271,30 @@ function UploadEstimate() {
                 InputLabelProps={{
                   style: {
                     fontSize: '14px',
-                    color: "rgba(128, 128, 128, 0.744)",
-                    fontFamily: `"Outfit",sans-serif`,
+                    color: 'rgba(128, 128, 128, 0.744)',
+                    fontFamily: `"Outfit",sans-serif`
                   }
                 }}
                 InputProps={{
                   style: {
                     fontSize: '14px',
                     color: 'var(--Text-Black, #080F1A)',
-                    fontFamily: `"Outfit",sans-serif`,
+                    fontFamily: `"Outfit",sans-serif`
                   }
                 }}
               />
             </Stack>
             <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label" sx={{
-                fontSize: '14px',
-                color: 'rgba(128, 128, 128, 0.744)',
-                fontFamily: `"Outfit",sans-serif`,
-              }}>Payment Type</InputLabel>
+              <InputLabel
+                id="demo-simple-select-label"
+                sx={{
+                  fontSize: '14px',
+                  color: 'rgba(128, 128, 128, 0.744)',
+                  fontFamily: `"Outfit",sans-serif`
+                }}
+              >
+                Payment Type
+              </InputLabel>
               <Select
                 labelId="demo-simple-select-label"
                 id="demo-simple-select"
@@ -282,39 +305,66 @@ function UploadEstimate() {
                 sx={{
                   fontSize: '14px',
                   color: '#080F1A',
-                  fontFamily: `"Outfit",sans-serif`,
+                  fontFamily: `"Outfit",sans-serif`
                 }}
               >
-                <MenuItem className="reason-option" value="Cash" sx={{
-                  fontSize: '14px',
-                  color: '#080F1A',
-                  fontFamily: `"Outfit",sans-serif`,
-                }}>
+                <MenuItem
+                  className="reason-option"
+                  value="Cash"
+                  sx={{
+                    fontSize: '14px',
+                    color: '#080F1A',
+                    fontFamily: `"Outfit",sans-serif`
+                  }}
+                >
                   Cash
                 </MenuItem>
-                <MenuItem className="reason-option" value="Insurance/TPA" sx={{
-                  fontSize: '14px',
-                  color: '#080F1A',
-                  fontFamily: `"Outfit",sans-serif`,
-                }}>Insurance/TPA</MenuItem>
-                <MenuItem className="reason-option" value="ECHS" sx={{
-                  fontSize: '14px',
-                  color: '#080F1A',
-                  fontFamily: `"Outfit",sans-serif`,
-                }}>ECHS</MenuItem>
-                <MenuItem className="reason-option" value="Corporate" sx={{
-                  fontSize: '14px',
-                  color: '#080F1A',
-                  fontFamily: `"Outfit",sans-serif`,
-                }}>Corporate</MenuItem>
-                <MenuItem className="reason-option" value="Corporate" sx={{
-                  fontSize: '14px',
-                  color: '#080F1A',
-                  fontFamily: `"Outfit",sans-serif`,
-                }}>CGHS</MenuItem>
+                <MenuItem
+                  className="reason-option"
+                  value="Insurance/TPA"
+                  sx={{
+                    fontSize: '14px',
+                    color: '#080F1A',
+                    fontFamily: `"Outfit",sans-serif`
+                  }}
+                >
+                  Insurance/TPA
+                </MenuItem>
+                <MenuItem
+                  className="reason-option"
+                  value="ECHS"
+                  sx={{
+                    fontSize: '14px',
+                    color: '#080F1A',
+                    fontFamily: `"Outfit",sans-serif`
+                  }}
+                >
+                  ECHS
+                </MenuItem>
+                <MenuItem
+                  className="reason-option"
+                  value="Corporate"
+                  sx={{
+                    fontSize: '14px',
+                    color: '#080F1A',
+                    fontFamily: `"Outfit",sans-serif`
+                  }}
+                >
+                  Corporate
+                </MenuItem>
+                <MenuItem
+                  className="reason-option"
+                  value="CGHS"
+                  sx={{
+                    fontSize: '14px',
+                    color: '#080F1A',
+                    fontFamily: `"Outfit",sans-serif`
+                  }}
+                >
+                  CGHS
+                </MenuItem>
               </Select>
             </FormControl>
-
           </Box>
           <Box
             sx={{
@@ -324,29 +374,26 @@ function UploadEstimate() {
               width: '100%'
             }}
           >
-            <button
-              className='reminder-cancel-btn'
-              onClick={handleClose}
-            >
+            <button className="reminder-cancel-btn" onClick={handleClose}>
               Cancel
             </button>
             <button
-              className='reminder-btn'
+              className="reminder-btn"
               onClick={handleSubmit}
               disabled={disabled}
               style={{
-                marginLeft: "10px",
-                backgroundColor: disabled ? "#F6F7F9" : "#0566FF",
-                color: disabled ? "#647491" : "#FFF",
-
-              }}>
+                marginLeft: '10px',
+                backgroundColor: disabled ? '#F6F7F9' : '#0566FF',
+                color: disabled ? '#647491' : '#FFF'
+              }}
+            >
               Upload Estimate
             </button>
           </Box>
         </Box>
-      </Modal >
+      </Modal>
     </>
   );
 }
 
-export default UploadEstimate
+export default UploadEstimate;

@@ -380,7 +380,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
           fetchTicket?.prescription[0]?.followUp == null ||
           fetchTicket?.prescription[0]?.followUp == '1970-01-01T00:00:00.000Z'
             ? `null`
-            : dayjs(fetchTicket?.prescription[0]?.followUp).format('YYYY-MM-DD')
+            : (fetchTicket?.prescription[0]?.followUp).split('T')[0].split('-')
+          // : dayjs((fetchTicket?.prescription[0]?.followUp)).format('YYYY-MM-DD')
         }`
         // `${new Date(fetchTicket?.prescription[0]?.followUp)}`
       }));

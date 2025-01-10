@@ -70,7 +70,7 @@ function UploadEstimate() {
     setFile(null);
     setUploadFileName('');
   };
-
+console.log("new")
   // const handleFileChange = (event: any) => {
   //   setFile(event.target.files[0]);
   //   setFileName(event.target.file[0].name)

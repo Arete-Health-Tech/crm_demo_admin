@@ -52,8 +52,8 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
     setFollowUpTodayTaskForAdminAdmission
   } = useDashboardStore();
 
+  console.log('commit');
   const { user } = useUserStore.getState();
-
   const handleDateFormat = (e) => {
     return e.toISOString().split('T')[0];
   };
@@ -121,8 +121,8 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
         for (let i = 0; i < fetchAgents.length; i++) {
           const rep = fetchAgents[i];
           const payloads = {
-            StartDate: dateRange[0],
-            EndDate: dateRange[1],
+            StartDate: '',
+            EndDate: '',
             representativeId: rep._id
           };
 
@@ -212,9 +212,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             </Stack>
             <Stack className={Styles.todat_task_common_count}>
               {' '}
-              {followUpTodayCallCompletedAbove || (
-                <CircularProgress size="30px" />
-              )}
+              {followUpTodayCallCompletedAbove || 0}
             </Stack>
           </Stack>
         </Stack>
@@ -229,9 +227,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_count}>
               {' '}
               {Number(followUpTodayTaskAnswered ?? 0) +
-                Number(followUpTodayTaskNotAnswered ?? 0) || (
-                <CircularProgress size="30px" />
-              )}
+                Number(followUpTodayTaskNotAnswered ?? 0) || 0}
             </Stack>
           </Stack>
           <Stack className={Styles.call_answered}>
@@ -241,7 +237,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_head}>Call Answered</Stack>
             <Stack className={Styles.call_common_count}>
               {' '}
-              {followUpTodayTaskAnswered || <CircularProgress size="30px" />}
+              {followUpTodayTaskAnswered || 0}
             </Stack>
           </Stack>
           <Stack className={Styles.call_not_answered}>
@@ -251,7 +247,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_head}>Call Not Answered</Stack>
             <Stack className={Styles.call_common_count}>
               {' '}
-              {followUpTodayTaskNotAnswered || <CircularProgress size="30px" />}
+              {followUpTodayTaskNotAnswered || 0}
             </Stack>
           </Stack>
         </Stack>
@@ -264,9 +260,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               <Stack className={Styles.answered_call_total_count}>
                 {' '}
                 <Stack className={Styles.answered_call_total_count_value}>
-                  {followUpTodayTaskAnswered || (
-                    <CircularProgress size="30px" />
-                  )}
+                  {followUpTodayTaskAnswered || 0}
                 </Stack>
                 <Stack className={Styles.answered_call_total_count_title}>
                   Call Answered

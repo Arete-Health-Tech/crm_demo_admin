@@ -669,16 +669,17 @@ const PatientRecord = ({ isPatient }) => {
                   </Stack>
                 ) : (
                   !isAuditor && (
-                    <Stack
-                      component="div"
-                      className="edit-icon"
-                      sx={{
-                        marginLeft: isDiagonsticTestEditing ? '10px' : '0'
-                      }}
-                      onClick={() => setIsDiagonsticTestEditing(true)}
-                    >
-                      <EditIcon />
-                    </Stack>
+                    <></>
+                    // <Stack
+                    //   component="div"
+                    //   className="edit-icon"
+                    //   sx={{
+                    //     marginLeft: isDiagonsticTestEditing ? '10px' : '0'
+                    //   }}
+                    //   onClick={() => setIsDiagonsticTestEditing(true)}
+                    // >
+                    //   <EditIcon />
+                    // </Stack>
                   )
                 )}
               </Stack>

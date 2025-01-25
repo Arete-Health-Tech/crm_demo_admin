@@ -303,22 +303,11 @@ const ShowPrescription = ({ image, image1 }: Props) => {
   const handleClose = () => setOpen(false);
 
   const drawerWidth = 'auto';
-
+  console.log({ image, image1 });
   const downloadPrescription = () => {
     FileSaver.saveAs(link1, 'prescription_img.jpg');
     FileSaver.saveAs(link2, 'prescription_img.jpg');
   };
-
-  useEffect(() => {
-    if (image) {
-      setLink1(processLink(image));
-      console.log(processLink(image), 'image1');
-    }
-    if (image1) {
-      setLink2(processLink(image1));
-    }
-  }, [image, image1]);
-
   const processLink = (link: string) => {
     const partToRemove = 'https%3A//';
     if (link.includes(partToRemove)) {
@@ -327,6 +316,22 @@ const ShowPrescription = ({ image, image1 }: Props) => {
 
     return link;
   };
+
+  useEffect(() => {
+    if (image) {
+      console.log("image")
+      setLink1(processLink(image));
+      console.log(processLink(image), 'image1');
+    } else {
+      setLink1('');
+    }
+    if (image1) {
+      console.log("image1111111")
+      setLink2(processLink(image1));
+    } else {
+      setLink2('');
+    }
+  }, [image, image1]);
 
   const [isHovering, setIsHovering] = useState(false);
   const [bgPos, setBgPos] = useState('0% 0%');

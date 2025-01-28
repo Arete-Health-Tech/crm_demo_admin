@@ -301,6 +301,7 @@ const Ticket = () => {
 
   useEffect(() => {
     const data = async () => {
+      setDownloadDisable(true);
       await getTicketHandler(searchByName, 1, 'false', newFilter);
       searchByName === '' || searchByName === 'undefined'
         ? setSearchError('Type to search & Enter')
@@ -309,6 +310,7 @@ const Ticket = () => {
           );
       setPageNumber(1);
       setPage(1);
+      setDownloadDisable(false);
     };
     data();
   }, [searchByName]);

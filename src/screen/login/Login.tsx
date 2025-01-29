@@ -63,8 +63,11 @@ const Login = () => {
       phoneNumber = phone;
     }
     loginHandler(phoneNumber, password.secret);
-    navigate('/');
     <Loader isOpen={false} />;
+    setTimeout(() => {
+      localStorage.setItem('ticketType', 'Admission');
+    })
+    navigate('/admission');
   };
   const handleClickShowPassword = () => {
     setPassword({ ...password, show: !password.show });

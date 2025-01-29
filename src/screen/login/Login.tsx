@@ -64,11 +64,11 @@ const Login = () => {
     }
     loginHandler(phoneNumber, password.secret);
     <Loader isOpen={false} />;
-    localStorage.setItem('ticketType', 'Admission');
-    navigate('/admission');
-    setTimeout(() => {
-      window.location.reload();
-    }, 300);
+    // localStorage.setItem('ticketType', 'Admission');
+    navigate('/');
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 300);
   };
   const handleClickShowPassword = () => {
     setPassword({ ...password, show: !password.show });

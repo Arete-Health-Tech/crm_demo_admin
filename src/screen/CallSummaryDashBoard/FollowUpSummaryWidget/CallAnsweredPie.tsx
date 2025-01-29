@@ -41,7 +41,8 @@ export default function CallAnswered({ todayTaskAnswered }) {
   return (
     <PieChart series={[{ data, innerRadius: 50 }]} {...size}>
       <PieCenterLabel>
-        {todayTaskAnswered?.CallCompleted + todayTaskAnswered?.dnp || 0}
+        {(todayTaskAnswered?.CallCompleted || 0) +
+          (todayTaskAnswered?.dnp || 0)}
       </PieCenterLabel>
     </PieChart>
   );

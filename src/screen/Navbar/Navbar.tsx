@@ -334,7 +334,7 @@ const Navbar = ({ children }) => {
                 <img src={Logo} alt="Logo" />
               </Stack>
               <Box className={styles.navbarItem}>
-                {/* <Stack className={styles.nav_Icon}>
+                <Stack className={styles.nav_Icon}>
                   <Stack
                     onClick={() => {
                       localStorage.setItem('ticketType', '');
@@ -369,7 +369,7 @@ const Navbar = ({ children }) => {
                       )}
                     </LightTooltip>
                   </Stack>
-                </Stack> */}
+                </Stack>
                 <Stack className={styles.nav_Icon}>
                   <Stack
                     // onClick={() => goToPage('/ticket')}

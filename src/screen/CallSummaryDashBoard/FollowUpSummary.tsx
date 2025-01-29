@@ -134,8 +134,8 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             const fetchCombined =
               await getTodaysTaskCombinedAnsweredNotAnsweredFollowup(payloads);
             const totalCallAttempted =
-              fetchCombined?.completedCalls + fetchCombined?.notAnsweredCalls;
-
+              fetchCombined?.answeredCalls + fetchCombined?.notAnsweredCalls;
+            console.log(fetchCombined, 'data 11');
             // Fetch total calls answered for graph
             // const totalCallAnsweredForGraph =
             //   await getTotalcallLAnsweredforGraphAdmission(payloads);
@@ -145,7 +145,8 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               name: rep.firstName, // Representative's name
               todaysTaskAnsweredForAdmin: assignedData?.counts[0]?.count, // Assigned tasks
               totalcallLAttemptedForAdmin: totalCallAttempted, // Attempted calls
-              totalcallLAnsweredforGraphForAdmin: fetchCombined?.completedCalls
+              totalcallLAnsweredforGraphForAdmin: fetchCombined?.totalCalls || 0
+
               // Answered calls for graph
             });
           } catch (error) {
@@ -154,6 +155,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
         }
 
         // Update state after all tasks are fetched
+        console.log(updatedTasks, 'data 11');
         if (updatedTasks.length > 0) {
           setFollowUpTodayTaskForAdminAdmission(updatedTasks);
         }
@@ -212,7 +214,11 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             </Stack>
             <Stack className={Styles.todat_task_common_count}>
               {' '}
-              {followUpTodayCallCompletedAbove || 0}
+              {followUpTodayCallCompletedAbove !== null ? (
+                followUpTodayCallCompletedAbove
+              ) : (
+                <CircularProgress size="30px" />
+              )}
             </Stack>
           </Stack>
         </Stack>

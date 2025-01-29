@@ -23,8 +23,6 @@ import styles from './login.module.css';
 import LoginWallpaper from '../../../src/assets/LoginWallpaper.svg';
 import AreteLogo from '../../../src/assets/AreteLogo.svg';
 import MailIcon from '../../../src/assets/mail.svg';
-import useTicketStore from '../../store/ticketStore';
-import { getTicketHandler } from '../../api/ticket/ticketHandler';
 
 const theme = createTheme({
   components: {
@@ -53,13 +51,8 @@ const Login = () => {
     secret: '',
     show: false
   });
-  const { filterTickets } = useTicketStore();
 
   const navigate = useNavigate();
-
-  const ticketCalling = async () => {
-    await getTicketHandler('undefined', 1, 'false', filterTickets);
-  };
 
   const handleLogin = () => {
     <Loader isOpen={true} />;
@@ -71,11 +64,11 @@ const Login = () => {
     }
     loginHandler(phoneNumber, password.secret);
     <Loader isOpen={false} />;
-    setTimeout(() => {
-      localStorage.setItem('ticketType', 'Admission');
-    });
-    ticketCalling();
+    localStorage.setItem('ticketType', 'Admission');
     navigate('/admission');
+    setTimeout(() => {
+      window.location.reload();
+    }, 200);
   };
   const handleClickShowPassword = () => {
     setPassword({ ...password, show: !password.show });

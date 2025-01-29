@@ -464,7 +464,9 @@ const CallSummaryDashboard = () => {
                   Today's Task Completed
                 </Stack>
                 <Stack className={Styles.todat_task_common_count}>
-                  {callSummaryTodayCallCompletedAbove || (
+                  {callSummaryTodayCallCompletedAbove !== null ? (
+                    callSummaryTodayCallCompletedAbove
+                  ) : (
                     <CircularProgress size="30px" />
                   )}
                 </Stack>
@@ -480,8 +482,11 @@ const CallSummaryDashboard = () => {
                   Call Attempted
                 </Stack>
                 <Stack className={Styles.call_common_count}>
-                  {Number(callSummaryTodayTaskAnswered) +
-                    Number(callSummaryTodayTaskNotAnswered) || (
+                  {callSummaryTodayTaskAnswered !== null &&
+                  callSummaryTodayTaskNotAnswered !== null ? (
+                    Number(callSummaryTodayTaskAnswered) +
+                    Number(callSummaryTodayTaskNotAnswered)
+                  ) : (
                     <CircularProgress size="30px" />
                   )}
                 </Stack>
@@ -492,7 +497,9 @@ const CallSummaryDashboard = () => {
                 </Stack>
                 <Stack className={Styles.call_common_head}>Call Answered</Stack>
                 <Stack className={Styles.call_common_count}>
-                  {callSummaryTodayTaskAnswered || (
+                  {callSummaryTodayTaskAnswered !== null ? (
+                    callSummaryTodayTaskAnswered
+                  ) : (
                     <CircularProgress size="30px" />
                   )}
                 </Stack>
@@ -505,7 +512,9 @@ const CallSummaryDashboard = () => {
                   Call Not Answered
                 </Stack>
                 <Stack className={Styles.call_common_count}>
-                  {callSummaryTodayTaskNotAnswered || (
+                  {callSummaryTodayTaskNotAnswered !== null ? (
+                    callSummaryTodayTaskNotAnswered
+                  ) : (
                     <CircularProgress size="30px" />
                   )}
                 </Stack>
@@ -521,7 +530,9 @@ const CallSummaryDashboard = () => {
                   <Stack className={Styles.answered_call_total_count}>
                     {' '}
                     <Stack className={Styles.answered_call_total_count_value}>
-                      {callSummaryTodayTaskAnswered || (
+                      {callSummaryTodayTaskAnswered !== null ? (
+                        callSummaryTodayTaskAnswered
+                      ) : (
                         <CircularProgress size="30px" />
                       )}
                     </Stack>
@@ -654,15 +665,15 @@ const CallSummaryDashboard = () => {
                   Total Calls Attempted Vs. Answered
                 </Stack>
                 <Stack className={Styles.bar_graph_component}>
-                  {todayTaskForAdmin.length > 0 ||
-                  (Number(callSummaryTotalcallLGraphAttempted) > 0 &&
-                    Number(callSummaryTotalcallLGraphAnsweredforGraph) > 0) ? (
+                  {todayTaskForAdmin?.[0]?.totalcallLAttemptedForAdmin &&
+                  (todayTaskForAdmin[0].totalcallLAttemptedForAdmin > 0 ||
+                    Number(callSummaryTotalcallLGraphAttempted) > 0) ? (
                     <AttemptedVsAnswered
                       callAttemmpted={callSummaryTotalcallLGraphAttempted}
                       callAnswered={callSummaryTotalcallLGraphAnsweredforGraph}
                       user={user?.firstName || 'Unknown User'}
                       selectedAgents={
-                        selectedAgents || { _id: '', firstName: '' }
+                        selectedAgents ?? { _id: '', firstName: '' }
                       }
                       todayTaskForAdmin={
                         Array.isArray(todayTaskForAdmin)
@@ -675,7 +686,7 @@ const CallSummaryDashboard = () => {
                       <img
                         src={DeafaultGraph}
                         style={{ width: '200px', height: '200px' }}
-                        alt=""
+                        alt="No data available"
                       />
                       <Stack sx={{ marginBottom: '30px' }}>
                         No data available

@@ -213,7 +213,9 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
                 Today's Task Completed
               </Stack>
               <Stack className={Styles.todat_task_common_count}>
-                {admissionSummaryTodayCallCompletedAbove || (
+                {admissionSummaryTodayCallCompletedAbove !== null ? (
+                  admissionSummaryTodayCallCompletedAbove
+                ) : (
                   <CircularProgress size="30px" />
                 )}
               </Stack>
@@ -228,8 +230,11 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               </Stack>
               <Stack className={Styles.call_common_head}>Call Attempted</Stack>
               <Stack className={Styles.call_common_count}>
-                {Number(admissionSummaryTodayTaskAnswered) +
-                  Number(admissionSummaryTodayTaskNotAnswered) || (
+                {admissionSummaryTodayTaskAnswered != null &&
+                admissionSummaryTodayTaskNotAnswered != null ? (
+                  Number(admissionSummaryTodayTaskAnswered) +
+                  Number(admissionSummaryTodayTaskNotAnswered)
+                ) : (
                   <CircularProgress size="30px" />
                 )}
               </Stack>
@@ -240,7 +245,9 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               </Stack>
               <Stack className={Styles.call_common_head}>Call Answered</Stack>
               <Stack className={Styles.call_common_count}>
-                {admissionSummaryTodayTaskAnswered || (
+                {admissionSummaryTodayTaskAnswered !== null ? (
+                  admissionSummaryTodayTaskAnswered
+                ) : (
                   <CircularProgress size="30px" />
                 )}
               </Stack>
@@ -254,7 +261,9 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               </Stack>
               <Stack className={Styles.call_common_count}>
                 {' '}
-                {admissionSummaryTodayTaskNotAnswered || (
+                {admissionSummaryTodayTaskNotAnswered !== null ? (
+                  admissionSummaryTodayTaskNotAnswered
+                ) : (
                   <CircularProgress size="30px" />
                 )}
               </Stack>
@@ -271,7 +280,9 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
                 <Stack className={Styles.answered_call_total_count}>
                   {' '}
                   <Stack className={Styles.answered_call_total_count_value}>
-                    {admissionSummaryTodayTaskAnswered || (
+                    {admissionSummaryTodayTaskAnswered !== null ? (
+                      admissionSummaryTodayTaskAnswered
+                    ) : (
                       <CircularProgress size="30px" />
                     )}
                   </Stack>
@@ -403,7 +414,8 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
                 Total Calls Attempted Vs. Answered
               </Stack>
               <Stack className={Styles.bar_graph_component}>
-                {todayTaskForAdminAdmission.length > 0 ||
+                {todayTaskForAdminAdmission?.[0]?.totalcallLAttemptedForAdmin >
+                  0 ||
                 admissionSummaryTotalcallLAnsweredforGraph ||
                 admissionSummaryTotalcallLAttempted ? (
                   <AttemptedVsAssigned
@@ -411,7 +423,7 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
                     callAnswered={admissionSummaryTotalcallLAnsweredforGraph}
                     user={user?.firstName || 'Unknown User'}
                     selectedAgents={
-                      selectedAgents || { _id: '', firstName: '' }
+                      selectedAgents ?? { _id: '', firstName: '' }
                     }
                     todayTaskForAdminAdmission={
                       Array.isArray(todayTaskForAdminAdmission)
@@ -424,6 +436,7 @@ const AdmissionSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
                     <img
                       src={DeafaultGraph}
                       style={{ width: '200px', height: '200px' }}
+                      alt="No data available"
                     />
                     <Stack sx={{ marginBottom: '30px' }}>
                       No data available

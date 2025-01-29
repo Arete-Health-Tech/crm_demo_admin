@@ -232,8 +232,13 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_head}>Call Attempted</Stack>
             <Stack className={Styles.call_common_count}>
               {' '}
-              {Number(followUpTodayTaskAnswered ?? 0) +
-                Number(followUpTodayTaskNotAnswered ?? 0) || 0}
+              {followUpTodayTaskAnswered !== null &&
+              followUpTodayTaskNotAnswered !== null ? (
+                Number(followUpTodayTaskAnswered ?? 0) +
+                Number(followUpTodayTaskNotAnswered ?? 0)
+              ) : (
+                <CircularProgress size="30px" />
+              )}
             </Stack>
           </Stack>
           <Stack className={Styles.call_answered}>
@@ -243,7 +248,11 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_head}>Call Answered</Stack>
             <Stack className={Styles.call_common_count}>
               {' '}
-              {followUpTodayTaskAnswered || 0}
+              {followUpTodayTaskAnswered !== null ? (
+                followUpTodayTaskAnswered
+              ) : (
+                <CircularProgress size="30px" />
+              )}
             </Stack>
           </Stack>
           <Stack className={Styles.call_not_answered}>
@@ -253,7 +262,11 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_head}>Call Not Answered</Stack>
             <Stack className={Styles.call_common_count}>
               {' '}
-              {followUpTodayTaskNotAnswered || 0}
+              {followUpTodayTaskNotAnswered !== null ? (
+                followUpTodayTaskNotAnswered
+              ) : (
+                <CircularProgress size="30px" />
+              )}
             </Stack>
           </Stack>
         </Stack>
@@ -266,7 +279,11 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               <Stack className={Styles.answered_call_total_count}>
                 {' '}
                 <Stack className={Styles.answered_call_total_count_value}>
-                  {followUpTodayTaskAnswered || 0}
+                  {followUpTodayTaskAnswered !== null ? (
+                    followUpTodayTaskAnswered
+                  ) : (
+                    <CircularProgress size="30px" />
+                  )}
                 </Stack>
                 <Stack className={Styles.answered_call_total_count_title}>
                   Call Answered
@@ -438,9 +455,10 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               Total Calls Attempted Vs. Answered
             </Stack>
             <Stack className={Styles.bar_graph_component}>
-              {followUpTodayTaskForAdminAdmission &&
-              (followUpTodayTaskForAdminAdmission.length > 0 ||
-                followUpTotalcallLGraphAttempted) ? (
+              {(followUpTodayTaskForAdminAdmission &&
+                followUpTodayTaskForAdminAdmission[0]
+                  .totalcallLAttemptedForAdmin > 0) ||
+              followUpTotalcallLGraphAttempted ? (
                 <AttemptedVsAssigned //This is attempted vs answered
                   callAttemmpted={followUpTotalcallLGraphAttempted}
                   callAnswered={followUpTotalcallLGraphAnsweredforGraph}

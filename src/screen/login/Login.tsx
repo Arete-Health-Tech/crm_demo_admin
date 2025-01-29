@@ -68,7 +68,7 @@ const Login = () => {
     navigate('/admission');
     setTimeout(() => {
       window.location.reload();
-    }, 200);
+    }, 300);
   };
   const handleClickShowPassword = () => {
     setPassword({ ...password, show: !password.show });

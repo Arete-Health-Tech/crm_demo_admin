@@ -970,54 +970,54 @@ const TicketFilter = (props: {
             </Box>
           )}
           {localStorage.getItem('ticketType') === 'Diagnostics' && (
-            <Box p={1} px={3}>
-              <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
-                Diagnotics Type
-              </Stack>
-              <ToggleButtonGroup
-                color="primary"
-                value={diagnosticsType}
-                onChange={handleDiagnosticsType}
-              >
-                <ToggleButton
-                  value="MRI"
-                  sx={{
-                    fontFamily: 'Outfit,sans-serif',
-                    fontSize: '12px'
-                  }}
-                >
-                  MRI
-                </ToggleButton>
-                <ToggleButton
-                  value="PET-CT"
-                  sx={{
-                    fontFamily: 'Outfit,sans-serif',
-                    fontSize: '12px'
-                  }}
-                >
-                  PET-CT
-                </ToggleButton>
-                <ToggleButton
-                  value="CT-Scan"
-                  sx={{
-                    fontFamily: 'Outfit,sans-serif',
-                    fontSize: '12px'
-                  }}
-                >
-                  CT-Scan
-                </ToggleButton>
+            // <Box p={1} px={3}>
+            //   <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
+            //     Diagnotics Type
+            //   </Stack>
+            //   <ToggleButtonGroup
+            //     color="primary"
+            //     value={diagnosticsType}
+            //     onChange={handleDiagnosticsType}
+            //   >
+            //     <ToggleButton
+            //       value="MRI"
+            //       sx={{
+            //         fontFamily: 'Outfit,sans-serif',
+            //         fontSize: '12px'
+            //       }}
+            //     >
+            //       MRI
+            //     </ToggleButton>
+            //     <ToggleButton
+            //       value="PET-CT"
+            //       sx={{
+            //         fontFamily: 'Outfit,sans-serif',
+            //         fontSize: '12px'
+            //       }}
+            //     >
+            //       PET-CT
+            //     </ToggleButton>
+            //     <ToggleButton
+            //       value="CT-Scan"
+            //       sx={{
+            //         fontFamily: 'Outfit,sans-serif',
+            //         fontSize: '12px'
+            //       }}
+            //     >
+            //       CT-Scan
+            //     </ToggleButton>
 
-                <ToggleButton
-                  value="Lab"
-                  sx={{
-                    fontFamily: 'Outfit,sans-serif',
-                    fontSize: '12px'
-                  }}
-                >
-                  Lab
-                </ToggleButton>
-              </ToggleButtonGroup>
-            </Box>
+            //     <ToggleButton
+            //       value="Lab"
+            //       sx={{
+            //         fontFamily: 'Outfit,sans-serif',
+            //         fontSize: '12px'
+            //       }}
+            //     >
+            //       Lab
+            //     </ToggleButton>
+            //   </ToggleButtonGroup>
+            // </Box>
           )}
           {isAdminUser && (
             <Box p={1} px={3}>

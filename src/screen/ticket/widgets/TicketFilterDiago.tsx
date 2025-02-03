@@ -969,7 +969,7 @@ const TicketFilter = (props: {
               </ToggleButtonGroup>
             </Box>
           )}
-          {localStorage.getItem('ticketType') === 'Diagnostics' && (
+          {/* {localStorage.getItem('ticketType') === 'Diagnostics' && (
             // <Box p={1} px={3}>
             //   <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
             //     Diagnotics Type
@@ -1018,7 +1018,7 @@ const TicketFilter = (props: {
             //     </ToggleButton>
             //   </ToggleButtonGroup>
             // </Box>
-          )}
+          )} */}
           {isAdminUser && (
             <Box p={1} px={3}>
               <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>

@@ -24,21 +24,17 @@ const LeadDetail: React.FC<MyComponentProps> = ({ isLeadDetail }) => {
     getTicketInfo(ticketID);
   }, [ticketID, tickets]);
 
-  const formatDate = () => {
-    if (currentTicket?.createdAt) {
-      const date = new Date(currentTicket.createdAt);
-      const formattedDate = `${String(date.getDate()).padStart(
-        2,
-        '0'
-      )}-${String(date.getMonth() + 1).padStart(2, '0')}-${date.getFullYear()}`;
-      return formattedDate;
-    }
-    // const dateString = currentTicket?.createdAt;
-    // if (!dateString) {
-    //     return '';
-    // }
-    // const date = new Date(dateString);
-    // const formattedDate = new Intl.DateTimeFormat('en-US', { day: '2-digit', month: 'short', year: 'numeric' }).format(date);
+  const calculatedDate = (date: any) => {
+    const creationDate = new Date(date);
+
+    // Format the date as "10 Jan 2025"
+    const formattedDate = creationDate.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
+
+    return formattedDate;
   };
 
   const createdByName = () => {
@@ -79,7 +75,7 @@ const LeadDetail: React.FC<MyComponentProps> = ({ isLeadDetail }) => {
         <Box className="additional-detail-Head">
           <Stack className="additional-detail-title">Created On:</Stack>
           <Stack component="div" className="additional-detail-data">
-            {formatDate()}
+            {calculatedDate(currentTicket?.date)}
           </Stack>
         </Box>
       </Box>

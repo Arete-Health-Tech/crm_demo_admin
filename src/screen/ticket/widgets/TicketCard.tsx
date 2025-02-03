@@ -255,28 +255,14 @@ const TicketCard = (props: Props) => {
   const calculatedDate = (date: any) => {
     const creationDate = new Date(date);
 
-    // Get today's date
-    const today = new Date();
+    // Format the date as "10 Jan 2025"
+    const formattedDate = creationDate.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
 
-    // Calculate the difference in milliseconds
-    const timeDifference = today.getTime() - creationDate.getTime();
-
-    // Calculate the difference in days
-    const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-
-    if (dayDifference < 1) {
-      // Calculate the difference in hours
-      const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
-      const minuteDifference = Math.floor(
-        (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
-      );
-      const formattedTimeDifference = `${hourDifference
-        .toString()
-        .padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
-      return `${formattedTimeDifference} hrs ago`;
-    } else {
-      return `${dayDifference} days ago`;
-    }
+    return formattedDate;
   };
 
   useEffect(() => {
@@ -634,7 +620,7 @@ const TicketCard = (props: Props) => {
           className="Ticket-LeadAge"
           sx={{ fontSize: '12px !important', padding: '4px 0 0px 0' }}
         >
-          {formattedDate}
+          {calculatedDate(props.patientData?.date)}
         </Stack>
         <Stack
           sx={{ display: 'flex', flexDirection: 'row !important', gap: '5px' }}

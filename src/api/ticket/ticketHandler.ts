@@ -21,7 +21,9 @@ import {
   getAuditTickets,
   getAllWhatsAppCount,
   getAuditTicket,
-  createNoteActivity
+  createNoteActivity,
+  bulkAssignTickets,
+  clearAssigneeTickets
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -362,3 +364,24 @@ export const createTimerHandler = async (
 function getDate(): string | Blob {
   throw new Error('Function not implemented.');
 }
+
+export const bulkAssignTicketsHandler = async (ticketIds: string[], representativeIds: string[]) => {
+  try {
+    const result = await bulkAssignTickets(ticketIds, representativeIds);
+    console.log("Tickets assigned successfully:", result);
+    return result;
+  } catch (error) {
+    console.error("Error handling bulk ticket assignment:", error);
+    throw error;
+  }
+};
+
+export const clearAssigneeTicketsHandler = async (ticketIds: string[]) => {
+  try {
+    const result = await clearAssigneeTickets(ticketIds);
+    return result;
+  } catch (error) {
+    console.error("Error handling bulk ticket assignment:", error);
+    throw error;
+  }
+};

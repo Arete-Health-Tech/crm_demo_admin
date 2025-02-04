@@ -46,6 +46,8 @@ import nodeConnectorIconDefault from '../../assets/nodeConnectorIconDefault.svg'
 import tagIcon from '../../assets/tagIcon.svg';
 import tagIconDefault from '../../assets/tagIconDefault.svg';
 import Logo from '../../assets/Logo.svg';
+import BulkAssignActive from '../../assets/BulkAssignNav.svg';
+import BulkAssign from '../../assets/BulkAssignNotSelected.svg';
 import styles from './Navbar.module.css';
 import Logout from '../login/Logout';
 import ActiveDashBoard from '../../assets/DashBoardActive.svg';
@@ -74,6 +76,7 @@ import {
 } from '@mui/icons-material';
 import { StackedBarChartSharp } from '@mui/icons-material';
 import useTicketStore from '../../store/ticketStore';
+import useUserStore from '../../store/userStore';
 
 const drawerWidth = 72;
 
@@ -260,6 +263,7 @@ const Navbar = ({ children }) => {
   const { setTicketType } = useTicketStore();
   const [expandedMenu, setExpandedMenu] = React.useState(null);
   const { isSwitchView, setIsSwitchView, setPageNumber } = useTicketStore();
+  const { user } = useUserStore.getState();
   const goToPage = (path) => {
     navigate(path);
   };
@@ -386,11 +390,10 @@ const Navbar = ({ children }) => {
                       height: '6.8vh',
                       borderRadius: '8px',
                       cursor: 'pointer',
-                      backgroundColor:
-                        location.pathname.includes('admission') ||
-                        localStorage.getItem('ticketType') === 'Admission'
-                          ? '#DAE8FF'
-                          : 'transparent',
+                      backgroundColor: location.pathname.includes('admission')
+                        ? // || localStorage.getItem('ticketType') === 'Admission'
+                          '#DAE8FF'
+                        : 'transparent',
                       '&:hover': {
                         background: '#E1E6EE'
                       }
@@ -402,8 +405,8 @@ const Navbar = ({ children }) => {
                       placement="right"
                       TransitionComponent={Zoom}
                     >
-                      {location.pathname.includes('admission') ||
-                      localStorage.getItem('ticketType') === 'Admission' ? (
+                      {location.pathname.includes('admission') ? (
+                        // || localStorage.getItem( 'ticketType' ) === 'Admission'
                         <img src={admissionActive} alt="Ticket" />
                       ) : (
                         <img src={admission} alt="Ticket" />
@@ -427,11 +430,10 @@ const Navbar = ({ children }) => {
                       height: '6.8vh',
                       borderRadius: '8px',
                       cursor: 'pointer',
-                      backgroundColor:
-                        location.pathname.includes('diagnostics') ||
-                        localStorage.getItem('ticketType') === 'Diagnostics'
-                          ? '#DAE8FF'
-                          : 'transparent',
+                      backgroundColor: location.pathname.includes('diagnostics')
+                        ? // ||  localStorage.getItem('ticketType') === 'Diagnostics'
+                          '#DAE8FF'
+                        : 'transparent',
                       '&:hover': {
                         background: '#E1E6EE'
                       }
@@ -443,8 +445,8 @@ const Navbar = ({ children }) => {
                       placement="right"
                       TransitionComponent={Zoom}
                     >
-                      {location.pathname.includes('diagnostics') ||
-                      localStorage.getItem('ticketType') === 'Diagnostics' ? (
+                      {location.pathname.includes('diagnostics') ? (
+                        // || localStorage.getItem( 'ticketType' ) === 'Diagnostics'
                         <img src={DiagnosticsActive} alt="Ticket" />
                       ) : (
                         <img src={Diagnostics} alt="Ticket" />
@@ -468,11 +470,10 @@ const Navbar = ({ children }) => {
                       height: '6.8vh',
                       borderRadius: '8px',
                       cursor: 'pointer',
-                      backgroundColor:
-                        location.pathname.includes('follow-up') ||
-                        localStorage.getItem('ticketType') === 'Follow-Up'
-                          ? '#DAE8FF'
-                          : 'transparent',
+                      backgroundColor: location.pathname.includes('follow-up')
+                        ? // || localStorage.getItem('ticketType') === 'Follow-Up'
+                          '#DAE8FF'
+                        : 'transparent',
                       '&:hover': {
                         background: '#E1E6EE'
                       }
@@ -484,8 +485,8 @@ const Navbar = ({ children }) => {
                       placement="right"
                       TransitionComponent={Zoom}
                     >
-                      {location.pathname.includes('follow-up') ||
-                      localStorage.getItem('ticketType') === 'Follow-Up' ? (
+                      {location.pathname.includes('follow-up') ? (
+                        // || localStorage.getItem( 'ticketType' ) === 'Follow-Up'
                         <img src={FollowupActive} alt="Ticket" />
                       ) : (
                         <img src={Followup} alt="Ticket" />
@@ -493,6 +494,50 @@ const Navbar = ({ children }) => {
                     </LightTooltip>
                   </Stack>
                 </Stack>
+                {Number(user?.phone) === 917743001986 && (
+                  <Stack className={styles.nav_Icon}>
+                    <Stack
+                      onClick={() => {
+                        localStorage.setItem('ticketType', 'Admission');
+                        goToPage('/bulk-assign');
+                      }}
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        gap: '24px',
+                        width: '3.3vw',
+                        height: '6.8vh',
+                        borderRadius: '8px',
+                        cursor: 'pointer',
+                        backgroundColor: location.pathname.includes(
+                          '/bulk-assign'
+                        )
+                          ? //   &&
+                            // localStorage.getItem('ticketType') === 'bulk-assign'
+                            '#DAE8FF'
+                          : 'transparent',
+                        '&:hover': {
+                          background: '#E1E6EE'
+                        }
+                      }}
+                    >
+                      <LightTooltip
+                        title="Bulk Assign"
+                        disableInteractive
+                        placement="right"
+                        TransitionComponent={Zoom}
+                      >
+                        {location.pathname.includes('/bulk-assign') ? (
+                          // && localStorage.getItem( 'ticketType' ) === 'bulk-assign'
+                          <img src={BulkAssignActive} alt="bulk-assign" />
+                        ) : (
+                          <img src={BulkAssign} alt="bulk-assign" />
+                        )}
+                      </LightTooltip>
+                    </Stack>
+                  </Stack>
+                )}
                 {/* this stack is for doctors,department,WhatsappFlow starts */}
 
                 {/* <Stack className={styles.nav_Icon}>

@@ -1,6 +1,13 @@
 import useServiceStore from '../../store/serviceStore';
-import { createNewDoctor, getDoctors } from './doctor';
+import { createNewDoctor, getDoctors , getDoctorsName } from './doctor';
 
+
+
+export const getDoctorsHandlerName = async (name:String) => {
+  const { setDoctors } = useServiceStore.getState();
+  const doctors = await getDoctorsName(name);
+  setDoctors(doctors.reverse());
+};
 export const getDoctorsHandler = async () => {
   const { setDoctors } = useServiceStore.getState();
   const doctors = await getDoctors();

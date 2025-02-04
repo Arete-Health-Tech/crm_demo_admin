@@ -28,6 +28,7 @@ import FileUpload from '../../screen/fileUpload/fileUpload';
 import ConfigurationBar from '../../screen/configuration/ConfigurationBar';
 import Configuration from './Configuration';
 import CallSummaryDashboard from '../../screen/CallSummaryDashBoard/CallSummaryDashboard';
+import BulkAssign from '../../screen/ticket/BulkAssign/BulkAssign';
 
 type Props = {};
 
@@ -81,7 +82,7 @@ const Authenticated = (props: Props) => {
               element={<NSingleTicketDetails />}
             />
             <Route path="upload-file" element={<FileUpload />} />
-            <Route path="configuration/*" element={<Configuration />} />
+            <Route path="bulk-assign" element={<BulkAssign />} />
           </Routes>
         </Navbar>
       </AgentLogin>

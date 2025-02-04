@@ -11,6 +11,8 @@ export interface iUser {
   image: string;
   access: string;
   refresh: string;
+  status?: boolean;
+
 }
 
 export interface iUserStore {

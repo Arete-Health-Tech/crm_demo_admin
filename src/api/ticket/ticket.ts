@@ -463,3 +463,31 @@ export const getAuditorCommentCount = async () => {
   const { data } = await apiClient.get(`/ticket/auditorCommentCount`);
   return data;
 };
+
+export const bulkAssignTickets = async (
+  ticketIds: string[],
+  representativeIds: string[]
+) => {
+  try {
+    const { data } = await apiClient.put(`/ticket/bulkticketassign`, {
+      ticketIds,
+      representativeIds
+    });
+    return data;
+  } catch (error) {
+    console.error('Error during bulk ticket assignment:', error);
+    throw error;
+  }
+};
+
+export const clearAssigneeTickets = async (ticketIds: string[]) => {
+  try {
+    const { data } = await apiClient.put(`/ticket/removeAssignee`, {
+      ticketIds
+    });
+    return data;
+  } catch (error) {
+    console.error('Error during Clearing Assignee for ticket:', error);
+    throw error;
+  }
+};

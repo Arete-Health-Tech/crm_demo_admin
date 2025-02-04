@@ -20,7 +20,7 @@ import {
 import { Box } from '@mui/system';
 import dayjs from 'dayjs';
 import React, { useEffect, useReducer, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
 
 import useTicketStore from '../../../store/ticketStore';
 import { getStagesHandler } from '../../../api/stages/stagesHandler';
@@ -198,7 +198,7 @@ const TicketFilter = (props: {
   const phoneNumber = user?.phone;
 
   // const { representative } = useReprentativeStore();
-
+  const location = useLocation();
   const [isAmritsarUser, SetIsAmritsarUser] = useState(false);
   const [isHoshiarpurUser, SetIsHoshiarpurUser] = useState(false);
   const [isNawanshahrUser, SetIsNnawanshahrUser] = useState(false);
@@ -646,7 +646,7 @@ const TicketFilter = (props: {
   return (
     <Box>
       <Stack display={'flex'} flexDirection={'row'} gap={'10px'}>
-        <Stack className="AuditorFilterIcon">
+        {/* <Stack className="AuditorFilterIcon">
           {isAuditorFilterOn ? (
             <LightTooltip
               title="Clear Audit Filter"
@@ -676,7 +676,7 @@ const TicketFilter = (props: {
               />
             </LightTooltip>
           )}
-        </Stack>
+        </Stack> */}
         <IconButton onClick={handleFilterOpen}>
           <StyledBadge
             invisible={filterCount <= 0}
@@ -691,7 +691,11 @@ const TicketFilter = (props: {
       <Drawer
         open={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
-        anchor={isSwitchView == false ? 'left' : 'right'}
+        anchor={
+          isSwitchView == true || location.pathname.includes('/bulk-assign')
+            ? 'right'
+            : 'left'
+        }
         sx={{
           display: { xs: 'none', sm: 'block' },
           '& .MuiDrawer-paper': {

@@ -41,18 +41,20 @@ export const getTicket = async (
   );
   return data;
 };
-export const getAllTicket = async () => {
-  const { data } = await apiClient.get(`/ticket/getTicketsWithinDateRange`);
+export const getAllTicketAdmission = async (value:any) => {
+  const { data } = await apiClient.get(`/ticket/allDownload?month=${value.format('YYYY-MM')}`);
   return data;
 };
-export const getAllTicketDiagontics = async () => {
+export const getAllTicketDiagontics = async (value:any) => {
   const { data } = await apiClient.get(
-    `/ticket/getAllDownloadTicketDiagnostics`
+    `/ticket/getAllDownloadTicketDiagnostics?month=${value.format('YYYY-MM')}`
   );
   return data;
 };
-export const getAllTicketFollowUp = async () => {
-  const { data } = await apiClient.get(`/ticket/getAllDownloadTicketFolllow`);
+export const getAllTicketFollowUp = async (value:any) => {
+  const { data } = await apiClient.get(
+    `/followUp/followupdownload?month=${value.format('YYYY-MM')}`
+  );
   return data;
 };
 

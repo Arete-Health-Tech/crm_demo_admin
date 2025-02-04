@@ -21,7 +21,6 @@ import {
   getAuditTickets,
   getAllWhatsAppCount,
   getAuditTicket,
-  getAllTicket,
   createNoteActivity
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';

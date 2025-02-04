@@ -529,17 +529,11 @@ const TicketCard = (props: Props) => {
           <></>
         )}
 
-        {props?.patientData?.estimate?.length > 0 ? (
+        {props?.patientData?.prescription[0]?.payerType ? (
           <>
-            {props?.patientData?.estimate[0]?.paymentType === 0 ? (
-              <Stack className="ticket-card-line3-tag">Cash</Stack>
-            ) : props?.patientData?.estimate[0]?.paymentType === 1 ? (
-              <Stack className="ticket-card-line3-tag">Insurance</Stack>
-            ) : props?.patientData?.estimate[0]?.paymentType === 2 ? (
-              <Stack className="ticket-card-line3-tag">CGHS | ECHS</Stack>
-            ) : (
-              ''
-            )}
+            <Stack className="ticket-card-line3-tag">
+              {props?.patientData?.prescription[0]?.payerType}
+            </Stack>
           </>
         ) : (
           <></>

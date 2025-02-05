@@ -507,13 +507,9 @@ function BulkAssign() {
   };
 
   const handleSelectRepresentative = (id: string) => {
-    if (selectedRepresentativeIds.includes(id)) {
-      setSelectedRepresentativeIds((prev) =>
-        prev.filter((repId) => repId !== id)
-      );
-    } else {
-      setSelectedRepresentativeIds((prev) => [...prev, id]);
-    }
+    setSelectedRepresentativeIds((prevIds) =>
+      prevIds.includes(id) ? [] : [id]
+    );
   };
 
   const handleSelectAgent = (id: string) => {
@@ -801,7 +797,7 @@ function BulkAssign() {
                             >
                               <Stack
                                 className={styles.BulkAsiign_name}
-                                sx={{ textTransform: 'capitalize !important' }}
+                                sx={{ textTransform: 'uppercase !important' }}
                               >
                                 {/* {patientName(item)} */}
                                 {`${item?.consumer?.[0]?.firstName ?? ''} ${
@@ -988,14 +984,14 @@ function BulkAssign() {
                         Assign Tickets {'('} {selectedTicketIds.length}
                         {' )'}
                       </Stack>
-                      <Stack
+                      {/* <Stack
                         className={styles.activate_btn}
                         onClick={() => {
                           handleClearAssignedTicketModal();
                         }}
                       >
                         Clear Assignee ( {selectedTicketIds.length} )
-                      </Stack>
+                      </Stack> */}
                     </>
                   )}
                 </Stack>

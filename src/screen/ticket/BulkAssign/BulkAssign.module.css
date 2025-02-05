@@ -485,7 +485,7 @@
   overflow: hidden;
   display: flex;
   flex-direction: column !important;
-  gap: 10px;
+  gap: 1px;
 }
 
 .Bulk_doctor {

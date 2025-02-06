@@ -375,8 +375,17 @@ const DownloadAllTickets = (props: Props) => {
             horizontal: 'left'
           }}
         >
-          <Box display={'flex'} width={'19vw'}>
-            <Stack p={2} height={'4rem'} width={'15rem'}>
+          <Box
+            display={'flex'}
+            width={'250px'}
+            flexDirection={'column'}
+            gap={'10px'}
+            sx={{
+              padding: '20px',
+              borderRadius: '16px'
+            }}
+          >
+            <Stack>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   slotProps={{ textField: { size: 'small' } }}
@@ -389,13 +398,17 @@ const DownloadAllTickets = (props: Props) => {
             </Stack>
             <Stack
               style={{
-                paddingTop: '1.5rem',
-                height: '1rem',
-                width: '1rem',
+                padding: '8px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
                 fontFamily: 'outFit,san-serif',
                 fontSize: '14px',
-                fontWeight: 400,
-                cursor: 'pointer'
+                fontWeight: 500,
+                cursor: 'pointer',
+                color: '#0566FF',
+                border: '1.5px solid #0566FF',
+                borderRadius: '4px'
               }}
               onClick={downloadData}
             >

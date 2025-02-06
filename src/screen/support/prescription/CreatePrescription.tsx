@@ -1026,8 +1026,10 @@ const CreatePrescription = () => {
               onChange={(_, newValue) =>
                 changePrescriptionValue('doctor', newValue!._id!)
               }
-              options={doctors.filter((item) =>
-                item.departments.includes(prescription.department)
+              options={doctors.filter(
+                (item) =>
+                  prescription.department &&
+                  item.departments?.includes(prescription.department)
               )}
               getOptionLabel={(option) => capitalizeWords(option.name)}
               renderInput={(params) => <TextField {...params} label="Doctor" />}

@@ -950,7 +950,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                           }))
                         }
                         options={doctors.filter((item) =>
-                          item.departments.includes(PatientData.department)
+                          Array.isArray(item.departments) && item.departments.includes(PatientData.department)
                         )}
                         getOptionLabel={(option) => option.name}
                         renderInput={(params) => (

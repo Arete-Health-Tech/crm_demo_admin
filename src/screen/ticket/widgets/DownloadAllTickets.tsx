@@ -331,7 +331,9 @@ const DownloadAllTickets = (props: Props) => {
         'Error generating CSV: Please Contact Octa Admin for Download Data',
         error
       );
-      toast.error('Failed to generate CSV');
+      toast.error(
+        'Error generating CSV: Please Contact Octa Admin for Download Data'
+      );
     } finally {
       setDownloadDisable(false);
       setAnchorEl(null);

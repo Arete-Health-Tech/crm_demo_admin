@@ -41,21 +41,52 @@ export const getTicket = async (
   );
   return data;
 };
-export const getAllTicketAdmission = async (value:any) => {
-  const { data } = await apiClient.get(`/ticket/allDownload?month=${value.format('YYYY-MM')}`);
+export const getAllTicketAdmission = async ( value: any, location: any ) =>
+{
+  if ( location == "All" )
+  {
+    const { data } = await apiClient.get(`/ticket/allDownload?month=${value.format('YYYY-MM')}`);
   return data;
+  } else
+  {
+    const { data } = await apiClient.get(`/ticket/allDownload?month=${value.format('YYYY-MM')}&location=${location}`);
+  return data;
+  }
+  
 };
-export const getAllTicketDiagontics = async (value:any) => {
-  const { data } = await apiClient.get(
+export const getAllTicketDiagontics = async ( value: any, location: any ) =>
+{
+  if ( location == "All" )
+  {
+      const { data } = await apiClient.get(
     `/ticket/getAllDownloadTicketDiagnostics?month=${value.format('YYYY-MM')}`
   );
   return data;
+  } else
+  {
+      const { data } = await apiClient.get(
+    `/ticket/getAllDownloadTicketDiagnostics?month=${value.format('YYYY-MM')}&location=${location}`
+  );
+  return data;
+    }
+  
 };
-export const getAllTicketFollowUp = async (value:any) => {
-  const { data } = await apiClient.get(
+export const getAllTicketFollowUp = async ( value: any, location: any ) =>
+{
+  if ( location == "All" )
+  {
+      const { data } = await apiClient.get(
     `/followUp/followupdownload?month=${value.format('YYYY-MM')}`
   );
   return data;
+  } else
+  {
+    const { data } = await apiClient.get(
+    `/followUp/followupdownload?month=${value.format('YYYY-MM')}&location=${location}`
+  );
+  return data;
+  }
+
 };
 
 export const getticketRescedulerAbove = async (ticketId?: string | null) => {

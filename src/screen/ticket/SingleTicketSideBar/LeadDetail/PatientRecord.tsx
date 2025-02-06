@@ -623,7 +623,11 @@ const PatientRecord = ({ isPatient }) => {
                     </Stack>
                   </Stack>
                 )}
-              <Box className="record-tag pharmacy-tag">
+              <Box
+                className="record-tag pharmacy-tag"
+                width={'fit-content'}
+                px={2}
+              >
                 {currentTicket?.prescription[0]?.admission}
               </Box>
             </>

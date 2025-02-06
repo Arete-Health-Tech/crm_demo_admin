@@ -1161,9 +1161,25 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                         /> */}
           </Box>
         ) : (
-          <Box className="Patient-records-Head">
+          <Box className="Patient-records-Head" flexDirection={'column'}>
             <Box p={1} className="Payment-value">
               No Estimate Available
+            </Box>
+            <Box
+              p={1}
+              className="Payment-value"
+              display={'flex'}
+              flexDirection={'row'}
+              gap={'10px'}
+            >
+              Payertype -{' '}
+              <Stack
+                className="ticket-card-line3-tag"
+                width={'fit-content'}
+                // display={'contents'}
+              >
+                {currentTicket?.prescription[0].payerType}
+              </Stack>
             </Box>
           </Box>
         )}

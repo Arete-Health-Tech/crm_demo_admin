@@ -328,11 +328,11 @@ const DownloadAllTickets = (props: Props) => {
       toast.success('Download Successful');
     } catch (error) {
       console.error(
-        'Error generating CSV: Please Contact Octa Admin for Download Data',
+        'Error generating CSV:  Please Contact Octa Admin for Download Data',
         error
       );
       toast.error(
-        'Error generating CSV: Please Contact Octa Admin for Download Data'
+        'Error generating CSV: Check Your Internet Connectivity if still facing issue while Downloading - Please Contact Octa Admin for Download Data)'
       );
     } finally {
       setDownloadDisable(false);

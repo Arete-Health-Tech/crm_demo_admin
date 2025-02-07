@@ -5,14 +5,20 @@ import useUserStore from './userStore';
 const useTicketStore = create<iTicketStore>((set, get) => ({
   tickets: [],
   setTickets: (tickets) => set({ tickets }),
+  bulkTickets: [],
+  setBulkTickets: (bulkTickets) => set({ bulkTickets }),
   pharmcyTicket: [],
   setPharmcyTickets: (pharmcyTicket) => set({ pharmcyTicket }),
   ticketCount: 0,
   setTicketCount: (ticketCount) => set({ ticketCount }),
   searchByName: 'undefined',
   setSearchByName: (searchByName) => set({ searchByName }),
+  bulkSearchByName: 'undefined',
+  setBulkSearchByName: (bulkSearchByName) => set({ bulkSearchByName }),
   ticketCache: { 1: [] },
   setTicketCache: (ticketCache) => set({ ticketCache }),
+  bulkTicketCache: { 1: [] },
+  setBulkTicketCache: (bulkTicketCache) => set({ bulkTicketCache }),
   emptyDataText: '',
   setEmptyDataText: (emptyDataText) => set({ emptyDataText }),
   downloadTickets: [],
@@ -51,10 +57,41 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   },
   setFilterTicketsFollowUp: (filterTicketsFollowUp) =>
     set({ filterTicketsFollowUp }),
+  BulkFilterTickets: {
+    stageList: [],
+    representative: null,
+    results: null,
+    dateRange: [],
+    status: [],
+    followUp: null
+  },
+  setBulkFilterTickets: (BulkFilterTickets) => set({ BulkFilterTickets }),
+  BulkFilterTicketsDiago: {
+    stageList: [],
+    representative: null,
+    results: null,
+    dateRange: [],
+    status: [],
+    followUp: null
+  },
+  setBulkFilterTicketsDiago: (BulkFilterTicketsDiago) =>
+    set({ BulkFilterTicketsDiago }),
+  BulkFilterTicketsFollowUp: {
+    stageList: [],
+    representative: null,
+    results: null,
+    dateRange: [],
+    status: [],
+    followUp: null
+  },
+  setBulkFilterTicketsFollowUp: (BulkFilterTicketsFollowUp) =>
+    set({ BulkFilterTicketsFollowUp }),
   loaderOn: false,
   setLoaderOn: (loaderOn) => set({ loaderOn }),
   pageNumber: 1,
   setPageNumber: (pageNumber) => set({ pageNumber }),
+  bulkPageNumber: 1,
+  setBulkPageNumber: (bulkPageNumber) => set({ bulkPageNumber }),
   estimates: [],
   setEstimates: (estimates) => set({ estimates }),
   viewEstimates: [],

@@ -1,0 +1,1035 @@
+import { ClearAll, Difference, FilterList } from '@mui/icons-material';
+import {
+  Badge,
+  BadgeProps,
+  Button,
+  Checkbox,
+  Drawer,
+  FormControlLabel,
+  FormGroup,
+  IconButton,
+  MenuItem,
+  Select,
+  Stack,
+  styled,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  Typography
+} from '@mui/material';
+import { Box } from '@mui/system';
+import dayjs from 'dayjs';
+import React, { useEffect, useReducer, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+
+import useTicketStore from '../../../store/ticketStore';
+import { getStagesHandler } from '../../../api/stages/stagesHandler';
+
+import { iTicketFilter } from '../../../types/store/ticket';
+import { getRepresntativesHandler } from '../../../api/representive/representativeHandler';
+import {
+  selectedBulkFiltersReducer,
+  ticketFilterTypes
+} from '../ticketStateReducers/filter';
+import { bulkFilterActions } from '../ticketStateReducers/actions/filterAction';
+import { UNDEFINED } from '../../../constantUtils/constant';
+import {
+  getAuditFilterTicketsHandler,
+  getBulkTicketHandler
+} from '../../../api/ticket/ticketHandler';
+import useUserStore from '../../../store/userStore';
+import { apiClient } from '../../../api/apiClient';
+import { validateTicket } from '../../../api/ticket/ticket';
+import '../singleTicket.css';
+import AuditFilterIcon from '../../../assets/commentHeader.svg';
+import { Tooltip, TooltipProps, Zoom, tooltipClasses } from '@mui/material';
+import useReprentativeStore from '../../../store/representative';
+
+const drawerWidth = 450;
+export const ticketFilterCount = (
+  selectedBulkFilters: iTicketFilter,
+  admissionType: string[],
+  diagnosticsType: string[],
+  dateRange: string[],
+  statusType: string[],
+  filteredLocation: string,
+  isAmritsarUser: boolean,
+  isHoshiarpurUser: boolean,
+  isNawanshahrUser: boolean,
+  isMohaliUser: boolean,
+  isKhannaUser: boolean,
+  followUp: Date | null
+) => {
+  const stageListCount = selectedBulkFilters['stageList'].length;
+  const representativeCount = selectedBulkFilters['representative'] ? 1 : 0;
+
+  const admissionCount = admissionType ? admissionType.length : 0;
+  const diagnosticsCount = diagnosticsType ? diagnosticsType.length : 0;
+  const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
+
+  const resultCount = selectedBulkFilters['results'] ? 1 : 0;
+  const statusCount = statusType ? statusType.length : 0;
+  const followUpCount = followUp !== null ? 1 : 0;
+
+  let locationCount = 0;
+  if (
+    !isAmritsarUser &&
+    !isHoshiarpurUser &&
+    !isMohaliUser &&
+    !isNawanshahrUser &&
+    !isKhannaUser
+  ) {
+    locationCount =
+      filteredLocation == 'Amritsar' ||
+      filteredLocation == 'Mohali' ||
+      filteredLocation == 'Hoshiarpur' ||
+      filteredLocation == 'Nawanshahr' ||
+      filteredLocation == 'Hoshiarpur' ||
+      filteredLocation == 'Khanna'
+        ? 1
+        : 0;
+  } else {
+    locationCount = 0;
+    console.log('good');
+  }
+
+  const total =
+    stageListCount +
+    representativeCount +
+    resultCount +
+    admissionCount +
+    diagnosticsCount +
+    DateCount +
+    statusCount +
+    locationCount +
+    followUpCount;
+  return total;
+};
+const BulkTicketFilter = (props: {
+  setPage: React.Dispatch<React.SetStateAction<number>>;
+}) => {
+  const { ticketID } = useParams();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const StyledBadge = styled(Badge)<BadgeProps>(({ theme }) => ({
+    '& .MuiBadge-badge': {
+      right: -3,
+      top: 7,
+      padding: '0 4px',
+      color: '#FFFFFF',
+      backgroundColor: '#0566FF'
+    }
+  }));
+
+  const initialFilters: ticketFilterTypes = {
+    stageList: [],
+    representative: null,
+    results: null,
+    admissionType: [],
+    diagnosticsType: [],
+    dateRange: [],
+    status: [],
+    followUp: null
+  };
+
+  const {
+    setBulkPageNumber,
+    BulkFilterTickets,
+    isSwitchView,
+    setBulkFilterTickets,
+    setIsAuditorFilterOn,
+    setFilteredLocation,
+    filteredLocation,
+    setDownloadDisable
+  } = useTicketStore();
+
+  const [isFilterOpen, setIsFilterOpen] = React.useState(false);
+  const [admissionType, setAdmissionType] = React.useState<string[]>([]);
+  const [statusType, setStatusType] = React.useState<string[]>([]);
+  const [result, setResult] = React.useState('');
+  const [diagnosticsType, setDiagnosticsType] = React.useState<string[]>(
+    () => []
+  );
+  // const [speciality, setSpeciality] = React.useState<string[]>(() => []);
+  const [stagesLabel, setStagesLabels] = React.useState<any>([]);
+  const [representativeLabel, setRepresentativeLabel] = React.useState<any>([]);
+
+  const [selectedBulkFilters, dispatchBulkFilter] = useReducer(
+    selectedBulkFiltersReducer,
+    initialFilters
+  );
+  console.log(BulkFilterTickets, 'BulkFilterTickets');
+  console.log(selectedBulkFilters, 'selectedBulkFilters');
+  // const [startDate, setStartDate] = React.useState<string>('');
+  // const [endDate, setEndDate] = React.useState<string>('');
+  const [followUp, setFollowUp] = React.useState<Date | null>(null);
+  const [dateRange, setDateRange] = React.useState<string[]>(['', '']);
+  const [currentReperesentative, setCurrentRepresentative] = useState('');
+  const [filterCount, setFilterCount] = useState(0);
+  const [selectedValue, setSelectedValue] = useState(null);
+  const [selectedValueLost, setSelectedValueLost] = useState(null);
+
+  const { user } = useUserStore.getState();
+  const phoneNumber = user?.phone;
+
+  // const { representative } = useReprentativeStore();
+
+  const [isMohaliUser, SetIsMohaliUser] = useState(false);
+  const [isAmritsarUser, SetIsAmritsarUser] = useState(false);
+  const [isHoshiarpurUser, SetIsHoshiarpurUser] = useState(false);
+  const [isNawanshahrUser, SetIsNnawanshahrUser] = useState(false);
+  const [isKhannaUser, SetIsKhannaUser] = useState(false);
+  const [isAdminUser, setIsAdminUser] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const fetchedRepresentative = await getRepresntativesHandler();
+        const amritsarFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phoneNumber && rep.Unit === '66a4caeaab18bee54eea0866'
+        );
+        const hoshiarpurFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phoneNumber && rep.Unit === '66bf5f702586bb9ea5598451'
+        );
+        const nawanshahrFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phoneNumber && rep.Unit === '66bf5f5c2586bb9ea5598450'
+        );
+        const khannaFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phoneNumber && rep.Unit === '66d5535689e33e0601248a79'
+        );
+
+        const mohaliFound = fetchedRepresentative?.some(
+          (rep) =>
+            rep.phone === phoneNumber && rep.Unit === '66a8bf565f223ac4d7fb6f38'
+        );
+        if (amritsarFound) {
+          // console.log("Its AmritSar User.", matchFound);
+          SetIsAmritsarUser(true);
+          setFilteredLocation('Amritsar');
+        } else if (mohaliFound) {
+          SetIsMohaliUser(true);
+          setFilteredLocation('Mohali');
+        } else if (hoshiarpurFound) {
+          SetIsHoshiarpurUser(true);
+          setFilteredLocation('Hoshiarpur');
+        } else if (nawanshahrFound) {
+          SetIsNnawanshahrUser(true);
+          setFilteredLocation('Nawanshahr');
+        } else if (khannaFound) {
+          SetIsKhannaUser(true);
+          setFilteredLocation('Khanna');
+        } else {
+          setIsAdminUser(true);
+          SetIsAmritsarUser(false);
+          SetIsHoshiarpurUser(false);
+          SetIsNnawanshahrUser(false);
+          SetIsKhannaUser(false);
+          setFilteredLocation('');
+        }
+      } catch (error) {
+        console.error('Error fetching representatives:', error);
+      }
+    })();
+  }, []);
+  const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (selectedBulkFilters.stageList.includes(value)) {
+      const modifiedStageList = selectedBulkFilters.stageList;
+      modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
+
+      dispatchBulkFilter({
+        type: bulkFilterActions.STAGES,
+        payload: [...modifiedStageList]
+      });
+      return;
+    }
+    dispatchBulkFilter({
+      type: bulkFilterActions.STAGES,
+      payload: [...selectedBulkFilters.stageList, value]
+    });
+  };
+
+  const handleRepresentative = (e: any) => {
+    const value = e.target.value;
+    if (value) {
+      setCurrentRepresentative(value);
+      dispatchBulkFilter({
+        type: bulkFilterActions.REPRESENTATIVE,
+        payload: value
+      });
+    }
+  };
+
+  const handleLocation = (
+    event: React.MouseEvent<HTMLElement>,
+    location: string
+  ) => {
+    setFilteredLocation(location);
+  };
+
+  const handleAdmissionType = (
+    event: React.MouseEvent<HTMLElement>,
+    newAdmission: string[]
+  ) => {
+    setAdmissionType(newAdmission);
+
+    dispatchBulkFilter({
+      type: bulkFilterActions.ADMISSIONTYPE,
+      payload: newAdmission
+    });
+  };
+
+  const handleStatusType = (
+    event: React.MouseEvent<HTMLElement>,
+    Status: string[]
+  ) => {
+    setStatusType(Status);
+
+    dispatchBulkFilter({
+      type: bulkFilterActions.STATUS,
+      payload: Status
+    });
+  };
+
+  const handleDiagnosticsType = (
+    event: React.MouseEvent<HTMLElement>,
+    newDiagnostics: string[]
+  ) => {
+    setDiagnosticsType(newDiagnostics);
+    dispatchBulkFilter({
+      type: bulkFilterActions.DIAGNOSTICSTYPE,
+      payload: newDiagnostics
+    });
+  };
+
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const startDate = e.target.value;
+    setDateRange((prevState) => [startDate, prevState[1]]);
+    dispatchBulkFilter({
+      type: bulkFilterActions.DATERANGE,
+      payload: JSON.stringify([startDate, dateRange[1]])
+    });
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const endDate = e.target.value;
+    setDateRange((prevState) => [prevState[0], endDate]);
+    dispatchBulkFilter({
+      type: bulkFilterActions.DATERANGE,
+      payload: JSON.stringify([dateRange[0], endDate])
+    });
+  };
+
+  const handleResult = (e: any) => {
+    const value = e.target.value;
+
+    if (value === 'Won') {
+      setResult(value);
+      dispatchBulkFilter({
+        type: bulkFilterActions.RESULTS,
+        payload: '65991601a62baad220000001'
+      });
+    } else if (value === 'Lose') {
+      setResult(value);
+      dispatchBulkFilter({
+        type: bulkFilterActions.RESULTS,
+        payload: '65991601a62baad220000002'
+      });
+    } else if (value === null) {
+      setResult(value);
+      dispatchBulkFilter({
+        type: bulkFilterActions.RESULTS,
+        payload: null
+      });
+    }
+    setResult('');
+  };
+
+  const handleFilterOpen = () => {
+    setIsFilterOpen(true);
+  };
+
+  React.useEffect(() => {
+    (async () => {
+      const fetchedStageData = await getStagesHandler();
+      const fetchedRepresentative = await getRepresntativesHandler();
+
+      const transformStages = fetchedStageData.map(({ _id, name }) => {
+        return {
+          id: _id,
+          label: name
+        };
+      });
+
+      const assignRepr = fetchedRepresentative?.filter(
+        (rep) => rep.role === 'REPRESENTATIVE'
+      );
+      // const transformRepresentative = fetchedRepresentative.map(
+      const transformRepresentative = assignRepr.map(
+        ({ _id, firstName, lastName }) => {
+          const labelName = `${firstName} ${lastName}`;
+          return {
+            id: _id,
+            label: labelName
+          };
+        }
+      );
+      setRepresentativeLabel(transformRepresentative);
+      setStagesLabels(transformStages);
+    })();
+  }, []);
+
+  const handleApplyFilter = async () => {
+    // setTicketFilters({
+    //   stageList: selectedStageList,
+    //   admissionType: admissionType,
+    //   diagnosticType: diagnosticsType,
+    //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
+    //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
+    // });
+    setDownloadDisable(true);
+    setIsFilterOpen(false);
+    setBulkPageNumber(1);
+    setBulkFilterTickets(selectedBulkFilters);
+    await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedBulkFilters);
+    // console.log(isAmritsarUser, "selected again")
+    setFilterCount(
+      ticketFilterCount(
+        selectedBulkFilters,
+        admissionType,
+        diagnosticsType,
+        dateRange,
+        statusType,
+        filteredLocation,
+        isAmritsarUser,
+        isMohaliUser,
+        isHoshiarpurUser,
+        isNawanshahrUser,
+        isKhannaUser,
+        followUp
+      )
+    );
+
+    props.setPage(1);
+    if (ticketID) {
+      await validateTicket(ticketID);
+      navigate(
+        `${
+          localStorage.getItem('ticketType') === 'Admission'
+            ? '/admission/'
+            : localStorage.getItem('ticketType') === 'Diagnostics'
+            ? '/diagnostics/'
+            : localStorage.getItem('ticketType') === 'Follow-Up'
+            ? '/follow-up/'
+            : '/ticket/'
+        }`
+      );
+    }
+    setDownloadDisable(false);
+  };
+  const handleApplyFilterOnTicketTypeChange = async () => {
+    // setTicketFilters({
+    //   stageList: selectedStageList,
+    //   admissionType: admissionType,
+    //   diagnosticType: diagnosticsType,
+    //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
+    //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
+    // });
+    setDownloadDisable(true);
+    setIsFilterOpen(false);
+    setBulkPageNumber(1);
+    setBulkFilterTickets(selectedBulkFilters);
+    await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedBulkFilters);
+    // console.log(isAmritsarUser, "selected again")
+    setFilterCount(0);
+
+    props.setPage(1);
+    if (ticketID) {
+      await validateTicket(ticketID);
+      navigate(
+        `${
+          localStorage.getItem('ticketType') === 'Admission'
+            ? '/admission/'
+            : localStorage.getItem('ticketType') === 'Diagnostics'
+            ? '/diagnostics/'
+            : localStorage.getItem('ticketType') === 'Follow-Up'
+            ? '/follow-up/'
+            : '/ticket/'
+        }`
+      );
+    }
+    setDownloadDisable(false);
+  };
+
+  const handleClearFilter = async () => {
+    console.log('inside bluk handle clear filter');
+    dispatchBulkFilter({ type: bulkFilterActions.STAGES, payload: [] });
+    dispatchBulkFilter({
+      type: bulkFilterActions.REPRESENTATIVE,
+      payload: null
+    });
+    dispatchBulkFilter({ type: bulkFilterActions.ADMISSIONTYPE, payload: [] });
+    dispatchBulkFilter({
+      type: bulkFilterActions.DIAGNOSTICSTYPE,
+      payload: []
+    });
+    dispatchBulkFilter({ type: bulkFilterActions.DATERANGE, payload: [] });
+    dispatchBulkFilter({ type: bulkFilterActions.RESULTS, payload: null });
+    dispatchBulkFilter({ type: bulkFilterActions.STATUS, payload: [] });
+    dispatchBulkFilter({ type: bulkFilterActions.FOLLOWUP, payload: null });
+
+    setCurrentRepresentative('');
+    setFilterCount(
+      ticketFilterCount(
+        selectedBulkFilters,
+        admissionType,
+        diagnosticsType,
+        dateRange,
+        statusType,
+        filteredLocation,
+        isAmritsarUser,
+        isMohaliUser,
+        isHoshiarpurUser,
+        isNawanshahrUser,
+        isKhannaUser,
+        followUp
+      )
+    );
+    setFilterCount(0);
+    setBulkPageNumber(1);
+    setSelectedValue(null);
+    setSelectedValueLost(null);
+    setResult(' ');
+    setFollowUp(null);
+    setAdmissionType((prev) => []);
+    setStatusType((prev) => []);
+    setDiagnosticsType((prev) => []);
+    setDateRange(['', '']);
+    if (isAmritsarUser) {
+      setFilteredLocation('Amritsar');
+    } else if (isHoshiarpurUser) {
+      setFilteredLocation('Hoshiarpur');
+    } else if (isMohaliUser) {
+      setFilteredLocation('Mohali');
+    } else if (isNawanshahrUser) {
+      setFilteredLocation('Nawanshahr');
+    } else if (isKhannaUser) {
+      setFilteredLocation('Khanna');
+    } else {
+      setFilteredLocation('');
+    }
+  };
+
+  useEffect(() => {
+    console.log('inside bluk handle clear filter');
+    handleClearFilter();
+    handleApplyFilterOnTicketTypeChange();
+  }, [localStorage.getItem('ticketType')]);
+
+  const handleToggleChange = (event, newValue: any) => {
+    setSelectedValue(newValue === selectedValue ? null : newValue);
+    setResult(newValue);
+    setFilteredLocation('');
+  };
+
+  const handleToggleLostChange = (event, newValue: any) => {
+    setSelectedValueLost(newValue === selectedValueLost ? null : newValue);
+    setResult(newValue);
+    setFilteredLocation('');
+  };
+
+  return (
+    <Box>
+      <Stack display={'flex'} flexDirection={'row'} gap={'10px'}>
+        <IconButton onClick={handleFilterOpen}>
+          <StyledBadge
+            invisible={filterCount <= 0}
+            badgeContent={filterCount}
+            // color="primary"
+          >
+            <FilterList sx={{ color: '#080F1A' }} />
+          </StyledBadge>
+        </IconButton>
+      </Stack>
+
+      <Drawer
+        open={isFilterOpen}
+        onClose={() => setIsFilterOpen(false)}
+        anchor={
+          isSwitchView == true || location.pathname.includes('/bulk-assign')
+            ? 'right'
+            : 'left'
+        }
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
+            width: drawerWidth
+          }
+        }}
+      >
+        <Box>
+          <Box
+            p={2}
+            borderBottom={1}
+            borderColor="#f3f3f3"
+            display="flex"
+            justifyContent="space-between"
+          >
+            <Stack direction="row" spacing={1}>
+              <FilterList sx={{ marginTop: '2px' }} />
+              <Stack
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '20px !important',
+                  fontWeight: '500'
+                }}
+              >
+                Add Filter{' '}
+              </Stack>
+            </Stack>
+
+            <Stack direction="row" spacing={1}>
+              <button
+                className="filter-btn"
+                onClick={handleApplyFilter}
+                style={{ fontSize: '14px', borderRadius: '5px' }}
+              >
+                Apply
+              </button>
+              {filterCount > 0 && (
+                <button
+                  className="filter-btn"
+                  onClick={handleClearFilter}
+                  style={{ fontSize: '14px', borderRadius: '5px' }}
+                >
+                  Clear Filters <ClearAll />
+                </button>
+              )}
+            </Stack>
+          </Box>
+          <Box px={1} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+            <Box p={2}>
+              <Stack
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '16px',
+                  fontWeight: '500'
+                }}
+              >
+                Select Stages
+              </Stack>
+              <FormGroup>
+                {stagesLabel.map(({ id, label }) => (
+                  <FormControlLabel
+                    key={id}
+                    control={
+                      <Checkbox
+                        value={id}
+                        onChange={handleStageList}
+                        checked={selectedBulkFilters.stageList.includes(id)}
+                      />
+                    }
+                    label={
+                      <Stack
+                        sx={{
+                          fontFamily: 'Outfit,sans-serif',
+                          fontSize: '14px'
+                        }}
+                      >
+                        {label}
+                      </Stack>
+                    }
+                  />
+                ))}
+              </FormGroup>
+            </Box>
+            {user?.role === 'ADMIN' && (
+              <Box py={2} px={4}>
+                <Stack
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    textTransform: 'capitalize'
+                  }}
+                >
+                  Assigned To
+                </Stack>
+                <Select
+                  size="medium"
+                  onChange={handleRepresentative}
+                  value={currentReperesentative}
+                  sx={{ height: '35px', textTransform: 'capitalize' }}
+                >
+                  {
+                    // representativeLabel?.some(rep => rep.role === "REPRESENTATIVE")
+                    representativeLabel?.map(({ id, label }, index) => {
+                      return (
+                        <MenuItem
+                          value={id}
+                          sx={{ textTransform: 'capitalize' }}
+                        >
+                          {label}
+                        </MenuItem>
+                      );
+                    })
+                  }
+                </Select>
+              </Box>
+            )}
+          </Box>
+
+          <Box px={3}>
+            <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
+              Result (This filter cannot be used in combination with any other
+              filter, To be used independently only)
+            </Stack>
+            <ToggleButtonGroup
+              color="primary"
+              value={result}
+              onChange={handleResult}
+            >
+              <ToggleButton
+                value="Won"
+                style={{
+                  backgroundColor:
+                    selectedValue === 'Won' ? '#3949AB14' : 'white',
+                  color: selectedValue === 'Won' ? '#3949AB' : 'grey',
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+                onClick={handleToggleChange}
+              >
+                WON
+              </ToggleButton>
+              <ToggleButton
+                value="Lose"
+                style={{
+                  backgroundColor:
+                    selectedValueLost === 'Lose' ? '#3949AB14' : 'white',
+                  color: selectedValueLost === 'Lose' ? '#3949AB' : 'grey',
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+                onClick={handleToggleLostChange}
+              >
+                LOST
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+          {/* <Box px={3}>
+              <Stack sx={{ fontFamily: 'Outfit, sans-serif', fontWeight: '500' }}>
+                Doctor Appointment Follow-up Date (This filter cannot be used in
+                combination with any other filter, To be used independently only)
+              </Stack>
+              <ToggleButtonGroup
+                color="primary"
+                value={followUp ? followUp.toISOString() : null} // Convert to string if not null
+                onChange={handleFollowUp}
+                exclusive // Ensure only one toggle can be selected
+              >
+                <ToggleButton
+                  value={new Date().toISOString()} // Store the date as a string
+                  style={{
+                    backgroundColor: followUp !== null ? '#3949AB14' : 'white',
+                    color: followUp !== null ? '#3949AB' : 'grey',
+                    fontFamily: 'Outfit, sans-serif',
+                    fontSize: '12px'
+                  }}
+                  onClick={handleFollowUpToggleChange}
+                >
+                  Doctor Appointment Date
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box> */}
+          <Box p={1} px={3}>
+            <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
+              Status
+            </Stack>
+            <ToggleButtonGroup
+              color="primary"
+              value={statusType}
+              onChange={handleStatusType}
+            >
+              {/* <ToggleButton value="dnd"
+                sx={{
+                  fontFamily: "Outfit,sans-serif",
+                  fontSize: '12px',
+                }}
+              >DND
+              </ToggleButton> */}
+              <ToggleButton
+                value="dnp"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '11px'
+                }}
+              >
+                DNP
+              </ToggleButton>
+              <ToggleButton
+                value="todayTask"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                Today Task
+              </ToggleButton>
+              <ToggleButton
+                value="pendingTask"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                Pending
+              </ToggleButton>
+              <ToggleButton
+                value="CallCompleted"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                Call Completed
+              </ToggleButton>
+              <ToggleButton
+                value="Wrong Number"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                Wrong Number
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+          <Box p={1} px={3}>
+            <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
+              Admission Type
+            </Stack>
+            <ToggleButtonGroup
+              color="primary"
+              value={admissionType}
+              onChange={handleAdmissionType}
+            >
+              <ToggleButton
+                value="Surgery"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                Surgery
+              </ToggleButton>
+              <ToggleButton
+                value="MM"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                MM
+              </ToggleButton>
+              <ToggleButton
+                value="DC"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                DC
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+          {localStorage.getItem('ticketType') === 'Diagnostics' && (
+            <Box p={1} px={3}>
+              <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
+                Diagnotics Type
+              </Stack>
+              <ToggleButtonGroup
+                color="primary"
+                value={diagnosticsType}
+                onChange={handleDiagnosticsType}
+              >
+                <ToggleButton
+                  value="MRI"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  MRI
+                </ToggleButton>
+                <ToggleButton
+                  value="PET-CT"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  PET-CT
+                </ToggleButton>
+                <ToggleButton
+                  value="CT-Scan"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  CT-Scan
+                </ToggleButton>
+
+                <ToggleButton
+                  value="Lab"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  Lab
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+          )}
+          {isAdminUser && (
+            <Box p={1} px={3}>
+              <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
+                Location
+              </Stack>
+              <ToggleButtonGroup
+                color="primary"
+                value={filteredLocation}
+                // onChange={() => setFilteredLocation('Amritsar')}
+                onChange={handleLocation}
+              >
+                <ToggleButton
+                  value="Mohali"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  Mohali
+                </ToggleButton>
+
+                <ToggleButton
+                  value="Amritsar"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  Amritsar
+                </ToggleButton>
+
+                <ToggleButton
+                  value="Hoshiarpur"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  Hoshiarpur
+                </ToggleButton>
+              </ToggleButtonGroup>
+              <ToggleButtonGroup
+                color="primary"
+                value={filteredLocation}
+                // onChange={() => setFilteredLocation('Amritsar')}
+                onChange={handleLocation}
+                sx={{ marginTop: '5px' }}
+              >
+                <ToggleButton
+                  value="Nawanshahr"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  Nawanshahr
+                </ToggleButton>
+                <ToggleButton
+                  value="Khanna"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  Khanna
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+          )}
+
+          <Box p={1} px={3}>
+            <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
+              Select Date Range
+            </Stack>
+            <Stack py={1} direction="row" spacing={2}>
+              <Box>
+                <Stack
+                  sx={{
+                    fontFamily: 'Outfit,san-serif',
+                    fontSize: '12px',
+                    fontWeight: '400'
+                  }}
+                >
+                  Start Date
+                </Stack>
+                <TextField
+                  fullWidth
+                  onChange={handleStartDateChange}
+                  value={dateRange[0]}
+                  type="date"
+                  InputLabelProps={{
+                    shrink: true,
+                    style: { fontFamily: 'Outfit,san-serif', fontSize: '14px' }
+                  }}
+                  inputProps={{
+                    max: new Date().toISOString().split('T')[0],
+                    style: { fontFamily: 'Outfit,san-serif', fontSize: '14px' }
+                  }}
+                />
+              </Box>
+              <Box>
+                <Stack
+                  sx={{
+                    fontFamily: 'Outfit,san-serif',
+                    fontSize: '12px',
+                    fontWeight: '400'
+                  }}
+                >
+                  End Date
+                </Stack>
+                <TextField
+                  fullWidth
+                  onChange={handleEndDateChange}
+                  value={dateRange[1]}
+                  type="date"
+                  InputLabelProps={{
+                    shrink: true,
+                    style: { fontFamily: 'Outfit,san-serif', fontSize: '14px' }
+                  }}
+                  inputProps={{
+                    max: new Date().toISOString().split('T')[0],
+                    min: new Date(dateRange[0]).toDateString().split('T')[0],
+                    style: { fontFamily: 'Outfit,san-serif', fontSize: '14px' }
+                  }}
+                />
+              </Box>
+            </Stack>
+          </Box>
+        </Box>
+      </Drawer>
+    </Box>
+  );
+};
+
+export default BulkTicketFilter;

@@ -41,6 +41,36 @@ export const getTicket = async (
   );
   return data;
 };
+export const getBulkTicket = async (
+  name: string,
+  pageNumber: number,
+  downloadAll: string,
+  selectedFilters: any,
+  ticketId?: string | null,
+  fetchUpdated: boolean = false,
+  phone?: any,
+  filteredLocation?: string | '',
+  won?: any,
+  lose?: any
+) => {
+  const params = new URLSearchParams(selectedFilters).toString();
+  // const timestamp = new Date().getTime();
+  const { data } = await apiClient.get(
+    `${
+      localStorage.getItem('ticketBulkType') === 'Admission'
+        ? '/ticket/'
+        : localStorage.getItem('ticketBulkType') === 'Diagnostics'
+        ? '/diagnostics/getRepresentativediagnosticsTickets/'
+        : localStorage.getItem('ticketBulkType') === 'Follow-Up'
+        ? '/followUp/FollowUpTickets'
+        : '/ticket/'
+    }?page=${pageNumber}&name=${
+      name !== '' ? name : 'undefined'
+    }&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
+    &specialty=&specialtyforFilter=${filteredLocation}`
+  );
+  return data;
+};
 export const getAllTicketAdmission = async ( value: any, location: any ) =>
 {
   if ( location == "All" )

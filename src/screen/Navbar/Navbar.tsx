@@ -498,7 +498,7 @@ const Navbar = ({ children }) => {
                   <Stack className={styles.nav_Icon}>
                     <Stack
                       onClick={() => {
-                        localStorage.setItem('ticketType', 'Admission');
+                        localStorage.setItem('ticketType', 'bulk-assign');
                         goToPage('/bulk-assign');
                       }}
                       sx={{

@@ -181,14 +181,20 @@ export interface iPharmcyTicket {
 export interface iTicketStore {
   tickets: iTicket[];
   setTickets: (tickets: iTicket[]) => void;
+  bulkTickets: iTicket[];
+  setBulkTickets: (bulkTickets: iTicket[]) => void;
   pharmcyTicket: iPharmcyTicket[];
   setPharmcyTickets: (tickets: iPharmcyTicket[]) => void;
   ticketCount: number;
   setTicketCount: (count: number) => void;
   searchByName: string;
   setSearchByName: (name: string) => void;
+  bulkSearchByName: string;
+  setBulkSearchByName: (name: string) => void;
   ticketCache: any;
   setTicketCache: (ticketCache: any) => void;
+  bulkTicketCache: any;
+  setBulkTicketCache: (bulkTicketCache: any) => void;
   emptyDataText: string;
   setEmptyDataText: (emptyDataText: string) => void;
   downloadTickets: iTicket[];
@@ -205,10 +211,20 @@ export interface iTicketStore {
   setFilterTicketsDiago: (filterTicketsDiago: iTicketFilter) => void;
   filterTicketsFollowUp: iTicketFilter;
   setFilterTicketsFollowUp: (filterTicketsFollowUp: iTicketFilter) => void;
+  BulkFilterTickets: iTicketFilter;
+  setBulkFilterTickets: (BulkFilterTickets: iTicketFilter) => void;
+  BulkFilterTicketsDiago: iTicketFilter;
+  setBulkFilterTicketsDiago: (BulkFilterTicketsDiago: iTicketFilter) => void;
+  BulkFilterTicketsFollowUp: iTicketFilter;
+  setBulkFilterTicketsFollowUp: (
+    BulkFilterTicketsFollowUp: iTicketFilter
+  ) => void;
   loaderOn: boolean;
   setLoaderOn: (loaderOn: boolean) => void;
   pageNumber: number;
   setPageNumber: (pageNumber: number) => void;
+  bulkPageNumber: number;
+  setBulkPageNumber: (bulkPageNumber: number) => void;
   estimates: iEstimate[];
   setEstimates: (estimates: iEstimate[]) => void;
   viewEstimates: iEstimate2[];
@@ -275,7 +291,7 @@ export interface iTicketStore {
   setTicketType: (ticketType: string) => void;
   downloadDisable: boolean;
   setDownloadDisable: (downloadDisable: boolean) => void;
-   dashboardLoader: boolean;
+  dashboardLoader: boolean;
   setDashboardLoader: (dashboardLoader: boolean) => void;
   dashboardLoaderAdmission: boolean;
   setDashboardLoaderAdmission: (dashboardLoaderAdmission: boolean) => void;

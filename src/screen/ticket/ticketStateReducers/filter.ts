@@ -1,4 +1,11 @@
-import { filterActions, filterActionsDiago, filterActionsFollowUp } from './actions/filterAction';
+import {
+  bulkFilterActions,
+  bulkFilterActionsDiago,
+  bulkFilterActionsFollowUp,
+  filterActions,
+  filterActionsDiago,
+  filterActionsFollowUp
+} from './actions/filterAction';
 import { iTicketFilter } from '../../../types/store/ticket';
 
 export interface ticketFilterTypes {
@@ -49,6 +56,41 @@ export const selectedFiltersStateFollowUp: iTicketFilter = {
   status: [],
   followUp: null
 };
+export const selectedBulkFiltersState: iTicketFilter = {
+  stageList: [],
+  representative: null,
+  results: null,
+  //  ....
+  admissionType: [],
+  diagnosticsType: [],
+  dateRange: ['', ''],
+  status: [],
+  followUp: null
+};
+
+export const selectedBulkFiltersStateDiago: iTicketFilter = {
+  stageList: [],
+  representative: null,
+  results: null,
+  //  ....
+  admissionType: [],
+  diagnosticsType: [],
+  dateRange: [],
+  status: [],
+  followUp: null
+};
+
+export const selectedBulkFiltersStateFollowUp: iTicketFilter = {
+  stageList: [],
+  representative: null,
+  results: null,
+  //  ....
+  admissionType: [],
+  diagnosticsType: [],
+  dateRange: [],
+  status: [],
+  followUp: null
+};
 
 interface actionType {
   type: string;
@@ -59,6 +101,19 @@ interface actionTypeDiago {
   payload: any;
 }
 interface actionTypeFollowup {
+  type: string;
+  payload: any;
+}
+
+interface actionBulkType {
+  type: string;
+  payload: any;
+}
+interface actionBulkTypeDiago {
+  type: string;
+  payload: any;
+}
+interface actionBulkTypeFollowup {
   type: string;
   payload: any;
 }
@@ -255,6 +310,205 @@ export function selectedFiltersReducerFollowUp(
   if (action.type === filterActionsFollowUp.FOLLOWUP) {
     return {
       ...selectedFiltersStateFollowUp,
+      followUp: action.payload
+    };
+  }
+
+  throw new Error('unknown action type');
+}
+
+export function selectedBulkFiltersReducer(
+  selectedBulkFiltersState: iTicketFilter,
+  action: actionBulkType
+): iTicketFilter {
+  if (action.type === bulkFilterActions.STAGES) {
+    return {
+      ...selectedBulkFiltersState,
+      stageList: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActions.REPRESENTATIVE) {
+    return {
+      ...selectedBulkFiltersState,
+      representative: action.payload
+    };
+  }
+  if (action.type === bulkFilterActions.RESULTS) {
+    return {
+      ...selectedBulkFiltersState,
+      results: action.payload
+    };
+  }
+  //  if (action.type === bulkFilterActions.LOSE) {
+  //   return {
+  //     ...selectedBulkFiltersState,
+  //     lose: action.payload
+  //   };
+  // }
+
+  if (action.type === bulkFilterActions.ADMISSIONTYPE) {
+    return {
+      ...selectedBulkFiltersState,
+      admissionType: action.payload
+    };
+  }
+  if (action.type === bulkFilterActions.DIAGNOSTICSTYPE) {
+    return {
+      ...selectedBulkFiltersState,
+      diagnosticsType: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActions.DATERANGE) {
+    return {
+      ...selectedBulkFiltersState,
+      dateRange: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActions.STATUS) {
+    return {
+      ...selectedBulkFiltersState,
+      status: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActions.FOLLOWUP) {
+    return {
+      ...selectedBulkFiltersState,
+      followUp: action.payload
+    };
+  }
+
+  throw new Error('unknown action type');
+}
+export function selectedBulkFiltersReducerDiago(
+  selectedBulkFiltersStateDiago: iTicketFilter,
+  action: actionBulkTypeDiago
+): iTicketFilter {
+  if (action.type === bulkFilterActionsDiago.STAGES) {
+    return {
+      ...selectedBulkFiltersStateDiago,
+      stageList: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActionsDiago.REPRESENTATIVE) {
+    return {
+      ...selectedBulkFiltersStateDiago,
+      representative: action.payload
+    };
+  }
+  if (action.type === bulkFilterActionsDiago.RESULTS) {
+    return {
+      ...selectedBulkFiltersStateDiago,
+      results: action.payload
+    };
+  }
+  //  if (action.type === bulkFilterActionsDiago.LOSE) {
+  //   return {
+  //     ...selectedBulkFiltersStateDiago,
+  //     lose: action.payload
+  //   };
+  // }
+
+  if (action.type === bulkFilterActionsDiago.ADMISSIONTYPE) {
+    return {
+      ...selectedBulkFiltersStateDiago,
+      admissionType: action.payload
+    };
+  }
+  if (action.type === bulkFilterActionsDiago.DIAGNOSTICSTYPE) {
+    return {
+      ...selectedBulkFiltersStateDiago,
+      diagnosticsType: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActionsDiago.DATERANGE) {
+    return {
+      ...selectedBulkFiltersStateDiago,
+      dateRange: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActionsDiago.STATUS) {
+    return {
+      ...selectedBulkFiltersStateDiago,
+      status: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActionsDiago.FOLLOWUP) {
+    return {
+      ...selectedBulkFiltersStateDiago,
+      followUp: action.payload
+    };
+  }
+
+  throw new Error('unknown action type');
+}
+export function selectedBulkFiltersReducerFollowUp(
+  selectedBulkFiltersStateFollowUp: iTicketFilter,
+  action: actionBulkTypeFollowup
+): iTicketFilter {
+  if (action.type === bulkFilterActionsFollowUp.STAGES) {
+    return {
+      ...selectedBulkFiltersStateFollowUp,
+      stageList: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActionsFollowUp.REPRESENTATIVE) {
+    return {
+      ...selectedBulkFiltersStateFollowUp,
+      representative: action.payload
+    };
+  }
+  if (action.type === bulkFilterActionsFollowUp.RESULTS) {
+    return {
+      ...selectedBulkFiltersStateFollowUp,
+      results: action.payload
+    };
+  }
+  //  if (action.type === bulkFilterActionsFollowUp.LOSE) {
+  //   return {
+  //     ...selectedBulkFiltersStateFollowUp,
+  //     lose: action.payload
+  //   };
+  // }
+
+  if (action.type === bulkFilterActionsFollowUp.ADMISSIONTYPE) {
+    return {
+      ...selectedBulkFiltersStateFollowUp,
+      admissionType: action.payload
+    };
+  }
+  if (action.type === bulkFilterActionsFollowUp.DIAGNOSTICSTYPE) {
+    return {
+      ...selectedBulkFiltersStateFollowUp,
+      diagnosticsType: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActionsFollowUp.DATERANGE) {
+    return {
+      ...selectedBulkFiltersStateFollowUp,
+      dateRange: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActionsFollowUp.STATUS) {
+    return {
+      ...selectedBulkFiltersStateFollowUp,
+      status: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActionsFollowUp.FOLLOWUP) {
+    return {
+      ...selectedBulkFiltersStateFollowUp,
       followUp: action.payload
     };
   }

@@ -23,7 +23,8 @@ import {
   getAuditTicket,
   createNoteActivity,
   bulkAssignTickets,
-  clearAssigneeTickets
+  clearAssigneeTickets,
+  getBulkTicket
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -44,7 +45,7 @@ export const getTicketHandler = async (
     setEmptyDataText,
     setDownloadTickets,
     setLoaderOn,
-    filteredLocation,
+    filteredLocation
   } = useTicketStore.getState();
   const { user } = useUserStore.getState();
   const phone = user?.phone;
@@ -78,6 +79,58 @@ export const getTicketHandler = async (
   }
   setTicketCount(count);
   setTickets(sortedTickets);
+  setLoaderOn(false);
+};
+export const getBulkTicketHandler = async (
+  name: string,
+  pageNumber: number,
+  downloadAll: 'true' | 'false' = 'false',
+  selectedFilters: iTicketFilter | null,
+  ticketId: string = UNDEFINED,
+  fetchUpdated: boolean = false
+) => {
+  const {
+    setBulkTickets,
+    setTicketCount,
+    setBulkTicketCache,
+    bulkTicketCache,
+    setEmptyDataText,
+    setDownloadTickets,
+    setLoaderOn,
+    filteredLocation
+  } = useTicketStore.getState();
+  const { user } = useUserStore.getState();
+  const phone = user?.phone;
+
+  setLoaderOn(true);
+  const data = await getBulkTicket(
+    name,
+    pageNumber,
+    downloadAll,
+    selectedFilters,
+    ticketId,
+    fetchUpdated,
+    phone,
+    filteredLocation
+  );
+  const sortedBulkTickets = data.tickets;
+  const count = data.count;
+
+  if (sortedBulkTickets.length < 1) {
+    setEmptyDataText('No Data Found');
+  } else {
+    setEmptyDataText('');
+  }
+  if (name === UNDEFINED && downloadAll === 'false') {
+    setBulkTicketCache({ ...bulkTicketCache, [pageNumber]: sortedBulkTickets, count });
+  }
+  if (downloadAll === 'true') {
+    setDownloadTickets(sortedBulkTickets);
+    setLoaderOn(false);
+    return sortedBulkTickets;
+  }
+  setTicketCount(count);
+  setBulkTickets(sortedBulkTickets);
   setLoaderOn(false);
 };
 
@@ -292,8 +345,7 @@ export const createNotesHandler = async (note: iNote, disposition: string) => {
 // Notes Add in Activity
 
 export const createNoteActivityHandler = async (notesData) => {
-await createNoteActivity(notesData);
- 
+  await createNoteActivity(notesData);
 };
 
 export const getAllReminderHandler = async () => {
@@ -365,13 +417,16 @@ function getDate(): string | Blob {
   throw new Error('Function not implemented.');
 }
 
-export const bulkAssignTicketsHandler = async (ticketIds: string[], representativeIds: string[]) => {
+export const bulkAssignTicketsHandler = async (
+  ticketIds: string[],
+  representativeIds: string[]
+) => {
   try {
     const result = await bulkAssignTickets(ticketIds, representativeIds);
-    console.log("Tickets assigned successfully:", result);
+    console.log('Tickets assigned successfully:', result);
     return result;
   } catch (error) {
-    console.error("Error handling bulk ticket assignment:", error);
+    console.error('Error handling bulk ticket assignment:', error);
     throw error;
   }
 };
@@ -381,7 +436,7 @@ export const clearAssigneeTicketsHandler = async (ticketIds: string[]) => {
     const result = await clearAssigneeTickets(ticketIds);
     return result;
   } catch (error) {
-    console.error("Error handling bulk ticket assignment:", error);
+    console.error('Error handling bulk ticket assignment:', error);
     throw error;
   }
 };

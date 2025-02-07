@@ -80,6 +80,8 @@ import { socketEventConstants } from '../../constantUtils/socketEventsConstants'
 import useUserStore from '../../store/userStore';
 import {
   selectedFiltersReducer,
+  selectedFiltersReducerDiago,
+  selectedFiltersReducerFollowUp,
   ticketFilterTypes
 } from '../../screen/ticket/ticketStateReducers/filter';
 import { getAllNotesWithoutTicketId } from '../../api/notes/allNote';
@@ -173,7 +175,6 @@ const Ticket = () => {
   const phoneNumber = user?.phone;
 
   const { representative } = useReprentativeStore();
-
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>('');
   const [totalEstimateValue, setTotalEstimateValue] = useState(0);
@@ -242,7 +243,14 @@ const Ticket = () => {
       ? filterTicketsDiago
       : localStorage.getItem('ticketType') === 'Follow-Up'
       ? filterTicketsFollowUp
-      : filterTickets;
+      : {
+          stageList: [],
+          representative: null,
+          results: null,
+          dateRange: [],
+          status: [],
+          followUp: null
+        };
 
   const handlePagination = async (
     event: React.ChangeEvent<unknown>,
@@ -572,7 +580,6 @@ const Ticket = () => {
       JSON.stringify(filteredCurrentState)
     );
   }
-  console.log(searchByName, 'searchByName outside useffect');
 
   useEffect(() => {
     const refetchTickets = async () => {
@@ -652,6 +659,9 @@ const Ticket = () => {
       }
     };
   }, [pageNumber, searchByName]);
+
+
+console.log({ newFilter });
 
   useEffect(() => {
     clearAllInterval(AllIntervals);
@@ -942,7 +952,6 @@ const Ticket = () => {
       socket.disconnect();
     };
   });
-
   useEffect(() => {
     setDownloadDisable(true);
     // fetchRepresentatives();

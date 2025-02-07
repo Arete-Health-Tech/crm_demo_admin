@@ -300,6 +300,51 @@ const DownloadAllTickets = (props: Props) => {
           ? 'N/A'
           : ticket?.status,
         notes: noteSetter(ticket._id) || '',
+        Second_opinion_hospital: ticket?.opinion[0]?.hospital,
+        Considering_Consultation:
+          ticket?.opinion[0]?.type === 'Considering Consultation'
+            ? 'Yes'
+            : 'No',
+        Consulted: ticket?.opinion[0]?.type === 'consulted' ? 'Yes' : 'No',
+        we_are_second_opinion:
+          ticket?.opinion[0]?.type === 'we are second opinon' ? 'Yes' : 'No',
+        Second_opinion_doctor: ticket?.opinion[0]?.doctor,
+        Second_opinion_add_info: ticket?.opinion[0]?.additionalInfo,
+        Awaiting_test_results:
+          ticket?.opinion[0]?.challengeSelected?.includes(
+            'Awaiting test results'
+          )
+            ? 'Yes'
+            : 'No',
+        Awaiting_TPA_approvals:
+          ticket?.opinion[0]?.challengeSelected?.includes(
+            'Awaiting TPA approvals'
+          )
+            ? 'Yes'
+            : 'No',
+        Bad_Experience: ticket?.opinion[0]?.challengeSelected?.includes(
+          'Bad Experience'
+        )
+          ? 'Yes'
+          : 'No',
+        Under_MM: ticket?.opinion[0]?.challengeSelected?.includes('Under MM')
+          ? 'Yes'
+          : 'No',
+        Financial_constatints:
+          ticket?.opinion[0]?.challengeSelected?.includes(
+            'Financial constatints'
+          )
+            ? 'Yes'
+            : 'No',
+        Not_happy_with_doctor:
+          ticket?.opinion[0]?.challengeSelected?.includes(
+            'Not happy with doctor'
+          )
+            ? 'Yes'
+            : 'No',
+        Lead_Probability: `${ticket?.Probability}%`,
+        Lead_Rating:
+          ticket?.auditorcomment[ticket?.auditorcomment.length - 1]?.ratings,
         Call_disposition: [
           'dnp',
           'dnd',

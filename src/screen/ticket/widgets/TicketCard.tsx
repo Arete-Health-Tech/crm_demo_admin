@@ -521,13 +521,11 @@ const TicketCard = (props: Props) => {
         ) : (
           <></>
         )}
-        {props?.patientData?.prescription[0]?.diagnostics.length > 0 ? (
-          <>
-            <Stack className="ticket-card-line3-tag">Diagonstic</Stack>
-          </>
-        ) : (
-          <></>
-        )}
+       {Array.isArray(props?.patientData?.prescription?.[0]?.diagnostics) && props?.patientData?.prescription?.[0]?.diagnostics.length > 0 ? (
+  <>
+    <Stack className="ticket-card-line3-tag">Diagnostic</Stack>
+  </>
+) : null}
 
         {props?.patientData?.prescription[0]?.payerType ? (
           <>

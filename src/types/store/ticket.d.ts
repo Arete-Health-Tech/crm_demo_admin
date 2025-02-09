@@ -352,6 +352,7 @@ export interface iTicketFilter {
   results?: string | null;
   status: string[];
   followUp: Date | null;
+  pairType?: string | null;
 }
 export interface iAllAuditComment {
   auditorCommentId: string;

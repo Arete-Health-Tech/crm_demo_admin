@@ -160,6 +160,12 @@ export function selectedFiltersReducer(
       diagnosticsType: action.payload
     };
   }
+  if (action.type === filterActions.PAIRTYPE) {
+    return {
+      ...selectedFiltersState,
+      pairType: action.payload
+    };
+  }
 
   if (action.type === filterActions.DATERANGE) {
     return {
@@ -226,7 +232,12 @@ export function selectedFiltersReducerDiago(
       diagnosticsType: action.payload
     };
   }
-
+  if (action.type === filterActions.PAIRTYPE) {
+    return {
+      ...selectedFiltersState,
+      pairType: action.payload
+    };
+  }
   if (action.type === filterActionsDiago.DATERANGE) {
     return {
       ...selectedFiltersStateDiago,
@@ -292,7 +303,12 @@ export function selectedFiltersReducerFollowUp(
       diagnosticsType: action.payload
     };
   }
-
+  if (action.type === filterActions.PAIRTYPE) {
+    return {
+      ...selectedFiltersState,
+      pairType: action.payload
+    };
+  }
   if (action.type === filterActionsFollowUp.DATERANGE) {
     return {
       ...selectedFiltersStateFollowUp,
@@ -359,7 +375,12 @@ export function selectedBulkFiltersReducer(
       diagnosticsType: action.payload
     };
   }
-
+  if (action.type === filterActions.PAIRTYPE) {
+    return {
+      ...selectedFiltersState,
+      pairType: action.payload
+    };
+  }
   if (action.type === bulkFilterActions.DATERANGE) {
     return {
       ...selectedBulkFiltersState,
@@ -425,7 +446,12 @@ export function selectedBulkFiltersReducerDiago(
       diagnosticsType: action.payload
     };
   }
-
+  if (action.type === filterActions.PAIRTYPE) {
+    return {
+      ...selectedFiltersState,
+      pairType: action.payload
+    };
+  }
   if (action.type === bulkFilterActionsDiago.DATERANGE) {
     return {
       ...selectedBulkFiltersStateDiago,
@@ -491,7 +517,12 @@ export function selectedBulkFiltersReducerFollowUp(
       diagnosticsType: action.payload
     };
   }
-
+  if (action.type === filterActions.PAIRTYPE) {
+    return {
+      ...selectedFiltersState,
+      pairType: action.payload
+    };
+  }
   if (action.type === bulkFilterActionsFollowUp.DATERANGE) {
     return {
       ...selectedBulkFiltersStateFollowUp,

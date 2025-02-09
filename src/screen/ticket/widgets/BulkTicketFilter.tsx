@@ -481,7 +481,7 @@ const BulkTicketFilter = (props: {
     dispatchBulkFilter({ type: bulkFilterActions.RESULTS, payload: null });
     dispatchBulkFilter({ type: bulkFilterActions.STATUS, payload: [] });
     dispatchBulkFilter({ type: bulkFilterActions.FOLLOWUP, payload: null });
-
+    
     setCurrentRepresentative('');
     setFilterCount(
       ticketFilterCount(
@@ -810,44 +810,46 @@ const BulkTicketFilter = (props: {
               </ToggleButton>
             </ToggleButtonGroup>
           </Box>
-          <Box p={1} px={3}>
-            <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
-              Admission Type
-            </Stack>
-            <ToggleButtonGroup
-              color="primary"
-              value={admissionType}
-              onChange={handleAdmissionType}
-            >
-              <ToggleButton
-                value="Surgery"
-                sx={{
-                  fontFamily: 'Outfit,sans-serif',
-                  fontSize: '12px'
-                }}
+          {localStorage.getItem('ticketType') === 'Admission' && (
+            <Box p={1} px={3}>
+              <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
+                Admission Type
+              </Stack>
+              <ToggleButtonGroup
+                color="primary"
+                value={admissionType}
+                onChange={handleAdmissionType}
               >
-                Surgery
-              </ToggleButton>
-              <ToggleButton
-                value="MM"
-                sx={{
-                  fontFamily: 'Outfit,sans-serif',
-                  fontSize: '12px'
-                }}
-              >
-                MM
-              </ToggleButton>
-              <ToggleButton
-                value="DC"
-                sx={{
-                  fontFamily: 'Outfit,sans-serif',
-                  fontSize: '12px'
-                }}
-              >
-                DC
-              </ToggleButton>
-            </ToggleButtonGroup>
-          </Box>
+                <ToggleButton
+                  value="Surgery"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  Surgery
+                </ToggleButton>
+                <ToggleButton
+                  value="MM"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  MM
+                </ToggleButton>
+                <ToggleButton
+                  value="DC"
+                  sx={{
+                    fontFamily: 'Outfit,sans-serif',
+                    fontSize: '12px'
+                  }}
+                >
+                  DC
+                </ToggleButton>
+              </ToggleButtonGroup>
+            </Box>
+          )}
           {localStorage.getItem('ticketType') === 'Diagnostics' && (
             <Box p={1} px={3}>
               <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>

@@ -512,7 +512,7 @@ const TicketCard = (props: Props) => {
       {/* Line 3 */}
 
       <Box className="ticket-card-line3">
-        {props?.patientData?.prescription[0]?.admission ? (
+        {props?.patientData?.prescription[0]?.admission !== null ? (
           <>
             <Stack className="ticket-card-line3-tag">
               {props?.patientData?.prescription[0]?.admission}

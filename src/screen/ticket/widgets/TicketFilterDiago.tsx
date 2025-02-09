@@ -54,6 +54,7 @@ const drawerWidth = 450;
 export const ticketFilterCount = (
   selectedFilters: iTicketFilter,
   admissionType: string[],
+  pairType: string[],
   diagnosticsType: string[],
   dateRange: string[],
   statusType: string[],
@@ -67,7 +68,7 @@ export const ticketFilterCount = (
 ) => {
   const stageListCount = selectedFilters['stageList'].length;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
-
+  const pairCount = pairType ? pairType.length : 0;
   const admissionCount = admissionType ? admissionType.length : 0;
   const diagnosticsCount = diagnosticsType ? diagnosticsType.length : 0;
   const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
@@ -103,6 +104,7 @@ export const ticketFilterCount = (
     representativeCount +
     resultCount +
     admissionCount +
+    pairCount +
     diagnosticsCount +
     DateCount +
     statusCount +
@@ -172,6 +174,8 @@ const TicketFilter = (props: {
   const location = useLocation();
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
   const [admissionType, setAdmissionType] = React.useState<string[]>([]);
+  const [pairType, setPairType] = React.useState<string[]>([]);
+
   const [statusType, setStatusType] = React.useState<string[]>([]);
   const [result, setResult] = React.useState('');
   const [diagnosticsType, setDiagnosticsType] = React.useState<string[]>(
@@ -309,6 +313,18 @@ const TicketFilter = (props: {
       payload: newAdmission
     });
   };
+
+    const handlePairType = (
+      event: React.MouseEvent<HTMLElement>,
+      pairType: string[]
+    ) => {
+      setPairType(pairType);
+
+      dispatchFilterDiago({
+        type: filterActionsDiago.PAIRTYPE,
+        payload: pairType
+      });
+    };
 
   const handleStatusType = (
     event: React.MouseEvent<HTMLElement>,
@@ -482,6 +498,7 @@ const TicketFilter = (props: {
       ticketFilterCount(
         selectedFilters,
         admissionType,
+        pairType,
         diagnosticsType,
         dateRange,
         statusType,
@@ -532,12 +549,14 @@ const TicketFilter = (props: {
     dispatchFilterDiago({ type: filterActionsDiago.RESULTS, payload: null });
     dispatchFilterDiago({ type: filterActionsDiago.STATUS, payload: [] });
     dispatchFilterDiago({ type: filterActionsDiago.FOLLOWUP, payload: null });
+    dispatchFilterDiago({ type: filterActionsDiago.PAIRTYPE, payload: null });
 
     setCurrentRepresentative('');
     setFilterCount(
       ticketFilterCount(
         selectedFilters,
         admissionType,
+        pairType,
         diagnosticsType,
         dateRange,
         statusType,
@@ -557,6 +576,7 @@ const TicketFilter = (props: {
     setResult(' ');
     setFollowUp(null);
     setAdmissionType((prev) => []);
+    setPairType((prev) => []);
     setStatusType((prev) => []);
     setDiagnosticsType((prev) => []);
     setDateRange(['', '']);
@@ -1023,6 +1043,53 @@ const TicketFilter = (props: {
             //   </ToggleButtonGroup>
             // </Box>
           )} */}
+          <Box p={1} px={3}>
+            <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
+              Payer Type
+            </Stack>
+            <ToggleButtonGroup
+              color="primary"
+              value={pairType}
+              onChange={handlePairType}
+            >
+              <ToggleButton
+                value="CASH"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                CASH
+              </ToggleButton>
+              <ToggleButton
+                value="ECHS"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                ECHS
+              </ToggleButton>
+              <ToggleButton
+                value="TPA"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                TPA
+              </ToggleButton>
+              <ToggleButton
+                value="CGHS/PSU"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                CGHS/PSU
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
           {isAdminUser && (
             <Box p={1} px={3}>
               <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>

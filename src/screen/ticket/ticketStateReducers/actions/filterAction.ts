@@ -7,7 +7,8 @@ export const filterActions = {
   DATERANGE: 'DATERANGE',
   RESULTS: 'RESULTS',
   STATUS: 'STATUS',
-  FOLLOWUP: 'FOLLOWUP'
+  FOLLOWUP: 'FOLLOWUP',
+  PAIRTYPE: 'PAIRTYPE'
 };
 export const filterActionsDiago = {
   STAGES: 'STAGES',
@@ -18,7 +19,8 @@ export const filterActionsDiago = {
   DATERANGE: 'DATERANGE',
   RESULTS: 'RESULTS',
   STATUS: 'STATUS',
-  FOLLOWUP: 'FOLLOWUP'
+  FOLLOWUP: 'FOLLOWUP',
+  PAIRTYPE: 'PAIRTYPE'
 };
 export const filterActionsFollowUp = {
   STAGES: 'STAGES',
@@ -29,7 +31,8 @@ export const filterActionsFollowUp = {
   DATERANGE: 'DATERANGE',
   RESULTS: 'RESULTS',
   STATUS: 'STATUS',
-  FOLLOWUP: 'FOLLOWUP'
+  FOLLOWUP: 'FOLLOWUP',
+  PAIRTYPE: 'PAIRTYPE'
 };
 export const bulkFilterActions = {
   STAGES: 'STAGES',
@@ -40,7 +43,8 @@ export const bulkFilterActions = {
   DATERANGE: 'DATERANGE',
   RESULTS: 'RESULTS',
   STATUS: 'STATUS',
-  FOLLOWUP: 'FOLLOWUP'
+  FOLLOWUP: 'FOLLOWUP',
+  PAIRTYPE: 'PAIRTYPE'
 };
 export const bulkFilterActionsDiago = {
   STAGES: 'STAGES',
@@ -51,7 +55,8 @@ export const bulkFilterActionsDiago = {
   DATERANGE: 'DATERANGE',
   RESULTS: 'RESULTS',
   STATUS: 'STATUS',
-  FOLLOWUP: 'FOLLOWUP'
+  FOLLOWUP: 'FOLLOWUP',
+  PAIRTYPE: 'PAIRTYPE'
 };
 export const bulkFilterActionsFollowUp = {
   STAGES: 'STAGES',
@@ -62,5 +67,6 @@ export const bulkFilterActionsFollowUp = {
   DATERANGE: 'DATERANGE',
   RESULTS: 'RESULTS',
   STATUS: 'STATUS',
-  FOLLOWUP: 'FOLLOWUP'
+  FOLLOWUP: 'FOLLOWUP',
+  PAIRTYPE: 'PAIRTYPE'
 };

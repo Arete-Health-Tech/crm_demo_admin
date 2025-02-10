@@ -1019,7 +1019,8 @@ function SwitchViewTable() {
                               ) : (
                                 <></>
                               )}
-                              {item.prescription[0].diagnostics.length > 0 ? (
+                              {item.prescription[0].diagnostics &&
+                              item.prescription[0].diagnostics.length > 0 ? (
                                 <>
                                   <Stack className="ticket-card-line3-tag">
                                     Diagonstic

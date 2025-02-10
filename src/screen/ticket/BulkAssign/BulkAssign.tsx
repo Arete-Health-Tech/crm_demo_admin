@@ -259,7 +259,6 @@ function BulkAssign() {
       ? BulkFilterTicketsFollowUp
       : BulkFilterTickets;
 
-  
   console.log({ BulkFilterTickets });
   const handlePagination = async (
     event: React.ChangeEvent<unknown>,
@@ -880,16 +879,17 @@ function BulkAssign() {
                             className={`${styles.BulkAsiign_table_body_item} ${styles.Bulk_body_item5}`}
                           >
                             <Box className="ticket-card-line3">
-                              {item.prescription[0].admission ? (
+                              {item.prescription[0]?.admission ? (
                                 <>
                                   <Stack className="ticket-card-line3-tag">
-                                    {item.prescription[0].admission}
+                                    {item.prescription[0]?.admission}
                                   </Stack>
                                 </>
                               ) : (
                                 <></>
                               )}
-                              {item.prescription[0].diagnostics.length > 0 ? (
+                              {item.prescription[0]?.diagnostics &&
+                              item.prescription[0]?.diagnostics?.length > 0 ? (
                                 <>
                                   <Stack className="ticket-card-line3-tag">
                                     Diagonstic

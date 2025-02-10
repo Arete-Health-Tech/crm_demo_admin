@@ -267,6 +267,7 @@ function BulkAssign() {
     setBulkPageNumber(pageNo);
     if (pageNo !== page) {
       setBulkTickets([]);
+
       try {
         setDownloadDisable(true);
         await getBulkTicketHandler(searchName, pageNo, 'false', newFilterBulk);
@@ -283,7 +284,7 @@ function BulkAssign() {
   useEffect(() => {
     setPageCount(Math.ceil(ticketCount / 10));
     setPage(bulkPageNumber);
-    setSelectedTicketIds([]);
+    // setSelectedTicketIds([]);
   }, [bulkTickets, bulkSearchByName]);
 
   const fetchTicketsOnEmpthySearch = async () => {
@@ -451,6 +452,9 @@ function BulkAssign() {
               newFilterBulk
             );
             setDownloadDisable(false);
+            if (selectedTicketIds.length > 10) {
+              setSelectedTicketIds([]);
+            }
           } catch {
             toast.error('Error While Fetching Tickets');
             setDownloadDisable(false);
@@ -473,11 +477,19 @@ function BulkAssign() {
   };
 
   const handleSelectAll = () => {
-    if (selectedTicketIds.length === bulkTickets.length) {
-      setSelectedTicketIds([]);
+    const currentPageIds = bulkTickets.map((ticket) => ticket._id);
+    const newSelection = new Set([...selectedTicketIds, ...currentPageIds]);
+
+    if (currentPageIds.every((id) => selectedTicketIds.includes(id))) {
+      setSelectedTicketIds(
+        selectedTicketIds.filter((id) => !currentPageIds.includes(id))
+      );
     } else {
-      const allIds = bulkTickets.map((agent) => agent._id);
-      setSelectedTicketIds(allIds);
+      if (newSelection.size > 20) {
+        toast.info("You can't select more than 20 leads.");
+        return;
+      }
+      setSelectedTicketIds(Array.from(newSelection));
     }
   };
 
@@ -528,17 +540,23 @@ function BulkAssign() {
 
   const handleTicketType = async (option) => {
     if (option === 'Admission') {
+      setSelectedTicketIds([]);
       localStorage.setItem('ticketBulkType', 'Admission');
       await getBulkTicketHandler(UNDEFINED, 1, 'false', newFilterBulk);
     } else if (option === 'Diagnostic') {
+      setSelectedTicketIds([]);
       localStorage.setItem('ticketBulkType', 'Diagnostics');
       await getBulkTicketHandler(UNDEFINED, 1, 'false', newFilterBulk);
     } else {
       localStorage.setItem('ticketBulkType', 'Follow-Up');
+      setSelectedTicketIds([]);
       await getBulkTicketHandler(UNDEFINED, 1, 'false', newFilterBulk);
     }
     setSelectedOption(option);
   };
+  useEffect(() => {
+    console.log(selectedTicketIds, 'bulktickets');
+  }, [selectedTicketIds]);
 
   return (
     <>
@@ -673,11 +691,12 @@ function BulkAssign() {
                       <Stack sx={{ marginLeft: '5px', marginTop: '2px' }}>
                         <img
                           src={
-                            selectedTicketIds.length === bulkTickets.length
+                            bulkTickets.every((ticket) =>
+                              selectedTicketIds.includes(ticket._id)
+                            )
                               ? FilledCheckBox
                               : EmptyCheckBox
                           }
-                          // src={EmptyCheckBox}
                           alt="checkbox"
                           onClick={handleSelectAll}
                           style={{ cursor: 'pointer' }}
@@ -962,6 +981,14 @@ function BulkAssign() {
                       >
                         Assign Tickets {'('} {selectedTicketIds.length}
                         {' )'}
+                      </Stack>
+                      <Stack
+                        className={styles.activate_btn}
+                        onClick={() => {
+                          setSelectedTicketIds([]);
+                        }}
+                      >
+                        Clear Selected Ticket
                       </Stack>
                       {/* <Stack
                         className={styles.activate_btn}

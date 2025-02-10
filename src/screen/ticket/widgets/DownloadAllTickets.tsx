@@ -310,18 +310,16 @@ const DownloadAllTickets = (props: Props) => {
           ticket?.opinion[0]?.type === 'we are second opinon' ? 'Yes' : 'No',
         Second_opinion_doctor: ticket?.opinion[0]?.doctor,
         Second_opinion_add_info: ticket?.opinion[0]?.additionalInfo,
-        Awaiting_test_results:
-          ticket?.opinion[0]?.challengeSelected?.includes(
-            'Awaiting test results'
-          )
-            ? 'Yes'
-            : 'No',
-        Awaiting_TPA_approvals:
-          ticket?.opinion[0]?.challengeSelected?.includes(
-            'Awaiting TPA approvals'
-          )
-            ? 'Yes'
-            : 'No',
+        Awaiting_test_results: ticket?.opinion[0]?.challengeSelected?.includes(
+          'Awaiting test results'
+        )
+          ? 'Yes'
+          : 'No',
+        Awaiting_TPA_approvals: ticket?.opinion[0]?.challengeSelected?.includes(
+          'Awaiting TPA approvals'
+        )
+          ? 'Yes'
+          : 'No',
         Bad_Experience: ticket?.opinion[0]?.challengeSelected?.includes(
           'Bad Experience'
         )
@@ -330,18 +328,16 @@ const DownloadAllTickets = (props: Props) => {
         Under_MM: ticket?.opinion[0]?.challengeSelected?.includes('Under MM')
           ? 'Yes'
           : 'No',
-        Financial_constatints:
-          ticket?.opinion[0]?.challengeSelected?.includes(
-            'Financial constatints'
-          )
-            ? 'Yes'
-            : 'No',
-        Not_happy_with_doctor:
-          ticket?.opinion[0]?.challengeSelected?.includes(
-            'Not happy with doctor'
-          )
-            ? 'Yes'
-            : 'No',
+        Financial_constatints: ticket?.opinion[0]?.challengeSelected?.includes(
+          'Financial constatints'
+        )
+          ? 'Yes'
+          : 'No',
+        Not_happy_with_doctor: ticket?.opinion[0]?.challengeSelected?.includes(
+          'Not happy with doctor'
+        )
+          ? 'Yes'
+          : 'No',
         Lead_Probability: `${ticket?.Probability}%`,
         Lead_Rating:
           ticket?.auditorcomment[ticket?.auditorcomment.length - 1]?.ratings,
@@ -373,12 +369,19 @@ const DownloadAllTickets = (props: Props) => {
       toast.success('Download Successful');
     } catch (error) {
       console.error(
-        'Error generating CSV:  Please Contact Octa Admin for Download Data',
+        'Error generating CSV: Please Contact Octa Admin for Download Data',
         error
       );
-      toast.error(
-        'Error generating CSV: Check Your Internet Connectivity if still facing issue while Downloading - Please Contact Octa Admin for Download Data)'
-      );
+
+      // Use a short delay before reloading to ensure the user sees the error message
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
+      setTimeout(() => {
+        toast.error(
+          'Error generating CSV: Check Your Internet Connectivity. If still facing issues while downloading, please contact Octa Admin.'
+        );
+      }, 2000);
     } finally {
       setDownloadDisable(false);
       setAnchorEl(null);

@@ -503,6 +503,10 @@ function BulkAssign() {
     if (selectedTicketIds.includes(id)) {
       setSelectedTicketIds((prev) => prev.filter((agentId) => agentId !== id));
     } else {
+      if (selectedTicketIds.length > 19) {
+        toast.info("You can't select more than 20 leads.");
+        return;
+      }
       setSelectedTicketIds((prev) => [...prev, id]);
     }
   };

@@ -242,6 +242,7 @@ const DownloadAllTickets = (props: Props) => {
           ticket?.assigned[0]?.firstName ||
           '',
         diagnostics:
+          ticket.prescription[0].diagnostics &&
           ticket.prescription[0].diagnostics.length > 0
             ? ticket.prescription[0].diagnostics
             : 'Not Advised',
@@ -369,19 +370,12 @@ const DownloadAllTickets = (props: Props) => {
       toast.success('Download Successful');
     } catch (error) {
       console.error(
-        'Error generating CSV: Please Contact Octa Admin for Download Data',
+        'Error generating CSV:  Please Contact Octa Admin for Download Data',
         error
       );
-
-      // Use a short delay before reloading to ensure the user sees the error message
-      setTimeout(() => {
-        window.location.reload();
-      }, 1000);
-      setTimeout(() => {
-        toast.error(
-          'Error generating CSV: Check Your Internet Connectivity. If still facing issues while downloading, please contact Octa Admin.'
-        );
-      }, 2000);
+      toast.error(
+        'Error generating CSV: Check Your Internet Connectivity if still facing issue while Downloading - Please Contact Octa Admin for Download Data)'
+      );
     } finally {
       setDownloadDisable(false);
       setAnchorEl(null);

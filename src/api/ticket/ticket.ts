@@ -552,3 +552,17 @@ export const clearAssigneeTickets = async (ticketIds: string[]) => {
     throw error;
   }
 };
+
+export const resyncTickets = async ( resyncData: Object ) =>
+{
+  try {
+    const { data } = await apiClient.post(`/csv/resyncTicket`, 
+      resyncData
+    );
+  } catch ( error )
+  {
+    
+    throw error;
+
+  }
+};

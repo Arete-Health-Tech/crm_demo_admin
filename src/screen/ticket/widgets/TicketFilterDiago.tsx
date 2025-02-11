@@ -314,17 +314,17 @@ const TicketFilter = (props: {
     });
   };
 
-    const handlePairType = (
-      event: React.MouseEvent<HTMLElement>,
-      pairType: string[]
-    ) => {
-      setPairType(pairType);
+  const handlePairType = (
+    event: React.MouseEvent<HTMLElement>,
+    pairType: string[]
+  ) => {
+    setPairType(pairType);
 
-      dispatchFilterDiago({
-        type: filterActionsDiago.PAIRTYPE,
-        payload: pairType
-      });
-    };
+    dispatchFilterDiago({
+      type: filterActionsDiago.PAIRTYPE,
+      payload: pairType
+    });
+  };
 
   const handleStatusType = (
     event: React.MouseEvent<HTMLElement>,
@@ -1043,7 +1043,7 @@ const TicketFilter = (props: {
             //   </ToggleButtonGroup>
             // </Box>
           )} */}
-          <Box p={1} px={3}>
+          {/* <Box p={1} px={3}>
             <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
               Payer Type
             </Stack>
@@ -1089,7 +1089,7 @@ const TicketFilter = (props: {
                 CGHS/PSU
               </ToggleButton>
             </ToggleButtonGroup>
-          </Box>
+          </Box> */}
           {isAdminUser && (
             <Box p={1} px={3}>
               <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>

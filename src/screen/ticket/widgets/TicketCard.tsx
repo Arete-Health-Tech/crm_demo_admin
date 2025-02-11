@@ -1,4 +1,4 @@
-import { Box, Chip, Stack, Typography } from '@mui/material';
+import { Box, Button, Chip, Stack, Typography } from '@mui/material';
 import MaleIcon from '@mui/icons-material/Male';
 import { iReminder, iTicket } from '../../../types/store/ticket';
 import useServiceStore from '../../../store/serviceStore';
@@ -22,6 +22,9 @@ import NotifyAudit from '../../../../src/assets/NotifyAudit.svg';
 import '../singleTicket.css';
 import { apiClient, socket } from '../../../api/apiClient';
 import audited_icon from '../../../assets/audited_icon.svg';
+import { resyncTickets } from '../../../api/ticket/ticket';
+import { getTicketHandler } from '../../../api/ticket/ticketHandler';
+import { toast } from 'react-toastify';
 
 // import { updateIsNewTicket } from '../../../api/ticket/ticket';
 
@@ -42,11 +45,19 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const TicketCard = (props: Props) => {
+  const { setDownloadDisable } = useTicketStore();
   const { ticketID } = useParams();
   const { doctors, departments, allServices, stages } = useServiceStore();
   const [isNewTicket, setIsNewTicket] = useState(true);
   const [taskPendingCount, setTaskPendingCount] = useState(0);
   const [auditCommentCount, setAuditCommentCount] = useState(0);
+  const [resyncDetail, setResyncDetail] = useState({
+    ticketid: '',
+    uhid: '',
+    date: '',
+    location: '',
+    tickettype: ''
+  });
   const [currentStage, setCurrentStage] = useState<iStage>({
     _id: '',
     name: '',
@@ -62,6 +73,8 @@ const TicketCard = (props: Props) => {
     filterTickets,
     filterTicketsDiago,
     filterTicketsFollowUp,
+    searchByName,
+    pageNumber,
     setIsAuditor,
     allTaskCount,
     viewEstimates,
@@ -128,6 +141,39 @@ const TicketCard = (props: Props) => {
     const { setStages } = useServiceStore.getState();
     setStages(stages);
   }, [stages]);
+
+  useEffect(() => {
+    const resyncAndFetch = async () => {
+      if (
+        resyncDetail.ticketid !== '' &&
+        resyncDetail.date !== '' &&
+        resyncDetail.uhid !== '' &&
+        resyncDetail.location !== '' &&
+        resyncDetail.tickettype !== ''
+      ) {
+        try {
+          setDownloadDisable(true);
+          await resyncTickets(resyncDetail); // Wait until this API call completes
+          await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+          setResyncDetail({
+            ticketid: '',
+            uhid: '',
+            date: '',
+            location: '',
+            tickettype: ''
+          });
+          setDownloadDisable(false);
+          toast.success('Ticket Resync Successfully');
+        } catch (error) {
+          toast.error('Something went wrong. Please try later');
+        } finally {
+          setDownloadDisable(false);
+        }
+      }
+    };
+
+    resyncAndFetch();
+  }, [resyncDetail]);
 
   const showTicket = () => {
     // updateIsNewTicket(props.patientData._id, false);
@@ -521,11 +567,12 @@ const TicketCard = (props: Props) => {
         ) : (
           <></>
         )}
-       {Array.isArray(props?.patientData?.prescription?.[0]?.diagnostics) && props?.patientData?.prescription?.[0]?.diagnostics.length > 0 ? (
-  <>
-    <Stack className="ticket-card-line3-tag">Diagnostic</Stack>
-  </>
-) : null}
+        {Array.isArray(props?.patientData?.prescription?.[0]?.diagnostics) &&
+        props?.patientData?.prescription?.[0]?.diagnostics.length > 0 ? (
+          <>
+            <Stack className="ticket-card-line3-tag">Diagnostic</Stack>
+          </>
+        ) : null}
 
         {props?.patientData?.prescription[0]?.payerType ? (
           <>
@@ -537,7 +584,6 @@ const TicketCard = (props: Props) => {
           <></>
         )}
       </Box>
-
       {/*  */}
       <Stack sx={{ borderTop: '2px solid #E1E6EE', marginTop: '10px' }}>
         {/* Borders */}
@@ -610,7 +656,7 @@ const TicketCard = (props: Props) => {
       >
         <Stack
           className="Ticket-LeadAge"
-          sx={{ fontSize: '12px !important', padding: '4px 0 0px 0' }}
+          sx={{ fontSize: '12px !important', padding: '8px 0 0px 0' }}
         >
           {calculatedDate(props.patientData?.date)}
         </Stack>
@@ -631,6 +677,23 @@ const TicketCard = (props: Props) => {
           {auditCommentCount > 0 && (
             <Stack>{<img src={audited_icon} alt="" />}</Stack>
           )}
+        </Stack>
+        <Stack>
+          <button
+            className="sync_btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              setResyncDetail({
+                ticketid: props.patientData._id,
+                uhid: `${props.patientData.consumer[0].uid}`,
+                date: props.patientData.date,
+                location: props.patientData.specialty,
+                tickettype: localStorage.getItem('ticketType') || ''
+              });
+            }}
+          >
+            Re-Sync
+          </button>
         </Stack>
       </Stack>
 

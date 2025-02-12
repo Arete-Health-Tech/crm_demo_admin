@@ -281,7 +281,7 @@ const DownloadAllTickets = (props: Props) => {
               ticket.creator[0].lastName || ''
             }`.trim()
           : 'Created by Livasa HMS',
-        prescriptionCreatedAt: ticket?.prescription[0]?.created_Date || '',
+        prescriptionCreatedAt: ticket?.date.split('T')[0] || '',
         prescriptionLink: ticket?.prescription[0]?.image || '',
         prescriptionLink1: ticket?.prescription[0]?.image1 || '',
         Lead_disposition:
@@ -293,7 +293,7 @@ const DownloadAllTickets = (props: Props) => {
         isEstimateUpload: ticket?.estimateupload[0]?.total > 0 ? 'Yes' : 'No',
         estimateValue: ticket?.estimateupload[0]?.total || 0,
         PaymentType: ticket?.estimateupload[0]?.paymentType || 'Not Mentioned',
-        date: ticket?.date || '',
+        date: ticket?.date.split('T')[0] || '',
         subStageName: subStageName(ticket?.subStageCode?.code) || '',
         status: ['dnp', 'dnd', 'CallCompleted', 'RescheduledCall'].includes(
           ticket?.status

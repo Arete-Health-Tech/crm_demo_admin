@@ -165,7 +165,7 @@ const TicketCard = (props: Props) => {
           setDownloadDisable(false);
           toast.success('Ticket Resync Successfully');
         } catch (error) {
-          toast.error('Something went wrong. Please try later');
+          toast.error('Emr Api is not Working');
         } finally {
           setDownloadDisable(false);
         }

@@ -140,30 +140,30 @@ class ApiClient {
 
   // Handle global app errors
   // We can handle generic app errors depending on the status code
-  // private handleError(error: any) {
-  //   const { status, data } = error;
-  //   this.errorSnackbarHandler(data);
-  //   switch (status) {
-  //     case StatusCode.InternalServerError: {
-  //       // Handle InternalServerError
-  //       break;
-  //     }
-  //     case StatusCode.Forbidden: {
-  //       // Handle Forbidden
-  //       break;
-  //     }
-  //     case StatusCode.Unauthorized: {
-  //       // Handle Unauthorized
-  //       break;
-  //     }
-  //     case StatusCode.TooManyRequests: {
-  //       // Handle TooManyRequests
-  //       break;
-  //     }
-  //   }
+  private handleError(error: any) {
+    const { status, data } = error;
+    this.errorSnackbarHandler(data);
+    switch (status) {
+      case StatusCode.InternalServerError: {
+        // Handle InternalServerError
+        break;
+      }
+      case StatusCode.Forbidden: {
+        // Handle Forbidden
+        break;
+      }
+      case StatusCode.Unauthorized: {
+        // Handle Unauthorized
+        break;
+      }
+      case StatusCode.TooManyRequests: {
+        // Handle TooManyRequests
+        break;
+      }
+    }
 
-  //   return Promise.reject(error);
-  // }
+    return Promise.reject(error);
+  }
 }
 
 export const apiClient = new ApiClient();

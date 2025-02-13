@@ -312,31 +312,30 @@ const CallSummaryDashboard = () => {
       setIsSyncing(true);
 
       // Start the sync process
-      const response = await reSyncAllData(); // This triggers the backend process
+      await reSyncAllData(); // This triggers the backend process
 
       // Polling function to check the status
-      const checkSyncStatus = async () => {
-        try {
-          const statusResponse = await fetch('/csv/resyncAllTicket');
-          const statusData = await statusResponse.json();
+      // const checkSyncStatus = async () => {
+      //   try {
+      //     const statusResponse = await fetch('/csv/resyncAllTicket');
+      //     const statusData = await statusResponse.json();
 
-          if (statusData.status === 'completed') {
-            toast.success('Re-sync completed!');
-            setIsSyncing(false);
-          } else {
-            // Keep checking every 30 seconds
-            setTimeout(checkSyncStatus, 30000);
-          }
-        } catch (error) {
-          console.error('Error checking sync status:', error);
-        }
-      };
+      //     if (statusData.status === 'completed') {
+      //       toast.success('Re-sync completed!');
+      //       setIsSyncing(false);
+      //     } else {
+      //       // Keep checking every 30 seconds
+      //       setTimeout(checkSyncStatus, 30000);
+      //     }
+      //   } catch (error) {
+      //     console.error('Error checking sync status:', error);
+      //   }
+      // };
 
-      // Start polling
-      checkSyncStatus();
+      // // Start polling
+      // checkSyncStatus();
     } catch (error) {
       console.error('Error while resyncing all data:', error);
-      toast.error('Error while resyncing. Please try again.');
     }
   };
 
@@ -349,12 +348,12 @@ const CallSummaryDashboard = () => {
               Call Center <span>Performance Summary </span>
             </Stack>
             <Box className="d-flex">
-              {/* {user?.role === 'ADMIN' && (
+              {user?.role === 'ADMIN' && (
                 <Stack className={Styles.resync_btn} onClick={resyncAllData}>
                   {' '}
                   Re-Sync
                 </Stack>
-              )} */}
+              )}
               <Stack className={Styles.container_head_btn}>Call Summary</Stack>
             </Box>
           </Stack>

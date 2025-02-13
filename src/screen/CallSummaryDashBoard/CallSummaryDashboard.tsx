@@ -349,12 +349,12 @@ const CallSummaryDashboard = () => {
               Call Center <span>Performance Summary </span>
             </Stack>
             <Box className="d-flex">
-              {user?.role === 'ADMIN' && (
+              {/* {user?.role === 'ADMIN' && (
                 <Stack className={Styles.resync_btn} onClick={resyncAllData}>
                   {' '}
                   Re-Sync
                 </Stack>
-              )}
+              )} */}
               <Stack className={Styles.container_head_btn}>Call Summary</Stack>
             </Box>
           </Stack>

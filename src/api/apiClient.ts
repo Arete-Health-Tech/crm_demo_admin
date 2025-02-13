@@ -124,18 +124,18 @@ class ApiClient {
     //     ]
     //   });
     // });
-    useEventStore.setState({
-      snacks: [
-        ...useEventStore.getState().snacks,
-        {
-          message: data[0]
-            ? data[0].msg + ' at ' + data[0].param
-            : data.message,
-          type: 'error',
-          id: useEventStore.getState().snacks.length
-        }
-      ]
-    });
+    // useEventStore.setState({
+    //   snacks: [
+    //     ...useEventStore.getState().snacks,
+    //     {
+    //       message: data[0]
+    //         ? data[0].msg + ' at ' + data[0].param
+    //         : data.message,
+    //       type: 'error',
+    //       id: useEventStore.getState().snacks.length
+    //     }
+    //   ]
+    // });
   }
 
   // Handle global app errors

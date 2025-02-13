@@ -71,52 +71,50 @@ export const getBulkTicket = async (
   );
   return data;
 };
-export const getAllTicketAdmission = async ( value: any, location: any ) =>
-{
-  if ( location == "All" )
-  {
-    const { data } = await apiClient.get(`/ticket/allDownload?month=${value.format('YYYY-MM')}`);
-  return data;
-  } else
-  {
-    const { data } = await apiClient.get(`/ticket/allDownload?month=${value.format('YYYY-MM')}&location=${location}`);
-  return data;
-  }
-  
-};
-export const getAllTicketDiagontics = async ( value: any, location: any ) =>
-{
-  if ( location == "All" )
-  {
-      const { data } = await apiClient.get(
-    `/ticket/getAllDownloadTicketDiagnostics?month=${value.format('YYYY-MM')}`
-  );
-  return data;
-  } else
-  {
-      const { data } = await apiClient.get(
-    `/ticket/getAllDownloadTicketDiagnostics?month=${value.format('YYYY-MM')}&location=${location}`
-  );
-  return data;
-    }
-  
-};
-export const getAllTicketFollowUp = async ( value: any, location: any ) =>
-{
-  if ( location == "All" )
-  {
-      const { data } = await apiClient.get(
-    `/followUp/followupdownload?month=${value.format('YYYY-MM')}`
-  );
-  return data;
-  } else
-  {
+export const getAllTicketAdmission = async (value: any, location: any) => {
+  if (location == 'All') {
     const { data } = await apiClient.get(
-    `/followUp/followupdownload?month=${value.format('YYYY-MM')}&location=${location}`
-  );
-  return data;
+      `/ticket/allDownload?month=${value.format('YYYY-MM')}`
+    );
+    return data;
+  } else {
+    const { data } = await apiClient.get(
+      `/ticket/allDownload?month=${value.format(
+        'YYYY-MM'
+      )}&location=${location}`
+    );
+    return data;
   }
-
+};
+export const getAllTicketDiagontics = async (value: any, location: any) => {
+  if (location == 'All') {
+    const { data } = await apiClient.get(
+      `/ticket/getAllDownloadTicketDiagnostics?month=${value.format('YYYY-MM')}`
+    );
+    return data;
+  } else {
+    const { data } = await apiClient.get(
+      `/ticket/getAllDownloadTicketDiagnostics?month=${value.format(
+        'YYYY-MM'
+      )}&location=${location}`
+    );
+    return data;
+  }
+};
+export const getAllTicketFollowUp = async (value: any, location: any) => {
+  if (location == 'All') {
+    const { data } = await apiClient.get(
+      `/followUp/followupdownload?month=${value.format('YYYY-MM')}`
+    );
+    return data;
+  } else {
+    const { data } = await apiClient.get(
+      `/followUp/followupdownload?month=${value.format(
+        'YYYY-MM'
+      )}&location=${location}`
+    );
+    return data;
+  }
 };
 
 export const getticketRescedulerAbove = async (ticketId?: string | null) => {
@@ -252,7 +250,7 @@ export const getAllNotesByTicketId = async (ticketId: string) => {
 export const createNewNote = async (note: iNote, disposition: string) => {
   const { data } = await apiClient.post('/ticket/note', {
     ...note,
-    'disposition': disposition
+    disposition: disposition
   });
   return data;
 };
@@ -499,9 +497,8 @@ export const getActivityData = async (ticketId: string | undefined) => {
 // Notes Added For activity
 
 export const createNoteActivity = async (notesData) => {
-  await apiClient.post( '/activity/getNotes', notesData );
+  await apiClient.post('/activity/getNotes', notesData);
 };
-
 
 export const getAuditTickets = async () => {
   const data = await apiClient.get(`/ticket/getAuditComments`);
@@ -553,16 +550,19 @@ export const clearAssigneeTickets = async (ticketIds: string[]) => {
   }
 };
 
-export const resyncTickets = async ( resyncData: Object ) =>
-{
+export const resyncTickets = async (resyncData: Object) => {
   try {
-    const { data } = await apiClient.post(`/csv/resyncTicket`, 
-      resyncData
-    );
-  } catch ( error )
-  {
-    
+    const { data } = await apiClient.post(`/csv/resyncTicket`, resyncData);
+  } catch (error) {
     throw error;
-
+  }
+};
+export const reSyncAllData = async () => {
+  try {
+    const { data } = await apiClient.post(`/csv/resyncAllTicket`, {
+      date: new Date()
+    });
+  } catch (error) {
+    throw error;
   }
 };

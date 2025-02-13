@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, CircularProgress, Stack, TextField } from '@mui/material';
+import { Box, Button, CircularProgress, Stack, TextField } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import Styles from './CallSummaryDashBoard.module.css';
 import AdmissionSummary from './AdmissionSummary';
@@ -29,6 +29,9 @@ import NoData from './../../assets/Error.svg';
 import { SpinnerDotted } from 'spinners-react';
 import useDashboardStore from '../../store/dashboardStore';
 import { TodayTaskForAdmin } from '../../types/store/dashboard';
+import { toast } from 'react-toastify';
+import { socket } from '../../api/apiClient';
+import { reSyncAllData } from '../../api/ticket/ticket';
 
 type Agent = {
   _id: string;
@@ -284,6 +287,58 @@ const CallSummaryDashboard = () => {
     setIsMenuOpen(false);
     setSelectedAgents(agent);
   };
+  const [isSyncing, setIsSyncing] = useState(false);
+  // This function is used for re syncing all the data
+  useEffect(() => {
+    if (!socket.connected) {
+      socket.connect();
+    }
+    const handleSyncComplete = () => {
+      toast.success('Re-sync completed!');
+      setIsSyncing(false);
+    };
+
+    socket.on('data_synced', handleSyncComplete);
+
+    return () => {
+      socket.off('data_synced', handleSyncComplete);
+      socket.disconnect();
+    };
+  }, [isSyncing]);
+
+  const resyncAllData = async () => {
+    try {
+      toast.success('Re-sync all data in progress ...', { autoClose: 5000 });
+      setIsSyncing(true);
+
+      // Start the sync process
+      const response = await reSyncAllData(); // This triggers the backend process
+
+      // Polling function to check the status
+      const checkSyncStatus = async () => {
+        try {
+          const statusResponse = await fetch('/csv/resyncAllTicket');
+          const statusData = await statusResponse.json();
+
+          if (statusData.status === 'completed') {
+            toast.success('Re-sync completed!');
+            setIsSyncing(false);
+          } else {
+            // Keep checking every 30 seconds
+            setTimeout(checkSyncStatus, 30000);
+          }
+        } catch (error) {
+          console.error('Error checking sync status:', error);
+        }
+      };
+
+      // Start polling
+      checkSyncStatus();
+    } catch (error) {
+      console.error('Error while resyncing all data:', error);
+      toast.error('Error while resyncing. Please try again.');
+    }
+  };
 
   return (
     <>
@@ -293,7 +348,15 @@ const CallSummaryDashboard = () => {
             <Stack className={Styles.container_head_title}>
               Call Center <span>Performance Summary </span>
             </Stack>
-            <Stack className={Styles.container_head_btn}>Call Summary</Stack>
+            <Box className="d-flex">
+              {user?.role === 'ADMIN' && (
+                <Stack className={Styles.resync_btn} onClick={resyncAllData}>
+                  {' '}
+                  Re-Sync
+                </Stack>
+              )}
+              <Stack className={Styles.container_head_btn}>Call Summary</Stack>
+            </Box>
           </Stack>
           <Stack className={Styles.container_head_filter}>
             {/* Date Filters start*/}

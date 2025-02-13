@@ -145,7 +145,8 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               name: rep.firstName, // Representative's name
               todaysTaskAnsweredForAdmin: assignedData?.counts[0]?.count, // Assigned tasks
               totalcallLAttemptedForAdmin: totalCallAttempted, // Attempted calls
-              totalcallLAnsweredforGraphForAdmin: fetchCombined?.totalCalls || 0
+              totalcallLAnsweredforGraphForAdmin:
+                fetchCombined?.answeredCalls || 0
 
               // Answered calls for graph
             });

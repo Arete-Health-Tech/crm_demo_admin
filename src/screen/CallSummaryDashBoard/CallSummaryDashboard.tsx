@@ -379,14 +379,14 @@ const CallSummaryDashboard = () => {
             <Box className="d-flex">
               {user?.role === 'ADMIN' && (
                 <>
-                  {/* <Stack
+                  <Stack
                     className={Styles.resync_btn}
                     onClick={(event) => {
                       handleClick(event);
                     }} // Triggers DatePicker popup
                   >
                     Re-Sync
-                  </Stack> */}
+                  </Stack>
                   <Popover
                     open={open}
                     anchorEl={anchorEl}

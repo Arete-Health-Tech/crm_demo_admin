@@ -1,5 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, Button, CircularProgress, Stack, TextField } from '@mui/material';
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Popover,
+  Stack,
+  TextField
+} from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import Styles from './CallSummaryDashBoard.module.css';
 import AdmissionSummary from './AdmissionSummary';
@@ -32,6 +39,10 @@ import { TodayTaskForAdmin } from '../../types/store/dashboard';
 import { toast } from 'react-toastify';
 import { socket } from '../../api/apiClient';
 import { reSyncAllData } from '../../api/ticket/ticket';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs, { Dayjs } from 'dayjs';
 
 type Agent = {
   _id: string;
@@ -288,54 +299,72 @@ const CallSummaryDashboard = () => {
     setSelectedAgents(agent);
   };
   const [isSyncing, setIsSyncing] = useState(false);
-  // This function is used for re syncing all the data
+
+  // This function is for selecting the date for resyncing the data
+  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+  const datePickerRef = useRef<any>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+
   useEffect(() => {
-    if (!socket.connected) {
-      socket.connect();
+    if (isSyncing) {
+      if (!socket.connected) {
+        socket.connect();
+      }
+      const handleSyncComplete = () => {
+        toast.success('Re-sync completed!');
+        setIsSyncing(false);
+      };
+
+      socket.on('data_synced', handleSyncComplete);
+
+      return () => {
+        socket.off('data_synced', handleSyncComplete);
+        socket.disconnect();
+      };
     }
-    const handleSyncComplete = () => {
-      toast.success('Re-sync completed!');
-      setIsSyncing(false);
-    };
-
-    socket.on('data_synced', handleSyncComplete);
-
-    return () => {
-      socket.off('data_synced', handleSyncComplete);
-      socket.disconnect();
-    };
   }, [isSyncing]);
 
   const resyncAllData = async () => {
+    if (!selectedDate) {
+      setErrors((prev) => ({
+        ...prev,
+        date: !selectedDate
+      }));
+      return;
+    }
     try {
       toast.success('Re-sync all data in progress ...', { autoClose: 5000 });
       setIsSyncing(true);
-
       // Start the sync process
-      await reSyncAllData(); // This triggers the backend process
-
-      // Polling function to check the status
-      // const checkSyncStatus = async () => {
-      //   try {
-      //     const statusResponse = await fetch('/csv/resyncAllTicket');
-      //     const statusData = await statusResponse.json();
-
-      //     if (statusData.status === 'completed') {
-      //       toast.success('Re-sync completed!');
-      //       setIsSyncing(false);
-      //     } else {
-      //       // Keep checking every 30 seconds
-      //       setTimeout(checkSyncStatus, 30000);
-      //     }
-      //   } catch (error) {
-      //     console.error('Error checking sync status:', error);
-      //   }
-      // };
-
-      // // Start polling
-      // checkSyncStatus();
+      await reSyncAllData(selectedDate); // This triggers the backend process
+      setSelectedDate(null);
+      setAnchorEl(null);
     } catch (error) {
+      setSelectedDate(null);
+      setAnchorEl(null);
       console.error('Error while resyncing all data:', error);
+    }
+  };
+
+  // Disable dates outside the last 7 days
+  const shouldDisableDate = (date: Dayjs) => {
+    const today = dayjs();
+    return date.isBefore(today.subtract(7, 'days')) || date.isAfter(today);
+  };
+
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const [errors, setErrors] = useState({ unit: false, date: false });
+  const open = Boolean(anchorEl);
+  const handleDateChange = (newDate: Dayjs | null) => {
+    setSelectedDate(newDate);
+    if (newDate) {
+      setErrors((prev) => ({ ...prev, date: false }));
     }
   };
 
@@ -348,12 +377,75 @@ const CallSummaryDashboard = () => {
               Call Center <span>Performance Summary </span>
             </Stack>
             <Box className="d-flex">
-              {/* {user?.role === 'ADMIN' && (
-                <Stack className={Styles.resync_btn} onClick={resyncAllData}>
-                  {' '}
-                  Re-Sync
-                </Stack>
-              )} */}
+              {user?.role === 'ADMIN' && (
+                <>
+                  {/* <Stack
+                    className={Styles.resync_btn}
+                    onClick={(event) => {
+                      handleClick(event);
+                    }} // Triggers DatePicker popup
+                  >
+                    Re-Sync
+                  </Stack> */}
+                  <Popover
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                      vertical: 'bottom',
+                      horizontal: 'left'
+                    }}
+                    sx={{ borderRadius: '24px' }}
+                  >
+                    <Box
+                      display={'flex'}
+                      width={'250px'}
+                      flexDirection={'column'}
+                      gap={'15px'}
+                      sx={{
+                        padding: '30px 20px',
+                        borderRadius: '16px'
+                      }}
+                    >
+                      <Stack>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DatePicker
+                            value={selectedDate}
+                            onChange={(newDate) => {
+                              handleDateChange(newDate);
+                            }}
+                            shouldDisableDate={shouldDisableDate}
+                          />
+                        </LocalizationProvider>
+                        {errors.date && (
+                          <Stack sx={{ fontSize: '12px', color: 'red' }}>
+                            Please select a Month.
+                          </Stack>
+                        )}
+                      </Stack>
+                      <Stack
+                        style={{
+                          padding: '8px',
+                          display: 'flex',
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                          fontFamily: 'outFit,san-serif',
+                          fontSize: '14px',
+                          fontWeight: 500,
+                          cursor: 'pointer',
+                          color: '#0566FF',
+                          border: '1.5px solid #0566FF',
+                          borderRadius: '4px'
+                        }}
+                        onClick={resyncAllData}
+                      >
+                        Resync Data
+                        {/* <img src={DownloadAllFileIcon} alt="Download All Data" /> */}
+                      </Stack>
+                    </Box>
+                  </Popover>
+                </>
+              )}
               <Stack className={Styles.container_head_btn}>Call Summary</Stack>
             </Box>
           </Stack>

@@ -558,10 +558,12 @@ export const resyncTickets = async (resyncData: Object) => {
   }
 };
 export const reSyncAllData = async (date) => {
-  // console.log(new Date(date))
+  console.log(new Date(date));
   try {
     const { data } = await apiClient.post(`/csv/resyncAllTicket`, {
-      date: new Date(date)
+      date: new Date(
+        new Date(date).getTime() - new Date(date).getTimezoneOffset() * 60000
+      ).toISOString()
     });
   } catch (error) {
     throw error;

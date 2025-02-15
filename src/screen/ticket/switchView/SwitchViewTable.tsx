@@ -740,6 +740,7 @@ function SwitchViewTable() {
               onClick={() => {
                 backToDashboard();
                 setIsSwitchView(false);
+                setPageNumber(1);
               }}
             >
               <img

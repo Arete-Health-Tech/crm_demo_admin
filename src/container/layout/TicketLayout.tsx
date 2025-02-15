@@ -660,8 +660,7 @@ const Ticket = () => {
     };
   }, [pageNumber, searchByName]);
 
-
-console.log({ newFilter });
+  console.log({ newFilter });
 
   useEffect(() => {
     clearAllInterval(AllIntervals);
@@ -1199,6 +1198,7 @@ console.log({ newFilter });
                   onClick={() => {
                     setIsSwitchView(!isSwitchView);
                     navigate('/switchView');
+                    setPageNumber(1);
                   }}
                 >
                   <LightTooltip title="Switch View">

@@ -170,7 +170,7 @@ const TicketFilter = (props: {
     setFilteredLocation,
     filteredLocation,
     setFilterTicketsFollowUp,
-    setDownloadDisable
+    setDownloadDisable,
   } = useTicketStore();
 
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
@@ -616,7 +616,7 @@ const TicketFilter = (props: {
     setDownloadDisable(true);
     setIsFilterOpen(false);
     setPageNumber(1);
-    setFilterTickets(selectedFilters);
+    setFilterTicketsFollowUp(selectedFilters);
     await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(0);

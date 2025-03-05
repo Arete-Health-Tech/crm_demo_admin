@@ -163,7 +163,7 @@ const DownloadAllTickets = (props: Props) => {
   }, [localStorage.getItem('ticketType')]);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedDate, setSelectedDate] = useState<Dayjs | null>(null);
+ 
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -175,14 +175,24 @@ const DownloadAllTickets = (props: Props) => {
 
   const open = Boolean(anchorEl);
 
-  const handleDateChange = (newDate: Dayjs | null) => {
-    setSelectedDate(newDate);
-    if (newDate) {
-      console.log(newDate.format('YYYY-MM')); // Print selected date
-      setErrors((prev) => ({ ...prev, date: false }));
-    }
-  };
+    const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(null);
+    const currentYear = dayjs().year(); // Get the current year
+    const latestAllowedYear = currentYear; // Dynamically set the latest allowed year
+    const latestAllowedMonth = 2; // March (0-based index)
 
+    const handleDateChange = (newDate: Dayjs | null) => {
+      if (newDate) {
+        const year = newDate.year();
+        const month = newDate.month(); // 0-based index (0 = January)
+
+        // Allow only Jan - Mar for the latest year, and all months for previous years
+        if (year === latestAllowedYear && month > latestAllowedMonth) {
+          return; // Prevent selection
+        }
+
+        setSelectedDate(newDate);
+      }
+    };
   // This function is for downloading the data
   const downloadData = async () => {
     if (!selectedUnit || !selectedDate) {
@@ -235,7 +245,7 @@ const DownloadAllTickets = (props: Props) => {
         admissionType: ticket.prescription[0].admission || 'Not Advised',
         serviceName: ticket.prescription[0].service?.name || 'Not Advised',
         isPharmacy: ticket?.prescription[0]?.isPharmacy
-          ? 'Advised'
+          ? ticket?.prescription[0]?.isPharmacy
           : 'No Advised',
         assigned:
           handleAssigne(ticket?.assigned[0]?._id).join(' ') ||
@@ -390,6 +400,22 @@ const DownloadAllTickets = (props: Props) => {
     setErrors((prev) => ({ ...prev, unit: false })); // Clear error on selection
   };
 
+  const shouldDisableDate = (date: Dayjs) => {
+    const year = date.year();
+    const month = date.month(); // 0-based index (0 = January, 11 = December)
+
+    // Disable future years
+    if (year > 2025) {
+      return true;
+    }
+
+    // Restrict months for 2025 (only allow January - March)
+    if (year === 2025 && month > 2) {
+      return true;
+    }
+
+    return false; // Enable all months for other years
+  };
   return (
     <Box p={1} px={2}>
       {/* <LightTooltip
@@ -466,10 +492,14 @@ const DownloadAllTickets = (props: Props) => {
               <LocalizationProvider dateAdapter={AdapterDayjs}>
                 <DatePicker
                   slotProps={{ textField: { size: 'small' } }}
-                  label={'MM/YYYY'}
+                  label="MM/YYYY"
                   views={['month', 'year']}
                   value={selectedDate}
                   onChange={handleDateChange}
+                  minDate={dayjs('2000-01-01')} // Set a reasonable lower limit
+                  maxDate={dayjs(
+                    `${latestAllowedYear}-${latestAllowedMonth + 1}-01`
+                  )} // Dynamically set maxDate
                 />
               </LocalizationProvider>
               {errors.date && (

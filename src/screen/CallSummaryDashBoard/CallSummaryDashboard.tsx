@@ -346,10 +346,10 @@ const CallSummaryDashboard = () => {
     }
   };
 
-  // Disable dates outside the last 7 days
+  // Disable dates outside the last 7 days except today also
   const shouldDisableDate = (date: Dayjs) => {
-    const today = dayjs();
-    return date.isBefore(today.subtract(7, 'days')) || date.isAfter(today);
+    const today = dayjs().startOf('day');
+    return date.isBefore(today.subtract(6, 'days')) || !date.isBefore(today);
   };
 
   const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -358,6 +358,7 @@ const CallSummaryDashboard = () => {
 
   const handleClose = () => {
     setAnchorEl(null);
+    setSelectedDate(null);
   };
   const [errors, setErrors] = useState({ unit: false, date: false });
   const open = Boolean(anchorEl);

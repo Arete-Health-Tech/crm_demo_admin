@@ -77,6 +77,8 @@ import {
 import { StackedBarChartSharp } from '@mui/icons-material';
 import useTicketStore from '../../store/ticketStore';
 import useUserStore from '../../store/userStore';
+import { getTicketHandler } from '../../api/ticket/ticketHandler';
+import { UNDEFINED } from '../../constantUtils/constant';
 
 const drawerWidth = 72;
 
@@ -260,7 +262,12 @@ const Navbar = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = React.useState(false);
-  const { setTicketType } = useTicketStore();
+  const {
+    setTicketType,
+    setFilterTickets,
+    setFilterTicketsDiago,
+    setFilterTicketsFollowUp
+  } = useTicketStore();
   const [expandedMenu, setExpandedMenu] = React.useState(null);
   const { isSwitchView, setIsSwitchView, setPageNumber } = useTicketStore();
   const { user } = useUserStore.getState();
@@ -287,10 +294,34 @@ const Navbar = ({ children }) => {
   const handleMenuClick = (title) => {
     setExpandedMenu(expandedMenu === title ? null : title);
   };
+  const initialStateForFilter = {
+    stageList: [],
+    representative: null,
+    results: null,
+    admissionType: [],
+    diagnosticsType: [],
+    dateRange: [],
+    status: [],
+    followUp: null
+  };
+  const backToDashboard = () => {
+    getTicketHandler(UNDEFINED, 1, 'false', initialStateForFilter);
+    setFilterTickets(initialStateForFilter);
+    setFilterTicketsDiago(initialStateForFilter);
+    setFilterTicketsFollowUp(initialStateForFilter);
+    navigate('/');
+  };
 
   return (
     <>
-      <Box sx={{ display: 'flex', height: '100vh' }}>
+      <Box
+        sx={{
+          display: 'flex',
+          height: '100vh',
+          width: '100%',
+          position: 'fixed'
+        }}
+      >
         {/* <Drawer variant="permanent"
                     open={open}
                     sx={{
@@ -342,7 +373,8 @@ const Navbar = ({ children }) => {
                   <Stack
                     onClick={() => {
                       localStorage.setItem('ticketType', '');
-                      goToPage('/');
+                      backToDashboard();
+                      // goToPage('/');
                     }}
                     sx={{
                       display: 'flex',

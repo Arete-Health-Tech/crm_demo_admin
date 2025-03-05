@@ -22,7 +22,14 @@ import {
   getTicketAfterNotification
 } from '../../../api/ticket/ticket';
 import { getAllStageCountHandler } from '../../../api/dashboard/dashboardHandler';
-import { Box, Chip, Modal, Stack, Typography } from '@mui/material';
+import {
+  Box,
+  Chip,
+  CircularProgress,
+  Modal,
+  Stack,
+  Typography
+} from '@mui/material';
 import styles from './switchView.module.css';
 import '../../orders/orderList.css';
 import { DatePicker } from 'antd';
@@ -177,7 +184,9 @@ function SwitchViewTable() {
     setIsSwitchView,
     setIsAuditor,
     viewEstimates,
-    setViewEstimates
+    setViewEstimates,
+    setDownloadDisable,
+    downloadDisable
   } = useTicketStore();
 
   const newFilter =
@@ -279,31 +288,35 @@ function SwitchViewTable() {
   };
 
   const handleSearchKeyPress = async (e: any) => {
-    const value = e.target?.value;
-    if (value) {
-      setSearchName(value);
+    if (e.key === 'Enter' && searchName === '') {
+      setSearchName('');
+      setSearchByName(UNDEFINED);
+      setSearchError('Type to search & Enter');
+      return;
+    } else if (e.key === 'Enter') {
+      setSearchByName(searchName);
     }
-    if (e.key === 'Enter') {
-      setTickets([]);
+    // setSearchByName(searchName);
+    // if (e.key === 'Enter') {
+    //   setTickets([]);
 
-      if (value === '') {
-        fetchTicketsOnEmpthySearch();
-        setSearchError('Type to search & Enter');
-        // redirectTicket()
-        return;
-      }
-      await getTicketHandler(value, 1, 'false', newFilter);
-      setSearchByName(value);
-      setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
-      setPageNumber(1);
-      setPage(1);
-      // redirectTicket()
-    }
+    //   if (searchName === '') {
+    //     fetchTicketsOnEmpthySearch();
+    //     setSearchError('Type to search & Enter');
+    //     // redirectTicket();
+    //     return;
+    //   }
+    //   await getTicketHandler(searchName, 1, 'false', newFilter);
+    //   setSearchError(`remove "${searchName.toUpperCase()}" to reset & Enter`);
+    //   setPageNumber(1);
+    //   setPage(1);
+    // }
   };
 
   window.onload = redirectTicket;
 
   useEffect(() => {
+    setDownloadDisable(true);
     (async function () {
       await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
       await getAllNotesWithoutTicketId();
@@ -314,6 +327,7 @@ function SwitchViewTable() {
       await getAllReminderHandler();
       await getAllCallReschedulerHandler();
     })();
+    setDownloadDisable(false);
     setPageNumber(1);
   }, [localStorage.getItem('ticketType')]);
 
@@ -627,31 +641,18 @@ function SwitchViewTable() {
       color: '#f7c0bb'
     }
   ];
+
   const calculatedDate = (date: any) => {
     const creationDate = new Date(date);
 
-    // Get today's date
-    const today = new Date();
+    // Format the date as "10 Jan 2025"
+    const formattedDate = creationDate.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    });
 
-    // Calculate the difference in milliseconds
-    const timeDifference = today.getTime() - creationDate.getTime();
-
-    // Calculate the difference in days
-    const dayDifference = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-
-    if (dayDifference < 1) {
-      // Calculate the difference in hours
-      const hourDifference = Math.floor(timeDifference / (1000 * 60 * 60));
-      const minuteDifference = Math.floor(
-        (timeDifference % (1000 * 60 * 60)) / (1000 * 60)
-      );
-      const formattedTimeDifference = `${hourDifference
-        .toString()
-        .padStart(2, '0')}:${minuteDifference.toString().padStart(2, '0')}`;
-      return `${formattedTimeDifference} hrs ago`;
-    } else {
-      return `${dayDifference} days ago`;
-    }
+    return formattedDate;
   };
 
   const doctorSetter = (id: string) => {
@@ -709,6 +710,22 @@ function SwitchViewTable() {
   };
   console.log(page, 'sssssss');
   console.log(pageNumber, 'sssssss');
+
+  useEffect(() => {
+    const data = async () => {
+      setDownloadDisable(true);
+      await getTicketHandler(searchByName, 1, 'false', newFilter);
+      searchByName === '' || searchByName === 'undefined'
+        ? setSearchError('Type to search & Enter')
+        : setSearchError(
+            `remove "${searchName.toUpperCase()}" to reset & Enter`
+          );
+      setPageNumber(1);
+      setPage(1);
+      setDownloadDisable(false);
+    };
+    data();
+  }, [searchByName]);
 
   return (
     <>
@@ -781,6 +798,7 @@ function SwitchViewTable() {
                     type="text"
                     className={styles.search_input}
                     placeholder=" Search..."
+                    onChange={(e) => setSearchName(e.target.value)}
                     onKeyDown={handleSearchKeyPress}
                   />
                 </div>
@@ -835,6 +853,7 @@ function SwitchViewTable() {
         </Box>
 
         {/* Tickets Tables */}
+
         <Box
           sx={{ height: '55% !important' }}
           className={styles.SwitchView_table_container}
@@ -890,227 +909,249 @@ function SwitchViewTable() {
                   </tr>
                 </thead>
               </Box>
-              <Box
-                sx={{
-                  height: '95%',
-                  overflowY: 'auto',
-                  '&::-webkit-scrollbar': { width: '4px', marginTop: '100px' },
-                  '&::-webkit-scrollbar-thumb': {
-                    backgroundColor: '#DAE8FF',
-                    borderRadius: '4px'
-                  },
-                  '&::-webkit-scrollbar-thumb:hover': {
-                    backgroundColor: '#555'
-                  }
-                }}
-              >
-                <tbody>
-                  {tickets.length > 0 ? (
-                    <>
-                      {tickets.map((item) => (
-                        <tr
-                          key={item._id}
-                          className={styles.SwitchView_table_body}
-                          onClick={() => navigate(`${item._id}`)}
-                        >
-                          {/* Lead */}
-                          <td
-                            className={`${styles.SwitchView_table_body_item}`}
+              {!downloadDisable ? (
+                <Box
+                  sx={{
+                    height: '95%',
+                    overflowY: 'auto',
+                    '&::-webkit-scrollbar': {
+                      width: '4px',
+                      marginTop: '100px'
+                    },
+                    '&::-webkit-scrollbar-thumb': {
+                      backgroundColor: '#DAE8FF',
+                      borderRadius: '4px'
+                    },
+                    '&::-webkit-scrollbar-thumb:hover': {
+                      backgroundColor: '#555'
+                    }
+                  }}
+                >
+                  <tbody>
+                    {tickets.length > 0 ? (
+                      <>
+                        {tickets.map((item) => (
+                          <tr
+                            key={item._id}
+                            className={styles.SwitchView_table_body}
+                            onClick={() => navigate(`${item._id}`)}
                           >
-                            <Stack
-                              display={'flex'}
-                              flexDirection={'row'}
-                              gap={'8px'}
+                            {/* Lead */}
+                            <td
+                              className={`${styles.SwitchView_table_body_item}`}
                             >
                               <Stack
-                                className={styles.SwitchView_name}
-                                sx={{ textTransform: 'capitalize !important' }}
+                                display={'flex'}
+                                flexDirection={'row'}
+                                gap={'8px'}
                               >
-                                {/* {patientName(item)} */}
-                                {`${item?.consumer?.[0]?.firstName ?? ''} ${
-                                  item?.consumer?.[0]?.lastName ?? ''
-                                }`}
-                              </Stack>
-                              <Stack className={styles.SwitchView_GenAge}>
-                                {item.consumer[0]?.gender && (
-                                  <Stack className={styles.SwitchView_Gen}>
-                                    {item.consumer[0]?.gender}
-                                  </Stack>
-                                )}
-                                {item.consumer[0]?.age && (
-                                  <Stack className={styles.SwitchView_Age}>
-                                    {' '}
-                                    {item.consumer[0]?.age}
-                                  </Stack>
-                                )}
-                              </Stack>
-                            </Stack>
-                            <Stack className={styles.SwitchView_uhid}>
-                              #{item.consumer[0]?.uid}
-                            </Stack>
-                          </td>
-
-                          {/* Lead Age */}
-                          <td
-                            className={`${styles.SwitchView_table_body_item}  ${styles.Switch_body_item2}`}
-                          >
-                            <Stack className={styles.SwitchView_last_date}>
-                              {calculatedDate(item.date)}
-                            </Stack>
-                          </td>
-
-                          {/* Doctor Name */}
-                          <td
-                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item3}`}
-                          >
-                            <Stack
-                              className={styles.SwitchView_doc}
-                              sx={{ textTransform: 'capitalize !important' }}
-                            >
-                              {doctorSetter(item?.prescription[0]?.doctor)}
-                            </Stack>
-                          </td>
-
-                          {/* Department */}
-                          <td
-                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item4}`}
-                          >
-                            <Stack
-                              className={styles.SwitchView_dep}
-                              sx={{ textTransform: 'capitalize !important' }}
-                            >
-                              {departmentSetter(
-                                item.prescription[0].departments[0]
-                              )}
-                            </Stack>
-                          </td>
-
-                          {/* LeadStatus */}
-                          <td
-                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item6}`}
-                          >
-                            <Stack
-                              sx={
-                                item.result === '65991601a62baad220000002'
-                                  ? baseLossStyle
-                                  : item.result === '65991601a62baad220000001'
-                                  ? baseWonStyle
-                                  : stageStyles[getStageName(item)]
-                              }
-                            >
-                              {item.result === '65991601a62baad220000002'
-                                ? 'Loss'
-                                : item.result === '65991601a62baad220000001'
-                                ? 'Won'
-                                : getStageName(item)}
-                            </Stack>
-                          </td>
-
-                          {/* Services */}
-                          <td
-                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item5}`}
-                          >
-                            <Box className="ticket-card-line3">
-                              {item.prescription[0].admission ? (
-                                <>
-                                  <Stack className="ticket-card-line3-tag">
-                                    {item.prescription[0].admission}
-                                  </Stack>
-                                </>
-                              ) : (
-                                <></>
-                              )}
-                              {item.prescription[0].diagnostics &&
-                              item.prescription[0].diagnostics.length > 0 ? (
-                                <>
-                                  <Stack className="ticket-card-line3-tag">
-                                    Diagonstic
-                                  </Stack>
-                                </>
-                              ) : (
-                                <></>
-                              )}
-                            </Box>
-                          </td>
-
-                          {/* Probabilty */}
-                          <td
-                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`}
-                          >
-                            <Stack
-                              className={styles.SwitchView_Prob}
-                              sx={{
-                                color: getColor(item?.Probability),
-                                backgroundColor: getBackgroundColor(
-                                  item?.Probability
-                                )
-                              }}
-                            >
-                              {!item?.Probability ? 0 : item?.Probability}%
-                            </Stack>
-                          </td>
-
-                          {/* Priority */}
-                          <td
-                            className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`}
-                          >
-                            {estimateData[item._id] == 0 ? (
-                              <>
-                                <Stack className="Priority-tag">
-                                  {' '}
-                                  <img src={DefaultPr} alt="DefaultPr" />
-                                  <span style={{ fontSize: '12px' }}>N/A</span>
+                                <Stack
+                                  className={styles.SwitchView_name}
+                                  sx={{
+                                    textTransform: 'uppercase !important'
+                                  }}
+                                >
+                                  {/* {patientName(item)} */}
+                                  {`${item?.consumer?.[0]?.firstName ?? ''} ${
+                                    item?.consumer?.[0]?.lastName ?? ''
+                                  }`}
                                 </Stack>
-                              </>
-                            ) : (
-                              <>
-                                <Stack className="Priority-tag">
-                                  {estimateData[item._id] > 15000 ? (
-                                    <>
-                                      <img src={HighPr} alt="" />
-                                      High
-                                    </>
-                                  ) : estimateData[item._id] < 15000 &&
-                                    4550 < estimateData[item._id] ? (
-                                    <>
-                                      <img src={MediumPr} alt="" />
-                                      Medium
-                                    </>
-                                  ) : (
-                                    <>
-                                      <img src={LowPr} alt="" />
-                                      Low
-                                    </>
+                                <Stack className={styles.SwitchView_GenAge}>
+                                  {item.consumer[0]?.gender && (
+                                    <Stack className={styles.SwitchView_Gen}>
+                                      {item.consumer[0]?.gender}
+                                    </Stack>
+                                  )}
+                                  {item.consumer[0]?.age && (
+                                    <Stack className={styles.SwitchView_Age}>
+                                      {' '}
+                                      {item.consumer[0]?.age}
+                                    </Stack>
                                   )}
                                 </Stack>
-                              </>
-                            )}
-                          </td>
-                        </tr>
-                      ))}
-                    </>
-                  ) : (
-                    <>
-                      <Box
-                        className="NotFound-Page"
-                        sx={{
-                          width: '90.5vw',
-                          height: '30vh'
-                        }}
-                      >
-                        <img src={NotFoundIcon} />
-                        <Stack className="NotFound-text">
-                          No Ticket Available
-                        </Stack>
-                        <Stack className="NotFound-subtext">
-                          No Data Found
-                        </Stack>
-                      </Box>
-                    </>
-                  )}
-                </tbody>
-              </Box>
+                              </Stack>
+                              <Stack className={styles.SwitchView_uhid}>
+                                #{item.consumer[0]?.uid}
+                              </Stack>
+                            </td>
 
+                            {/* Lead Age */}
+                            <td
+                              className={`${styles.SwitchView_table_body_item}  ${styles.Switch_body_item2}`}
+                            >
+                              <Stack className={styles.SwitchView_last_date}>
+                                {calculatedDate(item.date)}
+                              </Stack>
+                            </td>
+
+                            {/* Doctor Name */}
+                            <td
+                              className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item3}`}
+                            >
+                              <Stack
+                                className={styles.SwitchView_doc}
+                                sx={{ textTransform: 'capitalize !important' }}
+                              >
+                                {doctorSetter(item?.prescription[0]?.doctor)}
+                              </Stack>
+                            </td>
+
+                            {/* Department */}
+                            <td
+                              className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item4}`}
+                            >
+                              <Stack
+                                className={styles.SwitchView_dep}
+                                sx={{ textTransform: 'capitalize !important' }}
+                              >
+                                {departmentSetter(
+                                  item.prescription[0].departments[0]
+                                )}
+                              </Stack>
+                            </td>
+
+                            {/* LeadStatus */}
+                            <td
+                              className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item6}`}
+                            >
+                              <Stack
+                                sx={
+                                  item.result === '65991601a62baad220000002'
+                                    ? baseLossStyle
+                                    : item.result === '65991601a62baad220000001'
+                                    ? baseWonStyle
+                                    : stageStyles[getStageName(item)]
+                                }
+                              >
+                                {item.result === '65991601a62baad220000002'
+                                  ? 'Loss'
+                                  : item.result === '65991601a62baad220000001'
+                                  ? 'Won'
+                                  : getStageName(item)}
+                              </Stack>
+                            </td>
+
+                            {/* Services */}
+                            <td
+                              className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item5}`}
+                            >
+                              <Box className="ticket-card-line3">
+                                {item.prescription[0].admission ? (
+                                  <>
+                                    <Stack className="ticket-card-line3-tag">
+                                      {item.prescription[0].admission}
+                                    </Stack>
+                                  </>
+                                ) : (
+                                  <></>
+                                )}
+                                {item.prescription[0].diagnostics &&
+                                item.prescription[0].diagnostics.length > 0 ? (
+                                  <>
+                                    <Stack className="ticket-card-line3-tag">
+                                      Diagonstic
+                                    </Stack>
+                                  </>
+                                ) : (
+                                  <></>
+                                )}
+                              </Box>
+                            </td>
+
+                            {/* Probabilty */}
+                            <td
+                              className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`}
+                            >
+                              <Stack
+                                className={styles.SwitchView_Prob}
+                                sx={{
+                                  color: getColor(item?.Probability),
+                                  backgroundColor: getBackgroundColor(
+                                    item?.Probability
+                                  )
+                                }}
+                              >
+                                {!item?.Probability ? 0 : item?.Probability}%
+                              </Stack>
+                            </td>
+
+                            {/* Priority */}
+                            <td
+                              className={`${styles.SwitchView_table_body_item} ${styles.Switch_body_item7}`}
+                            >
+                              {estimateData[item._id] == 0 ? (
+                                <>
+                                  <Stack className="Priority-tag">
+                                    {' '}
+                                    <img src={DefaultPr} alt="DefaultPr" />
+                                    <span style={{ fontSize: '12px' }}>
+                                      N/A
+                                    </span>
+                                  </Stack>
+                                </>
+                              ) : (
+                                <>
+                                  <Stack className="Priority-tag">
+                                    {estimateData[item._id] > 15000 ? (
+                                      <>
+                                        <img src={HighPr} alt="" />
+                                        High
+                                      </>
+                                    ) : estimateData[item._id] < 15000 &&
+                                      4550 < estimateData[item._id] ? (
+                                      <>
+                                        <img src={MediumPr} alt="" />
+                                        Medium
+                                      </>
+                                    ) : (
+                                      <>
+                                        <img src={LowPr} alt="" />
+                                        Low
+                                      </>
+                                    )}
+                                  </Stack>
+                                </>
+                              )}
+                            </td>
+                          </tr>
+                        ))}
+                      </>
+                    ) : (
+                      <>
+                        <Box
+                          className="NotFound-Page"
+                          sx={{
+                            width: '90.5vw',
+                            height: '30vh'
+                          }}
+                        >
+                          <img src={NotFoundIcon} />
+                          <Stack className="NotFound-text">
+                            No Ticket Available
+                          </Stack>
+                          <Stack className="NotFound-subtext">
+                            No Data Found
+                          </Stack>
+                        </Box>
+                      </>
+                    )}
+                  </tbody>
+                </Box>
+              ) : (
+                <>
+                  {' '}
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      height: '95%'
+                    }}
+                  >
+                    <CircularProgress />
+                  </Box>
+                </>
+              )}
               <Box className={styles.SwitchView_pagination}>
                 <CustomPagination
                   handlePagination={handlePagination}

@@ -503,7 +503,10 @@ const TicketCard = (props: Props) => {
 
       <Box className="ticket-card-line1 line2">
         {props?.patientData?.consumer[0]?.firstName && (
-          <Stack className="ticket-card-name">
+          <Stack
+            className="ticket-card-name"
+            sx={{ textTransform: 'uppercase' }}
+          >
             {props?.patientData?.consumer[0]?.firstName}{' '}
             {props?.patientData?.consumer[0]?.lastName &&
               props?.patientData?.consumer[0]?.lastName}

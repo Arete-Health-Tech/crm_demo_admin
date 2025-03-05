@@ -450,7 +450,7 @@ const StageCard = (props: Props) => {
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-      {lastModifiedDate > -1 && (
+      {/*  {lastModifiedDate > -1 && (
         <Stack
           sx={{
             color: '#000',
@@ -460,7 +460,7 @@ const StageCard = (props: Props) => {
         >
           {`Last update ${lastModifiedDate} days ago`}
         </Stack>
-      )}
+      )} */}
       <Box sx={{ display: 'flex', alignItems: 'center' }}>
         <Box sx={{ width: '100%', mr: 1 }}>
           {/* <LinearProgress

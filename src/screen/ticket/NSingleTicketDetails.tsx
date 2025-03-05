@@ -1005,7 +1005,10 @@ const NSingleTicketDetails = (props: Props) => {
               )}
               <Stack display="flex" flexDirection="column">
                 <Stack display="flex" flexDirection="row">
-                  <Stack className="Ticket-detail-card-left-name">
+                  <Stack
+                    className="Ticket-detail-card-left-name"
+                    sx={{ textTransform: 'uppercase' }}
+                  >
                     {patientName(currentTicket)}
                   </Stack>
                   <Stack className="Ticket-detail-card-left-Gen-Age">

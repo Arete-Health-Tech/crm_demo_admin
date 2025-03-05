@@ -390,10 +390,13 @@ const Navbar = ({ children }) => {
                       height: '6.8vh',
                       borderRadius: '8px',
                       cursor: 'pointer',
-                      backgroundColor: location.pathname.includes('admission')
-                        ? // || localStorage.getItem('ticketType') === 'Admission'
-                          '#DAE8FF'
-                        : 'transparent',
+                      backgroundColor:
+                        location.pathname.includes('admission') ||
+                        (localStorage.getItem('ticketType') === 'Admission' &&
+                          location.pathname.includes('switchView'))
+                          ? // || localStorage.getItem('ticketType') === 'Admission'
+                            '#DAE8FF'
+                          : 'transparent',
                       '&:hover': {
                         background: '#E1E6EE'
                       }
@@ -405,7 +408,9 @@ const Navbar = ({ children }) => {
                       placement="right"
                       TransitionComponent={Zoom}
                     >
-                      {location.pathname.includes('admission') ? (
+                      {location.pathname.includes('admission') ||
+                      (localStorage.getItem('ticketType') === 'Admission' &&
+                        location.pathname.includes('switchView')) ? (
                         // || localStorage.getItem( 'ticketType' ) === 'Admission'
                         <img src={admissionActive} alt="Ticket" />
                       ) : (
@@ -430,10 +435,13 @@ const Navbar = ({ children }) => {
                       height: '6.8vh',
                       borderRadius: '8px',
                       cursor: 'pointer',
-                      backgroundColor: location.pathname.includes('diagnostics')
-                        ? // ||  localStorage.getItem('ticketType') === 'Diagnostics'
-                          '#DAE8FF'
-                        : 'transparent',
+                      backgroundColor:
+                        location.pathname.includes('diagnostics') ||
+                        (localStorage.getItem('ticketType') === 'Diagnostics' &&
+                          location.pathname.includes('switchView'))
+                          ? // ||  localStorage.getItem('ticketType') === 'Diagnostics'
+                            '#DAE8FF'
+                          : 'transparent',
                       '&:hover': {
                         background: '#E1E6EE'
                       }
@@ -445,7 +453,9 @@ const Navbar = ({ children }) => {
                       placement="right"
                       TransitionComponent={Zoom}
                     >
-                      {location.pathname.includes('diagnostics') ? (
+                      {location.pathname.includes('diagnostics') ||
+                      (localStorage.getItem('ticketType') === 'Diagnostics' &&
+                        location.pathname.includes('switchView')) ? (
                         // || localStorage.getItem( 'ticketType' ) === 'Diagnostics'
                         <img src={DiagnosticsActive} alt="Ticket" />
                       ) : (
@@ -470,10 +480,13 @@ const Navbar = ({ children }) => {
                       height: '6.8vh',
                       borderRadius: '8px',
                       cursor: 'pointer',
-                      backgroundColor: location.pathname.includes('follow-up')
-                        ? // || localStorage.getItem('ticketType') === 'Follow-Up'
-                          '#DAE8FF'
-                        : 'transparent',
+                      backgroundColor:
+                        location.pathname.includes('follow-up') ||
+                        (localStorage.getItem('ticketType') === 'Follow-Up' &&
+                          location.pathname.includes('switchView'))
+                          ? // || localStorage.getItem('ticketType') === 'Follow-Up'
+                            '#DAE8FF'
+                          : 'transparent',
                       '&:hover': {
                         background: '#E1E6EE'
                       }
@@ -485,7 +498,9 @@ const Navbar = ({ children }) => {
                       placement="right"
                       TransitionComponent={Zoom}
                     >
-                      {location.pathname.includes('follow-up') ? (
+                      {location.pathname.includes('follow-up') ||
+                      (localStorage.getItem('ticketType') === 'Follow-Up' &&
+                        location.pathname.includes('switchView')) ? (
                         // || localStorage.getItem( 'ticketType' ) === 'Follow-Up'
                         <img src={FollowupActive} alt="Ticket" />
                       ) : (

@@ -178,7 +178,7 @@ const DownloadAllTickets = (props: Props) => {
     const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(null);
     const currentYear = dayjs().year(); // Get the current year
     const latestAllowedYear = currentYear; // Dynamically set the latest allowed year
-    const latestAllowedMonth = 2; // March (0-based index)
+    const latestAllowedMonth = 3; // March (0-based index)
 
     const handleDateChange = (newDate: Dayjs | null) => {
       if (newDate) {

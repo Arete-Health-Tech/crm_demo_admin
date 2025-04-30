@@ -497,9 +497,9 @@ const DownloadAllTickets = (props: Props) => {
                   value={selectedDate}
                   onChange={handleDateChange}
                   minDate={dayjs('2000-01-01')} // Set a reasonable lower limit
-                  maxDate={dayjs(
-                    `${latestAllowedYear}-${latestAllowedMonth + 1}-01`
-                  )} // Dynamically set maxDate
+                  // maxDate={dayjs(
+                  //   `${latestAllowedYear}-${latestAllowedMonth + 1}-01`
+                  // )} // Dynamically set maxDate
                 />
               </LocalizationProvider>
               {errors.date && (

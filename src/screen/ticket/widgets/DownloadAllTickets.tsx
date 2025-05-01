@@ -163,7 +163,6 @@ const DownloadAllTickets = (props: Props) => {
   }, [localStorage.getItem('ticketType')]);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
- 
 
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -175,27 +174,25 @@ const DownloadAllTickets = (props: Props) => {
 
   const open = Boolean(anchorEl);
 
-    const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(null);
-    // const currentYear = dayjs().year(); // Get the current year
-    // const latestAllowedYear = currentYear; // Dynamically set the latest allowed year
-  // const latestAllowedMonth = 3; // March (0-based index)
-  const currentDate = dayjs(); // Get the current date
-  const latestAllowedYear = currentDate.year(); // Dynamically set the latest allowed year
-  const latestAllowedMonth = currentDate.month();
+  const [selectedDate, setSelectedDate] = React.useState<Dayjs | null>(null);
 
-    const handleDateChange = (newDate: Dayjs | null) => {
-      if (newDate) {
-        const year = newDate.year();
-        const month = newDate.month(); // 0-based index (0 = January)
+  // const currentDate = dayjs(); // Get the current date
+  // const latestAllowedYear = currentDate.year(); // Dynamically set the latest allowed year
+  // const latestAllowedMonth = currentDate.month();
 
-        // Allow only Jan - Mar for the latest year, and all months for previous years
-        if (year === latestAllowedYear && month > latestAllowedMonth) {
-          return; // Prevent selection
-        }
+  const handleDateChange = (newDate: Dayjs | null) => {
+    if (newDate) {
+      // const year = newDate.year();
+      // const month = newDate.month(); // 0-based index (0 = January)
 
-        setSelectedDate(newDate);
-      }
-    };
+      // // Allow only Jan - Mar for the latest year, and all months for previous years
+      // if (year === latestAllowedYear && month > latestAllowedMonth) {
+      //   return; // Prevent selection
+      // }
+
+      setSelectedDate(newDate);
+    }
+  };
   // This function is for downloading the data
   const downloadData = async () => {
     if (!selectedUnit || !selectedDate) {
@@ -499,7 +496,7 @@ const DownloadAllTickets = (props: Props) => {
                   views={['month', 'year']}
                   value={selectedDate}
                   onChange={handleDateChange}
-                  minDate={dayjs('2000-01-01')} // Set a reasonable lower limit
+                  // minDate={dayjs('2000-01-01')} // Set a reasonable lower limit
                   // maxDate={dayjs(
                   //   `${latestAllowedYear}-${latestAllowedMonth + 1}-01`
                   // )} // Dynamically set maxDate

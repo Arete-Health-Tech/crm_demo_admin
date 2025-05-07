@@ -606,7 +606,8 @@ const Ticket = () => {
       if (
         pageNumber === 1 &&
         hasChanges(newFilter, initialStateForFilter) &&
-        localStorage.getItem('ticketType') === 'Diagnostics'
+        localStorage.getItem('ticketType') === 'Diagnostics' &&
+        (searchByName === 'undefined' || searchByName === '')
       ) {
         console.log(pageNumber, 'inside if');
         await getTicketHandler(searchByName, pageNumber, 'false', newFilter);

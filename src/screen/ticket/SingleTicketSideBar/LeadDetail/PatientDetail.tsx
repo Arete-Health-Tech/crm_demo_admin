@@ -311,6 +311,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
       setValue: setPatientData
     }
   ];
+  console.log(PatientData.followUp);
 
   const handleCancel = () => {
     setPatientData((prevData) => ({
@@ -340,7 +341,9 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         currentTicket?.prescription[0]?.followUp == null ||
         currentTicket?.prescription[0]?.followUp == '1970-01-01T00:00:00.000Z'
           ? `null`
-          : dayjs(currentTicket?.prescription[0]?.followUp).format('YYYY-MM-DD')
+          : dayjs(new Date(currentTicket?.prescription[0]?.followUp)).format(
+              'YYYY-MM-DD'
+            )
       }`
       // `${new Date(fetchTicket?.prescription[0]?.followUp)}`
     }));
@@ -380,10 +383,10 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
           fetchTicket?.prescription[0]?.followUp == null ||
           fetchTicket?.prescription[0]?.followUp == '1970-01-01T00:00:00.000Z'
             ? `null`
-            : (fetchTicket?.prescription[0]?.followUp).split('T')[0].split('-')
-          // : dayjs((fetchTicket?.prescription[0]?.followUp)).format('YYYY-MM-DD')
+            : dayjs(new Date(fetchTicket?.prescription[0]?.followUp)).format(
+                'YYYY-MM-DD'
+              )
         }`
-        // `${new Date(fetchTicket?.prescription[0]?.followUp)}`
       }));
     };
     getTicketInfo(ticketID);
@@ -394,11 +397,6 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     try {
       setDownloadDisable(true);
       event.preventDefault();
-      let date =
-        PatientData.followUp !== 'null'
-          ? new Date(PatientData.followUp).toISOString()
-          : PatientData.followUp;
-
       const updatedData = {
         consumer: {
           uid: PatientData.uhid,
@@ -415,7 +413,13 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
         prescription: {
           doctor: PatientData.doctor,
           departments: [PatientData.department],
-          followUp: date === 'null' || date === null ? null : date
+          followUp:
+            PatientData.followUp !== 'null'
+              ? dayjs(PatientData.followUp)
+                  .add(5, 'hour')
+                  .add(30, 'minute')
+                  .toISOString()
+              : null
         }
       };
       await updateConusmerData(updatedData, ticketID);
@@ -754,7 +758,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                               ? e.target.value.toString()
                               : `null`
                         }));
-                        console.log(e.target.value);
+                        console.log(e.target.value.toString());
                       }}
                       InputLabelProps={{
                         style: {
@@ -949,8 +953,10 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                             doctor: value ? value._id : ''
                           }))
                         }
-                        options={doctors.filter((item) =>
-                          Array.isArray(item.departments) && item.departments.includes(PatientData.department)
+                        options={doctors.filter(
+                          (item) =>
+                            Array.isArray(item.departments) &&
+                            item.departments.includes(PatientData.department)
                         )}
                         getOptionLabel={(option) => option.name}
                         renderInput={(params) => (

@@ -23,7 +23,8 @@ import {
   createNewCallReschedulerHandler,
   createNewReminderHandler,
   getAllReminderHandler,
-  getAllTaskCountHandler
+  getAllTaskCountHandler,
+  getTicketHandler
 } from '../../../api/ticket/ticketHandler';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -112,7 +113,7 @@ const customTheme = (outerTheme: Theme) =>
   });
 
 const AddCallRescheduler = () => {
-  const { setIsModalOpenCall, isModalOpenCall, setDownloadDisable } =
+  const { setIsModalOpenCall, isModalOpenCall, setDownloadDisable,pageNumber,searchByName,filterTickets,filterTicketsDiago,filterTicketsFollowUp } =
     useTicketStore();
 
   const style = {
@@ -142,6 +143,15 @@ const AddCallRescheduler = () => {
   const [isNotify, setIsNotify] = useState(false);
   const [selectedOption, setSelectedOption] = useState('');
   const outerTheme = useTheme();
+
+  const newFilter =
+  localStorage.getItem('ticketType') === 'Admission'
+    ? filterTickets
+    : localStorage.getItem('ticketType') === 'Diagnostics'
+    ? filterTicketsDiago
+    : localStorage.getItem('ticketType') === 'Follow-Up'
+    ? filterTicketsFollowUp
+    : filterTickets;
 
   const checkIsEmpty = () => {
     if (
@@ -184,6 +194,7 @@ const AddCallRescheduler = () => {
       setIsModalOpenCall(false);
       await getAllCallReschedulerHandler();
       await getAllTaskCountHandler();
+      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     } catch (error) {
       console.error('Error creating reminder:', error);
     }

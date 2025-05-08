@@ -16,7 +16,8 @@ import { useParams } from 'react-router-dom';
 import {
   createNewReminderHandler,
   getAllReminderHandler,
-  getAllTaskCountHandler
+  getAllTaskCountHandler,
+  getTicketHandler
 } from '../../../api/ticket/ticketHandler';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -111,7 +112,7 @@ type Props = {
 
 const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
   const { ticketID } = useParams();
-  const { setDownloadDisable } = useTicketStore();
+  const { setDownloadDisable,searchByName,pageNumber,filterTickets,filterTicketsDiago,filterTicketsFollowUp } = useTicketStore();
   const [reminderData, setReminderData] = useState({
     date: 0,
     title: '',
@@ -123,6 +124,14 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
   const [disableButton, setDisableButton] = useState(true);
   const [isNotify, setIsNotify] = useState(false);
   const outerTheme = useTheme();
+  const newFilter =
+  localStorage.getItem('ticketType') === 'Admission'
+    ? filterTickets
+    : localStorage.getItem('ticketType') === 'Diagnostics'
+    ? filterTicketsDiago
+    : localStorage.getItem('ticketType') === 'Follow-Up'
+    ? filterTicketsFollowUp
+    : filterTickets;
   const checkIsEmpty = () => {
     if (reminderData.title.length > 0 && date.length > 0 && time.length > 0) {
       setDisableButton((_) => false);
@@ -157,6 +166,7 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
       setIsModalOpen(false);
       await getAllReminderHandler();
       await getAllTaskCountHandler();
+      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       setDownloadDisable(false);
     } catch (error) {
       toast('Invalid time ...')

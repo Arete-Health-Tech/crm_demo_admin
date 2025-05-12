@@ -598,6 +598,7 @@ const Ticket = () => {
         hasChanges(newFilter, initialStateForFilter)
       );
       console.log(pageNumber, 'pageNumber');
+      console.log(newFilter, 'newFilter');
       console.log(
         localStorage.getItem('ticketType') === 'Diagnostics',
         'localStorage.getItem'
@@ -606,8 +607,7 @@ const Ticket = () => {
       if (
         pageNumber === 1 &&
         hasChanges(newFilter, initialStateForFilter) &&
-        localStorage.getItem('ticketType') === 'Diagnostics' &&
-        (searchByName === 'undefined' || searchByName === '')
+        localStorage.getItem('ticketType') === 'Diagnostics'
       ) {
         console.log(pageNumber, 'inside if');
         await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
@@ -659,7 +659,7 @@ const Ticket = () => {
         socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
       }
     };
-  }, [pageNumber, searchByName]);
+  }, [pageNumber, searchByName, newFilter]);
 
   console.log({ newFilter });
 
@@ -720,17 +720,11 @@ const Ticket = () => {
       status: [],
       followUp: null
     };
-    console.log(
-      'typeof hasChanges(newFilter)',
-      hasChanges(newFilter, initialStateForFilter)
-    );
-    console.log(pageNumber, 'pageNumber');
     if (
       pageNumber === 1 &&
       hasChanges(newFilter, initialStateForFilter) &&
       (searchByName === 'undefined' || searchByName === '')
     ) {
-      console.log(pageNumber, 'inside if');
       await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     }
   };
@@ -801,6 +795,7 @@ const Ticket = () => {
 
   const handleCallToasterRescheduler = async () => {
     handleCallReschedulerToast();
+    console.log({ newFilter });
     const initialStateForFilter = {
       stageList: [],
       representative: null,
@@ -811,17 +806,11 @@ const Ticket = () => {
       status: [],
       followUp: null
     };
-    console.log(
-      'typeof hasChanges(newFilter)',
-      hasChanges(newFilter, initialStateForFilter)
-    );
-    console.log(pageNumber, 'pageNumber');
     if (
       pageNumber === 1 &&
       hasChanges(newFilter, initialStateForFilter) &&
       (searchByName === 'undefined' || searchByName === '')
     ) {
-      console.log(pageNumber, 'inside if');
       await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     }
   };

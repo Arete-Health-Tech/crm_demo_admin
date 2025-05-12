@@ -709,6 +709,7 @@ const Ticket = () => {
   }, [reminders]);
 
   const handleCallToasterReminder = async () => {
+    handleCallReminderToast();
     const initialStateForFilter = {
       stageList: [],
       representative: null,
@@ -719,11 +720,19 @@ const Ticket = () => {
       status: [],
       followUp: null
     };
-    handleCallReminderToast();
-    pageNumber == 1 &&
+    console.log(
+      'typeof hasChanges(newFilter)',
+      hasChanges(newFilter, initialStateForFilter)
+    );
+    console.log(pageNumber, 'pageNumber');
+    if (
+      pageNumber === 1 &&
       hasChanges(newFilter, initialStateForFilter) &&
-      (searchByName === 'undefined' || searchByName === '') &&
-      (await getTicketHandler(searchByName, 1, 'false', newFilter));
+      (searchByName === 'undefined' || searchByName === '')
+    ) {
+      console.log(pageNumber, 'inside if');
+      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    }
   };
 
   useEffect(() => {
@@ -791,6 +800,7 @@ const Ticket = () => {
   }, [callRescheduler]);
 
   const handleCallToasterRescheduler = async () => {
+    handleCallReschedulerToast();
     const initialStateForFilter = {
       stageList: [],
       representative: null,
@@ -801,11 +811,19 @@ const Ticket = () => {
       status: [],
       followUp: null
     };
-    handleCallReschedulerToast();
-    pageNumber == 1 &&
+    console.log(
+      'typeof hasChanges(newFilter)',
+      hasChanges(newFilter, initialStateForFilter)
+    );
+    console.log(pageNumber, 'pageNumber');
+    if (
+      pageNumber === 1 &&
       hasChanges(newFilter, initialStateForFilter) &&
-      (searchByName === 'undefined' || searchByName === '') &&
-      (await getTicketHandler(searchByName, 1, 'false', newFilter));
+      (searchByName === 'undefined' || searchByName === '')
+    ) {
+      console.log(pageNumber, 'inside if');
+      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    }
   };
 
   useEffect(() => {

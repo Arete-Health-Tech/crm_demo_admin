@@ -709,8 +709,20 @@ const Ticket = () => {
   }, [reminders]);
 
   const handleCallToasterReminder = async () => {
+    const initialStateForFilter = {
+      stageList: [],
+      representative: null,
+      results: null,
+      admissionType: [],
+      diagnosticsType: [],
+      dateRange: [],
+      status: [],
+      followUp: null
+    };
     handleCallReminderToast();
     pageNumber == 1 &&
+      hasChanges(newFilter, initialStateForFilter) &&
+      (searchByName === 'undefined' || searchByName === '') &&
       (await getTicketHandler(searchByName, 1, 'false', newFilter));
   };
 
@@ -779,8 +791,20 @@ const Ticket = () => {
   }, [callRescheduler]);
 
   const handleCallToasterRescheduler = async () => {
+    const initialStateForFilter = {
+      stageList: [],
+      representative: null,
+      results: null,
+      admissionType: [],
+      diagnosticsType: [],
+      dateRange: [],
+      status: [],
+      followUp: null
+    };
     handleCallReschedulerToast();
     pageNumber == 1 &&
+      hasChanges(newFilter, initialStateForFilter) &&
+      (searchByName === 'undefined' || searchByName === '') &&
       (await getTicketHandler(searchByName, 1, 'false', newFilter));
   };
 

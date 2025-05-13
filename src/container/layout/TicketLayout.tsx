@@ -581,6 +581,16 @@ const Ticket = () => {
     );
   }
 
+  const pageNumberRef = useRef(pageNumber);
+  const searchByNameRef = useRef(searchByName);
+  const newFilterRef = useRef(newFilter);
+
+  useEffect(() => {
+    pageNumberRef.current = pageNumber;
+    searchByNameRef.current = searchByName;
+    newFilterRef.current = newFilter;
+  }, [pageNumber, searchByName, newFilter]);
+
   useEffect(() => {
     const refetchTickets = async () => {
       const initialStateForFilter = {
@@ -593,35 +603,27 @@ const Ticket = () => {
         status: [],
         followUp: null
       };
-      console.log(
-        'typeof hasChanges(newFilter)',
-        hasChanges(newFilter, initialStateForFilter)
-      );
-      console.log(pageNumber, 'pageNumber');
-      console.log(newFilter, 'newFilter');
-      console.log(
-        localStorage.getItem('ticketType') === 'Diagnostics',
-        'localStorage.getItem'
-      );
-      console.log(searchByName, 'searchByName inside useffect');
       if (
-        pageNumber === 1 &&
-        hasChanges(newFilter, initialStateForFilter) &&
+        pageNumberRef.current === 1 &&
+        hasChanges(newFilterRef.current, initialStateForFilter) &&
         localStorage.getItem('ticketType') === 'Diagnostics'
       ) {
-        console.log(pageNumber, 'inside if');
-        await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+        await getTicketHandler(
+          searchByNameRef.current,
+          pageNumberRef.current,
+          'false',
+          newFilterRef.current
+        );
         if (localStorage.getItem('ticketType') === 'Admission') {
           await getTicketAfterNotification(
-            searchByName,
-            pageNumber,
+            searchByNameRef.current,
+            pageNumberRef.current,
             'false',
-            newFilter
+            newFilterRef.current
           );
         }
       }
     };
-
     const initializeSocketListeners = () => {
       const ticketType = localStorage.getItem('ticketType');
       if (ticketType === 'Diagnostics') {
@@ -660,8 +662,6 @@ const Ticket = () => {
       }
     };
   }, [pageNumber, searchByName, newFilter]);
-
-  console.log({ newFilter });
 
   useEffect(() => {
     clearAllInterval(AllIntervals);

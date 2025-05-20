@@ -24,7 +24,8 @@ import {
   createNoteActivity,
   bulkAssignTickets,
   clearAssigneeTickets,
-  getBulkTicket
+  getBulkTicket,
+  getSearchedTicket
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -61,6 +62,49 @@ export const getTicketHandler = async (
     phone,
     filteredLocation
   );
+  const sortedTickets = data.tickets;
+  const count = data.count;
+
+  if (sortedTickets.length < 1) {
+    setEmptyDataText('No Data Found');
+  } else {
+    setEmptyDataText('');
+  }
+  if (name === UNDEFINED && downloadAll === 'false') {
+    setTicketCache({ ...ticketCache, [pageNumber]: sortedTickets, count });
+  }
+  if (downloadAll === 'true') {
+    setDownloadTickets(sortedTickets);
+    setLoaderOn(false);
+    return sortedTickets;
+  }
+  setTicketCount(count);
+  setTickets(sortedTickets);
+  setLoaderOn(false);
+};
+export const getTicketHandlerSearch = async (
+  name: string,
+  pageNumber: number,
+  downloadAll: 'true' | 'false' = 'false',
+  selectedFilters: iTicketFilter | null,
+  ticketId: string = UNDEFINED,
+  fetchUpdated: boolean = false
+) => {
+  const {
+    setTickets,
+    setTicketCount,
+    setTicketCache,
+    ticketCache,
+    setEmptyDataText,
+    setDownloadTickets,
+    setLoaderOn,
+    filteredLocation
+  } = useTicketStore.getState();
+  const { user } = useUserStore.getState();
+  const phone = user?.phone;
+
+  setLoaderOn(true);
+  const data = await getSearchedTicket(name, pageNumber);
   const sortedTickets = data.tickets;
   const count = data.count;
 
@@ -122,7 +166,11 @@ export const getBulkTicketHandler = async (
     setEmptyDataText('');
   }
   if (name === UNDEFINED && downloadAll === 'false') {
-    setBulkTicketCache({ ...bulkTicketCache, [pageNumber]: sortedBulkTickets, count });
+    setBulkTicketCache({
+      ...bulkTicketCache,
+      [pageNumber]: sortedBulkTickets,
+      count
+    });
   }
   if (downloadAll === 'true') {
     setDownloadTickets(sortedBulkTickets);

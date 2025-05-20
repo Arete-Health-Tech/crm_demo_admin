@@ -28,7 +28,8 @@ import {
   getAllReminderHandler,
   getAllTaskCountHandler,
   getAllWhtsappCountHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../api/ticket/ticketHandler';
 import DropDownArrow from '../../assets/DropdownArror.svg';
 
@@ -260,7 +261,11 @@ const Ticket = () => {
     setPage(pageNo);
     if (pageNo !== page) {
       setTickets([]);
-      await getTicketHandler(searchByName, pageNo, 'false', newFilter);
+      if (searchByName === '' || searchByName === 'undefined') {
+        await getTicketHandler(searchByName, pageNo, 'false', newFilter);
+      } else {
+        await getTicketHandlerSearch(searchByName, pageNo, 'false', newFilter);
+      }
       setPageNumber(pageNo);
 
       // redirectTicket();
@@ -310,7 +315,11 @@ const Ticket = () => {
   useEffect(() => {
     const data = async () => {
       setDownloadDisable(true);
-      await getTicketHandler(searchByName, 1, 'false', newFilter);
+      if (searchByName === '' || searchByName === 'undefined') {
+        await getTicketHandler(searchByName, 1, 'false', newFilter);
+      } else {
+        await getTicketHandlerSearch(searchByName, 1, 'false', newFilter);
+      }
       searchByName === '' || searchByName === 'undefined'
         ? setSearchError('Type to search & Enter')
         : setSearchError(

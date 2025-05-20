@@ -41,6 +41,14 @@ export const getTicket = async (
   );
   return data;
 };
+
+export const getSearchedTicket = async (name: string, pageNumber: number) => {
+  const { data } = await apiClient.get(
+    `/ticket/search?q=${name}&page=${pageNumber}`
+  );
+  return data;
+};
+
 export const getBulkTicket = async (
   name: string,
   pageNumber: number,

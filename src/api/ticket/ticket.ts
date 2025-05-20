@@ -44,7 +44,15 @@ export const getTicket = async (
 
 export const getSearchedTicket = async (name: string, pageNumber: number) => {
   const { data } = await apiClient.get(
-    `/ticket/search?q=${name}&page=${pageNumber}`
+    `${
+      localStorage.getItem('ticketType') === 'Admission'
+        ? '/ticket/search'
+        : localStorage.getItem('ticketType') === 'Diagnostics'
+        ? '/diagnostics/search/'
+        : localStorage.getItem('ticketType') === 'Follow-Up'
+        ? '/followUp/search'
+        : '/ticket/search'
+    }?q=${name}&page=${pageNumber}`
   );
   return data;
 };

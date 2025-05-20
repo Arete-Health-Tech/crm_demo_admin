@@ -314,20 +314,27 @@ const Ticket = () => {
 
   useEffect(() => {
     const data = async () => {
-      setDownloadDisable(true);
-      if (searchByName === '' || searchByName === 'undefined') {
-        await getTicketHandler(searchByName, 1, 'false', newFilter);
-      } else {
-        await getTicketHandlerSearch(searchByName, 1, 'false', newFilter);
+      try {
+        setDownloadDisable(true);
+        if (searchByName === '' || searchByName === 'undefined') {
+          await getTicketHandler(searchByName, 1, 'false', newFilter);
+        } else {
+          await getTicketHandlerSearch(searchByName, 1, 'false', newFilter);
+        }
+        searchByName === '' || searchByName === 'undefined'
+          ? setSearchError('Type to search & Enter')
+          : setSearchError(
+              `remove "${searchName.toUpperCase()}" to reset & Enter`
+            );
+        setPageNumber(1);
+        setPage(1);
+        setDownloadDisable(false);
+      } catch (error) {
+        setDownloadDisable(false);
+        setPageNumber(1);
+        setPage(1);
+        console.log(error);
       }
-      searchByName === '' || searchByName === 'undefined'
-        ? setSearchError('Type to search & Enter')
-        : setSearchError(
-            `remove "${searchName.toUpperCase()}" to reset & Enter`
-          );
-      setPageNumber(1);
-      setPage(1);
-      setDownloadDisable(false);
     };
     data();
   }, [searchByName]);

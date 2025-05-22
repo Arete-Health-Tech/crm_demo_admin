@@ -368,6 +368,22 @@ const CallSummaryDashboard = () => {
       setErrors((prev) => ({ ...prev, date: false }));
     }
   };
+  const [isDisabled, setIsDisabled] = useState(false);
+
+  const checkTime = () => {
+    const nowUTC = new Date();
+    const istTime = new Date(nowUTC.getTime() + 5.5 * 60 * 60 * 1000);
+    const istHour = istTime.getUTCHours();
+    console.log('Current IST hour:', istHour);
+    const isDisabled = istHour >= 9 && istHour < 18;
+    setIsDisabled(isDisabled);
+  };
+
+  useEffect(() => {
+    checkTime();
+    const interval = setInterval(checkTime, 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <>
@@ -383,10 +399,14 @@ const CallSummaryDashboard = () => {
                   <Stack
                     className={Styles.resync_btn}
                     onClick={(event) => {
-                      handleClick(event);
-                    }} // Triggers DatePicker popup
+                      if (isDisabled) {
+                        toast.error('Disabled during working hours');
+                      } else {
+                        handleClick(event);
+                      }
+                    }}
                   >
-                    Re-Sync
+                    Resyn
                   </Stack>
                   <Popover
                     open={open}

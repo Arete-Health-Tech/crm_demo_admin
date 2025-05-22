@@ -406,7 +406,7 @@ const CallSummaryDashboard = () => {
                       }
                     }}
                   >
-                    Resyn
+                    Resync
                   </Stack>
                   <Popover
                     open={open}

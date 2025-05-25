@@ -562,7 +562,7 @@ const TicketFilter = (props: {
       console.log(error);
       setDownloadDisable(false);
       handleClearFilter();
-      // toast.error('Please Select Date Range');
+      toast.error('Please Select Date Range');
     }
     // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     setFilterCount(

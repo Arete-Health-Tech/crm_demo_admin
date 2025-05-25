@@ -639,7 +639,7 @@ const TicketFilter = (props: {
        console.log(error);
        setDownloadDisable(false);
        handleClearFilter()
-      //  toast.error('Please Select Date Range');
+       toast.error('Please Select Date Range');
      }
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(0);

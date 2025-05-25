@@ -1197,7 +1197,7 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
                   width={'fit-content'}
                   // display={'contents'}
                 >
-                  {currentTicket?.prescription[0].pairType}
+                  {currentTicket?.prescription[0].payerType}
                 </Stack>
               </Box>
             )}

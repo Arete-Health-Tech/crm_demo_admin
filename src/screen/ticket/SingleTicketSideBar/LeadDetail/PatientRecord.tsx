@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Autocomplete,
   Box,
@@ -31,10 +32,12 @@ import {
   updateConusmerData,
   updateService
 } from '../../../../api/ticket/ticket';
-import { getTicketHandler } from '../../../../api/ticket/ticketHandler';
+import { getTicketFilterHandler, getTicketHandler } from '../../../../api/ticket/ticketHandler';
 import { elements } from 'chart.js';
 import { UNDEFINED } from '../../../../constantUtils/constant';
 import { apiClient } from '../../../../api/apiClient';
+import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../../constants/commomFunctions';
+import { toast } from 'react-toastify';
 
 const EditIcon = () => (
   <svg
@@ -196,7 +199,18 @@ const PatientRecord = ({ isPatient }) => {
       await updateConusmerData(updatedData, ticketID);
     }
 
-    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    try {
+      if (hasChanges(newFilter, initialFiltersNew)) {
+        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+      }
+    } catch (error) {
+      console.log(error);
+      // setDownloadDisable(false);
+      
+    }
     setIsEditing(false);
     setAdmissionType('');
   };
@@ -212,7 +226,18 @@ const PatientRecord = ({ isPatient }) => {
         }
       };
       await updateConusmerData(updatedData, ticketID);
-      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+      // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+      try {
+        if (hasChanges(newFilter, initialFiltersNew)) {
+          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        } else {
+          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+        }
+      } catch (error) {
+        console.log(error);
+        // setDownloadDisable(false);
+        
+      }
     }
 
     setIsDiagonsticTestEditing(false);
@@ -272,7 +297,18 @@ const PatientRecord = ({ isPatient }) => {
 
   const handleCancelDiagno = async () => {
     setIsDiagonsticTestEditing(false);
-    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    try {
+      if (hasChanges(newFilter, initialFiltersNew)) {
+        await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+      }
+    } catch (error) {
+      console.log(error);
+      // setDownloadDisable(false);
+      
+    }
   };
 
   const [admissionTypeClicked, setAmissionTypeClicked] = useState(true);
@@ -352,7 +388,18 @@ const PatientRecord = ({ isPatient }) => {
       setDisableButton(false);
       setAmissionTypeClicked(true);
       setIsEditing(false);
-      getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      // getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      try {
+        if (hasChanges(newFilter, initialFiltersNew)) {
+          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        } else {
+          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+        }
+      } catch (error) {
+        console.log(error);
+        // setDownloadDisable(false);
+        
+      }
 
       // const url = ticketID !== undefined ? `/ticket/${ticketID}` : `/ticket`;
       // window.location.href = url;

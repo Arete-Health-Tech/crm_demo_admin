@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from 'react';
 import {
   styled,
@@ -79,6 +80,7 @@ import useTicketStore from '../../store/ticketStore';
 import useUserStore from '../../store/userStore';
 import { getTicketHandler } from '../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../constantUtils/constant';
+import { oldInitialFilters } from '../../constants/commomFunctions';
 
 const drawerWidth = 72;
 
@@ -295,17 +297,17 @@ const Navbar = ({ children }) => {
     setExpandedMenu(expandedMenu === title ? null : title);
   };
   const initialStateForFilter = {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
-    admissionType: [],
-    diagnosticsType: [],
+    admissionType: '',
+    diagnosticsType: '',
     dateRange: [],
-    status: [],
+    status: '',
     followUp: null
   };
   const backToDashboard = () => {
-    getTicketHandler(UNDEFINED, 1, 'false', initialStateForFilter);
+    getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
     setFilterTickets(initialStateForFilter);
     setFilterTicketsDiago(initialStateForFilter);
     setFilterTicketsFollowUp(initialStateForFilter);

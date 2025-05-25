@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ClearAll, Difference, FilterList } from '@mui/icons-material';
 import {
   Badge,
@@ -40,6 +41,7 @@ import {
 } from '../../../constantUtils/constant';
 import {
   getAuditFilterTicketsHandler,
+  getTicketFilterHandler,
   getTicketHandler
 } from '../../../api/ticket/ticketHandler';
 import useUserStore from '../../../store/userStore';
@@ -49,32 +51,35 @@ import '../singleTicket.css';
 import AuditFilterIcon from '../../../assets/commentHeader.svg';
 import { Tooltip, TooltipProps, Zoom, tooltipClasses } from '@mui/material';
 import useReprentativeStore from '../../../store/representative';
+import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import { toast } from 'react-toastify';
 
 const drawerWidth = 450;
 export const ticketFilterCount = (
   selectedFilters: iTicketFilter,
-  admissionType: string[],
-  pairType: string[],
-  diagnosticsType: string[],
+  admissionType: string,
+  diagnosticsType: string,
+  pairType: string,
   dateRange: string[],
-  statusType: string[],
+  statusType: string,
   filteredLocation: string,
   isAmritsarUser: boolean,
-  isMohaliUser: boolean,
   isHoshiarpurUser: boolean,
   isNawanshahrUser: boolean,
+  isMohaliUser: boolean,
   isKhannaUser: boolean,
   followUp: Date | null
 ) => {
-  const stageListCount = selectedFilters['stageList'].length;
+  const stageListCount = selectedFilters['stageList'] ? 1 : 0;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
-  const pairCount = pairType ? pairType.length : 0;
-  const admissionCount = admissionType ? admissionType.length : 0;
-  const diagnosticsCount = diagnosticsType ? diagnosticsType.length : 0;
+
+  const admissionCount = admissionType ? 1 : 0;
+  const pairCount = pairType ? 1 : 0;
+  const diagnosticsCount = diagnosticsType ? 1 : 0;
   const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
 
   const resultCount = selectedFilters['results'] ? 1 : 0;
-  const statusCount = statusType ? statusType.length : 0;
+  const statusCount = statusType ? 1 : 0;
   const followUpCount = followUp !== null ? 1 : 0;
 
   let locationCount = 0;
@@ -150,14 +155,15 @@ const TicketFilter = (props: {
   }));
 
   const initialFilters: ticketFilterTypes = {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
-    admissionType: [],
-    diagnosticsType: [],
+    admissionType: '',
+    diagnosticsType: '',
     dateRange: [],
-    status: [],
-    followUp: null
+    status: '',
+    followUp: null,
+    payerType: ''
   };
 
   const {
@@ -169,18 +175,16 @@ const TicketFilter = (props: {
     setFilteredLocation,
     filteredLocation,
     setFilterTicketsDiago,
-    setDownloadDisable,
+    setDownloadDisable
   } = useTicketStore();
   const location = useLocation();
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
-  const [admissionType, setAdmissionType] = React.useState<string[]>([]);
-  const [pairType, setPairType] = React.useState<string[]>([]);
+  const [admissionType, setAdmissionType] = React.useState<string>('');
+  const [pairType, setPairType] = React.useState<string>('');
 
-  const [statusType, setStatusType] = React.useState<string[]>([]);
+  const [statusType, setStatusType] = React.useState<string>('');
   const [result, setResult] = React.useState('');
-  const [diagnosticsType, setDiagnosticsType] = React.useState<string[]>(
-    () => []
-  );
+  const [diagnosticsType, setDiagnosticsType] = React.useState<string>('');
   // const [speciality, setSpeciality] = React.useState<string[]>(() => []);
   const [stagesLabel, setStagesLabels] = React.useState<any>([]);
   const [representativeLabel, setRepresentativeLabel] = React.useState<any>([]);
@@ -192,7 +196,7 @@ const TicketFilter = (props: {
   // const [startDate, setStartDate] = React.useState<string>('');
   // const [endDate, setEndDate] = React.useState<string>('');
   const [followUp, setFollowUp] = React.useState<Date | null>(null);
-  const [dateRange, setDateRange] = React.useState<string[]>(['', '']);
+  const [dateRange, setDateRange] = React.useState<string[]>([]);
   const [currentReperesentative, setCurrentRepresentative] = useState('');
   const [filterCount, setFilterCount] = useState(0);
   const [selectedValue, setSelectedValue] = useState(null);
@@ -268,19 +272,19 @@ const TicketFilter = (props: {
 
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (selectedFilters.stageList.includes(value)) {
-      const modifiedStageList = selectedFilters.stageList;
-      modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
+    // if (selectedFilters.stageList.includes(value)) {
+    //   const modifiedStageList = selectedFilters.stageList;
+    //   modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
 
-      dispatchFilterDiago({
-        type: filterActionsDiago.STAGES,
-        payload: [...modifiedStageList]
-      });
-      return;
-    }
+    //   dispatchFilterDiago({
+    //     type: filterActionsDiago.STAGES,
+    //     payload: [...modifiedStageList]
+    //   });
+    //   return;
+    // }
     dispatchFilterDiago({
       type: filterActionsDiago.STAGES,
-      payload: [...selectedFilters.stageList, value]
+      payload: value
     });
   };
 
@@ -304,9 +308,9 @@ const TicketFilter = (props: {
 
   const handleAdmissionType = (
     event: React.MouseEvent<HTMLElement>,
-    newAdmission: string[]
+    newAdmission: string
   ) => {
-    setAdmissionType(newAdmission);
+    setAdmissionType('');
 
     dispatchFilterDiago({
       type: filterActionsDiago.ADMISSIONTYPE,
@@ -316,19 +320,19 @@ const TicketFilter = (props: {
 
   const handlePairType = (
     event: React.MouseEvent<HTMLElement>,
-    pairType: string[]
+    pairType: string
   ) => {
-    setPairType(pairType);
+    setPairType('');
 
     dispatchFilterDiago({
-      type: filterActionsDiago.PAIRTYPE,
+      type: filterActionsDiago.PAYERTYPE,
       payload: pairType
     });
   };
 
   const handleStatusType = (
     event: React.MouseEvent<HTMLElement>,
-    Status: string[]
+    Status: string
   ) => {
     setStatusType(Status);
 
@@ -340,7 +344,7 @@ const TicketFilter = (props: {
 
   const handleDiagnosticsType = (
     event: React.MouseEvent<HTMLElement>,
-    newDiagnostics: string[]
+    newDiagnostics: string
   ) => {
     setDiagnosticsType(newDiagnostics);
     dispatchFilterDiago({
@@ -480,6 +484,71 @@ const TicketFilter = (props: {
     })();
   }, []);
 
+
+  const handleClearFilter = async () => {
+    dispatchFilterDiago({ type: filterActionsDiago.STAGES, payload: '' });
+    dispatchFilterDiago({
+      type: filterActionsDiago.REPRESENTATIVE,
+      payload: null
+    });
+    dispatchFilterDiago({
+      type: filterActionsDiago.ADMISSIONTYPE,
+      payload: ''
+    });
+    dispatchFilterDiago({
+      type: filterActionsDiago.DIAGNOSTICSTYPE,
+      payload: ''
+    });
+    dispatchFilterDiago({ type: filterActionsDiago.DATERANGE, payload: [] });
+    dispatchFilterDiago({ type: filterActionsDiago.RESULTS, payload: null });
+    dispatchFilterDiago({ type: filterActionsDiago.STATUS, payload: '' });
+    dispatchFilterDiago({ type: filterActionsDiago.FOLLOWUP, payload: null });
+    dispatchFilterDiago({ type: filterActionsDiago.PAYERTYPE, payload: '' });
+
+    setCurrentRepresentative('');
+    setFilterCount(
+      ticketFilterCount(
+        selectedFilters,
+        admissionType,
+        pairType,
+        diagnosticsType,
+        dateRange,
+        statusType,
+        filteredLocation,
+        isAmritsarUser,
+        isMohaliUser,
+        isHoshiarpurUser,
+        isNawanshahrUser,
+        isKhannaUser,
+        followUp
+      )
+    );
+    setFilterCount(0);
+    setPageNumber(1);
+    setSelectedValue(null);
+    setSelectedValueLost(null);
+    setResult(' ');
+    setFollowUp(null);
+    setAdmissionType('');
+    setPairType('');
+    setStatusType('');
+    setDiagnosticsType('');
+    setDateRange(['', '']);
+    if (isAmritsarUser) {
+      setFilteredLocation('Amritsar');
+    } else if (isHoshiarpurUser) {
+      setFilteredLocation('Hoshiarpur');
+    } else if (isMohaliUser) {
+      setFilteredLocation('Mohali');
+    } else if (isNawanshahrUser) {
+      setFilteredLocation('Nawanshahr');
+    } else if (isKhannaUser) {
+      setFilteredLocation('Khanna');
+    } else {
+      setFilteredLocation('');
+    }
+  };
+
   const handleApplyFilter = async () => {
     // setTicketFilters({
     //   stageList: selectedStageList,
@@ -492,7 +561,23 @@ const TicketFilter = (props: {
     setIsFilterOpen(false);
     setPageNumber(1);
     setFilterTicketsDiago(selectedFilters);
-    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    console.log(filteredLocation);
+    // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+     try {
+       if (
+         hasChanges(selectedFilters, initialFiltersNew) &&
+         !filteredLocation
+       ) {
+         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+       } else {
+         await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
+       }
+     } catch (error) {
+       console.log(error);
+       setDownloadDisable(false);
+       handleClearFilter()
+      //  toast.error('Please Select Date Range');
+     }
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(
       ticketFilterCount(
@@ -531,69 +616,6 @@ const TicketFilter = (props: {
     console.log('filter dtata', selectedFilters);
   };
 
-  const handleClearFilter = async () => {
-    dispatchFilterDiago({ type: filterActionsDiago.STAGES, payload: [] });
-    dispatchFilterDiago({
-      type: filterActionsDiago.REPRESENTATIVE,
-      payload: null
-    });
-    dispatchFilterDiago({
-      type: filterActionsDiago.ADMISSIONTYPE,
-      payload: []
-    });
-    dispatchFilterDiago({
-      type: filterActionsDiago.DIAGNOSTICSTYPE,
-      payload: []
-    });
-    dispatchFilterDiago({ type: filterActionsDiago.DATERANGE, payload: [] });
-    dispatchFilterDiago({ type: filterActionsDiago.RESULTS, payload: null });
-    dispatchFilterDiago({ type: filterActionsDiago.STATUS, payload: [] });
-    dispatchFilterDiago({ type: filterActionsDiago.FOLLOWUP, payload: null });
-    dispatchFilterDiago({ type: filterActionsDiago.PAIRTYPE, payload: null });
-
-    setCurrentRepresentative('');
-    setFilterCount(
-      ticketFilterCount(
-        selectedFilters,
-        admissionType,
-        pairType,
-        diagnosticsType,
-        dateRange,
-        statusType,
-        filteredLocation,
-        isAmritsarUser,
-        isMohaliUser,
-        isHoshiarpurUser,
-        isNawanshahrUser,
-        isKhannaUser,
-        followUp
-      )
-    );
-    setFilterCount(0);
-    setPageNumber(1);
-    setSelectedValue(null);
-    setSelectedValueLost(null);
-    setResult(' ');
-    setFollowUp(null);
-    setAdmissionType((prev) => []);
-    setPairType((prev) => []);
-    setStatusType((prev) => []);
-    setDiagnosticsType((prev) => []);
-    setDateRange(['', '']);
-    if (isAmritsarUser) {
-      setFilteredLocation('Amritsar');
-    } else if (isHoshiarpurUser) {
-      setFilteredLocation('Hoshiarpur');
-    } else if (isMohaliUser) {
-      setFilteredLocation('Mohali');
-    } else if (isNawanshahrUser) {
-      setFilteredLocation('Nawanshahr');
-    } else if (isKhannaUser) {
-      setFilteredLocation('Khanna');
-    } else {
-      setFilteredLocation('');
-    }
-  };
   const handleApplyFilterOnTicketTypeChange = async () => {
     // setTicketFilters({
     //   stageList: selectedStageList,
@@ -606,7 +628,19 @@ const TicketFilter = (props: {
     setIsFilterOpen(false);
     setPageNumber(1);
     setFilterTicketsDiago(selectedFilters);
-    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+     try {
+       if (hasChanges(selectedFilters, initialFiltersNew)) {
+         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+       } else {
+         await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
+       }
+     } catch (error) {
+       console.log(error);
+       setDownloadDisable(false);
+       handleClearFilter()
+      //  toast.error('Please Select Date Range');
+     }
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(0);
 
@@ -650,7 +684,7 @@ const TicketFilter = (props: {
     setIsAuditorFilterOn(true);
   };
   const handleClearAuditorFilter = async () => {
-    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     setIsAuditorFilterOn(false);
   };
 
@@ -827,7 +861,7 @@ const TicketFilter = (props: {
             )}
           </Box>
 
-          <Box px={3}>
+          {/* <Box px={3}>
             <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
               Result (This filter cannot be used in combination with any other
               filter, To be used independently only)
@@ -836,6 +870,7 @@ const TicketFilter = (props: {
               color="primary"
               value={result}
               onChange={handleResult}
+              exclusive
             >
               <ToggleButton
                 value="Won"
@@ -864,7 +899,7 @@ const TicketFilter = (props: {
                 LOST
               </ToggleButton>
             </ToggleButtonGroup>
-          </Box>
+          </Box> */}
           {/* <Box px={3}>
               <Stack sx={{ fontFamily: 'Outfit, sans-serif', fontWeight: '500' }}>
                 Doctor Appointment Follow-up Date (This filter cannot be used in
@@ -898,6 +933,7 @@ const TicketFilter = (props: {
               color="primary"
               value={statusType}
               onChange={handleStatusType}
+              exclusive
             >
               {/* <ToggleButton value="dnd"
                 sx={{
@@ -962,6 +998,7 @@ const TicketFilter = (props: {
                 color="primary"
                 value={admissionType}
                 onChange={handleAdmissionType}
+                exclusive
               >
                 <ToggleButton
                   value="Surgery"
@@ -1100,6 +1137,7 @@ const TicketFilter = (props: {
                 value={filteredLocation}
                 // onChange={() => setFilteredLocation('Amritsar')}
                 onChange={handleLocation}
+                exclusive
               >
                 <ToggleButton
                   value="Mohali"

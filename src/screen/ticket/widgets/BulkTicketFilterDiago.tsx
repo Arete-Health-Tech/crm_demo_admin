@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ClearAll, Difference, FilterList } from '@mui/icons-material';
 import {
   Badge,
@@ -149,14 +150,15 @@ const BulkTicketFilterDiago = (props: {
   }));
 
   const initialFilters: ticketFilterTypes = {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
-    admissionType: [],
-    diagnosticsType: [],
+    admissionType: '',
+    diagnosticsType: '',
     dateRange: [],
-    status: [],
-    followUp: null
+    status: '',
+    followUp: null,
+    payerType: ''
   };
 
   const {
@@ -263,19 +265,19 @@ const BulkTicketFilterDiago = (props: {
   console.log(filterCount);
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (selectedFilters.stageList.includes(value)) {
-      const modifiedStageList = selectedFilters.stageList;
-      modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
+    // if (selectedFilters.stageList.includes(value)) {
+    //   const modifiedStageList = selectedFilters.stageList;
+    //   modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
 
-      dispatchBulkFilterDiago({
-        type: bulkFilterActionsDiago.STAGES,
-        payload: [...modifiedStageList]
-      });
-      return;
-    }
+    //   dispatchBulkFilterDiago({
+    //     type: bulkFilterActionsDiago.STAGES,
+    //     payload: [...modifiedStageList]
+    //   });
+    //   return;
+    // }
     dispatchBulkFilterDiago({
       type: bulkFilterActionsDiago.STAGES,
-      payload: [...selectedFilters.stageList, value]
+      payload: value
     });
   };
 
@@ -283,7 +285,10 @@ const BulkTicketFilterDiago = (props: {
     const value = e.target.value;
     if (value) {
       setCurrentRepresentative(value);
-      dispatchBulkFilterDiago({ type: bulkFilterActionsDiago.REPRESENTATIVE, payload: value });
+      dispatchBulkFilterDiago({
+        type: bulkFilterActionsDiago.REPRESENTATIVE,
+        payload: value
+      });
     }
   };
 
@@ -542,14 +547,38 @@ const BulkTicketFilterDiago = (props: {
   };
 
   const handleClearFilter = async () => {
-    dispatchBulkFilterDiago({ type: bulkFilterActionsDiago.STAGES, payload: [] });
-    dispatchBulkFilterDiago({ type: bulkFilterActionsDiago.REPRESENTATIVE, payload: null });
-    dispatchBulkFilterDiago({ type: bulkFilterActionsDiago.ADMISSIONTYPE, payload: [] });
-    dispatchBulkFilterDiago({ type: bulkFilterActionsDiago.DIAGNOSTICSTYPE, payload: [] });
-    dispatchBulkFilterDiago({ type: bulkFilterActionsDiago.DATERANGE, payload: [] });
-    dispatchBulkFilterDiago({ type: bulkFilterActionsDiago.RESULTS, payload: null });
-    dispatchBulkFilterDiago({ type: bulkFilterActionsDiago.STATUS, payload: [] });
-    dispatchBulkFilterDiago({ type: bulkFilterActionsDiago.FOLLOWUP, payload: null });
+    dispatchBulkFilterDiago({
+      type: bulkFilterActionsDiago.STAGES,
+      payload: []
+    });
+    dispatchBulkFilterDiago({
+      type: bulkFilterActionsDiago.REPRESENTATIVE,
+      payload: null
+    });
+    dispatchBulkFilterDiago({
+      type: bulkFilterActionsDiago.ADMISSIONTYPE,
+      payload: []
+    });
+    dispatchBulkFilterDiago({
+      type: bulkFilterActionsDiago.DIAGNOSTICSTYPE,
+      payload: []
+    });
+    dispatchBulkFilterDiago({
+      type: bulkFilterActionsDiago.DATERANGE,
+      payload: []
+    });
+    dispatchBulkFilterDiago({
+      type: bulkFilterActionsDiago.RESULTS,
+      payload: null
+    });
+    dispatchBulkFilterDiago({
+      type: bulkFilterActionsDiago.STATUS,
+      payload: []
+    });
+    dispatchBulkFilterDiago({
+      type: bulkFilterActionsDiago.FOLLOWUP,
+      payload: null
+    });
 
     setCurrentRepresentative('');
     setFilterCount(

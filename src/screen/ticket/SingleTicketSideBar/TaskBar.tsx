@@ -22,6 +22,7 @@ import { iTicket } from '../../../types/store/ticket';
 import { useParams } from 'react-router-dom';
 import {
   getAuditFilterTicketsHandler,
+  getTicketFilterHandler,
   getTicketHandler
 } from '../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../constantUtils/constant';
@@ -31,6 +32,8 @@ import {
   markAsReadAuditComment
 } from '../../../api/ticket/ticket';
 import { socket } from '../../../api/apiClient';
+import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import { toast } from 'react-toastify';
 
 const TaskBar = () => {
   const { ticketID } = useParams();
@@ -155,7 +158,18 @@ const TaskBar = () => {
 
   const getTicketAuditorComments = async () => {
     if (!isAuditorFilterOn) {
-      await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      try {
+        if (hasChanges(newFilter, initialFiltersNew)) {
+          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        } else {
+          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+        }
+      } catch (error) {
+        console.log(error);
+        // setDownloadDisable(false);
+        
+      }
     } else {
       await getAuditFilterTicketsHandler();
     }
@@ -192,7 +206,18 @@ const TaskBar = () => {
       ticketid: '',
       unreadCount: data // Set the resolved data here
     });
-    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    try {
+      if (hasChanges(newFilter, initialFiltersNew)) {
+        await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+      }
+    } catch (error) {
+      console.log(error);
+      // setDownloadDisable(false);
+      
+    }
   };
 
   useEffect(() => {

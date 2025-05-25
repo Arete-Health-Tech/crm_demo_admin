@@ -7,7 +7,9 @@ import "../../singleTicket.css";
 import { Box, Grid, Stack } from "@mui/material";
 import useTicketStore from "../../../../store/ticketStore";
 import { setReschedularCompleted } from "../../../../api/ticket/ticket";
-import { getAllTaskCountHandler, getTicketHandler } from "../../../../api/ticket/ticketHandler";
+import { getAllTaskCountHandler, getTicketFilterHandler, getTicketHandler } from "../../../../api/ticket/ticketHandler";
+import { hasChanges, initialFiltersNew, oldInitialFilters } from "../../../../constants/commomFunctions";
+import { toast } from "react-toastify";
 
 function Accordion(props) {
     const [active, setActive] = useState(false);
@@ -45,12 +47,28 @@ function Accordion(props) {
             }
             await setReschedularCompleted(taskData)
             await getAllTaskCountHandler();
-            await getTicketHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              newFilter
-            );
+            // await getTicketHandler(
+            //   searchByName,
+            //   pageNumber,
+            //   'false',
+            //   newFilter
+            // );
+            try {
+              if (hasChanges(newFilter, initialFiltersNew)) {
+                await getTicketHandler(
+                  searchByName,
+                  pageNumber,
+                  'false',
+                  oldInitialFilters
+                );
+              } else {
+                await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+              }
+            } catch (error) {
+              console.log(error);
+            //   setDownloadDisable(false);
+              
+            }
         } catch (error) {
             console.log(error)
         }

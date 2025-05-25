@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Chip,
@@ -16,6 +17,7 @@ import {
   createNoteActivityHandler,
   createNotesHandler,
   getAllNotesHandler,
+  getTicketFilterHandler,
   getTicketHandler
 } from '../../../api/ticket/ticketHandler';
 import useTicketStore from '../../../store/ticketStore';
@@ -41,6 +43,11 @@ import useUserStore from '../../../store/userStore';
 import { deleteNotes, updateNotes } from '../../../api/ticket/ticket';
 import { toast } from 'react-toastify';
 import NotFoundIcon from '../../../assets/NotFoundTask.svg';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 
 type Props = { setTicketUpdateFlag: any };
 
@@ -90,12 +97,34 @@ const NotesWidget = (props: Props) => {
 
       setTimeout(() => {
         (async () => {
-          const result = await getTicketHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            newFilter
-          );
+          let result;
+          // const result = await getTicketHandler(
+          //   searchByName,
+          //   pageNumber,
+          //   'false',
+          //   newFilter
+          // );
+          try {
+            if (hasChanges(newFilter, initialFiltersNew)) {
+              result = await getTicketHandler(
+                searchByName,
+                pageNumber,
+                'false',
+                oldInitialFilters
+              );
+            } else {
+              result = await getTicketFilterHandler(
+                searchByName,
+                pageNumber,
+                'false',
+                newFilter
+              );
+            }
+          } catch (error) {
+            console.log(error);
+            // setDownloadDisable(false);
+            
+          }
           props.setTicketUpdateFlag(result);
         })();
       }, 1000);
@@ -111,12 +140,34 @@ const NotesWidget = (props: Props) => {
       await updateNotes(updatedNoteData);
       setTimeout(() => {
         (async () => {
-          const result = await getTicketHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            newFilter
-          );
+          let result;
+          //   await getTicketHandler(
+          //   searchByName,
+          //   pageNumber,
+          //   'false',
+          //   newFilter
+          // );
+          try {
+            if (hasChanges(newFilter, initialFiltersNew)) {
+              result = await getTicketHandler(
+                searchByName,
+                pageNumber,
+                'false',
+                oldInitialFilters
+              );
+            } else {
+              result = await getTicketFilterHandler(
+                searchByName,
+                pageNumber,
+                'false',
+                newFilter
+              );
+            }
+          } catch (error) {
+            console.log(error);
+            // setDownloadDisable(false);
+            
+          }
           setNotesClickedData(null);
           await getAllNotesHandler(ticketID as string);
           props.setTicketUpdateFlag(result);
@@ -142,12 +193,34 @@ const NotesWidget = (props: Props) => {
     }
     setTimeout(() => {
       (async () => {
-        const result = await getTicketHandler(
-          searchByName,
-          pageNumber,
-          'false',
-          newFilter
-        );
+        let result;
+        //   = await getTicketHandler(
+        //   searchByName,
+        //   pageNumber,
+        //   'false',
+        //   newFilter
+        // );
+        try {
+          if (hasChanges(newFilter, initialFiltersNew)) {
+            result = await getTicketHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              oldInitialFilters
+            );
+          } else {
+            result = await getTicketFilterHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
+            );
+          }
+        } catch (error) {
+          console.log(error);
+          // setDownloadDisable(false);
+          
+        }
         setNotesClickedData(null);
         await getAllNotesHandler(ticketID as string);
         props.setTicketUpdateFlag(result);

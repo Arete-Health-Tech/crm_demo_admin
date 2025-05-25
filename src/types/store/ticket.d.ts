@@ -342,6 +342,20 @@ interface SelectedLabel {
 }
 
 export interface iTicketFilter {
+  stageList: string;
+  representative: string | null;
+  admissionType?: string;
+  diagnosticsType?: string;
+  startDate?: number;
+  endDate?: number;
+  dateRange: string[];
+  results?: string | null;
+  status: string;
+  followUp: Date | null;
+  payerType?: string | null;
+}
+
+export interface iTicketFilterOld {
   stageList: any[];
   representative: string | null;
   admissionType?: string[];
@@ -352,7 +366,7 @@ export interface iTicketFilter {
   results?: string | null;
   status: string[];
   followUp: Date | null;
-  pairType?: string | null;
+  payerType?: string | null;
 }
 export interface iAllAuditComment {
   auditorCommentId: string;

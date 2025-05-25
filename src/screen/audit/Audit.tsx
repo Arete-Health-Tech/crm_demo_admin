@@ -281,13 +281,13 @@ const Audit: React.FC = () => {
   const { setFilterTickets } = useTicketStore();
 
   const initialFilters = {
-    stageList: [],
+    stageList: "",
     representative: null,
     results: null,
-    admissionType: [],
-    diagnosticsType: [],
+    admissionType: "",
+    diagnosticsType: "",
     dateRange: [],
-    status: [],
+    status: "",
     followUp: null
   };
 

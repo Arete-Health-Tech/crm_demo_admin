@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -28,7 +29,10 @@ import useServiceStore from '../../../store/serviceStore';
 import { iStage, iSubStage } from '../../../types/store/service';
 import { iTicket } from '../../../types/store/ticket';
 import { updateTicketData } from '../../../api/ticket/ticket';
-import { getTicketHandler } from '../../../api/ticket/ticketHandler';
+import {
+  getTicketFilterHandler,
+  getTicketHandler
+} from '../../../api/ticket/ticketHandler';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import useTicketStore from '../../../store/ticketStore';
 import { apiClient } from '../../../api/apiClient';
@@ -42,6 +46,11 @@ import CheckedActiveIcon from '../../../assets/NotActive.svg';
 import RightArrowIcon from '../../../assets/arrow-right.svg';
 import documentIcon from '../../../assets/document-text.svg';
 import '../singleTicket.css';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 type Props = {
   currentTicket: iTicket | any;
   setTicketUpdateFlag: any;
@@ -249,12 +258,34 @@ const StageCard = (props: Props) => {
     // window.location.reload();
     setTimeout(() => {
       (async () => {
-        const result = await getTicketHandler(
-          searchByName,
-          pageNumber,
-          'false',
-          newFilter
-        );
+        let result;
+        //   = await getTicketHandler(
+        //   searchByName,
+        //   pageNumber,
+        //   'false',
+        //   newFilter
+        // );
+        try {
+          if (hasChanges(newFilter, initialFiltersNew)) {
+            result = await getTicketHandler(
+              UNDEFINED,
+              1,
+              'false',
+              oldInitialFilters
+            );
+          } else {
+            result = await getTicketFilterHandler(
+              UNDEFINED,
+              1,
+              'false',
+              newFilter
+            );
+          }
+        } catch (error) {
+          console.log(error);
+          // setDownloadDisable(false);
+          
+        }
         setTicketUpdateFlag(result);
       })();
     }, 1000);
@@ -386,12 +417,34 @@ const StageCard = (props: Props) => {
       });
       setTimeout(() => {
         (async () => {
-          const result = await getTicketHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            newFilter
-          );
+          let result;
+          //   = await getTicketHandler(
+          //   searchByName,
+          //   pageNumber,
+          //   'false',
+          //   newFilter
+          // );
+          try {
+            if (hasChanges(newFilter, initialFiltersNew)) {
+              result = await getTicketHandler(
+                UNDEFINED,
+                1,
+                'false',
+                oldInitialFilters
+              );
+            } else {
+              result = await getTicketFilterHandler(
+                UNDEFINED,
+                1,
+                'false',
+                newFilter
+              );
+            }
+          } catch (error) {
+            console.log(error);
+            // setDownloadDisable(false);
+            
+          }
           setTicketUpdateFlag(result);
         })();
       }, 1000);

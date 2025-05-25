@@ -7,7 +7,7 @@ import {
 } from '../../types/store/ticket';
 import { apiClient } from '../apiClient';
 import useTicketStore from '../../store/ticketStore';
-// const { ticketType, setDownloadDisable } = useTicketStore.getState();
+// const { localStorage.getItem('ticketType'), setDownloadDisable } = useTicketStore.getState();
 
 export const getTicket = async (
   name: string,
@@ -21,6 +21,7 @@ export const getTicket = async (
   won?: any,
   lose?: any
 ) => {
+  console.log(localStorage.getItem('ticketType'));
   const params = new URLSearchParams(selectedFilters).toString();
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
@@ -40,6 +41,279 @@ export const getTicket = async (
     )}&specialtyforFilter=${filteredLocation}`
   );
   return data;
+};
+
+export const getFilteredTicket = async (
+  pageNumber: number,
+  selectedFilters: any,
+  filteredLocation: string
+) => {
+  console.log(selectedFilters);
+
+  let data: any;
+
+  let dateRange: string[] | null = null;
+  try {
+    if (
+      selectedFilters?.dateRange &&
+      typeof selectedFilters.dateRange === 'string' &&
+      selectedFilters.dateRange !== ''
+    ) {
+      dateRange = JSON.parse(selectedFilters.dateRange);
+    }
+  } catch (err) {
+    console.error('Failed to parse dateRange:', err);
+  }
+  const params = new URLSearchParams();
+
+  if (localStorage.getItem('ticketType') === 'Admission') {
+    console.log('calling admission api');
+    //Below checking the conditions for calling filter combination api
+    if (selectedFilters.results) {
+      params.set(
+        'result',
+        selectedFilters.results === '65991601a62baad220000001' ? 'won' : 'lost'
+      );
+    }
+    if (pageNumber) params.set('page', pageNumber.toString());
+    if (selectedFilters.admissionType)
+      params.set('admission', selectedFilters.admissionType);
+    if (filteredLocation) params.set('location', filteredLocation);
+    if (dateRange && dateRange[0]) params.set('startDate', dateRange[0]);
+    if (dateRange && dateRange[1]) params.set('endDate', dateRange[1]);
+    if (selectedFilters.payerType)
+      params.set('payerType', selectedFilters.payerType);
+    if (selectedFilters.stageList)
+      params.set('stage', selectedFilters.stageList);
+    if (selectedFilters.status) params.set('status', selectedFilters.status);
+
+    // Below checking the count of filters applied one or more
+    const countCheck = (selectedFilter: any, location: string) => {
+      let count = 0;
+
+      Object.entries(selectedFilter).forEach(([_, value]) => {
+        if (Array.isArray(value) && value.length > 0) {
+          count += 1;
+        } else if (typeof value === 'string' && value.trim() !== '') {
+          count += 1;
+        } else if (typeof value === 'number' || typeof value === 'boolean') {
+          count += 1;
+        }
+      });
+
+      if (location && location !== '') {
+        count += 1;
+      }
+
+      return count;
+    };
+
+    if (countCheck(selectedFilters, filteredLocation) < 2) {
+      // Api calls Start
+
+      if (dateRange && dateRange.length === 2) {
+        data = await apiClient.get(
+          `/filters/datefilter/?startDate=${dateRange[0]}&endDate=${dateRange[1]}&page=${pageNumber}`,
+          {
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          }
+        );
+      } else if (filteredLocation) {
+        data = await apiClient.get(
+          `/filters/Specialty/?specialty=${filteredLocation}&page=${pageNumber}`
+        );
+      } else if (
+        selectedFilters?.admissionType &&
+        typeof selectedFilters.admissionType === 'string' &&
+        selectedFilters.admissionType.trim() !== ''
+      ) {
+        data = await apiClient.get(
+          `/filters/Admission/?admission=${selectedFilters.admissionType}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.payerType) {
+        data = await apiClient.get(
+          `/filters/PayerType/?payertype=${selectedFilters.payerType}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.status) {
+        data = await apiClient.get(
+          `/filters/status/?status=${selectedFilters.status}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.stageList) {
+        data = await apiClient.get(
+          `/filters/stage/?stage=${selectedFilters.stageList}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.representative) {
+        data = await apiClient.get(
+          `/filters/representative/?assigned=${selectedFilters.representative}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.results) {
+        data = await apiClient.get(
+          `/ticket/Resultfilter/?resultType=${
+            selectedFilters.results === '65991601a62baad220000001'
+              ? 'won'
+              : 'lost'
+          }&page=${pageNumber}`
+        );
+      }
+    } else {
+      console.log(params);
+      data = await apiClient.get(`/filters/filter-combo/?${params.toString()}`);
+    }
+  } else if (localStorage.getItem('ticketType') === 'Diagnostics') {
+    //Below checking the conditions for calling filter combination api
+    if (selectedFilters.results) {
+      params.set(
+        'result',
+        selectedFilters.results === '65991601a62baad220000001' ? 'won' : 'lost'
+      );
+    }
+    if (pageNumber) params.set('page', pageNumber.toString());
+    if (filteredLocation) params.set('location', filteredLocation);
+    if (dateRange && dateRange[0]) params.set('startDate', dateRange[0]);
+    if (dateRange && dateRange[1]) params.set('endDate', dateRange[1]);
+    if (selectedFilters.payerType)
+      params.set('payerType', selectedFilters.payerType);
+    if (selectedFilters.stageList)
+      params.set('stage', selectedFilters.stageList);
+    if (selectedFilters.status) params.set('status', selectedFilters.status);
+
+    // Below checking the count of filters applied one or more
+    const countCheck = (selectedFilter: any, location: string) => {
+      let count = 0;
+
+      Object.entries(selectedFilter).forEach(([_, value]) => {
+        if (Array.isArray(value) && value.length > 0) {
+          count += 1;
+        } else if (typeof value === 'string' && value.trim() !== '') {
+          count += 1;
+        } else if (typeof value === 'number' || typeof value === 'boolean') {
+          count += 1;
+        }
+      });
+
+      if (location && location !== '') {
+        count += 1;
+      }
+
+      return count;
+    };
+
+    if (countCheck(selectedFilters, filteredLocation) < 2) {
+      // Api calls Start
+
+      if (dateRange && dateRange.length === 2) {
+        data = await apiClient.get(
+          `/filters/Diagnosticsdatefilter/?startDate=${dateRange[0]}&endDate=${dateRange[1]}&page=${pageNumber}`
+        );
+      } else if (filteredLocation) {
+        data = await apiClient.get(
+          `/filters/DiagnosticSpecialty/?specialty=${filteredLocation}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.payerType) {
+        data = await apiClient.get(
+          `/filters/diagnosticsPayerType/?payertype=${selectedFilters.payerType}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.status) {
+        data = await apiClient.get(
+          `/filters/DiagnosticStatus/?status=${selectedFilters.status}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.stageList) {
+        data = await apiClient.get(
+          `/filters/DiagnosticStage/?stage=${selectedFilters.stageList}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.representative) {
+        data = await apiClient.get(
+          `/filters/Diagnosticsrepresentative/?assigned=${selectedFilters.representative}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.results) {
+        data = await apiClient.get(
+          `/ticket/Resultfilter/?resultType=${
+            selectedFilters.results === '65991601a62baad220000001'
+              ? 'won'
+              : 'lost'
+          }&page=${pageNumber}`
+        );
+      }
+    } else {
+      console.log(params);
+      data = await apiClient.get(
+        `/filters/diagnostics-combo/?${params.toString()}`
+      );
+    }
+  } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+    console.log(selectedFilters);
+    console.log('inside followup');
+    //Below checking the conditions for calling filter combination api
+    if (pageNumber) params.set('page', pageNumber.toString());
+    if (filteredLocation) params.set('location', filteredLocation);
+    if (dateRange && dateRange[0]) params.set('startDate', dateRange[0]);
+    if (dateRange && dateRange[1]) params.set('endDate', dateRange[1]);
+    if (selectedFilters.payerType)
+      params.set('payerType', selectedFilters.payerType);
+     if (selectedFilters.stageList)
+       params.set('stage', selectedFilters.stageList);
+     if (selectedFilters.status) params.set('status', selectedFilters.status);
+
+
+    // Below checking the count of filters applied one or more
+    const countCheck = (selectedFilter: any, location: string) => {
+      let count = 0;
+
+      Object.entries(selectedFilter).forEach(([_, value]) => {
+        if (Array.isArray(value) && value.length > 0) {
+          count += 1;
+        } else if (typeof value === 'string' && value.trim() !== '') {
+          count += 1;
+        } else if (typeof value === 'number' || typeof value === 'boolean') {
+          count += 1;
+        }
+      });
+
+      if (location && location !== '') {
+        count += 1;
+      }
+
+      return count;
+    };
+    if (countCheck(selectedFilters, filteredLocation) < 2) {
+      // Api calls Start
+
+      if (dateRange && dateRange.length === 2) {
+        data = await apiClient.get(
+          `/filters/FollowUpDateFilter/?startDate=${dateRange[0]}&endDate=${dateRange[1]}&page=${pageNumber}`
+        );
+      } else if (filteredLocation) {
+        data = await apiClient.get(
+          `/filters/FollowUpSpecialty/?specialty=${filteredLocation}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.payerType) {
+        data = await apiClient.get(
+          `/filters/FollowUpPayerType/?payertype=${selectedFilters.payerType}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.status) {
+        data = await apiClient.get(
+          `/filters/FollowUpstatus/?status=${selectedFilters.status}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.stageList) {
+        data = await apiClient.get(
+          `/filters/FollowUpStage/?stage=${selectedFilters.stageList}&page=${pageNumber}`
+        );
+      } else if (selectedFilters?.representative) {
+        data = await apiClient.get(
+          `/filters/FollowUpRepresentative/?assigned=${selectedFilters.representative}&page=${pageNumber}`
+        );
+      }
+    } else {
+      console.log(params);
+      data = await apiClient.get(
+        `/filters/FollowUp-combo/?${params.toString()}`
+      );
+    }
+  }
+
+  return data?.data;
 };
 
 export const getSearchedTicket = async (name: string, pageNumber: number) => {

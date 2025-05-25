@@ -75,6 +75,7 @@ import AddNewTaskWidget from './widgets/AddNewTaskWidget';
 import {
   getAllReminderHandler,
   getAllWhtsappCountHandler,
+  getTicketFilterHandler,
   getTicketHandler
 } from '../../api/ticket/ticketHandler';
 import MessagingWidget from './widgets/whatsapp/WhatsappWidget';
@@ -149,6 +150,8 @@ import {
 import { database } from '../../utils/firebase';
 import useReprentativeStore from '../../store/representative';
 import useUserStore from '../../store/userStore';
+import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../constants/commomFunctions';
+import { toast } from 'react-toastify';
 // import { markAsRead } from '../../api/flow/flow';
 interface iConsumer {
   uid: string;
@@ -364,11 +367,33 @@ const NSingleTicketDetails = (props: Props) => {
         );
         setDisableButton(false);
         setAmissionTypeClicked(true);
-        getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+        // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+        try {
+        if (hasChanges(newFilter, initialFiltersNew)) {
+          await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+        } else {
+          await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+        }
+      } catch (error) {
+        console.log(error);
+        setDownloadDisable(false);
+        
+      }
       } catch (error) {
         setDisableButton(false);
         setAmissionTypeClicked(true);
-        getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+        // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+        try {
+        if (hasChanges(newFilter, initialFiltersNew)) {
+          await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+        } else {
+          await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+        }
+      } catch (error) {
+        console.log(error);
+        setDownloadDisable(false);
+        
+      }
       }
 
       // const url = ticketID !== undefined ? `/ticket/${ticketID}` : `/ticket`;
@@ -809,7 +834,18 @@ const NSingleTicketDetails = (props: Props) => {
     setDownloadDisable(true);
     await updateTicketProbability(value, ticketID);
     setProbabilityModal(false);
-    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    try {
+      if (hasChanges(newFilter, initialFiltersNew)) {
+        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      
+    }
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {
@@ -842,7 +878,18 @@ const NSingleTicketDetails = (props: Props) => {
       await deleteTicket(ticketID);
     }
     // await deleteTicket(ticketID);
-    getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    try {
+      if (hasChanges(newFilter, initialFiltersNew)) {
+        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      
+    }
     // await validateTicket(ticketID);
     navigate(
       `${
@@ -862,7 +909,18 @@ const NSingleTicketDetails = (props: Props) => {
   const handleAddAssigne = async (assigneeId: string) => {
     setDownloadDisable(true);
     const res = await assignedToTicket(ticketID, assigneeId);
-    getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    try {
+      if (hasChanges(newFilter, initialFiltersNew)) {
+        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      
+    }
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {
@@ -885,7 +943,18 @@ const NSingleTicketDetails = (props: Props) => {
   const handleRemoveAssigne = async (assigneeId: string) => {
     setDownloadDisable(true);
     const res = await removeFromTicket(ticketID, assigneeId);
-    getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    try {
+      if (hasChanges(newFilter, initialFiltersNew)) {
+        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      
+    }
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
     } else {
@@ -928,7 +997,18 @@ const NSingleTicketDetails = (props: Props) => {
   //This function call the api to get all the ticket id with their whtsapp message count
   const getAllWhtsappMsgCount = async () => {
     await getAllWhtsappCountHandler();
-    await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+    try {
+      if (hasChanges(newFilter, initialFiltersNew)) {
+        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      
+    }
   };
 
   console.log(pageNumber);

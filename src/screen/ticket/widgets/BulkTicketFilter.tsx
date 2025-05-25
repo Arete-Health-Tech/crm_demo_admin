@@ -122,14 +122,15 @@ const BulkTicketFilter = (props: {
   }));
 
   const initialFilters: ticketFilterTypes = {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
-    admissionType: [],
-    diagnosticsType: [],
+    admissionType: '',
+    diagnosticsType: '',
     dateRange: [],
-    status: [],
-    followUp: null
+    status: '',
+    followUp: null,
+    payerType: ''
   };
 
   const {
@@ -237,19 +238,19 @@ const BulkTicketFilter = (props: {
   }, []);
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (selectedBulkFilters.stageList.includes(value)) {
-      const modifiedStageList = selectedBulkFilters.stageList;
-      modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
+    // if (selectedBulkFilters.stageList.includes(value)) {
+    //   const modifiedStageList = selectedBulkFilters.stageList;
+    //   modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
 
-      dispatchBulkFilter({
-        type: bulkFilterActions.STAGES,
-        payload: [...modifiedStageList]
-      });
-      return;
-    }
+    //   dispatchBulkFilter({
+    //     type: bulkFilterActions.STAGES,
+    //     payload: [...modifiedStageList]
+    //   });
+    //   return;
+    // }
     dispatchBulkFilter({
       type: bulkFilterActions.STAGES,
-      payload: [...selectedBulkFilters.stageList, value]
+      payload: value
     });
   };
 

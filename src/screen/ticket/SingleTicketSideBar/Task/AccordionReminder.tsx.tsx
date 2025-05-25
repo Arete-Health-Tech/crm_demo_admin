@@ -6,8 +6,10 @@ import CheckFilledIcon from "../../../../assets/Checkbox-Final.svg";
 import "../../singleTicket.css";
 import { Box, Grid, Stack } from "@mui/material";
 import { setReminderCompleted } from "../../../../api/ticket/ticket";
-import { getTicketHandler } from "../../../../api/ticket/ticketHandler";
+import { getTicketFilterHandler, getTicketHandler } from "../../../../api/ticket/ticketHandler";
 import useTicketStore from "../../../../store/ticketStore";
+import { hasChanges, initialFiltersNew, oldInitialFilters } from "../../../../constants/commomFunctions";
+import { toast } from "react-toastify";
 
 function AccordionReminder(props) {
     const [active, setActive] = useState(false);
@@ -46,12 +48,28 @@ function AccordionReminder(props) {
                 completed: true
             }
             await setReminderCompleted(taskData)
-            await getTicketHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              newFilter
-            );
+            // await getTicketHandler(
+            //   searchByName,
+            //   pageNumber,
+            //   'false',
+            //   newFilter
+            // );
+            try {
+              if (hasChanges(newFilter, initialFiltersNew)) {
+                await getTicketHandler(
+                  searchByName,
+                  pageNumber,
+                  'false',
+                  oldInitialFilters
+                );
+              } else {
+                await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+              }
+            } catch (error) {
+              console.log(error);
+            //   setDownloadDisable(false);
+              
+            }
         } catch (error) {
             console.log(error)
         }

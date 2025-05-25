@@ -30,58 +30,58 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   callRescheduler: [],
   setCallRescheduler: (callRescheduler) => set({ callRescheduler }),
   filterTickets: {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
     dateRange: [],
-    status: [],
+    status: '',
     followUp: null
   },
   setFilterTickets: (filterTickets) => set({ filterTickets }),
   filterTicketsDiago: {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
     dateRange: [],
-    status: [],
+    status: '',
     followUp: null
   },
   setFilterTicketsDiago: (filterTicketsDiago) => set({ filterTicketsDiago }),
   filterTicketsFollowUp: {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
     dateRange: [],
-    status: [],
+    status: '',
     followUp: null
   },
   setFilterTicketsFollowUp: (filterTicketsFollowUp) =>
     set({ filterTicketsFollowUp }),
   BulkFilterTickets: {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
     dateRange: [],
-    status: [],
+    status: '',
     followUp: null
   },
   setBulkFilterTickets: (BulkFilterTickets) => set({ BulkFilterTickets }),
   BulkFilterTicketsDiago: {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
     dateRange: [],
-    status: [],
+    status: '',
     followUp: null
   },
   setBulkFilterTicketsDiago: (BulkFilterTicketsDiago) =>
     set({ BulkFilterTicketsDiago }),
   BulkFilterTicketsFollowUp: {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
     dateRange: [],
-    status: [],
+    status: '',
     followUp: null
   },
   setBulkFilterTicketsFollowUp: (BulkFilterTicketsFollowUp) =>

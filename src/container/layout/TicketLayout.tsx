@@ -1,3 +1,5 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable no-sequences */
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
@@ -28,6 +30,7 @@ import {
   getAllReminderHandler,
   getAllTaskCountHandler,
   getAllWhtsappCountHandler,
+  getTicketFilterHandler,
   getTicketHandler,
   getTicketHandlerSearch
 } from '../../api/ticket/ticketHandler';
@@ -100,6 +103,7 @@ import {
 import useReprentativeStore from '../../store/representative';
 import { getRepresntativesHandler } from '../../api/representive/representativeHandler';
 import { SpinnerDotted } from 'spinners-react';
+import { initialFiltersNew } from '../../constants/commomFunctions';
 
 const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} arrow classes={{ popper: className }} />
@@ -134,7 +138,7 @@ const menuItemStyles = {
   lineHeight: '150%'
 };
 const Ticket = () => {
-  const initialFilters: ticketFilterTypes = {
+  const oldInitialFilters = {
     stageList: [],
     representative: null,
     results: null,
@@ -157,7 +161,7 @@ const Ticket = () => {
     setTickets,
     ticketCache,
     emptyDataText,
-
+    filteredLocation,
     reminders,
     callRescheduler,
     loaderOn,
@@ -237,19 +241,21 @@ const Ticket = () => {
   //   );
   // };
 
+  let tickettype = localStorage.getItem('ticketType');
+
   const newFilter =
-    localStorage.getItem('ticketType') === 'Admission'
+    tickettype === 'Admission'
       ? filterTickets
-      : localStorage.getItem('ticketType') === 'Diagnostics'
+      : tickettype === 'Diagnostics'
       ? filterTicketsDiago
-      : localStorage.getItem('ticketType') === 'Follow-Up'
+      : tickettype === 'Follow-Up'
       ? filterTicketsFollowUp
       : {
-          stageList: [],
+          stageList: '',
           representative: null,
           results: null,
           dateRange: [],
-          status: [],
+          status: '',
           followUp: null
         };
 
@@ -262,7 +268,27 @@ const Ticket = () => {
     if (pageNo !== page) {
       setTickets([]);
       if (searchByName === '' || searchByName === 'undefined') {
-        await getTicketHandler(searchByName, pageNo, 'false', newFilter);
+        // await getTicketHandler(searchByName, pageNo, 'false', newFilter);
+        try {
+          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            await getTicketHandler(
+              searchByName,
+              pageNo,
+              'false',
+              oldInitialFilters
+            );
+          } else {
+            await getTicketFilterHandler(
+              searchByName,
+              pageNo,
+              'false',
+              newFilter
+            );
+          }
+        } catch (error) {
+          console.log(error);
+          setDownloadDisable(false);
+        }
       } else {
         await getTicketHandlerSearch(searchByName, pageNo, 'false', newFilter);
       }
@@ -306,7 +332,7 @@ const Ticket = () => {
       // setTickets(ticketCache[1]);
       setPage(1);
       setPageNumber(1);
-      await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
       setDownloadDisable(false);
     };
     data();
@@ -317,7 +343,7 @@ const Ticket = () => {
       try {
         setDownloadDisable(true);
         if (searchByName === '' || searchByName === 'undefined') {
-          await getTicketHandler(searchByName, 1, 'false', newFilter);
+          await getTicketHandler(searchByName, 1, 'false', oldInitialFilters);
         } else {
           await getTicketHandlerSearch(searchByName, 1, 'false', newFilter);
         }
@@ -579,16 +605,16 @@ const Ticket = () => {
     AllIntervals = [];
   };
   function hasChanges(newFilter, initialState) {
-    const optionalKeys = ['admissionType', 'diagnosticsType'];
+    // const optionalKeys = ['admissionType', 'diagnosticsType'];
     const filteredInitialState = { ...initialState };
     const filteredCurrentState = { ...newFilter };
 
-    for (const key of optionalKeys) {
-      // Remove the optional keys from the initial state if not present in current state
-      if (!(key in newFilter)) {
-        delete filteredInitialState[key];
-      }
-    }
+    // for (const key of optionalKeys) {
+    //   // Remove the optional keys from the initial state if not present in current state
+    //   if (!(key in newFilter)) {
+    //     delete filteredInitialState[key];
+    //   }
+    // }
 
     // Compare the filtered objects
     return (
@@ -610,25 +636,27 @@ const Ticket = () => {
   useEffect(() => {
     const refetchTickets = async () => {
       const initialStateForFilter = {
-        stageList: [],
+        stageList: '',
         representative: null,
         results: null,
-        admissionType: [],
-        diagnosticsType: [],
+        admissionType: '',
+        diagnosticsType: '',
         dateRange: [],
-        status: [],
+        status: '',
         followUp: null
       };
       if (
         pageNumberRef.current === 1 &&
+        searchByNameRef.current == '' &&
         hasChanges(newFilterRef.current, initialStateForFilter) &&
-        localStorage.getItem('ticketType') === 'Diagnostics'
+        !filteredLocation &&
+        tickettype === 'Diagnostics'
       ) {
         await getTicketHandler(
           searchByNameRef.current,
           pageNumberRef.current,
           'false',
-          newFilterRef.current
+          oldInitialFilters
         );
         if (localStorage.getItem('ticketType') === 'Admission') {
           await getTicketAfterNotification(
@@ -741,7 +769,12 @@ const Ticket = () => {
       hasChanges(newFilter, initialStateForFilter) &&
       (searchByName === 'undefined' || searchByName === '')
     ) {
-      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+      await getTicketHandler(
+        searchByName,
+        pageNumber,
+        'false',
+        oldInitialFilters
+      );
     }
   };
 
@@ -827,7 +860,12 @@ const Ticket = () => {
       hasChanges(newFilter, initialStateForFilter) &&
       (searchByName === 'undefined' || searchByName === '')
     ) {
-      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+      await getTicketHandler(
+        searchByName,
+        pageNumber,
+        'false',
+        initialStateForFilter
+      );
     }
   };
 
@@ -838,21 +876,11 @@ const Ticket = () => {
   }, [showCallReschedulerModal]);
 
   const { setFilterTickets } = useTicketStore();
-  // const initialFilters = {
-  //   stageList: [],
-  //   representative: null,
-  //   results: null,
-  //   admissionType: [],
-  //   diagnosticsType: [],
-  //   dateRange: [],
-  //   status: [],
-  //   followUp: null,
-  // };
 
   //This function call the api to get all the ticket id with their whtsapp message count
   const getAllWhtsappMsgCount = async () => {
     await getAllWhtsappCountHandler();
-    await getTicketHandler(searchName, pageNumber, 'false', newFilter);
+    await getTicketHandler(searchName, pageNumber, 'false', oldInitialFilters);
   };
   useEffect(() => {
     getAllWhtsappMsgCount();
@@ -890,11 +918,11 @@ const Ticket = () => {
       if (!isSwitchView) {
         navigate(
           `${
-            localStorage.getItem('ticketType') === 'Admission'
+            tickettype === 'Admission'
               ? '/admission/'
-              : localStorage.getItem('ticketType') === 'Diagnostics'
+              : tickettype === 'Diagnostics'
               ? '/diagnostics/'
-              : localStorage.getItem('ticketType') === 'Follow-Up'
+              : tickettype === 'Follow-Up'
               ? '/follow-up/'
               : '/ticket/'
           }`
@@ -1003,7 +1031,7 @@ const Ticket = () => {
     setDownloadDisable(true);
     // fetchRepresentatives();
     (async function () {
-      // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
       await getAllNotesWithoutTicketId();
       await getStagesHandler();
       await getSubStagesHandler();
@@ -1024,7 +1052,7 @@ const Ticket = () => {
     setPage(1);
     setPageNumber(1);
     setDownloadDisable(false);
-  }, [localStorage.getItem('ticketType')]);
+  }, [tickettype]);
 
   return (
     <>
@@ -1378,7 +1406,7 @@ const Ticket = () => {
               //   NO DATA FOUND
               // </Alert>
               <Box className="NotFound-Page">
-                <img src={NotFoundIcon} />
+                <img src={NotFoundIcon} alt="" />
                 <Stack className="NotFound-text">No Ticket Found</Stack>
                 <Stack className="NotFound-subtext">No Ticket Found</Stack>
               </Box>

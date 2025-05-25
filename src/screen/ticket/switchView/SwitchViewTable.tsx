@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useState } from 'react';
 import { useMatch, useNavigate, useParams } from 'react-router-dom';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
@@ -5,6 +6,7 @@ import useTicketStore from '../../../store/ticketStore';
 import {
   getAllCallReschedulerHandler,
   getAllReminderHandler,
+  getTicketFilterHandler,
   getTicketHandler
 } from '../../../api/ticket/ticketHandler';
 import { getAllNotesWithoutTicketId } from '../../../api/notes/allNote';
@@ -52,6 +54,8 @@ import dayjs from 'dayjs';
 import DownloadAllTickets from '../widgets/DownloadAllTickets';
 import { isNull } from 'util';
 import useUserStore from '../../../store/userStore';
+import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import { toast } from 'react-toastify';
 
 const datePickerStyle = {
   backgroundColor: '#E1E6EE',
@@ -264,7 +268,18 @@ function SwitchViewTable() {
       // } else {
       //   await getTicketHandler(searchName, pageNo, 'false', filterTickets);
       // }
-      await getTicketHandler(searchName, pageNo, 'false', newFilter);
+      // await getTicketHandler(searchName, pageNo, 'false', newFilter);
+      try {
+        if (hasChanges(newFilter, initialFiltersNew)) {
+          await getTicketHandler(searchByName, pageNo, 'false', oldInitialFilters);
+        } else {
+          await getTicketFilterHandler(searchByName, pageNo, 'false', newFilter);
+        }
+      } catch (error) {
+        console.log(error);
+        setDownloadDisable(false);
+        
+      }
       setPage(pageNo);
       setPageNumber(pageNo);
 
@@ -284,7 +299,18 @@ function SwitchViewTable() {
     // setTickets(ticketCache[1]);
     setPage(1);
     setPageNumber(1);
-    await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+    // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+    try {
+      if (hasChanges(newFilter, initialFiltersNew)) {
+        await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      
+    }
   };
 
   const handleSearchKeyPress = async (e: any) => {
@@ -318,7 +344,18 @@ function SwitchViewTable() {
   useEffect(() => {
     setDownloadDisable(true);
     (async function () {
-      await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+      try {
+        if (hasChanges(newFilter, initialFiltersNew)) {
+          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        } else {
+          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+        }
+      } catch (error) {
+        console.log(error);
+        setDownloadDisable(false);
+        
+      }
       await getAllNotesWithoutTicketId();
       await getStagesHandler();
       await getSubStagesHandler();
@@ -369,7 +406,7 @@ function SwitchViewTable() {
       console.log('refetch called');
       // let pageNumber = page;
       if (!ticketID) {
-        await getTicketHandler(searchName, pageNumber, 'false', newFilter);
+        await getTicketHandler(searchName, pageNumber, 'false', oldInitialFilters);
         localStorage.getItem('ticketType') === 'Admission' &&
           (await getTicketAfterNotification(
             searchName,
@@ -546,18 +583,18 @@ function SwitchViewTable() {
 
   const { setFilterTickets } = useTicketStore();
   const initialFilters = {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
-    admissionType: [],
-    diagnosticsType: [],
+    admissionType: '',
+    diagnosticsType: '',
     dateRange: [],
-    status: [],
+    status: '',
     followUp: null
   };
 
   const backToDashboard = () => {
-    getTicketHandler(UNDEFINED, 1, 'false', initialFilters);
+    getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
     setFilterTickets(initialFilters);
     // navigate('/')
     navigate(
@@ -714,7 +751,18 @@ function SwitchViewTable() {
   useEffect(() => {
     const data = async () => {
       setDownloadDisable(true);
-      await getTicketHandler(searchByName, 1, 'false', newFilter);
+      // await getTicketHandler(searchByName, 1, 'false', newFilter);
+      try {
+        if (hasChanges(newFilter, initialFiltersNew)) {
+          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        } else {
+          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+        }
+      } catch (error) {
+        console.log(error);
+        setDownloadDisable(false);
+        
+      }
       searchByName === '' || searchByName === 'undefined'
         ? setSearchError('Type to search & Enter')
         : setSearchError(

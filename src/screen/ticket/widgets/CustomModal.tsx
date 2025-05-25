@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -24,6 +25,7 @@ import {
   createNoteActivityHandler,
   createNotesHandler,
   createTimerHandler,
+  getTicketFilterHandler,
   getTicketHandler
 } from '../../../api/ticket/ticketHandler';
 import { useParams } from 'react-router-dom';
@@ -45,6 +47,7 @@ import {
   createSecondOpinion
 } from '../../../api/ticket/ticket';
 import { toast } from 'react-toastify';
+import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
 
 const CustomModal = () => {
   const label = { inputProps: { 'aria-label': 'Size switch demo' } };
@@ -221,7 +224,18 @@ const CustomModal = () => {
 
       // on submit button click after 1 second the ticket data will call
       (async () => {
-        await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+        // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+        try {
+          if (hasChanges(newFilter, initialFiltersNew)) {
+            await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+          } else {
+            await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+          }
+        } catch (error) {
+          console.log(error);
+          setDownloadDisable(false);
+          
+        }
       })();
 
       // Check if result is truthy (not undefined or null)

@@ -4,6 +4,7 @@ import {
   iNote,
   iReminder,
   iTicketFilter,
+  iTicketFilterOld,
   iTimer
 } from '../../types/store/ticket';
 import {
@@ -25,7 +26,8 @@ import {
   bulkAssignTickets,
   clearAssigneeTickets,
   getBulkTicket,
-  getSearchedTicket
+  getSearchedTicket,
+  getFilteredTicket
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -34,7 +36,7 @@ export const getTicketHandler = async (
   name: string,
   pageNumber: number,
   downloadAll: 'true' | 'false' = 'false',
-  selectedFilters: iTicketFilter | null,
+  selectedFilters: iTicketFilterOld | null,
   ticketId: string = UNDEFINED,
   fetchUpdated: boolean = false
 ) => {
@@ -60,6 +62,54 @@ export const getTicketHandler = async (
     ticketId,
     fetchUpdated,
     phone,
+    filteredLocation
+  );
+  const sortedTickets = data.tickets;
+  const count = data.count;
+
+  if (sortedTickets.length < 1) {
+    setEmptyDataText('No Data Found');
+  } else {
+    setEmptyDataText('');
+  }
+  if (name === UNDEFINED && downloadAll === 'false') {
+    setTicketCache({ ...ticketCache, [pageNumber]: sortedTickets, count });
+  }
+  if (downloadAll === 'true') {
+    setDownloadTickets(sortedTickets);
+    setLoaderOn(false);
+    return sortedTickets;
+  }
+  setTicketCount(count);
+  setTickets(sortedTickets);
+  setLoaderOn(false);
+};
+
+export const getTicketFilterHandler = async (
+  name: string,
+  pageNumber: number,
+  downloadAll: 'true' | 'false' = 'false',
+  selectedFilters: iTicketFilter | null,
+  ticketId: string = UNDEFINED,
+  fetchUpdated: boolean = false
+) => {
+  const {
+    setTickets,
+    setTicketCount,
+    setTicketCache,
+    ticketCache,
+    setEmptyDataText,
+    setDownloadTickets,
+    setLoaderOn,
+    filteredLocation
+  } = useTicketStore.getState();
+  const { user } = useUserStore.getState();
+  const phone = user?.phone;
+
+  setLoaderOn(true);
+  const data = await getFilteredTicket(
+    pageNumber,
+    selectedFilters,
     filteredLocation
   );
   const sortedTickets = data.tickets;

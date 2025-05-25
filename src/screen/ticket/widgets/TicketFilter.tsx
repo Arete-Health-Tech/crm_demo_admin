@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable eqeqeq */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { ClearAll, Difference, FilterList } from '@mui/icons-material';
 import {
   Badge,
@@ -39,6 +42,7 @@ import {
 } from '../../../constantUtils/constant';
 import {
   getAuditFilterTicketsHandler,
+  getTicketFilterHandler,
   getTicketHandler
 } from '../../../api/ticket/ticketHandler';
 import useUserStore from '../../../store/userStore';
@@ -48,15 +52,21 @@ import '../singleTicket.css';
 import AuditFilterIcon from '../../../assets/commentHeader.svg';
 import { Tooltip, TooltipProps, Zoom, tooltipClasses } from '@mui/material';
 import useReprentativeStore from '../../../store/representative';
+import { toast } from 'react-toastify';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 
 const drawerWidth = 450;
 export const ticketFilterCount = (
   selectedFilters: iTicketFilter,
-  admissionType: string[],
-  diagnosticsType: string[],
-  pairType: string[],
+  admissionType: string,
+  diagnosticsType: string,
+  pairType: string,
   dateRange: string[],
-  statusType: string[],
+  statusType: string,
   filteredLocation: string,
   isAmritsarUser: boolean,
   isHoshiarpurUser: boolean,
@@ -65,16 +75,16 @@ export const ticketFilterCount = (
   isKhannaUser: boolean,
   followUp: Date | null
 ) => {
-  const stageListCount = selectedFilters['stageList'].length;
+  const stageListCount = selectedFilters['stageList'] ? 1 : 0;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
 
-  const admissionCount = admissionType ? admissionType.length : 0;
-  const pairCount = pairType ? pairType.length : 0;
-  const diagnosticsCount = diagnosticsType ? diagnosticsType.length : 0;
+  const admissionCount = admissionType ? 1 : 0;
+  const pairCount = pairType ? 1 : 0;
+  const diagnosticsCount = diagnosticsType ? 1 : 0;
   const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
 
   const resultCount = selectedFilters['results'] ? 1 : 0;
-  const statusCount = statusType ? statusType.length : 0;
+  const statusCount = statusType ? 1 : 0;
   const followUpCount = followUp !== null ? 1 : 0;
 
   let locationCount = 0;
@@ -151,14 +161,15 @@ const TicketFilter = (props: {
   }));
 
   const initialFilters: ticketFilterTypes = {
-    stageList: [],
+    stageList: '',
     representative: null,
     results: null,
-    admissionType: [],
-    diagnosticsType: [],
+    admissionType: '',
+    diagnosticsType: '',
     dateRange: [],
-    status: [],
-    followUp: null
+    status: '',
+    followUp: null,
+    payerType: ''
   };
 
   const {
@@ -173,13 +184,11 @@ const TicketFilter = (props: {
   } = useTicketStore();
 
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
-  const [admissionType, setAdmissionType] = React.useState<string[]>([]);
-  const [pairType, setPairType] = React.useState<string[]>([]);
-  const [statusType, setStatusType] = React.useState<string[]>([]);
+  const [admissionType, setAdmissionType] = React.useState<string>('');
+  const [pairType, setPairType] = React.useState<string>('');
+  const [statusType, setStatusType] = React.useState<string>('');
   const [result, setResult] = React.useState('');
-  const [diagnosticsType, setDiagnosticsType] = React.useState<string[]>(
-    () => []
-  );
+  const [diagnosticsType, setDiagnosticsType] = React.useState<string>('');
   // const [speciality, setSpeciality] = React.useState<string[]>(() => []);
   const [stagesLabel, setStagesLabels] = React.useState<any>([]);
   const [representativeLabel, setRepresentativeLabel] = React.useState<any>([]);
@@ -263,22 +272,23 @@ const TicketFilter = (props: {
       }
     })();
   }, []);
-  console.log(filterCount);
+
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (selectedFilters.stageList.includes(value)) {
-      const modifiedStageList = selectedFilters.stageList;
-      modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
+    console.log(value);
+    // if (selectedFilters.stageList.includes(value)) {
+    //   const modifiedStageList = selectedFilters.stageList;
+    //   modifiedStageList.splice(modifiedStageList.indexOf(value), 1);
 
-      dispatchFilter({
-        type: filterActions.STAGES,
-        payload: [...modifiedStageList]
-      });
-      return;
-    }
+    //   dispatchFilter({
+    //     type: filterActions.STAGES,
+    //     payload: [...modifiedStageList]
+    //   });
+    //   return;
+    // }
     dispatchFilter({
       type: filterActions.STAGES,
-      payload: [...selectedFilters.stageList, value]
+      payload: value
     });
   };
 
@@ -299,7 +309,7 @@ const TicketFilter = (props: {
 
   const handleAdmissionType = (
     event: React.MouseEvent<HTMLElement>,
-    newAdmission: string[]
+    newAdmission: string
   ) => {
     setAdmissionType(newAdmission);
 
@@ -311,19 +321,19 @@ const TicketFilter = (props: {
 
   const handlePairType = (
     event: React.MouseEvent<HTMLElement>,
-    pairType: string[]
+    pairType: string
   ) => {
     setPairType(pairType);
 
     dispatchFilter({
-      type: filterActions.PAIRTYPE,
+      type: filterActions.PAYERTYPE,
       payload: pairType
     });
   };
 
   const handleStatusType = (
     event: React.MouseEvent<HTMLElement>,
-    Status: string[]
+    Status: string
   ) => {
     setStatusType(Status);
 
@@ -335,7 +345,7 @@ const TicketFilter = (props: {
 
   const handleDiagnosticsType = (
     event: React.MouseEvent<HTMLElement>,
-    newDiagnostics: string[]
+    newDiagnostics: string
   ) => {
     setDiagnosticsType(newDiagnostics);
     dispatchFilter({
@@ -394,7 +404,6 @@ const TicketFilter = (props: {
       });
     }
   };
-  console.log({ followUp });
 
   // const handleToggleChange = (event, newValue) => {
   //   setSelectedValue(newValue);
@@ -475,6 +484,61 @@ const TicketFilter = (props: {
     })();
   }, []);
 
+  const handleClearFilter = async () => {
+    dispatchFilter({ type: filterActions.STAGES, payload: '' });
+    dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
+    dispatchFilter({ type: filterActions.ADMISSIONTYPE, payload: '' });
+    dispatchFilter({ type: filterActions.DIAGNOSTICSTYPE, payload: '' });
+    dispatchFilter({ type: filterActions.DATERANGE, payload: [] });
+    dispatchFilter({ type: filterActions.RESULTS, payload: null });
+    dispatchFilter({ type: filterActions.STATUS, payload: '' });
+    dispatchFilter({ type: filterActions.FOLLOWUP, payload: null });
+    dispatchFilter({ type: filterActions.PAYERTYPE, payload: '' });
+
+    setCurrentRepresentative('');
+    setFilterCount(
+      ticketFilterCount(
+        selectedFilters,
+        admissionType,
+        pairType,
+        diagnosticsType,
+        dateRange,
+        statusType,
+        filteredLocation,
+        isAmritsarUser,
+        isMohaliUser,
+        isHoshiarpurUser,
+        isNawanshahrUser,
+        isKhannaUser,
+        followUp
+      )
+    );
+    setFilterCount(0);
+    setPageNumber(1);
+    setSelectedValue(null);
+    setSelectedValueLost(null);
+    setResult(' ');
+    setFollowUp(null);
+    setAdmissionType('');
+    setPairType('');
+    setStatusType('');
+    setDiagnosticsType('');
+    setDateRange(['', '']);
+    if (isAmritsarUser) {
+      setFilteredLocation('Amritsar');
+    } else if (isHoshiarpurUser) {
+      setFilteredLocation('Hoshiarpur');
+    } else if (isMohaliUser) {
+      setFilteredLocation('Mohali');
+    } else if (isNawanshahrUser) {
+      setFilteredLocation('Nawanshahr');
+    } else if (isKhannaUser) {
+      setFilteredLocation('Khanna');
+    } else {
+      setFilteredLocation('');
+    }
+  };
+
   const handleApplyFilter = async () => {
     // setTicketFilters({
     //   stageList: selectedStageList,
@@ -487,8 +551,20 @@ const TicketFilter = (props: {
     setIsFilterOpen(false);
     setPageNumber(1);
     setFilterTickets(selectedFilters);
-    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-    // console.log(isAmritsarUser, "selected again")
+
+    try {
+      if (hasChanges(selectedFilters, initialFilters) && !filteredLocation) {
+        await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      handleClearFilter();
+      // toast.error('Please Select Date Range');
+    }
+    // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     setFilterCount(
       ticketFilterCount(
         selectedFilters,
@@ -536,7 +612,18 @@ const TicketFilter = (props: {
     setIsFilterOpen(false);
     setPageNumber(1);
     setFilterTickets(selectedFilters);
-    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    try {
+      if (hasChanges(selectedFilters, initialFiltersNew)) {
+        await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      handleClearFilter();
+      // toast.error('Please Select Date Range');
+    }
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(0);
 
@@ -556,61 +643,6 @@ const TicketFilter = (props: {
       );
     }
     setDownloadDisable(false);
-  };
-
-  const handleClearFilter = async () => {
-    dispatchFilter({ type: filterActions.STAGES, payload: [] });
-    dispatchFilter({ type: filterActions.REPRESENTATIVE, payload: null });
-    dispatchFilter({ type: filterActions.ADMISSIONTYPE, payload: [] });
-    dispatchFilter({ type: filterActions.DIAGNOSTICSTYPE, payload: [] });
-    dispatchFilter({ type: filterActions.DATERANGE, payload: [] });
-    dispatchFilter({ type: filterActions.RESULTS, payload: null });
-    dispatchFilter({ type: filterActions.STATUS, payload: [] });
-    dispatchFilter({ type: filterActions.FOLLOWUP, payload: null });
-    dispatchFilter({ type: filterActions.PAIRTYPE, payload: null });
-
-    setCurrentRepresentative('');
-    setFilterCount(
-      ticketFilterCount(
-        selectedFilters,
-        admissionType,
-        pairType,
-        diagnosticsType,
-        dateRange,
-        statusType,
-        filteredLocation,
-        isAmritsarUser,
-        isMohaliUser,
-        isHoshiarpurUser,
-        isNawanshahrUser,
-        isKhannaUser,
-        followUp
-      )
-    );
-    setFilterCount(0);
-    setPageNumber(1);
-    setSelectedValue(null);
-    setSelectedValueLost(null);
-    setResult(' ');
-    setFollowUp(null);
-    setAdmissionType((prev) => []);
-    setPairType((prev) => []);
-    setStatusType((prev) => []);
-    setDiagnosticsType((prev) => []);
-    setDateRange(['', '']);
-    if (isAmritsarUser) {
-      setFilteredLocation('Amritsar');
-    } else if (isHoshiarpurUser) {
-      setFilteredLocation('Hoshiarpur');
-    } else if (isMohaliUser) {
-      setFilteredLocation('Mohali');
-    } else if (isNawanshahrUser) {
-      setFilteredLocation('Nawanshahr');
-    } else if (isKhannaUser) {
-      setFilteredLocation('Khanna');
-    } else {
-      setFilteredLocation('');
-    }
   };
 
   useEffect(() => {
@@ -636,7 +668,17 @@ const TicketFilter = (props: {
     setIsAuditorFilterOn(true);
   };
   const handleClearAuditorFilter = async () => {
-    await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    try {
+      if (hasChanges(selectedFilters, oldInitialFilters)) {
+        await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      // toast.error('Please Select Date Range');
+    }
     setIsAuditorFilterOn(false);
   };
 
@@ -760,7 +802,7 @@ const TicketFilter = (props: {
                       <Checkbox
                         value={id}
                         onChange={handleStageList}
-                        checked={selectedFilters.stageList.includes(id)}
+                        checked={selectedFilters.stageList === id}
                       />
                     }
                     label={
@@ -822,6 +864,7 @@ const TicketFilter = (props: {
               color="primary"
               value={result}
               onChange={handleResult}
+              exclusive
             >
               <ToggleButton
                 value="Won"
@@ -883,6 +926,7 @@ const TicketFilter = (props: {
             <ToggleButtonGroup
               color="primary"
               value={statusType}
+              exclusive
               onChange={handleStatusType}
             >
               {/* <ToggleButton value="dnd"
@@ -947,6 +991,7 @@ const TicketFilter = (props: {
               <ToggleButtonGroup
                 color="primary"
                 value={admissionType}
+                exclusive
                 onChange={handleAdmissionType}
               >
                 <ToggleButton
@@ -1037,6 +1082,7 @@ const TicketFilter = (props: {
             <ToggleButtonGroup
               color="primary"
               value={pairType}
+              exclusive
               onChange={handlePairType}
             >
               <ToggleButton
@@ -1086,6 +1132,7 @@ const TicketFilter = (props: {
               <ToggleButtonGroup
                 color="primary"
                 value={filteredLocation}
+                exclusive
                 // onChange={() => setFilteredLocation('Amritsar')}
                 onChange={handleLocation}
               >

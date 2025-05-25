@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable jsx-a11y/img-redundant-alt */
 import { Send } from '@mui/icons-material';
@@ -43,9 +44,12 @@ import { markAsRead } from '../../../../api/flow/flow';
 import {
   getAllWhtsappCountHandler,
   getTicketHandler,
-  getAllAuditTicketHandler
+  getAllAuditTicketHandler,
+  getTicketFilterHandler
 } from '../../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../../constantUtils/constant';
+import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../../constants/commomFunctions';
+import { toast } from 'react-toastify';
 type Props = { ticketId: string | undefined };
 
 const MessagingWidget = (props: Props) => {
@@ -109,7 +113,18 @@ const MessagingWidget = (props: Props) => {
         newFilter
       );
     } else {
-      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+      // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+      try {
+        if (hasChanges(newFilter, initialFiltersNew)) {
+          await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+        } else {
+          await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+        }
+      } catch (error) {
+        console.log(error);
+        // setDownloadDisable(false);
+        
+      }
     }
   };
 
@@ -124,7 +139,18 @@ const MessagingWidget = (props: Props) => {
         newFilter
       );
     } else {
-      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+      // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+      try {
+        if (hasChanges(newFilter, initialFiltersNew)) {
+          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        } else {
+          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+        }
+      } catch (error) {
+        console.log(error);
+        // setDownloadDisable(false);
+        
+      }
     }
   };
   useEffect(() => {

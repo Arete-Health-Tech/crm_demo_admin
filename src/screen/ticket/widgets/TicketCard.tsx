@@ -23,8 +23,9 @@ import '../singleTicket.css';
 import { apiClient, socket } from '../../../api/apiClient';
 import audited_icon from '../../../assets/audited_icon.svg';
 import { resyncTickets } from '../../../api/ticket/ticket';
-import { getTicketHandler } from '../../../api/ticket/ticketHandler';
+import { getTicketFilterHandler, getTicketHandler } from '../../../api/ticket/ticketHandler';
 import { toast } from 'react-toastify';
+import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
 
 // import { updateIsNewTicket } from '../../../api/ticket/ticket';
 
@@ -154,7 +155,18 @@ const TicketCard = (props: Props) => {
         try {
           setDownloadDisable(true);
           await resyncTickets(resyncDetail); // Wait until this API call completes
-          await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+          // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+          try {
+            if (hasChanges(newFilter, initialFiltersNew)) {
+              await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+            } else {
+              await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+            }
+          } catch (error) {
+            console.log(error);
+            setDownloadDisable(false);
+            
+          }
           setResyncDetail({
             ticketid: '',
             uhid: '',

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   Box,
   Button,
@@ -13,7 +14,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-import { getTicketHandler } from '../../../api/ticket/ticketHandler';
+import { getTicketFilterHandler, getTicketHandler } from '../../../api/ticket/ticketHandler';
 import { apiClient } from '../../../api/apiClient';
 import { useParams } from 'react-router-dom';
 import useTicketStore from '../../../store/ticketStore';
@@ -23,6 +24,7 @@ import CheckedActiveIcon from '../../../assets/NotActive.svg';
 import documentIcon from '../../../assets/document-text.svg';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
 
 function UploadEstimate() {
   const { ticketID } = useParams();
@@ -128,12 +130,23 @@ console.log("new")
       setIsEstimateUpload(true);
       toast.success('Uploaded Estimate Successfully!');
       (async () => {
-        const result = await getTicketHandler(
-          searchByName,
-          pageNumber,
-          'false',
-          newFilter
-        );
+        // const result = await getTicketHandler(
+        //   searchByName,
+        //   pageNumber,
+        //   'false',
+        //   newFilter
+        // );
+        try {
+          if (hasChanges(newFilter, initialFiltersNew)) {
+            await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+          } else {
+            await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+          }
+        } catch (error) {
+          console.log(error);
+          // setDownloadDisable(false);
+          
+        }
       })();
       setNoteTextValue('');
       setSelectedOption(' ');
@@ -141,12 +154,23 @@ console.log("new")
       setOpen(false);
     } catch (error) {
       (async () => {
-        const result = await getTicketHandler(
-          searchByName,
-          pageNumber,
-          'false',
-          newFilter
-        );
+        // const result = await getTicketHandler(
+        //   searchByName,
+        //   pageNumber,
+        //   'false',
+        //   newFilter
+        // );
+        try {
+          if (hasChanges(newFilter, initialFiltersNew)) {
+            await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+          } else {
+            await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+          }
+        } catch (error) {
+          console.log(error);
+          // setDownloadDisable(false);
+          
+        }
       })();
       setNoteTextValue('');
       setSelectedOption(' ');

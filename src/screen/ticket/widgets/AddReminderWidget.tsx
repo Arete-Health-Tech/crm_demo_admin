@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { NotificationAddOutlined } from '@mui/icons-material';
 import {
   Box,
@@ -17,6 +18,7 @@ import {
   createNewReminderHandler,
   getAllReminderHandler,
   getAllTaskCountHandler,
+  getTicketFilterHandler,
   getTicketHandler
 } from '../../../api/ticket/ticketHandler';
 import IconButton from '@mui/material/IconButton';
@@ -34,6 +36,7 @@ import NotifyToggle from '../../../assets/NotifyToggle.svg';
 import NotNotifyToggle from '../../../assets/NotNotifyToggle.svg';
 import useTicketStore from '../../../store/ticketStore';
 import { toast } from 'react-toastify';
+import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -166,7 +169,18 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
       setIsModalOpen(false);
       await getAllReminderHandler();
       await getAllTaskCountHandler();
-      await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+      // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+      try {
+        if (hasChanges(newFilter, initialFiltersNew)) {
+          await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+        } else {
+          await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+        }
+      } catch (error) {
+        console.log(error);
+        setDownloadDisable(false);
+        
+      }
       setDownloadDisable(false);
     } catch (error) {
       toast('Invalid time ...')

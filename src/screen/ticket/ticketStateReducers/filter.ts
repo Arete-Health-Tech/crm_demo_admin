@@ -9,86 +9,87 @@ import {
 import { iTicketFilter } from '../../../types/store/ticket';
 
 export interface ticketFilterTypes {
-  stageList: Array<any>;
+  stageList: string;
   representative: string | null;
   results: string | null;
 
   // ...
-  admissionType: string[];
-  diagnosticsType: string[];
+  admissionType: string;
+  diagnosticsType: string;
   dateRange: string[];
-  status: string[];
+  status: string;
   followUp: Date | null;
+  payerType: string;
 }
 
 export const selectedFiltersState: iTicketFilter = {
-  stageList: [],
+  stageList: '',
   representative: null,
   results: null,
   //  ....
-  admissionType: [],
-  diagnosticsType: [],
-  dateRange: ['', ''],
-  status: [],
+  admissionType: '',
+  diagnosticsType: '',
+  dateRange: [],
+  status: '',
   followUp: null
 };
 
 export const selectedFiltersStateDiago: iTicketFilter = {
-  stageList: [],
+  stageList: '',
   representative: null,
   results: null,
   //  ....
-  admissionType: [],
-  diagnosticsType: [],
+  admissionType: '',
+  diagnosticsType: '',
   dateRange: [],
-  status: [],
+  status: '',
   followUp: null
 };
 
 export const selectedFiltersStateFollowUp: iTicketFilter = {
-  stageList: [],
+  stageList: '',
   representative: null,
   results: null,
   //  ....
-  admissionType: [],
-  diagnosticsType: [],
+  admissionType: '',
+  diagnosticsType: '',
   dateRange: [],
-  status: [],
+  status: '',
   followUp: null
 };
 export const selectedBulkFiltersState: iTicketFilter = {
-  stageList: [],
+  stageList: '',
   representative: null,
   results: null,
   //  ....
-  admissionType: [],
-  diagnosticsType: [],
-  dateRange: ['', ''],
-  status: [],
+  admissionType: '',
+  diagnosticsType: '',
+  dateRange: [],
+  status: '',
   followUp: null
 };
 
 export const selectedBulkFiltersStateDiago: iTicketFilter = {
-  stageList: [],
+  stageList: '',
   representative: null,
   results: null,
   //  ....
-  admissionType: [],
-  diagnosticsType: [],
+  admissionType: '',
+  diagnosticsType: '',
   dateRange: [],
-  status: [],
+  status: '',
   followUp: null
 };
 
 export const selectedBulkFiltersStateFollowUp: iTicketFilter = {
-  stageList: [],
+  stageList: '',
   representative: null,
   results: null,
   //  ....
-  admissionType: [],
-  diagnosticsType: [],
+  admissionType: '',
+  diagnosticsType: '',
   dateRange: [],
-  status: [],
+  status: '',
   followUp: null
 };
 
@@ -160,10 +161,10 @@ export function selectedFiltersReducer(
       diagnosticsType: action.payload
     };
   }
-  if (action.type === filterActions.PAIRTYPE) {
+  if (action.type === filterActions.PAYERTYPE) {
     return {
       ...selectedFiltersState,
-      pairType: action.payload
+      payerType: action.payload
     };
   }
 
@@ -232,10 +233,10 @@ export function selectedFiltersReducerDiago(
       diagnosticsType: action.payload
     };
   }
-  if (action.type === filterActions.PAIRTYPE) {
+  if (action.type === filterActions.PAYERTYPE) {
     return {
       ...selectedFiltersState,
-      pairType: action.payload
+      payerType: action.payload
     };
   }
   if (action.type === filterActionsDiago.DATERANGE) {
@@ -303,10 +304,10 @@ export function selectedFiltersReducerFollowUp(
       diagnosticsType: action.payload
     };
   }
-  if (action.type === filterActions.PAIRTYPE) {
+  if (action.type === filterActions.PAYERTYPE) {
     return {
       ...selectedFiltersState,
-      pairType: action.payload
+      payerType: action.payload
     };
   }
   if (action.type === filterActionsFollowUp.DATERANGE) {
@@ -375,10 +376,10 @@ export function selectedBulkFiltersReducer(
       diagnosticsType: action.payload
     };
   }
-  if (action.type === filterActions.PAIRTYPE) {
+  if (action.type === filterActions.PAYERTYPE) {
     return {
       ...selectedFiltersState,
-      pairType: action.payload
+      payerType: action.payload
     };
   }
   if (action.type === bulkFilterActions.DATERANGE) {
@@ -446,10 +447,10 @@ export function selectedBulkFiltersReducerDiago(
       diagnosticsType: action.payload
     };
   }
-  if (action.type === filterActions.PAIRTYPE) {
+  if (action.type === filterActions.PAYERTYPE) {
     return {
       ...selectedFiltersState,
-      pairType: action.payload
+      payerType: action.payload
     };
   }
   if (action.type === bulkFilterActionsDiago.DATERANGE) {
@@ -517,10 +518,10 @@ export function selectedBulkFiltersReducerFollowUp(
       diagnosticsType: action.payload
     };
   }
-  if (action.type === filterActions.PAIRTYPE) {
+  if (action.type === filterActions.PAYERTYPE) {
     return {
       ...selectedFiltersState,
-      pairType: action.payload
+      payerType: action.payload
     };
   }
   if (action.type === bulkFilterActionsFollowUp.DATERANGE) {

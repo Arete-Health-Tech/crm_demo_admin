@@ -1257,11 +1257,11 @@ const Ticket = () => {
                     )}
                   </Box>
                 </Stack>
-                {user?.role === 'ADMIN' && (
+                {/* {user?.role === 'ADMIN' && (
                   <Stack>
                     <DownloadAllTickets />
                   </Stack>
-                )}
+                )} */}
 
                 <Stack
                   sx={{

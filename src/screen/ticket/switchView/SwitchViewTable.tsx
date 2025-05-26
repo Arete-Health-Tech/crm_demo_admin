@@ -54,7 +54,11 @@ import dayjs from 'dayjs';
 import DownloadAllTickets from '../widgets/DownloadAllTickets';
 import { isNull } from 'util';
 import useUserStore from '../../../store/userStore';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 import { toast } from 'react-toastify';
 
 const datePickerStyle = {
@@ -271,14 +275,23 @@ function SwitchViewTable() {
       // await getTicketHandler(searchName, pageNo, 'false', newFilter);
       try {
         if (hasChanges(newFilter, initialFiltersNew)) {
-          await getTicketHandler(searchByName, pageNo, 'false', oldInitialFilters);
+          await getTicketHandler(
+            searchByName,
+            pageNo,
+            'false',
+            oldInitialFilters
+          );
         } else {
-          await getTicketFilterHandler(searchByName, pageNo, 'false', newFilter);
+          await getTicketFilterHandler(
+            searchByName,
+            pageNo,
+            'false',
+            newFilter
+          );
         }
       } catch (error) {
         console.log(error);
         setDownloadDisable(false);
-        
       }
       setPage(pageNo);
       setPageNumber(pageNo);
@@ -309,7 +322,6 @@ function SwitchViewTable() {
     } catch (error) {
       console.log(error);
       setDownloadDisable(false);
-      
     }
   };
 
@@ -354,7 +366,6 @@ function SwitchViewTable() {
       } catch (error) {
         console.log(error);
         setDownloadDisable(false);
-        
       }
       await getAllNotesWithoutTicketId();
       await getStagesHandler();
@@ -406,7 +417,12 @@ function SwitchViewTable() {
       console.log('refetch called');
       // let pageNumber = page;
       if (!ticketID) {
-        await getTicketHandler(searchName, pageNumber, 'false', oldInitialFilters);
+        await getTicketHandler(
+          searchName,
+          pageNumber,
+          'false',
+          oldInitialFilters
+        );
         localStorage.getItem('ticketType') === 'Admission' &&
           (await getTicketAfterNotification(
             searchName,
@@ -761,7 +777,6 @@ function SwitchViewTable() {
       } catch (error) {
         console.log(error);
         setDownloadDisable(false);
-        
       }
       searchByName === '' || searchByName === 'undefined'
         ? setSearchError('Type to search & Enter')
@@ -791,11 +806,11 @@ function SwitchViewTable() {
           </Stack>
 
           <Stack display={'flex'} flexDirection={'row'}>
-            {user?.role !== 'REPRESENTATIVE' && (
+            {/* {user?.role !== 'REPRESENTATIVE' && (
               <Stack>
                 <DownloadAllTickets />
               </Stack>
-            )}
+            )} */}
             <Stack
               sx={{
                 marginTop: '5px',

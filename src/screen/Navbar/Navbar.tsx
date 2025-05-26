@@ -281,7 +281,6 @@ const Navbar = ({ children }) => {
   const handleGoToTicket = (e) => {
     if (isSwitchView) {
       goToPage('/switchView');
-      getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
     } else {
       goToPage(
         e === 'Diagnostics'
@@ -292,7 +291,6 @@ const Navbar = ({ children }) => {
           ? '/follow-up'
           : ''
       );
-      getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
     }
   };
 
@@ -416,6 +414,12 @@ const Navbar = ({ children }) => {
                     // onClick={() => goToPage('/ticket')}
                     onClick={() => {
                       localStorage.setItem('ticketType', 'Admission');
+                      getTicketHandler(
+                        UNDEFINED,
+                        1,
+                        'false',
+                        oldInitialFilters
+                      );
                       handleGoToTicket('Admission');
                       setFilteredLocation('');
                     }}
@@ -462,6 +466,12 @@ const Navbar = ({ children }) => {
                     // onClick={() => goToPage('/ticket')}
                     onClick={() => {
                       localStorage.setItem('ticketType', 'Diagnostics');
+                      getTicketHandler(
+                        UNDEFINED,
+                        1,
+                        'false',
+                        oldInitialFilters
+                      );
                       handleGoToTicket('Diagnostics');
                       setFilteredLocation('');
                     }}
@@ -508,6 +518,12 @@ const Navbar = ({ children }) => {
                     // onClick={() => goToPage('/ticket')}
                     onClick={() => {
                       localStorage.setItem('ticketType', 'Follow-Up');
+                      getTicketHandler(
+                        UNDEFINED,
+                        1,
+                        'false',
+                        oldInitialFilters
+                      );
                       handleGoToTicket('Follow-Up');
                       setFilteredLocation('');
                     }}

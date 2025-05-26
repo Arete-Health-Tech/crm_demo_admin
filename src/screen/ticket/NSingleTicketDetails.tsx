@@ -150,7 +150,11 @@ import {
 import { database } from '../../utils/firebase';
 import useReprentativeStore from '../../store/representative';
 import useUserStore from '../../store/userStore';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../constants/commomFunctions';
 import { toast } from 'react-toastify';
 // import { markAsRead } from '../../api/flow/flow';
 interface iConsumer {
@@ -212,6 +216,7 @@ const NSingleTicketDetails = (props: Props) => {
     filterTicketsFollowUp,
     reminders,
     pageNumber,
+    filteredLocation,
     searchByName,
     callRescheduler,
     estimates,
@@ -369,31 +374,49 @@ const NSingleTicketDetails = (props: Props) => {
         setAmissionTypeClicked(true);
         // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         try {
-        if (hasChanges(newFilter, initialFiltersNew)) {
-          await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
-        } else {
-          await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            await getTicketHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              oldInitialFilters
+            );
+          } else {
+            await getTicketFilterHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
+            );
+          }
+        } catch (error) {
+          console.log(error);
+          setDownloadDisable(false);
         }
-      } catch (error) {
-        console.log(error);
-        setDownloadDisable(false);
-        
-      }
       } catch (error) {
         setDisableButton(false);
         setAmissionTypeClicked(true);
         // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         try {
-        if (hasChanges(newFilter, initialFiltersNew)) {
-          await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
-        } else {
-          await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            await getTicketHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              oldInitialFilters
+            );
+          } else {
+            await getTicketFilterHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
+            );
+          }
+        } catch (error) {
+          console.log(error);
+          setDownloadDisable(false);
         }
-      } catch (error) {
-        console.log(error);
-        setDownloadDisable(false);
-        
-      }
       }
 
       // const url = ticketID !== undefined ? `/ticket/${ticketID}` : `/ticket`;
@@ -836,15 +859,24 @@ const NSingleTicketDetails = (props: Props) => {
     setProbabilityModal(false);
     // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew)) {
-        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          oldInitialFilters
+        );
       } else {
-        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+        await getTicketFilterHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
+        );
       }
     } catch (error) {
       console.log(error);
       setDownloadDisable(false);
-      
     }
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
@@ -880,15 +912,24 @@ const NSingleTicketDetails = (props: Props) => {
     // await deleteTicket(ticketID);
     // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew)) {
-        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          oldInitialFilters
+        );
       } else {
-        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+        await getTicketFilterHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
+        );
       }
     } catch (error) {
       console.log(error);
       setDownloadDisable(false);
-      
     }
     // await validateTicket(ticketID);
     navigate(
@@ -911,15 +952,24 @@ const NSingleTicketDetails = (props: Props) => {
     const res = await assignedToTicket(ticketID, assigneeId);
     // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew)) {
-        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          oldInitialFilters
+        );
       } else {
-        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+        await getTicketFilterHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
+        );
       }
     } catch (error) {
       console.log(error);
       setDownloadDisable(false);
-      
     }
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
@@ -945,15 +995,24 @@ const NSingleTicketDetails = (props: Props) => {
     const res = await removeFromTicket(ticketID, assigneeId);
     // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew)) {
-        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          oldInitialFilters
+        );
       } else {
-        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+        await getTicketFilterHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
+        );
       }
     } catch (error) {
       console.log(error);
       setDownloadDisable(false);
-      
     }
     if (isSwitchView) {
       navigate(`/switchView/${ticketID}`);
@@ -999,15 +1058,24 @@ const NSingleTicketDetails = (props: Props) => {
     await getAllWhtsappCountHandler();
     // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew)) {
-        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          oldInitialFilters
+        );
       } else {
-        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+        await getTicketFilterHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
+        );
       }
     } catch (error) {
       console.log(error);
       setDownloadDisable(false);
-      
     }
   };
 

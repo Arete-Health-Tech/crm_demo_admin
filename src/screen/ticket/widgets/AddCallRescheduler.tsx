@@ -43,7 +43,11 @@ import { outlinedInputClasses } from '@mui/material/OutlinedInput';
 import NotifyToggle from '../../../assets/NotifyToggle.svg';
 import NotNotifyToggle from '../../../assets/NotNotifyToggle.svg';
 import useTicketStore from '../../../store/ticketStore';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 import { toast } from 'react-toastify';
 
 const customTheme = (outerTheme: Theme) =>
@@ -117,8 +121,18 @@ const customTheme = (outerTheme: Theme) =>
   });
 
 const AddCallRescheduler = () => {
-  const { setIsModalOpenCall, isModalOpenCall, setDownloadDisable,pageNumber,searchByName,filterTickets,filterTicketsDiago,filterTicketsFollowUp } =
-    useTicketStore();
+  const {
+    setIsModalOpenCall,
+    isModalOpenCall,
+    setDownloadDisable,
+    pageNumber,
+    searchByName,
+    filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
+    filteredLocation,
+
+  } = useTicketStore();
 
   const style = {
     position: 'absolute' as 'absolute',
@@ -149,13 +163,13 @@ const AddCallRescheduler = () => {
   const outerTheme = useTheme();
 
   const newFilter =
-  localStorage.getItem('ticketType') === 'Admission'
-    ? filterTickets
-    : localStorage.getItem('ticketType') === 'Diagnostics'
-    ? filterTicketsDiago
-    : localStorage.getItem('ticketType') === 'Follow-Up'
-    ? filterTicketsFollowUp
-    : filterTickets;
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
 
   const checkIsEmpty = () => {
     if (
@@ -200,15 +214,24 @@ const AddCallRescheduler = () => {
       await getAllTaskCountHandler();
       // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew)) {
-          await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+          await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            oldInitialFilters
+          );
         } else {
-          await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+          await getTicketFilterHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            newFilter
+          );
         }
       } catch (error) {
         console.log(error);
         setDownloadDisable(false);
-        
       }
     } catch (error) {
       console.error('Error creating reminder:', error);

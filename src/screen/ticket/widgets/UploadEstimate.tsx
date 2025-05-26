@@ -14,7 +14,10 @@ import {
 } from '@mui/material';
 import React, { useEffect, useRef, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
-import { getTicketFilterHandler, getTicketHandler } from '../../../api/ticket/ticketHandler';
+import {
+  getTicketFilterHandler,
+  getTicketHandler
+} from '../../../api/ticket/ticketHandler';
 import { apiClient } from '../../../api/apiClient';
 import { useParams } from 'react-router-dom';
 import useTicketStore from '../../../store/ticketStore';
@@ -24,7 +27,11 @@ import CheckedActiveIcon from '../../../assets/NotActive.svg';
 import documentIcon from '../../../assets/document-text.svg';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 
 function UploadEstimate() {
   const { ticketID } = useParams();
@@ -35,7 +42,8 @@ function UploadEstimate() {
     pageNumber,
     searchByName,
     setViewEstimates,
-    setIsEstimateUpload
+    setIsEstimateUpload,
+    filteredLocation
   } = useTicketStore();
   const [open, setOpen] = useState(false);
   const [file, setFile] = useState(null);
@@ -72,7 +80,7 @@ function UploadEstimate() {
     setFile(null);
     setUploadFileName('');
   };
-console.log("new")
+  console.log('new');
   // const handleFileChange = (event: any) => {
   //   setFile(event.target.files[0]);
   //   setFileName(event.target.file[0].name)
@@ -137,15 +145,24 @@ console.log("new")
         //   newFilter
         // );
         try {
-          if (hasChanges(newFilter, initialFiltersNew)) {
-            await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            await getTicketHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              oldInitialFilters
+            );
           } else {
-            await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+            await getTicketFilterHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
+            );
           }
         } catch (error) {
           console.log(error);
           // setDownloadDisable(false);
-          
         }
       })();
       setNoteTextValue('');
@@ -161,15 +178,24 @@ console.log("new")
         //   newFilter
         // );
         try {
-          if (hasChanges(newFilter, initialFiltersNew)) {
-            await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            await getTicketHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              oldInitialFilters
+            );
           } else {
-            await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+            await getTicketFilterHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
+            );
           }
         } catch (error) {
           console.log(error);
           // setDownloadDisable(false);
-          
         }
       })();
       setNoteTextValue('');

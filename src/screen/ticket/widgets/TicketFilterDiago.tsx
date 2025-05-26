@@ -51,7 +51,11 @@ import '../singleTicket.css';
 import AuditFilterIcon from '../../../assets/commentHeader.svg';
 import { Tooltip, TooltipProps, Zoom, tooltipClasses } from '@mui/material';
 import useReprentativeStore from '../../../store/representative';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 import { toast } from 'react-toastify';
 
 const drawerWidth = 450;
@@ -242,19 +246,19 @@ const TicketFilter = (props: {
         if (amritsarFound) {
           // console.log("Its AmritSar User.", matchFound);
           SetIsAmritsarUser(true);
-          setFilteredLocation('Amritsar');
+          // setFilteredLocation('Amritsar');
         } else if (mohaliFound) {
           SetIsMohaliUser(true);
-          setFilteredLocation('Mohali');
+          // setFilteredLocation('Mohali');
         } else if (hoshiarpurFound) {
           SetIsHoshiarpurUser(true);
-          setFilteredLocation('Hoshiarpur');
+          // setFilteredLocation('Hoshiarpur');
         } else if (nawanshahrFound) {
           SetIsNnawanshahrUser(true);
-          setFilteredLocation('Nawanshahr');
+          // setFilteredLocation('Nawanshahr');
         } else if (khannaFound) {
           SetIsKhannaUser(true);
-          setFilteredLocation('Khanna');
+          // setFilteredLocation('Khanna');
         } else {
           setIsAdminUser(true);
           SetIsAmritsarUser(false);
@@ -484,7 +488,6 @@ const TicketFilter = (props: {
     })();
   }, []);
 
-
   const handleClearFilter = async () => {
     dispatchFilterDiago({ type: filterActionsDiago.STAGES, payload: '' });
     dispatchFilterDiago({
@@ -534,19 +537,20 @@ const TicketFilter = (props: {
     setStatusType('');
     setDiagnosticsType('');
     setDateRange(['', '']);
-    if (isAmritsarUser) {
-      setFilteredLocation('Amritsar');
-    } else if (isHoshiarpurUser) {
-      setFilteredLocation('Hoshiarpur');
-    } else if (isMohaliUser) {
-      setFilteredLocation('Mohali');
-    } else if (isNawanshahrUser) {
-      setFilteredLocation('Nawanshahr');
-    } else if (isKhannaUser) {
-      setFilteredLocation('Khanna');
-    } else {
-      setFilteredLocation('');
-    }
+    setFilteredLocation('');
+    // if (isAmritsarUser) {
+    //   setFilteredLocation('Amritsar');
+    // } else if (isHoshiarpurUser) {
+    //   setFilteredLocation('Hoshiarpur');
+    // } else if (isMohaliUser) {
+    //   setFilteredLocation('Mohali');
+    // } else if (isNawanshahrUser) {
+    //   setFilteredLocation('Nawanshahr');
+    // } else if (isKhannaUser) {
+    //   setFilteredLocation('Khanna');
+    // } else {
+    //   setFilteredLocation('');
+    // }
   };
 
   const handleApplyFilter = async () => {
@@ -557,27 +561,27 @@ const TicketFilter = (props: {
     //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
+    // setFilteredLocation(localStorage.getItem('location') || '');
+    console.log(filteredLocation);
+
     setDownloadDisable(true);
     setIsFilterOpen(false);
     setPageNumber(1);
     setFilterTicketsDiago(selectedFilters);
     console.log(filteredLocation);
     // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-     try {
-       if (
-         hasChanges(selectedFilters, initialFiltersNew) &&
-         !filteredLocation
-       ) {
-         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-       } else {
-         await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
-       }
-     } catch (error) {
-       console.log(error);
-       setDownloadDisable(false);
-       handleClearFilter()
-      //  toast.error('Please Select Date Range');
-     }
+    try {
+      if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
+        await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        setFilteredLocation(localStorage.getItem('location') || '');
+      } else {
+        await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
+      }
+    } catch (error) {
+      console.log({ error });
+      setDownloadDisable(false);
+      toast.error('Please Select Date Range');
+    }
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(
       ticketFilterCount(
@@ -624,23 +628,26 @@ const TicketFilter = (props: {
     //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
+    console.log('After ticketType change  Diago');
+
     setDownloadDisable(true);
     setIsFilterOpen(false);
     setPageNumber(1);
     setFilterTicketsDiago(selectedFilters);
     // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-     try {
-       if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
-         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-       } else {
-         await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
-       }
-     } catch (error) {
-       console.log(error);
-       setDownloadDisable(false);
-       handleClearFilter()
-       toast.error('Please Select Date Range');
-     }
+    try {
+      if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
+        await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        setFilteredLocation(localStorage.getItem('location') || '');
+      } else {
+        await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      handleClearFilter();
+      //  toast.error('Please Select Date Range');
+    }
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(0);
 

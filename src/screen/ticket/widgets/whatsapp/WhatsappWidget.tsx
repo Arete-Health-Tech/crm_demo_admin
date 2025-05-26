@@ -48,7 +48,11 @@ import {
   getTicketFilterHandler
 } from '../../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../../constantUtils/constant';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../../constants/commomFunctions';
 import { toast } from 'react-toastify';
 type Props = { ticketId: string | undefined };
 
@@ -66,7 +70,8 @@ const MessagingWidget = (props: Props) => {
     isAuditor,
     pageNumber,
     allWhtsappCount,
-    searchByName
+    searchByName,
+    filteredLocation
   } = useTicketStore();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState(null);
@@ -115,15 +120,24 @@ const MessagingWidget = (props: Props) => {
     } else {
       // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew)) {
-          await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+          await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            oldInitialFilters
+          );
         } else {
-          await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+          await getTicketFilterHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            newFilter
+          );
         }
       } catch (error) {
         console.log(error);
         // setDownloadDisable(false);
-        
       }
     }
   };
@@ -141,7 +155,7 @@ const MessagingWidget = (props: Props) => {
     } else {
       // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew)) {
+        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
           await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
         } else {
           await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
@@ -149,7 +163,6 @@ const MessagingWidget = (props: Props) => {
       } catch (error) {
         console.log(error);
         // setDownloadDisable(false);
-        
       }
     }
   };

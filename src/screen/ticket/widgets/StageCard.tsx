@@ -93,7 +93,8 @@ const StageCard = (props: Props) => {
     filterTicketsDiago,
     filterTicketsFollowUp,
     searchByName,
-    pageNumber
+    pageNumber,
+    filteredLocation
   } = useTicketStore();
   const navigate = useNavigate();
   const [hospitalName, setHospitalName] = useState('');
@@ -266,7 +267,7 @@ const StageCard = (props: Props) => {
         //   newFilter
         // );
         try {
-          if (hasChanges(newFilter, initialFiltersNew)) {
+          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
             result = await getTicketHandler(
               UNDEFINED,
               1,
@@ -284,7 +285,6 @@ const StageCard = (props: Props) => {
         } catch (error) {
           console.log(error);
           // setDownloadDisable(false);
-          
         }
         setTicketUpdateFlag(result);
       })();
@@ -425,7 +425,7 @@ const StageCard = (props: Props) => {
           //   newFilter
           // );
           try {
-            if (hasChanges(newFilter, initialFiltersNew)) {
+            if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
               result = await getTicketHandler(
                 UNDEFINED,
                 1,
@@ -443,7 +443,6 @@ const StageCard = (props: Props) => {
           } catch (error) {
             console.log(error);
             // setDownloadDisable(false);
-            
           }
           setTicketUpdateFlag(result);
         })();

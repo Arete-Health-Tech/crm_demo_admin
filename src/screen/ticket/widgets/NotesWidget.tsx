@@ -58,7 +58,8 @@ const NotesWidget = (props: Props) => {
     filterTicketsFollowUp,
     searchByName,
     pageNumber,
-    isAuditor
+    isAuditor,
+    filteredLocation
   } = useTicketStore();
   const [notesModal, setNotesModal] = useState(false);
   const [note, setNote] = useState('');
@@ -105,7 +106,7 @@ const NotesWidget = (props: Props) => {
           //   newFilter
           // );
           try {
-            if (hasChanges(newFilter, initialFiltersNew)) {
+            if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
               result = await getTicketHandler(
                 searchByName,
                 pageNumber,
@@ -123,7 +124,6 @@ const NotesWidget = (props: Props) => {
           } catch (error) {
             console.log(error);
             // setDownloadDisable(false);
-            
           }
           props.setTicketUpdateFlag(result);
         })();
@@ -148,7 +148,7 @@ const NotesWidget = (props: Props) => {
           //   newFilter
           // );
           try {
-            if (hasChanges(newFilter, initialFiltersNew)) {
+            if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
               result = await getTicketHandler(
                 searchByName,
                 pageNumber,
@@ -166,7 +166,6 @@ const NotesWidget = (props: Props) => {
           } catch (error) {
             console.log(error);
             // setDownloadDisable(false);
-            
           }
           setNotesClickedData(null);
           await getAllNotesHandler(ticketID as string);
@@ -201,7 +200,7 @@ const NotesWidget = (props: Props) => {
         //   newFilter
         // );
         try {
-          if (hasChanges(newFilter, initialFiltersNew)) {
+          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
             result = await getTicketHandler(
               searchByName,
               pageNumber,
@@ -219,7 +218,6 @@ const NotesWidget = (props: Props) => {
         } catch (error) {
           console.log(error);
           // setDownloadDisable(false);
-          
         }
         setNotesClickedData(null);
         await getAllNotesHandler(ticketID as string);

@@ -162,6 +162,7 @@ const Ticket = () => {
     ticketCache,
     emptyDataText,
     filteredLocation,
+    setFilteredLocation,
     reminders,
     callRescheduler,
     loaderOn,
@@ -240,6 +241,71 @@ const Ticket = () => {
   //     }`
   //   );
   // };
+
+  const [isAdminUser, setIsAdminUser] = useState(false);
+
+  const fetchRepresentatives = async () => {
+    try {
+      const fetchedRepresentative = await getRepresntativesHandler();
+
+      const mohaliFound = fetchedRepresentative?.some(
+        (rep) =>
+          rep.phone === phoneNumber && rep.Unit === '66a8bf565f223ac4d7fb6f38'
+      );
+
+      const amritsarFound = fetchedRepresentative?.some(
+        (rep) =>
+          rep.phone === phoneNumber && rep.Unit === '66a4caeaab18bee54eea0866'
+      );
+      const hoshiarpurFound = fetchedRepresentative?.some(
+        (rep) =>
+          rep.phone === phoneNumber && rep.Unit === '66bf5f702586bb9ea5598451'
+      );
+      const nawanshahrFound = fetchedRepresentative?.some(
+        (rep) =>
+          rep.phone === phoneNumber && rep.Unit === '66bf5f5c2586bb9ea5598450'
+      );
+      const khannaFound = fetchedRepresentative?.some(
+        (rep) =>
+          rep.phone === phoneNumber && rep.Unit === '66d5535689e33e0601248a79'
+      );
+
+      if (amritsarFound) {
+        localStorage.setItem('location', 'Amritsar');
+        // setFilteredLocation('Amritsar');
+
+        setIsAdminUser(false);
+      } else if (mohaliFound) {
+        localStorage.setItem('location', 'Mohali');
+        // setFilteredLocation('Mohali');
+
+        setIsAdminUser(false);
+      } else if (hoshiarpurFound) {
+        localStorage.setItem('location', 'Hoshiarpur');
+        // setFilteredLocation('Hoshiarpur');
+
+        setIsAdminUser(false);
+      } else if (nawanshahrFound) {
+        localStorage.setItem('location', 'Nawanshahr');
+        // setFilteredLocation('Nawanshahr');
+
+        setIsAdminUser(false);
+      } else if (khannaFound) {
+        localStorage.setItem('location', 'Khanna');
+        // setFilteredLocation('Khanna');
+
+        setIsAdminUser(false);
+      } else {
+        localStorage.setItem('location', '');
+        setIsAdminUser(true);
+      }
+    } catch (error) {
+      console.error('Error fetching representatives:', error);
+    }
+  };
+  useEffect(() => {
+    fetchRepresentatives();
+  }, []);
 
   let tickettype = localStorage.getItem('ticketType');
 
@@ -337,7 +403,12 @@ const Ticket = () => {
       // setTickets(ticketCache[1]);
       setPage(1);
       setPageNumber(1);
-      await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      // await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        await getTicketHandler(searchByName, 1, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(searchByName, 1, 'false', newFilter);
+      }
       setDownloadDisable(false);
     };
     data();
@@ -348,7 +419,12 @@ const Ticket = () => {
       try {
         setDownloadDisable(true);
         if (searchByName === '' || searchByName === 'undefined') {
-          await getTicketHandler(searchByName, 1, 'false', oldInitialFilters);
+          // await getTicketHandler(searchByName, 1, 'false', oldInitialFilters);
+          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+          } else {
+            await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+          }
         } else {
           await getTicketHandlerSearch(searchByName, 1, 'false', newFilter);
         }
@@ -889,7 +965,22 @@ const Ticket = () => {
   //This function call the api to get all the ticket id with their whtsapp message count
   const getAllWhtsappMsgCount = async () => {
     await getAllWhtsappCountHandler();
-    await getTicketHandler(searchName, pageNumber, 'false', oldInitialFilters);
+    // await getTicketHandler(searchName, pageNumber, 'false', oldInitialFilters);
+    if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+      await getTicketHandler(
+        searchByName,
+        pageNumber,
+        'false',
+        oldInitialFilters
+      );
+    } else {
+      await getTicketFilterHandler(
+        searchByName,
+        pageNumber,
+        'false',
+        newFilter
+      );
+    }
   };
   useEffect(() => {
     getAllWhtsappMsgCount();
@@ -943,64 +1034,6 @@ const Ticket = () => {
     setDownloadDisable(false);
   };
 
-  const [isAdminUser, setIsAdminUser] = useState(false);
-
-  const fetchRepresentatives = async () => {
-    try {
-      const fetchedRepresentative = await getRepresntativesHandler();
-
-      const mohaliFound = fetchedRepresentative?.some(
-        (rep) =>
-          rep.phone === phoneNumber && rep.Unit === '66a8bf565f223ac4d7fb6f38'
-      );
-
-      const amritsarFound = fetchedRepresentative?.some(
-        (rep) =>
-          rep.phone === phoneNumber && rep.Unit === '66a4caeaab18bee54eea0866'
-      );
-      const hoshiarpurFound = fetchedRepresentative?.some(
-        (rep) =>
-          rep.phone === phoneNumber && rep.Unit === '66bf5f702586bb9ea5598451'
-      );
-      const nawanshahrFound = fetchedRepresentative?.some(
-        (rep) =>
-          rep.phone === phoneNumber && rep.Unit === '66bf5f5c2586bb9ea5598450'
-      );
-      const khannaFound = fetchedRepresentative?.some(
-        (rep) =>
-          rep.phone === phoneNumber && rep.Unit === '66d5535689e33e0601248a79'
-      );
-
-      if (amritsarFound) {
-        localStorage.setItem('location', 'Amritsar');
-        setIsAdminUser(false);
-      } else if (mohaliFound) {
-        localStorage.setItem('location', 'Mohali');
-        setIsAdminUser(false);
-      } else if (hoshiarpurFound) {
-        localStorage.setItem('location', 'Hoshiarpur');
-        setIsAdminUser(false);
-      } else if (nawanshahrFound) {
-        localStorage.setItem('location', 'Nawanshahr');
-        setIsAdminUser(false);
-      } else if (khannaFound) {
-        localStorage.setItem('location', 'Khanna');
-        setIsAdminUser(false);
-      } else {
-        localStorage.setItem('location', '');
-        setIsAdminUser(true);
-      }
-    } catch (error) {
-      console.error('Error fetching representatives:', error);
-    }
-  };
-  useEffect(() => {
-    fetchRepresentatives();
-  }, [
-    phone
-    // [ localStorage.getItem( 'ticketType' ) ]
-  ]);
-
   useEffect(() => {
     setPageNumber(1);
     const fetchData = async () => {
@@ -1040,7 +1073,22 @@ const Ticket = () => {
     setDownloadDisable(true);
     // fetchRepresentatives();
     (async function () {
-      await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      // await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      //  if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+      //    await getTicketHandler(
+      //      UNDEFINED,
+      //      1,
+      //      'false',
+      //      oldInitialFilters
+      //    );
+      //  } else {
+      //    await getTicketFilterHandler(
+      //      UNDEFINED,
+      //      1,
+      //      'false',
+      //      newFilter
+      //    );
+      //  }
       await getAllNotesWithoutTicketId();
       await getStagesHandler();
       await getSubStagesHandler();

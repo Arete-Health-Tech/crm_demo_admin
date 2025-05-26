@@ -28,11 +28,18 @@ import useServiceStore from '../../../../store/serviceStore';
 import { iDepartment, iDoctor } from '../../../../types/store/service';
 import { Interface } from 'readline';
 import { updateConusmerData } from '../../../../api/ticket/ticket';
-import { getTicketFilterHandler, getTicketHandler } from '../../../../api/ticket/ticketHandler';
+import {
+  getTicketFilterHandler,
+  getTicketHandler
+} from '../../../../api/ticket/ticketHandler';
 import { apiClient } from '../../../../api/apiClient';
 import dayjs from 'dayjs';
 import { toast } from 'react-toastify';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../../constants/commomFunctions';
 
 const CopyToClipboardIcon = () => (
   <svg
@@ -207,7 +214,8 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
     isEstimateUpload,
     setIsEstimateUpload,
     isAuditor,
-    setDownloadDisable
+    setDownloadDisable,
+    filteredLocation
   } = useTicketStore();
   const newFilter =
     localStorage.getItem('ticketType') === 'Admission'
@@ -426,15 +434,24 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
       await updateConusmerData(updatedData, ticketID);
       // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew)) {
-          await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+          await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            oldInitialFilters
+          );
         } else {
-          await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+          await getTicketFilterHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            newFilter
+          );
         }
       } catch (error) {
         console.log(error);
         setDownloadDisable(false);
-        
       }
       setIsEditing(false);
       setDownloadDisable(false);

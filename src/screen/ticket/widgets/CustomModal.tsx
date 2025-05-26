@@ -47,7 +47,11 @@ import {
   createSecondOpinion
 } from '../../../api/ticket/ticket';
 import { toast } from 'react-toastify';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 
 const CustomModal = () => {
   const label = { inputProps: { 'aria-label': 'Size switch demo' } };
@@ -63,7 +67,8 @@ const CustomModal = () => {
     searchByName,
     setIsModalOpenCall,
     setAgentLogin,
-    setDownloadDisable
+    setDownloadDisable,
+    filteredLocation
   } = useTicketStore();
   const [timer, setTimer] = useState(0);
 
@@ -226,15 +231,24 @@ const CustomModal = () => {
       (async () => {
         // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         try {
-          if (hasChanges(newFilter, initialFiltersNew)) {
-            await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            await getTicketHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              oldInitialFilters
+            );
           } else {
-            await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+            await getTicketFilterHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
+            );
           }
         } catch (error) {
           console.log(error);
           setDownloadDisable(false);
-          
         }
       })();
 

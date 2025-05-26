@@ -22,6 +22,8 @@ export const getTicket = async (
   lose?: any
 ) => {
   console.log(localStorage.getItem('ticketType'));
+  console.log('calling from ticketfilter old api', filteredLocation);
+
   const params = new URLSearchParams(selectedFilters).toString();
   // const timestamp = new Date().getTime();
   const { data } = await apiClient.get(
@@ -252,10 +254,9 @@ export const getFilteredTicket = async (
     if (dateRange && dateRange[1]) params.set('endDate', dateRange[1]);
     if (selectedFilters.payerType)
       params.set('payerType', selectedFilters.payerType);
-     if (selectedFilters.stageList)
-       params.set('stage', selectedFilters.stageList);
-     if (selectedFilters.status) params.set('status', selectedFilters.status);
-
+    if (selectedFilters.stageList)
+      params.set('stage', selectedFilters.stageList);
+    if (selectedFilters.status) params.set('status', selectedFilters.status);
 
     // Below checking the count of filters applied one or more
     const countCheck = (selectedFilter: any, location: string) => {

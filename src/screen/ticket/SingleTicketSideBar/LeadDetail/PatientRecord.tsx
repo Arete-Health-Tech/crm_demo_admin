@@ -32,11 +32,18 @@ import {
   updateConusmerData,
   updateService
 } from '../../../../api/ticket/ticket';
-import { getTicketFilterHandler, getTicketHandler } from '../../../../api/ticket/ticketHandler';
+import {
+  getTicketFilterHandler,
+  getTicketHandler
+} from '../../../../api/ticket/ticketHandler';
 import { elements } from 'chart.js';
 import { UNDEFINED } from '../../../../constantUtils/constant';
 import { apiClient } from '../../../../api/apiClient';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../../constants/commomFunctions';
 import { toast } from 'react-toastify';
 
 const EditIcon = () => (
@@ -121,7 +128,8 @@ const PatientRecord = ({ isPatient }) => {
     filterTicketsFollowUp,
     searchByName,
     pageNumber,
-    isAuditor
+    isAuditor,
+    filteredLocation
   } = useTicketStore();
   const [currentTicket, setCurrentTicket] = React.useState<iTicket>();
   const [isEditing, setIsEditing] = React.useState(false);
@@ -201,15 +209,24 @@ const PatientRecord = ({ isPatient }) => {
 
     // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew)) {
-        await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          oldInitialFilters
+        );
       } else {
-        await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+        await getTicketFilterHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
+        );
       }
     } catch (error) {
       console.log(error);
       // setDownloadDisable(false);
-      
     }
     setIsEditing(false);
     setAdmissionType('');
@@ -228,7 +245,7 @@ const PatientRecord = ({ isPatient }) => {
       await updateConusmerData(updatedData, ticketID);
       // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew)) {
+        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
           await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
         } else {
           await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
@@ -236,7 +253,6 @@ const PatientRecord = ({ isPatient }) => {
       } catch (error) {
         console.log(error);
         // setDownloadDisable(false);
-        
       }
     }
 
@@ -299,7 +315,7 @@ const PatientRecord = ({ isPatient }) => {
     setIsDiagonsticTestEditing(false);
     // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew)) {
+      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
       } else {
         await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
@@ -307,7 +323,6 @@ const PatientRecord = ({ isPatient }) => {
     } catch (error) {
       console.log(error);
       // setDownloadDisable(false);
-      
     }
   };
 
@@ -390,7 +405,7 @@ const PatientRecord = ({ isPatient }) => {
       setIsEditing(false);
       // getTicketHandler(UNDEFINED, 1, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew)) {
+        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
           await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
         } else {
           await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
@@ -398,7 +413,6 @@ const PatientRecord = ({ isPatient }) => {
       } catch (error) {
         console.log(error);
         // setDownloadDisable(false);
-        
       }
 
       // const url = ticketID !== undefined ? `/ticket/${ticketID}` : `/ticket`;

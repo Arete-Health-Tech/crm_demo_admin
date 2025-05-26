@@ -268,7 +268,8 @@ const Navbar = ({ children }) => {
     setTicketType,
     setFilterTickets,
     setFilterTicketsDiago,
-    setFilterTicketsFollowUp
+    setFilterTicketsFollowUp,
+    setFilteredLocation
   } = useTicketStore();
   const [expandedMenu, setExpandedMenu] = React.useState(null);
   const { isSwitchView, setIsSwitchView, setPageNumber } = useTicketStore();
@@ -414,6 +415,7 @@ const Navbar = ({ children }) => {
                     onClick={() => {
                       localStorage.setItem('ticketType', 'Admission');
                       handleGoToTicket('Admission');
+                      setFilteredLocation('');
                     }}
                     sx={{
                       display: 'flex',
@@ -459,6 +461,7 @@ const Navbar = ({ children }) => {
                     onClick={() => {
                       localStorage.setItem('ticketType', 'Diagnostics');
                       handleGoToTicket('Diagnostics');
+                      setFilteredLocation('');
                     }}
                     sx={{
                       display: 'flex',
@@ -504,6 +507,7 @@ const Navbar = ({ children }) => {
                     onClick={() => {
                       localStorage.setItem('ticketType', 'Follow-Up');
                       handleGoToTicket('Follow-Up');
+                      setFilteredLocation('');
                     }}
                     sx={{
                       display: 'flex',

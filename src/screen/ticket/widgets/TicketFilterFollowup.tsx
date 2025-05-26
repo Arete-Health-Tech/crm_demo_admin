@@ -246,19 +246,19 @@ const TicketFilter = (props: {
         if (amritsarFound) {
           // console.log("Its AmritSar User.", matchFound);
           SetIsAmritsarUser(true);
-          setFilteredLocation('Amritsar');
+          // setFilteredLocation('Amritsar');
         } else if (mohaliFound) {
           SetIsMohaliUser(true);
-          setFilteredLocation('Mohali');
+          // setFilteredLocation('Mohali');
         } else if (hoshiarpurFound) {
           SetIsHoshiarpurUser(true);
-          setFilteredLocation('Hoshiarpur');
+          // setFilteredLocation('Hoshiarpur');
         } else if (nawanshahrFound) {
           SetIsNnawanshahrUser(true);
-          setFilteredLocation('Nawanshahr');
+          // setFilteredLocation('Nawanshahr');
         } else if (khannaFound) {
           SetIsKhannaUser(true);
-          setFilteredLocation('Khanna');
+          // setFilteredLocation('Khanna');
         } else {
           setIsAdminUser(true);
           SetIsAmritsarUser(false);
@@ -549,19 +549,20 @@ const TicketFilter = (props: {
     setStatusType('');
     setDiagnosticsType('');
     setDateRange([]);
-    if (isAmritsarUser) {
-      setFilteredLocation('Amritsar');
-    } else if (isHoshiarpurUser) {
-      setFilteredLocation('Hoshiarpur');
-    } else if (isMohaliUser) {
-      setFilteredLocation('Mohali');
-    } else if (isNawanshahrUser) {
-      setFilteredLocation('Nawanshahr');
-    } else if (isKhannaUser) {
-      setFilteredLocation('Khanna');
-    } else {
-      setFilteredLocation('');
-    }
+    setFilteredLocation('');
+    // if (isAmritsarUser) {
+    //   setFilteredLocation('Amritsar');
+    // } else if (isHoshiarpurUser) {
+    //   setFilteredLocation('Hoshiarpur');
+    // } else if (isMohaliUser) {
+    //   setFilteredLocation('Mohali');
+    // } else if (isNawanshahrUser) {
+    //   setFilteredLocation('Nawanshahr');
+    // } else if (isKhannaUser) {
+    //   setFilteredLocation('Khanna');
+    // } else {
+    //   setFilteredLocation('');
+    // }
   };
 
   const handleApplyFilter = async () => {
@@ -572,6 +573,9 @@ const TicketFilter = (props: {
     //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
+    // setFilteredLocation(localStorage.getItem('location') || '');
+    console.log(filteredLocation);
+
     setDownloadDisable(true);
     setIsFilterOpen(false);
     setPageNumber(1);
@@ -582,14 +586,14 @@ const TicketFilter = (props: {
       if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
         console.log('inside folloup if condition');
         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        setFilteredLocation(localStorage.getItem('location') || '');
       } else {
         await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
       }
     } catch (error) {
       console.log(error);
       setDownloadDisable(false);
-      handleClearFilter();
-      // toast.error('Please Select Date Range');
+      toast.error('Please Select Date Range');
     }
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(
@@ -637,6 +641,7 @@ const TicketFilter = (props: {
     //   startDate: startDate ? dayjs(startDate).unix() * 1000 : NaN,
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
+    console.log('After ticketType change  followup');
     setDownloadDisable(true);
     setIsFilterOpen(false);
     setPageNumber(1);
@@ -646,6 +651,7 @@ const TicketFilter = (props: {
       if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
         console.log('inside folloup if condition');
         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        setFilteredLocation(localStorage.getItem('location') || '');
       } else {
         await getTicketFilterHandler(
           UNDEFINED,

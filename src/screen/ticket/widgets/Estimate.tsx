@@ -61,7 +61,10 @@ import {
   serviceAdded
 } from '../../../types/store/service';
 import { iEstimate } from '../../../types/store/ticket';
-import { getTicketFilterHandler, getTicketHandler } from '../../../api/ticket/ticketHandler';
+import {
+  getTicketFilterHandler,
+  getTicketHandler
+} from '../../../api/ticket/ticketHandler';
 import {
   NAVIGATE_TO_SWITCHVIEW_TICKET,
   NAVIGATE_TO_TICKET,
@@ -77,7 +80,11 @@ import { toast } from 'react-toastify';
 import CloseModalIcon from '../../../assets/Group 48095853.svg';
 import UploadEstimate from './UploadEstimate';
 import useUserStore from '../../../store/userStore';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 
 type Props = { setTicketUpdateFlag: any };
 
@@ -146,7 +153,8 @@ const Estimate = (props: Props) => {
     filterTicketsDiago,
     filterTicketsFollowUp,
     searchByName,
-    pageNumber
+    pageNumber,
+    filteredLocation
   } = useTicketStore();
   const [ticketUpdateFlag, setTicketUpdateFlag] = useState({});
 
@@ -325,15 +333,24 @@ const Estimate = (props: Props) => {
       (async () => {
         // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         try {
-          if (hasChanges(newFilter, initialFiltersNew)) {
-            await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            await getTicketHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              oldInitialFilters
+            );
           } else {
-            await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+            await getTicketFilterHandler(
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
+            );
           }
         } catch (error) {
           console.log(error);
           // setDownloadDisable(false);
-          
         }
         props.setTicketUpdateFlag(result);
       })();
@@ -374,7 +391,10 @@ const Estimate = (props: Props) => {
             //   newFilter
             // );
             try {
-              if (hasChanges(newFilter, initialFiltersNew)) {
+              if (
+                hasChanges(newFilter, initialFiltersNew) &&
+                !filteredLocation
+              ) {
                 await getTicketHandler(
                   UNDEFINED,
                   1,
@@ -387,7 +407,6 @@ const Estimate = (props: Props) => {
             } catch (error) {
               console.log(error);
               // setDownloadDisable(false);
-              
             }
             setTicketUpdateFlag(result);
           })();

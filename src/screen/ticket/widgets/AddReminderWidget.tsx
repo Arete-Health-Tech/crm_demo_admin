@@ -36,7 +36,11 @@ import NotifyToggle from '../../../assets/NotifyToggle.svg';
 import NotNotifyToggle from '../../../assets/NotNotifyToggle.svg';
 import useTicketStore from '../../../store/ticketStore';
 import { toast } from 'react-toastify';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -115,7 +119,15 @@ type Props = {
 
 const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
   const { ticketID } = useParams();
-  const { setDownloadDisable,searchByName,pageNumber,filterTickets,filterTicketsDiago,filterTicketsFollowUp } = useTicketStore();
+  const {
+    setDownloadDisable,
+    searchByName,
+    pageNumber,
+    filterTickets,
+    filterTicketsDiago,
+    filterTicketsFollowUp,
+    filteredLocation
+  } = useTicketStore();
   const [reminderData, setReminderData] = useState({
     date: 0,
     title: '',
@@ -128,13 +140,13 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
   const [isNotify, setIsNotify] = useState(false);
   const outerTheme = useTheme();
   const newFilter =
-  localStorage.getItem('ticketType') === 'Admission'
-    ? filterTickets
-    : localStorage.getItem('ticketType') === 'Diagnostics'
-    ? filterTicketsDiago
-    : localStorage.getItem('ticketType') === 'Follow-Up'
-    ? filterTicketsFollowUp
-    : filterTickets;
+    localStorage.getItem('ticketType') === 'Admission'
+      ? filterTickets
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? filterTicketsDiago
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? filterTicketsFollowUp
+      : filterTickets;
   const checkIsEmpty = () => {
     if (reminderData.title.length > 0 && date.length > 0 && time.length > 0) {
       setDisableButton((_) => false);
@@ -171,19 +183,28 @@ const AddReminderWidget = ({ isModalOpen, setIsModalOpen }: Props) => {
       await getAllTaskCountHandler();
       // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew)) {
-          await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+          await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            oldInitialFilters
+          );
         } else {
-          await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+          await getTicketFilterHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            newFilter
+          );
         }
       } catch (error) {
         console.log(error);
         setDownloadDisable(false);
-        
       }
       setDownloadDisable(false);
     } catch (error) {
-      toast('Invalid time ...')
+      toast('Invalid time ...');
       setTime('');
       setDownloadDisable(false);
     }

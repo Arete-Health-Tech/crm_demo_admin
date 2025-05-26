@@ -32,7 +32,11 @@ import {
   markAsReadAuditComment
 } from '../../../api/ticket/ticket';
 import { socket } from '../../../api/apiClient';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 import { toast } from 'react-toastify';
 
 const TaskBar = () => {
@@ -43,16 +47,14 @@ const TaskBar = () => {
     filterTickets,
     filterTicketsDiago,
     filterTicketsFollowUp,
-    isAuditorFilterOn,
-    setIsAuditorFilterOn
-  } = useTicketStore();
-  const {
-    isModalOpenCall,
-    setIsModalOpenCall,
-    searchByName,
-    pageNumber,
     allAuditCommentCount,
-    setAllAuditCommentCount
+    isAuditorFilterOn,
+    setIsModalOpenCall,
+    filteredLocation,
+    setIsAuditorFilterOn,
+    setAllAuditCommentCount,
+    pageNumber,
+    searchByName
   } = useTicketStore();
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedOption, setSelectedOption] = useState(null);
@@ -160,7 +162,7 @@ const TaskBar = () => {
     if (!isAuditorFilterOn) {
       // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew)) {
+        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
           await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
         } else {
           await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
@@ -168,7 +170,6 @@ const TaskBar = () => {
       } catch (error) {
         console.log(error);
         // setDownloadDisable(false);
-        
       }
     } else {
       await getAuditFilterTicketsHandler();
@@ -208,15 +209,24 @@ const TaskBar = () => {
     });
     // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew)) {
-        await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        await getTicketHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          oldInitialFilters
+        );
       } else {
-        await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+        await getTicketFilterHandler(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
+        );
       }
     } catch (error) {
       console.log(error);
       // setDownloadDisable(false);
-      
     }
   };
 

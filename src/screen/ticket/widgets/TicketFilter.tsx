@@ -613,7 +613,7 @@ const TicketFilter = (props: {
     setPageNumber(1);
     setFilterTickets(selectedFilters);
     try {
-      if (hasChanges(selectedFilters, initialFiltersNew)) {
+      if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
       } else {
         await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);

@@ -281,6 +281,7 @@ const Navbar = ({ children }) => {
   const handleGoToTicket = (e) => {
     if (isSwitchView) {
       goToPage('/switchView');
+      getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
     } else {
       goToPage(
         e === 'Diagnostics'
@@ -291,6 +292,7 @@ const Navbar = ({ children }) => {
           ? '/follow-up'
           : ''
       );
+      getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
     }
   };
 

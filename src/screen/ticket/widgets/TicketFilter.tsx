@@ -559,7 +559,7 @@ const TicketFilter = (props: {
     try {
       if (hasChanges(selectedFilters, initialFilters) && !filteredLocation) {
         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-        setFilteredLocation(localStorage.getItem('location') || '');
+        // setFilteredLocation(localStorage.getItem('location') || '');
       } else {
         await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
       }
@@ -620,7 +620,7 @@ const TicketFilter = (props: {
     try {
       if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-        setFilteredLocation(localStorage.getItem('location') || '');
+        // setFilteredLocation(localStorage.getItem('location') || '');
       } else {
         await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
       }

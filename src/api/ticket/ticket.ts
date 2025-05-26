@@ -81,6 +81,10 @@ export const getFilteredTicket = async (
     if (selectedFilters.admissionType)
       params.set('admission', selectedFilters.admissionType);
     if (filteredLocation) params.set('location', filteredLocation);
+    const location = localStorage.getItem('location');
+    if (location && location !== '') {
+      params.set('location', location);
+    }
     if (dateRange && dateRange[0]) params.set('startDate', dateRange[0]);
     if (dateRange && dateRange[1]) params.set('endDate', dateRange[1]);
     if (selectedFilters.payerType)
@@ -106,7 +110,12 @@ export const getFilteredTicket = async (
       if (location && location !== '') {
         count += 1;
       }
-
+      if (
+        localStorage.getItem('location') &&
+        localStorage.getItem('location') !== ''
+      ) {
+        count += 1;
+      }
       return count;
     };
 
@@ -173,6 +182,10 @@ export const getFilteredTicket = async (
     }
     if (pageNumber) params.set('page', pageNumber.toString());
     if (filteredLocation) params.set('location', filteredLocation);
+    const location = localStorage.getItem('location');
+    if (location && location !== '') {
+      params.set('location', location);
+    }
     if (dateRange && dateRange[0]) params.set('startDate', dateRange[0]);
     if (dateRange && dateRange[1]) params.set('endDate', dateRange[1]);
     if (selectedFilters.payerType)
@@ -196,6 +209,12 @@ export const getFilteredTicket = async (
       });
 
       if (location && location !== '') {
+        count += 1;
+      }
+      if (
+        localStorage.getItem('location') &&
+        localStorage.getItem('location') !== ''
+      ) {
         count += 1;
       }
 
@@ -250,6 +269,10 @@ export const getFilteredTicket = async (
     //Below checking the conditions for calling filter combination api
     if (pageNumber) params.set('page', pageNumber.toString());
     if (filteredLocation) params.set('location', filteredLocation);
+    const location = localStorage.getItem('location');
+    if (location && location !== '') {
+      params.set('location', location);
+    }
     if (dateRange && dateRange[0]) params.set('startDate', dateRange[0]);
     if (dateRange && dateRange[1]) params.set('endDate', dateRange[1]);
     if (selectedFilters.payerType)
@@ -275,7 +298,12 @@ export const getFilteredTicket = async (
       if (location && location !== '') {
         count += 1;
       }
-
+      if (
+        localStorage.getItem('location') &&
+        localStorage.getItem('location') !== ''
+      ) {
+        count += 1;
+      }
       return count;
     };
     if (countCheck(selectedFilters, filteredLocation) < 2) {

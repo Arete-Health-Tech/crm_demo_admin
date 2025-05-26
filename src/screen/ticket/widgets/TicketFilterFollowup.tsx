@@ -586,7 +586,7 @@ const TicketFilter = (props: {
       if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
         console.log('inside folloup if condition');
         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-        setFilteredLocation(localStorage.getItem('location') || '');
+        // setFilteredLocation(localStorage.getItem('location') || '');
       } else {
         await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
       }
@@ -651,7 +651,7 @@ const TicketFilter = (props: {
       if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
         console.log('inside folloup if condition');
         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-        setFilteredLocation(localStorage.getItem('location') || '');
+        // setFilteredLocation(localStorage.getItem('location') || '');
       } else {
         await getTicketFilterHandler(
           UNDEFINED,

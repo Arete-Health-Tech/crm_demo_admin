@@ -210,19 +210,19 @@ const BulkTicketFilter = (props: {
         if (amritsarFound) {
           // console.log("Its AmritSar User.", matchFound);
           SetIsAmritsarUser(true);
-          setFilteredLocation('Amritsar');
+          // setFilteredLocation('Amritsar');
         } else if (mohaliFound) {
           SetIsMohaliUser(true);
-          setFilteredLocation('Mohali');
+          // setFilteredLocation('Mohali');
         } else if (hoshiarpurFound) {
           SetIsHoshiarpurUser(true);
-          setFilteredLocation('Hoshiarpur');
+          // setFilteredLocation('Hoshiarpur');
         } else if (nawanshahrFound) {
           SetIsNnawanshahrUser(true);
-          setFilteredLocation('Nawanshahr');
+          // setFilteredLocation('Nawanshahr');
         } else if (khannaFound) {
           SetIsKhannaUser(true);
-          setFilteredLocation('Khanna');
+          // setFilteredLocation('Khanna');
         } else {
           setIsAdminUser(true);
           SetIsAmritsarUser(false);
@@ -510,19 +510,19 @@ const BulkTicketFilter = (props: {
     setStatusType((prev) => []);
     setDiagnosticsType((prev) => []);
     setDateRange(['', '']);
-    if (isAmritsarUser) {
-      setFilteredLocation('Amritsar');
-    } else if (isHoshiarpurUser) {
-      setFilteredLocation('Hoshiarpur');
-    } else if (isMohaliUser) {
-      setFilteredLocation('Mohali');
-    } else if (isNawanshahrUser) {
-      setFilteredLocation('Nawanshahr');
-    } else if (isKhannaUser) {
-      setFilteredLocation('Khanna');
-    } else {
-      setFilteredLocation('');
-    }
+    // if (isAmritsarUser) {
+    //   setFilteredLocation('Amritsar');
+    // } else if (isHoshiarpurUser) {
+    //   setFilteredLocation('Hoshiarpur');
+    // } else if (isMohaliUser) {
+    //   setFilteredLocation('Mohali');
+    // } else if (isNawanshahrUser) {
+    //   setFilteredLocation('Nawanshahr');
+    // } else if (isKhannaUser) {
+    //   setFilteredLocation('Khanna');
+    // } else {
+    //   setFilteredLocation('');
+    // }
   };
 
   useEffect(() => {

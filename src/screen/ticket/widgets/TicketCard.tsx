@@ -46,7 +46,7 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const TicketCard = (props: Props) => {
-  const { setDownloadDisable } = useTicketStore();
+  const { setDownloadDisable, filteredLocation } = useTicketStore();
   const { ticketID } = useParams();
   const { doctors, departments, allServices, stages } = useServiceStore();
   const [isNewTicket, setIsNewTicket] = useState(true);
@@ -157,10 +157,20 @@ const TicketCard = (props: Props) => {
           await resyncTickets(resyncDetail); // Wait until this API call completes
           // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
           try {
-            if (hasChanges(newFilter, initialFiltersNew)) {
-              await getTicketHandler(searchByName, pageNumber, 'false', oldInitialFilters);
+            if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+              await getTicketHandler(
+                searchByName,
+                pageNumber,
+                'false',
+                oldInitialFilters
+              );
             } else {
-              await getTicketFilterHandler(searchByName, pageNumber, 'false', newFilter);
+              await getTicketFilterHandler(
+                searchByName,
+                pageNumber,
+                'false',
+                newFilter
+              );
             }
           } catch (error) {
             console.log(error);

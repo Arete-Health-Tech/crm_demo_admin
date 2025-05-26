@@ -254,9 +254,12 @@ const Ticket = () => {
           stageList: '',
           representative: null,
           results: null,
+          admissionType: '',
+          diagnosticsType: '',
           dateRange: [],
           status: '',
-          followUp: null
+          followUp: null,
+          payerType: ''
         };
 
   const handlePagination = async (
@@ -269,6 +272,8 @@ const Ticket = () => {
       setTickets([]);
       if (searchByName === '' || searchByName === 'undefined') {
         // await getTicketHandler(searchByName, pageNo, 'false', newFilter);
+        console.log(hasChanges(newFilter, initialFiltersNew));
+        console.log(!filteredLocation);
         try {
           if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
             await getTicketHandler(
@@ -606,6 +611,8 @@ const Ticket = () => {
   };
   function hasChanges(newFilter, initialState) {
     // const optionalKeys = ['admissionType', 'diagnosticsType'];
+    console.log({ newFilter });
+    console.log({ initialState });
     const filteredInitialState = { ...initialState };
     const filteredCurrentState = { ...newFilter };
 
@@ -767,6 +774,7 @@ const Ticket = () => {
     if (
       pageNumber === 1 &&
       hasChanges(newFilter, initialStateForFilter) &&
+      !filteredLocation &&
       (searchByName === 'undefined' || searchByName === '')
     ) {
       await getTicketHandler(
@@ -858,6 +866,7 @@ const Ticket = () => {
     if (
       pageNumber === 1 &&
       hasChanges(newFilter, initialStateForFilter) &&
+      !filteredLocation &&
       (searchByName === 'undefined' || searchByName === '')
     ) {
       await getTicketHandler(

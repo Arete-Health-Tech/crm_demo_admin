@@ -158,7 +158,7 @@ const TicketFilter = (props: {
     }
   }));
 
-  const initialFilters: iTicketFilter = {
+  const initialFilters: ticketFilterTypes = {
     stageList: '',
     representative: null,
     results: null,
@@ -488,7 +488,6 @@ const TicketFilter = (props: {
     })();
   }, []);
 
-
   const handleClearFilter = async () => {
     dispatchFilterFollowUp({ type: filterActionsFollowUp.STAGES, payload: '' });
     dispatchFilterFollowUp({
@@ -589,7 +588,7 @@ const TicketFilter = (props: {
     } catch (error) {
       console.log(error);
       setDownloadDisable(false);
-      handleClearFilter()
+      handleClearFilter();
       // toast.error('Please Select Date Range');
     }
     // console.log(isAmritsarUser, "selected again")
@@ -641,10 +640,10 @@ const TicketFilter = (props: {
     setDownloadDisable(true);
     setIsFilterOpen(false);
     setPageNumber(1);
-    setFilterTicketsFollowUp(filterTicketsFollowUp);
+    setFilterTicketsFollowUp(selectedFilters);
     // await getTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
     try {
-      if (hasChanges(filterTicketsFollowUp, initialFiltersNew)) {
+      if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
         console.log('inside folloup if condition');
         await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
       } else {
@@ -657,7 +656,7 @@ const TicketFilter = (props: {
       }
     } catch (error) {
       console.log(error);
-      handleClearFilter()
+      handleClearFilter();
       setDownloadDisable(false);
       // toast.error('Please Select Date Range');
     }

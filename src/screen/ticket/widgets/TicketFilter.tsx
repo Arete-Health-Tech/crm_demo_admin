@@ -549,12 +549,12 @@ const TicketFilter = (props: {
     //   endDate: endDate ? dayjs(endDate).unix() * 1000 + 2000000 : NaN
     // });
     // setFilteredLocation(localStorage.getItem('location') || '');
-    console.log(filteredLocation);
 
     setDownloadDisable(true);
     setIsFilterOpen(false);
     setPageNumber(1);
     setFilterTickets(selectedFilters);
+    console.log(filteredLocation);
 
     try {
       if (hasChanges(selectedFilters, initialFilters) && !filteredLocation) {

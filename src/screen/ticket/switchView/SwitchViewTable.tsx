@@ -816,11 +816,11 @@ function SwitchViewTable() {
           </Stack>
 
           <Stack display={'flex'} flexDirection={'row'}>
-            {user?.role !== 'REPRESENTATIVE' && (
+            {/* {user?.role !== 'REPRESENTATIVE' && (
               <Stack>
                 <DownloadAllTickets />
               </Stack>
-            )}
+            )} */}
             <Stack
               sx={{
                 marginTop: '5px',

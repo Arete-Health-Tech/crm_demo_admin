@@ -299,9 +299,16 @@ const ShowPrescription = ({ image, image1 }: Props) => {
   const [link2, setLink2] = useState('');
   // const [scale, setScale] = useState(1);
   // const [scale1, setScale1] = useState(1);
-  const handleOpen = () => setOpen(true);
+  // const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const handleOpen = () => {
+    if (image.startsWith('https://media')) {
+      window.open(`${link1}`, '_blank');
+    } else {
+      setOpen(true);
+    }
+  };
   const drawerWidth = 'auto';
   console.log({ image, image1 });
   const downloadPrescription = () => {
@@ -313,20 +320,20 @@ const ShowPrescription = ({ image, image1 }: Props) => {
     if (link.includes(partToRemove)) {
       return link.split(partToRemove)[1];
     }
-
+    console.log('link', link);
     return link;
   };
 
   useEffect(() => {
     if (image) {
-      console.log("image")
+      console.log('image');
       setLink1(processLink(image));
       console.log(processLink(image), 'image1');
     } else {
       setLink1('');
     }
     if (image1) {
-      console.log("image1111111")
+      console.log('image1111111');
       setLink2(processLink(image1));
     } else {
       setLink2('');
@@ -395,12 +402,14 @@ const ShowPrescription = ({ image, image1 }: Props) => {
   // };
 
   const handleMediaFunction = () => {
+    console.log('link1', link1);
     if (link1) {
       window.open(`https://${link1}`, '_blank'); // Opens the link in a new tab
     } else {
       console.error('No URL provided in link1.');
     }
   };
+
   return (
     <div>
       <Stack

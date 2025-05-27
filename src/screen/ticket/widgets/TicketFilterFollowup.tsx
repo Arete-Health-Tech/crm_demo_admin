@@ -830,7 +830,7 @@ const TicketFilter = (props: {
                       <Checkbox
                         value={id}
                         onChange={handleStageList}
-                        checked={selectedFilters.stageList.includes(id)}
+                        checked={selectedFilters.stageList === id}
                       />
                     }
                     label={

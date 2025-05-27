@@ -306,7 +306,7 @@ export function selectedFiltersReducerFollowUp(
   }
   if (action.type === filterActions.PAYERTYPE) {
     return {
-      ...selectedFiltersState,
+      ...selectedFiltersStateFollowUp,
       payerType: action.payload
     };
   }

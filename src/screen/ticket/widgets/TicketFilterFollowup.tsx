@@ -273,7 +273,6 @@ const TicketFilter = (props: {
     })();
   }, []);
 
-  console.log(filterCount);
   const handleStageList = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // if (selectedFilters.stageList.includes(value)) {
@@ -325,7 +324,6 @@ const TicketFilter = (props: {
     event: React.MouseEvent<HTMLElement>,
     pairType: string
   ) => {
-    console.log(pairType);
     setPairType(pairType);
 
     dispatchFilterFollowUp({
@@ -407,7 +405,6 @@ const TicketFilter = (props: {
       });
     }
   };
-  console.log({ followUp });
 
   // const handleToggleChange = (event, newValue) => {
   //   setSelectedValue(newValue);
@@ -760,7 +757,7 @@ const TicketFilter = (props: {
 
       <Drawer
         open={isFilterOpen}
-        onClose={() => setIsFilterOpen(false)}
+        onClose={() => (setIsFilterOpen(false), handleClearFilter())}
         anchor={
           isSwitchView == true || location.pathname.includes('/bulk-assign')
             ? 'right'
@@ -1200,6 +1197,7 @@ const TicketFilter = (props: {
               <ToggleButtonGroup
                 color="primary"
                 value={filteredLocation}
+                exclusive
                 // onChange={() => setFilteredLocation('Amritsar')}
                 onChange={handleLocation}
                 sx={{ marginTop: '5px' }}

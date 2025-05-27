@@ -735,7 +735,7 @@ const TicketFilter = (props: {
 
       <Drawer
         open={isFilterOpen}
-        onClose={() => setIsFilterOpen(false)}
+        onClose={() => (setIsFilterOpen(false), handleClearFilter())}
         anchor={
           isSwitchView == true || location.pathname.includes('/bulk-assign')
             ? 'right'
@@ -1177,6 +1177,7 @@ const TicketFilter = (props: {
                 value={filteredLocation}
                 // onChange={() => setFilteredLocation('Amritsar')}
                 onChange={handleLocation}
+                exclusive
                 sx={{ marginTop: '5px' }}
               >
                 <ToggleButton

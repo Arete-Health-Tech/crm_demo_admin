@@ -536,7 +536,11 @@ export const validateTicket = async (ticketId: string | undefined) => {
   const result = await apiClient.put(
     localStorage.getItem('ticketType') === 'Admission'
       ? '/ticket/validateTicket'
-      : '/diagnostics/validateDiagnosticsTicket',
+      : localStorage.getItem('ticketType') === 'Diagnostics'
+      ? '/diagnostics/validateDiagnosticsTicket'
+      : localStorage.getItem('ticketType') === 'Follow-Up'
+      ? '/followUp/validateTicket'
+      : '/ticket/',
     { ticketId }
   );
   return result;

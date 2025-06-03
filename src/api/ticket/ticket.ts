@@ -48,7 +48,8 @@ export const getTicket = async (
 export const getFilteredTicket = async (
   pageNumber: number,
   selectedFilters: any,
-  filteredLocation: string
+  filteredLocation: string,
+  phone?: any
 ) => {
   console.log(selectedFilters);
 
@@ -92,6 +93,7 @@ export const getFilteredTicket = async (
     if (selectedFilters.stageList)
       params.set('stage', selectedFilters.stageList);
     if (selectedFilters.status) params.set('status', selectedFilters.status);
+    if (phone) params.set('phone', phone);
 
     // Below checking the count of filters applied one or more
     const countCheck = (selectedFilter: any, location: string) => {
@@ -124,7 +126,7 @@ export const getFilteredTicket = async (
 
       if (dateRange && dateRange.length === 2) {
         data = await apiClient.get(
-          `/filters/datefilter/?startDate=${dateRange[0]}&endDate=${dateRange[1]}&page=${pageNumber}`,
+          `/filters/datefilter/?startDate=${dateRange[0]}&endDate=${dateRange[1]}&page=${pageNumber}&phone=${phone}`,
           {
             headers: {
               'Content-Type': 'application/json'
@@ -133,7 +135,7 @@ export const getFilteredTicket = async (
         );
       } else if (filteredLocation) {
         data = await apiClient.get(
-          `/filters/Specialty/?specialty=${filteredLocation}&page=${pageNumber}`
+          `/filters/Specialty/?specialty=${filteredLocation}&page=${pageNumber}&phone=${phone}`
         );
       } else if (
         selectedFilters?.admissionType &&
@@ -141,23 +143,23 @@ export const getFilteredTicket = async (
         selectedFilters.admissionType.trim() !== ''
       ) {
         data = await apiClient.get(
-          `/filters/Admission/?admission=${selectedFilters.admissionType}&page=${pageNumber}`
+          `/filters/Admission/?admission=${selectedFilters.admissionType}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.payerType) {
         data = await apiClient.get(
-          `/filters/PayerType/?payertype=${selectedFilters.payerType}&page=${pageNumber}`
+          `/filters/PayerType/?payertype=${selectedFilters.payerType}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.status) {
         data = await apiClient.get(
-          `/filters/status/?status=${selectedFilters.status}&page=${pageNumber}`
+          `/filters/status/?status=${selectedFilters.status}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.stageList) {
         data = await apiClient.get(
-          `/filters/stage/?stage=${selectedFilters.stageList}&page=${pageNumber}`
+          `/filters/stage/?stage=${selectedFilters.stageList}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.representative) {
         data = await apiClient.get(
-          `/filters/representative/?assigned=${selectedFilters.representative}&page=${pageNumber}`
+          `/filters/representative/?assigned=${selectedFilters.representative}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.results) {
         data = await apiClient.get(
@@ -165,7 +167,7 @@ export const getFilteredTicket = async (
             selectedFilters.results === '65991601a62baad220000001'
               ? 'won'
               : 'lost'
-          }&page=${pageNumber}`
+          }&page=${pageNumber}&phone=${phone}`
         );
       }
     } else {
@@ -193,6 +195,7 @@ export const getFilteredTicket = async (
     if (selectedFilters.stageList)
       params.set('stage', selectedFilters.stageList);
     if (selectedFilters.status) params.set('status', selectedFilters.status);
+    if (phone) params.set('phone', phone);
 
     // Below checking the count of filters applied one or more
     const countCheck = (selectedFilter: any, location: string) => {
@@ -226,27 +229,27 @@ export const getFilteredTicket = async (
 
       if (dateRange && dateRange.length === 2) {
         data = await apiClient.get(
-          `/filters/Diagnosticsdatefilter/?startDate=${dateRange[0]}&endDate=${dateRange[1]}&page=${pageNumber}`
+          `/filters/Diagnosticsdatefilter/?startDate=${dateRange[0]}&endDate=${dateRange[1]}&page=${pageNumber}&phone=${phone}`
         );
       } else if (filteredLocation) {
         data = await apiClient.get(
-          `/filters/DiagnosticSpecialty/?specialty=${filteredLocation}&page=${pageNumber}`
+          `/filters/DiagnosticSpecialty/?specialty=${filteredLocation}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.payerType) {
         data = await apiClient.get(
-          `/filters/diagnosticsPayerType/?payertype=${selectedFilters.payerType}&page=${pageNumber}`
+          `/filters/diagnosticsPayerType/?payertype=${selectedFilters.payerType}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.status) {
         data = await apiClient.get(
-          `/filters/DiagnosticStatus/?status=${selectedFilters.status}&page=${pageNumber}`
+          `/filters/DiagnosticStatus/?status=${selectedFilters.status}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.stageList) {
         data = await apiClient.get(
-          `/filters/DiagnosticStage/?stage=${selectedFilters.stageList}&page=${pageNumber}`
+          `/filters/DiagnosticStage/?stage=${selectedFilters.stageList}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.representative) {
         data = await apiClient.get(
-          `/filters/Diagnosticsrepresentative/?assigned=${selectedFilters.representative}&page=${pageNumber}`
+          `/filters/Diagnosticsrepresentative/?assigned=${selectedFilters.representative}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.results) {
         data = await apiClient.get(
@@ -254,7 +257,7 @@ export const getFilteredTicket = async (
             selectedFilters.results === '65991601a62baad220000001'
               ? 'won'
               : 'lost'
-          }&page=${pageNumber}`
+          }&page=${pageNumber}&phone=${phone}`
         );
       }
     } else {
@@ -280,6 +283,7 @@ export const getFilteredTicket = async (
     if (selectedFilters.stageList)
       params.set('stage', selectedFilters.stageList);
     if (selectedFilters.status) params.set('status', selectedFilters.status);
+    if (phone) params.set('phone', phone);
 
     // Below checking the count of filters applied one or more
     const countCheck = (selectedFilter: any, location: string) => {
@@ -311,27 +315,27 @@ export const getFilteredTicket = async (
 
       if (dateRange && dateRange.length === 2) {
         data = await apiClient.get(
-          `/filters/FollowUpDateFilter/?startDate=${dateRange[0]}&endDate=${dateRange[1]}&page=${pageNumber}`
+          `/filters/FollowUpDateFilter/?startDate=${dateRange[0]}&endDate=${dateRange[1]}&page=${pageNumber}&phone=${phone}`
         );
       } else if (filteredLocation) {
         data = await apiClient.get(
-          `/filters/FollowUpSpecialty/?specialty=${filteredLocation}&page=${pageNumber}`
+          `/filters/FollowUpSpecialty/?specialty=${filteredLocation}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.payerType) {
         data = await apiClient.get(
-          `/filters/FollowUpPayerType/?payertype=${selectedFilters.payerType}&page=${pageNumber}`
+          `/filters/FollowUpPayerType/?payertype=${selectedFilters.payerType}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.status) {
         data = await apiClient.get(
-          `/filters/FollowUpstatus/?status=${selectedFilters.status}&page=${pageNumber}`
+          `/filters/FollowUpstatus/?status=${selectedFilters.status}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.stageList) {
         data = await apiClient.get(
-          `/filters/FollowUpStage/?stage=${selectedFilters.stageList}&page=${pageNumber}`
+          `/filters/FollowUpStage/?stage=${selectedFilters.stageList}&page=${pageNumber}&phone=${phone}`
         );
       } else if (selectedFilters?.representative) {
         data = await apiClient.get(
-          `/filters/FollowUpRepresentative/?assigned=${selectedFilters.representative}&page=${pageNumber}`
+          `/filters/FollowUpRepresentative/?assigned=${selectedFilters.representative}&page=${pageNumber}&phone=${phone}`
         );
       }
     } else {
@@ -345,7 +349,11 @@ export const getFilteredTicket = async (
   return data?.data;
 };
 
-export const getSearchedTicket = async (name: string, pageNumber: number) => {
+export const getSearchedTicket = async (
+  name: string,
+  pageNumber: number,
+  phone: any
+) => {
   const { data } = await apiClient.get(
     `${
       localStorage.getItem('ticketType') === 'Admission'
@@ -355,7 +363,7 @@ export const getSearchedTicket = async (name: string, pageNumber: number) => {
         : localStorage.getItem('ticketType') === 'Follow-Up'
         ? '/followUp/search'
         : '/ticket/search'
-    }?q=${name}&page=${pageNumber}`
+    }?q=${name}&page=${pageNumber}&phone=${phone}`
   );
   return data;
 };

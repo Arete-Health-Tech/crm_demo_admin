@@ -110,7 +110,8 @@ export const getTicketFilterHandler = async (
   const data = await getFilteredTicket(
     pageNumber,
     selectedFilters,
-    filteredLocation
+    filteredLocation,
+    phone
   );
   const sortedTickets = data.tickets;
   const count = data.count;
@@ -154,7 +155,7 @@ export const getTicketHandlerSearch = async (
   const phone = user?.phone;
 
   setLoaderOn(true);
-  const data = await getSearchedTicket(name, pageNumber);
+  const data = await getSearchedTicket(name, pageNumber, phone);
   const sortedTickets = data.tickets;
   const count = data.count;
 

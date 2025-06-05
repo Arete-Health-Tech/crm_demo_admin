@@ -76,7 +76,8 @@ import {
   getAllReminderHandler,
   getAllWhtsappCountHandler,
   getTicketFilterHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../api/ticket/ticketHandler';
 import MessagingWidget from './widgets/whatsapp/WhatsappWidget';
 import styles from './SingleTicketDetails.module.css';
@@ -374,12 +375,27 @@ const NSingleTicketDetails = (props: Props) => {
         setAmissionTypeClicked(true);
         // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         try {
-          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+          if (
+            hasChanges(newFilter, initialFiltersNew) &&
+            !filteredLocation &&
+            (searchByName === '' || searchByName === UNDEFINED)
+          ) {
             await getTicketHandler(
               searchByName,
               pageNumber,
               'false',
               oldInitialFilters
+            );
+          } else if (
+            hasChanges(newFilter, initialFiltersNew) &&
+            !filteredLocation &&
+            (searchByName !== '' || searchByName !== UNDEFINED)
+          ) {
+            await getTicketHandlerSearch(
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
             );
           } else {
             await getTicketFilterHandler(
@@ -398,12 +414,27 @@ const NSingleTicketDetails = (props: Props) => {
         setAmissionTypeClicked(true);
         // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         try {
-          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+          if (
+            hasChanges(newFilter, initialFiltersNew) &&
+            !filteredLocation &&
+            (searchByName === '' || searchByName === UNDEFINED)
+          ) {
             await getTicketHandler(
               searchByName,
               pageNumber,
               'false',
               oldInitialFilters
+            );
+          } else if (
+            hasChanges(newFilter, initialFiltersNew) &&
+            !filteredLocation &&
+            (searchByName !== '' || searchByName !== UNDEFINED)
+          ) {
+            await getTicketHandlerSearch(
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
             );
           } else {
             await getTicketFilterHandler(
@@ -859,12 +890,27 @@ const NSingleTicketDetails = (props: Props) => {
     setProbabilityModal(false);
     // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+      if (
+        hasChanges(newFilter, initialFiltersNew) &&
+        !filteredLocation &&
+        (searchByName === '' || searchByName === UNDEFINED)
+      ) {
         await getTicketHandler(
           searchByName,
           pageNumber,
           'false',
           oldInitialFilters
+        );
+      } else if (
+        hasChanges(newFilter, initialFiltersNew) &&
+        !filteredLocation &&
+        (searchByName !== '' || searchByName !== UNDEFINED)
+      ) {
+        await getTicketHandlerSearch(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
         );
       } else {
         await getTicketFilterHandler(
@@ -912,12 +958,27 @@ const NSingleTicketDetails = (props: Props) => {
     // await deleteTicket(ticketID);
     // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+      if (
+        hasChanges(newFilter, initialFiltersNew) &&
+        !filteredLocation &&
+        (searchByName === '' || searchByName === UNDEFINED)
+      ) {
         await getTicketHandler(
           searchByName,
           pageNumber,
           'false',
           oldInitialFilters
+        );
+      } else if (
+        hasChanges(newFilter, initialFiltersNew) &&
+        !filteredLocation &&
+        (searchByName !== '' || searchByName !== UNDEFINED)
+      ) {
+        await getTicketHandlerSearch(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
         );
       } else {
         await getTicketFilterHandler(
@@ -952,12 +1013,27 @@ const NSingleTicketDetails = (props: Props) => {
     const res = await assignedToTicket(ticketID, assigneeId);
     // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+      if (
+        hasChanges(newFilter, initialFiltersNew) &&
+        !filteredLocation &&
+        (searchByName === '' || searchByName === UNDEFINED)
+      ) {
         await getTicketHandler(
           searchByName,
           pageNumber,
           'false',
           oldInitialFilters
+        );
+      } else if (
+        hasChanges(newFilter, initialFiltersNew) &&
+        !filteredLocation &&
+        (searchByName !== '' || searchByName !== UNDEFINED)
+      ) {
+        await getTicketHandlerSearch(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
         );
       } else {
         await getTicketFilterHandler(
@@ -995,12 +1071,27 @@ const NSingleTicketDetails = (props: Props) => {
     const res = await removeFromTicket(ticketID, assigneeId);
     // getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+      if (
+        hasChanges(newFilter, initialFiltersNew) &&
+        !filteredLocation &&
+        (searchByName === '' || searchByName === UNDEFINED)
+      ) {
         await getTicketHandler(
           searchByName,
           pageNumber,
           'false',
           oldInitialFilters
+        );
+      } else if (
+        hasChanges(newFilter, initialFiltersNew) &&
+        !filteredLocation &&
+        (searchByName !== '' || searchByName !== UNDEFINED)
+      ) {
+        await getTicketHandlerSearch(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
         );
       } else {
         await getTicketFilterHandler(
@@ -1058,12 +1149,27 @@ const NSingleTicketDetails = (props: Props) => {
     await getAllWhtsappCountHandler();
     // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+      if (
+        hasChanges(newFilter, initialFiltersNew) &&
+        !filteredLocation &&
+        (searchByName === '' || searchByName === UNDEFINED)
+      ) {
         await getTicketHandler(
           searchByName,
           pageNumber,
           'false',
           oldInitialFilters
+        );
+      } else if (
+        hasChanges(newFilter, initialFiltersNew) &&
+        !filteredLocation &&
+        (searchByName !== '' || searchByName !== UNDEFINED)
+      ) {
+        await getTicketHandlerSearch(
+          searchByName,
+          pageNumber,
+          'false',
+          newFilter
         );
       } else {
         await getTicketFilterHandler(

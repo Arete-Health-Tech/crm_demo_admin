@@ -23,9 +23,18 @@ import '../singleTicket.css';
 import { apiClient, socket } from '../../../api/apiClient';
 import audited_icon from '../../../assets/audited_icon.svg';
 import { resyncTickets } from '../../../api/ticket/ticket';
-import { getTicketFilterHandler, getTicketHandler } from '../../../api/ticket/ticketHandler';
+import {
+  getTicketFilterHandler,
+  getTicketHandler,
+  getTicketHandlerSearch
+} from '../../../api/ticket/ticketHandler';
 import { toast } from 'react-toastify';
-import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
+import { UNDEFINED } from '../../../constantUtils/constant';
 
 // import { updateIsNewTicket } from '../../../api/ticket/ticket';
 
@@ -157,12 +166,27 @@ const TicketCard = (props: Props) => {
           await resyncTickets(resyncDetail); // Wait until this API call completes
           // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
           try {
-            if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            if (
+              hasChanges(newFilter, initialFiltersNew) &&
+              !filteredLocation &&
+              (searchByName === '' || searchByName === UNDEFINED)
+            ) {
               await getTicketHandler(
                 searchByName,
                 pageNumber,
                 'false',
                 oldInitialFilters
+              );
+            } else if (
+              hasChanges(newFilter, initialFiltersNew) &&
+              !filteredLocation &&
+              (searchByName !== '' || searchByName !== UNDEFINED)
+            ) {
+              await getTicketHandlerSearch(
+                searchByName,
+                pageNumber,
+                'false',
+                newFilter
               );
             } else {
               await getTicketFilterHandler(
@@ -175,7 +199,6 @@ const TicketCard = (props: Props) => {
           } catch (error) {
             console.log(error);
             setDownloadDisable(false);
-            
           }
           setResyncDetail({
             ticketid: '',

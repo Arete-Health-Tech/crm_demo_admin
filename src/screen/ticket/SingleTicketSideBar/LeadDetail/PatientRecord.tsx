@@ -34,7 +34,8 @@ import {
 } from '../../../../api/ticket/ticket';
 import {
   getTicketFilterHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../../../api/ticket/ticketHandler';
 import { elements } from 'chart.js';
 import { UNDEFINED } from '../../../../constantUtils/constant';
@@ -209,21 +210,36 @@ const PatientRecord = ({ isPatient }) => {
 
     // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-        await getTicketHandler(
-          searchByName,
-          pageNumber,
-          'false',
-          oldInitialFilters
-        );
-      } else {
-        await getTicketFilterHandler(
-          searchByName,
-          pageNumber,
-          'false',
-          newFilter
-        );
-      }
+       if (
+         hasChanges(newFilter, initialFiltersNew) &&
+         !filteredLocation &&
+         (searchByName === '' || searchByName === UNDEFINED)
+       ) {
+         await getTicketHandler(
+           searchByName,
+           pageNumber,
+           'false',
+           oldInitialFilters
+         );
+       } else if (
+         hasChanges(newFilter, initialFiltersNew) &&
+         !filteredLocation &&
+         (searchByName !== '' || searchByName !== UNDEFINED)
+       ) {
+         await getTicketHandlerSearch(
+           searchByName,
+           pageNumber,
+           'false',
+           newFilter
+         );
+       } else {
+         await getTicketFilterHandler(
+           searchByName,
+           pageNumber,
+           'false',
+           newFilter
+         );
+       }
     } catch (error) {
       console.log(error);
       // setDownloadDisable(false);
@@ -245,10 +261,35 @@ const PatientRecord = ({ isPatient }) => {
       await updateConusmerData(updatedData, ticketID);
       // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName === '' || searchByName === UNDEFINED)
+        ) {
+          await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            oldInitialFilters
+          );
+        } else if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName !== '' || searchByName !== UNDEFINED)
+        ) {
+          await getTicketHandlerSearch(
+            searchByName,
+            pageNumber,
+            'false',
+            newFilter
+          );
         } else {
-          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+          await getTicketFilterHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            newFilter
+          );
         }
       } catch (error) {
         console.log(error);
@@ -315,11 +356,36 @@ const PatientRecord = ({ isPatient }) => {
     setIsDiagonsticTestEditing(false);
     // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-        await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-      } else {
-        await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
-      }
+       if (
+         hasChanges(newFilter, initialFiltersNew) &&
+         !filteredLocation &&
+         (searchByName === '' || searchByName === UNDEFINED)
+       ) {
+         await getTicketHandler(
+           searchByName,
+           pageNumber,
+           'false',
+           oldInitialFilters
+         );
+       } else if (
+         hasChanges(newFilter, initialFiltersNew) &&
+         !filteredLocation &&
+         (searchByName !== '' || searchByName !== UNDEFINED)
+       ) {
+         await getTicketHandlerSearch(
+           searchByName,
+           pageNumber,
+           'false',
+           newFilter
+         );
+       } else {
+         await getTicketFilterHandler(
+           searchByName,
+           pageNumber,
+           'false',
+           newFilter
+         );
+       }
     } catch (error) {
       console.log(error);
       // setDownloadDisable(false);
@@ -405,10 +471,25 @@ const PatientRecord = ({ isPatient }) => {
       setIsEditing(false);
       // getTicketHandler(UNDEFINED, 1, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName === '' || searchByName === UNDEFINED)
+        ) {
+          await getTicketHandler(
+            searchByName,
+            1,
+            'false',
+            oldInitialFilters
+          );
+        } else if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName !== '' || searchByName !== UNDEFINED)
+        ) {
+          await getTicketHandlerSearch(searchByName, 1, 'false', newFilter);
         } else {
-          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+          await getTicketFilterHandler(searchByName, 1, 'false', newFilter);
         }
       } catch (error) {
         console.log(error);

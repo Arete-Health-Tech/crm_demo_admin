@@ -16,7 +16,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import CloseIcon from '@mui/icons-material/Close';
 import {
   getTicketFilterHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../../api/ticket/ticketHandler';
 import { apiClient } from '../../../api/apiClient';
 import { useParams } from 'react-router-dom';
@@ -32,6 +33,7 @@ import {
   initialFiltersNew,
   oldInitialFilters
 } from '../../../constants/commomFunctions';
+import { UNDEFINED } from '../../../constantUtils/constant';
 
 function UploadEstimate() {
   const { ticketID } = useParams();
@@ -145,21 +147,22 @@ function UploadEstimate() {
         //   newFilter
         // );
         try {
-          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-            await getTicketHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              oldInitialFilters
-            );
-          } else {
-            await getTicketFilterHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              newFilter
-            );
-          }
+          // if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+          //   await getTicketHandler(
+          //     searchByName,
+          //     pageNumber,
+          //     'false',
+          //     oldInitialFilters
+          //   );
+          // } else {
+          //   await getTicketFilterHandler(
+          //     searchByName,
+          //     pageNumber,
+          //     'false',
+          //     newFilter
+          //   );
+          // }
+          
         } catch (error) {
           console.log(error);
           // setDownloadDisable(false);
@@ -178,21 +181,36 @@ function UploadEstimate() {
         //   newFilter
         // );
         try {
-          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-            await getTicketHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              oldInitialFilters
-            );
-          } else {
-            await getTicketFilterHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              newFilter
-            );
-          }
+           if (
+             hasChanges(newFilter, initialFiltersNew) &&
+             !filteredLocation &&
+             (searchByName === '' || searchByName === UNDEFINED)
+           ) {
+             await getTicketHandler(
+               searchByName,
+               pageNumber,
+               'false',
+               oldInitialFilters
+             );
+           } else if (
+             hasChanges(newFilter, initialFiltersNew) &&
+             !filteredLocation &&
+             (searchByName !== '' || searchByName !== UNDEFINED)
+           ) {
+             await getTicketHandlerSearch(
+               searchByName,
+               pageNumber,
+               'false',
+               newFilter
+             );
+           } else {
+             await getTicketFilterHandler(
+               searchByName,
+               pageNumber,
+               'false',
+               newFilter
+             );
+           }
         } catch (error) {
           console.log(error);
           // setDownloadDisable(false);

@@ -30,7 +30,8 @@ import { Interface } from 'readline';
 import { updateConusmerData } from '../../../../api/ticket/ticket';
 import {
   getTicketFilterHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../../../api/ticket/ticketHandler';
 import { apiClient } from '../../../../api/apiClient';
 import dayjs from 'dayjs';
@@ -40,6 +41,7 @@ import {
   initialFiltersNew,
   oldInitialFilters
 } from '../../../../constants/commomFunctions';
+import { UNDEFINED } from '../../../../constantUtils/constant';
 
 const CopyToClipboardIcon = () => (
   <svg
@@ -434,21 +436,36 @@ const PatientDetail: React.FC<MyComponentProps> = ({ isPatient }) => {
       await updateConusmerData(updatedData, ticketID);
       // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-          await getTicketHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            oldInitialFilters
-          );
-        } else {
-          await getTicketFilterHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            newFilter
-          );
-        }
+         if (
+           hasChanges(newFilter, initialFiltersNew) &&
+           !filteredLocation &&
+           (searchByName === '' || searchByName === UNDEFINED)
+         ) {
+           await getTicketHandler(
+             searchByName,
+             pageNumber,
+             'false',
+             oldInitialFilters
+           );
+         } else if (
+           hasChanges(newFilter, initialFiltersNew) &&
+           !filteredLocation &&
+           (searchByName !== '' || searchByName !== UNDEFINED)
+         ) {
+           await getTicketHandlerSearch(
+             searchByName,
+             pageNumber,
+             'false',
+             newFilter
+           );
+         } else {
+           await getTicketFilterHandler(
+             searchByName,
+             pageNumber,
+             'false',
+             newFilter
+           );
+         }
       } catch (error) {
         console.log(error);
         setDownloadDisable(false);

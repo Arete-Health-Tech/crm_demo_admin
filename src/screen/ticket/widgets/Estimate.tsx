@@ -63,7 +63,8 @@ import {
 import { iEstimate } from '../../../types/store/ticket';
 import {
   getTicketFilterHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../../api/ticket/ticketHandler';
 import {
   NAVIGATE_TO_SWITCHVIEW_TICKET,
@@ -333,21 +334,36 @@ const Estimate = (props: Props) => {
       (async () => {
         // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         try {
-          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-            await getTicketHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              oldInitialFilters
-            );
-          } else {
-            await getTicketFilterHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              newFilter
-            );
-          }
+           if (
+             hasChanges(newFilter, initialFiltersNew) &&
+             !filteredLocation &&
+             (searchByName === '' || searchByName === UNDEFINED)
+           ) {
+             await getTicketHandler(
+               searchByName,
+               pageNumber,
+               'false',
+               oldInitialFilters
+             );
+           } else if (
+             hasChanges(newFilter, initialFiltersNew) &&
+             !filteredLocation &&
+             (searchByName !== '' || searchByName !== UNDEFINED)
+           ) {
+             await getTicketHandlerSearch(
+               searchByName,
+               pageNumber,
+               'false',
+               newFilter
+             );
+           } else {
+             await getTicketFilterHandler(
+               searchByName,
+               pageNumber,
+               'false',
+               newFilter
+             );
+           }
         } catch (error) {
           console.log(error);
           // setDownloadDisable(false);
@@ -391,19 +407,36 @@ const Estimate = (props: Props) => {
             //   newFilter
             // );
             try {
-              if (
-                hasChanges(newFilter, initialFiltersNew) &&
-                !filteredLocation
-              ) {
-                await getTicketHandler(
-                  UNDEFINED,
-                  1,
-                  'false',
-                  oldInitialFilters
-                );
-              } else {
-                await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
-              }
+               if (
+                 hasChanges(newFilter, initialFiltersNew) &&
+                 !filteredLocation &&
+                 (searchByName === '' || searchByName === UNDEFINED)
+               ) {
+                 await getTicketHandler(
+                   searchByName,
+                   pageNumber,
+                   'false',
+                   oldInitialFilters
+                 );
+               } else if (
+                 hasChanges(newFilter, initialFiltersNew) &&
+                 !filteredLocation &&
+                 (searchByName !== '' || searchByName !== UNDEFINED)
+               ) {
+                 await getTicketHandlerSearch(
+                   searchByName,
+                   pageNumber,
+                   'false',
+                   newFilter
+                 );
+               } else {
+                 await getTicketFilterHandler(
+                   searchByName,
+                   pageNumber,
+                   'false',
+                   newFilter
+                 );
+               }
             } catch (error) {
               console.log(error);
               // setDownloadDisable(false);

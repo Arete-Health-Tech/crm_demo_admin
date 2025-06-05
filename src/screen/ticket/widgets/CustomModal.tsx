@@ -26,7 +26,8 @@ import {
   createNotesHandler,
   createTimerHandler,
   getTicketFilterHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../../api/ticket/ticketHandler';
 import { useParams } from 'react-router-dom';
 import { iNote, iTicket, iTimer } from '../../../types/store/ticket';
@@ -52,6 +53,7 @@ import {
   initialFiltersNew,
   oldInitialFilters
 } from '../../../constants/commomFunctions';
+import { UNDEFINED } from '../../../constantUtils/constant';
 
 const CustomModal = () => {
   const label = { inputProps: { 'aria-label': 'Size switch demo' } };
@@ -231,21 +233,36 @@ const CustomModal = () => {
       (async () => {
         // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
         try {
-          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-            await getTicketHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              oldInitialFilters
-            );
-          } else {
-            await getTicketFilterHandler(
-              searchByName,
-              pageNumber,
-              'false',
-              newFilter
-            );
-          }
+           if (
+             hasChanges(newFilter, initialFiltersNew) &&
+             !filteredLocation &&
+             (searchByName === '' || searchByName === UNDEFINED)
+           ) {
+             await getTicketHandler(
+               searchByName,
+               pageNumber,
+               'false',
+               oldInitialFilters
+             );
+           } else if (
+             hasChanges(newFilter, initialFiltersNew) &&
+             !filteredLocation &&
+             (searchByName !== '' || searchByName !== UNDEFINED)
+           ) {
+             await getTicketHandlerSearch(
+               searchByName,
+               pageNumber,
+               'false',
+               newFilter
+             );
+           } else {
+             await getTicketFilterHandler(
+               searchByName,
+               pageNumber,
+               'false',
+               newFilter
+             );
+           }
         } catch (error) {
           console.log(error);
           setDownloadDisable(false);

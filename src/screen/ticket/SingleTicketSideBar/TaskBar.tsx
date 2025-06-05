@@ -23,7 +23,8 @@ import { useParams } from 'react-router-dom';
 import {
   getAuditFilterTicketsHandler,
   getTicketFilterHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../constantUtils/constant';
 import { format } from 'date-fns';
@@ -162,11 +163,36 @@ const TaskBar = () => {
     if (!isAuditorFilterOn) {
       // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-        } else {
-          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
-        }
+         if (
+           hasChanges(newFilter, initialFiltersNew) &&
+           !filteredLocation &&
+           (searchByName === '' || searchByName === UNDEFINED)
+         ) {
+           await getTicketHandler(
+             searchByName,
+             pageNumber,
+             'false',
+             oldInitialFilters
+           );
+         } else if (
+           hasChanges(newFilter, initialFiltersNew) &&
+           !filteredLocation &&
+           (searchByName !== '' || searchByName !== UNDEFINED)
+         ) {
+           await getTicketHandlerSearch(
+             searchByName,
+             pageNumber,
+             'false',
+             newFilter
+           );
+         } else {
+           await getTicketFilterHandler(
+             searchByName,
+             pageNumber,
+             'false',
+             newFilter
+           );
+         }
       } catch (error) {
         console.log(error);
         // setDownloadDisable(false);
@@ -209,21 +235,36 @@ const TaskBar = () => {
     });
     // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
     try {
-      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-        await getTicketHandler(
-          searchByName,
-          pageNumber,
-          'false',
-          oldInitialFilters
-        );
-      } else {
-        await getTicketFilterHandler(
-          searchByName,
-          pageNumber,
-          'false',
-          newFilter
-        );
-      }
+       if (
+         hasChanges(newFilter, initialFiltersNew) &&
+         !filteredLocation &&
+         (searchByName === '' || searchByName === UNDEFINED)
+       ) {
+         await getTicketHandler(
+           searchByName,
+           pageNumber,
+           'false',
+           oldInitialFilters
+         );
+       } else if (
+         hasChanges(newFilter, initialFiltersNew) &&
+         !filteredLocation &&
+         (searchByName !== '' || searchByName !== UNDEFINED)
+       ) {
+         await getTicketHandlerSearch(
+           searchByName,
+           pageNumber,
+           'false',
+           newFilter
+         );
+       } else {
+         await getTicketFilterHandler(
+           searchByName,
+           pageNumber,
+           'false',
+           newFilter
+         );
+       }
     } catch (error) {
       console.log(error);
       // setDownloadDisable(false);

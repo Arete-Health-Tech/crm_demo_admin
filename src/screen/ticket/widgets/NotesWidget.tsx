@@ -18,7 +18,8 @@ import {
   createNotesHandler,
   getAllNotesHandler,
   getTicketFilterHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../../api/ticket/ticketHandler';
 import useTicketStore from '../../../store/ticketStore';
 import { ReactComponent as NoResultFoundSVG } from '../../../assets/images/no-result-found.svg';
@@ -106,12 +107,42 @@ const NotesWidget = (props: Props) => {
           //   newFilter
           // );
           try {
-            if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            // if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            //   result = await getTicketHandler(
+            //     searchByName,
+            //     pageNumber,
+            //     'false',
+            //     oldInitialFilters
+            //   );
+            // } else {
+            //   result = await getTicketFilterHandler(
+            //     searchByName,
+            //     pageNumber,
+            //     'false',
+            //     newFilter
+            //   );
+            // }
+            if (
+              hasChanges(newFilter, initialFiltersNew) &&
+              !filteredLocation &&
+              (searchByName === '' || searchByName === UNDEFINED)
+            ) {
               result = await getTicketHandler(
                 searchByName,
                 pageNumber,
                 'false',
                 oldInitialFilters
+              );
+            } else if (
+              hasChanges(newFilter, initialFiltersNew) &&
+              !filteredLocation &&
+              (searchByName !== '' || searchByName !== UNDEFINED)
+            ) {
+              result = await getTicketHandlerSearch(
+                searchByName,
+                pageNumber,
+                'false',
+                newFilter
               );
             } else {
               result = await getTicketFilterHandler(
@@ -148,12 +179,27 @@ const NotesWidget = (props: Props) => {
           //   newFilter
           // );
           try {
-            if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            if (
+              hasChanges(newFilter, initialFiltersNew) &&
+              !filteredLocation &&
+              (searchByName === '' || searchByName === UNDEFINED)
+            ) {
               result = await getTicketHandler(
                 searchByName,
                 pageNumber,
                 'false',
                 oldInitialFilters
+              );
+            } else if (
+              hasChanges(newFilter, initialFiltersNew) &&
+              !filteredLocation &&
+              (searchByName !== '' || searchByName !== UNDEFINED)
+            ) {
+              result = await getTicketHandlerSearch(
+                searchByName,
+                pageNumber,
+                'false',
+                newFilter
               );
             } else {
               result = await getTicketFilterHandler(
@@ -200,12 +246,27 @@ const NotesWidget = (props: Props) => {
         //   newFilter
         // );
         try {
-          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+          if (
+            hasChanges(newFilter, initialFiltersNew) &&
+            !filteredLocation &&
+            (searchByName === '' || searchByName === UNDEFINED)
+          ) {
             result = await getTicketHandler(
               searchByName,
               pageNumber,
               'false',
               oldInitialFilters
+            );
+          } else if (
+            hasChanges(newFilter, initialFiltersNew) &&
+            !filteredLocation &&
+            (searchByName !== '' || searchByName !== UNDEFINED)
+          ) {
+            result = await getTicketHandlerSearch(
+              searchByName,
+              pageNumber,
+              'false',
+              newFilter
             );
           } else {
             result = await getTicketFilterHandler(

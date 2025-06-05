@@ -8,7 +8,8 @@ import { Box, Grid, Stack } from '@mui/material';
 import { setReminderCompleted } from '../../../../api/ticket/ticket';
 import {
   getTicketFilterHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../../../api/ticket/ticketHandler';
 import useTicketStore from '../../../../store/ticketStore';
 import {
@@ -17,6 +18,7 @@ import {
   oldInitialFilters
 } from '../../../../constants/commomFunctions';
 import { toast } from 'react-toastify';
+import { UNDEFINED } from '../../../../constantUtils/constant';
 
 function AccordionReminder(props) {
   const [active, setActive] = useState(false);
@@ -61,12 +63,27 @@ function AccordionReminder(props) {
       //   newFilter
       // );
       try {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName === '' || searchByName === UNDEFINED)
+        ) {
           await getTicketHandler(
             searchByName,
             pageNumber,
             'false',
             oldInitialFilters
+          );
+        } else if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName !== '' || searchByName !== UNDEFINED)
+        ) {
+          await getTicketHandlerSearch(
+            searchByName,
+            pageNumber,
+            'false',
+            newFilter
           );
         } else {
           await getTicketFilterHandler(

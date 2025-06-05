@@ -341,12 +341,27 @@ const Ticket = () => {
         console.log(hasChanges(newFilter, initialFiltersNew));
         console.log(!filteredLocation);
         try {
-          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+          if (
+            hasChanges(newFilter, initialFiltersNew) &&
+            !filteredLocation &&
+            (searchByName === '' || searchByName === UNDEFINED)
+          ) {
             await getTicketHandler(
               searchByName,
               pageNo,
               'false',
               oldInitialFilters
+            );
+          } else if (
+            hasChanges(newFilter, initialFiltersNew) &&
+            !filteredLocation &&
+            (searchByName !== '' || searchByName !== UNDEFINED)
+          ) {
+            await getTicketHandlerSearch(
+              searchByName,
+              pageNo,
+              'false',
+              newFilter
             );
           } else {
             await getTicketFilterHandler(
@@ -447,13 +462,17 @@ const Ticket = () => {
   }, [searchByName]);
 
   const handleSearchKeyPress = async (e: any) => {
-    if (e.key === 'Enter' && searchName === '') {
+    if (e.key === 'Enter' && (searchName === '' || searchName === UNDEFINED)) {
       setSearchName('');
       setSearchByName(UNDEFINED);
       setSearchError('Type to search & Enter');
       return;
     } else if (e.key === 'Enter') {
-      setSearchByName(searchName);
+      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        setSearchByName(searchName);
+      } else {
+        toast.error('Clear Filter First');
+      }
     }
     // setSearchByName(searchName);
     // if (e.key === 'Enter') {
@@ -730,7 +749,8 @@ const Ticket = () => {
       };
       if (
         pageNumberRef.current === 1 &&
-        searchByNameRef.current == '' &&
+        (searchByNameRef.current == '' ||
+          searchByNameRef.current == UNDEFINED) &&
         hasChanges(newFilterRef.current, initialStateForFilter) &&
         !filteredLocation &&
         tickettype === 'Diagnostics'
@@ -966,12 +986,27 @@ const Ticket = () => {
   const getAllWhtsappMsgCount = async () => {
     await getAllWhtsappCountHandler();
     // await getTicketHandler(searchName, pageNumber, 'false', oldInitialFilters);
-    if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+    if (
+      hasChanges(newFilter, initialFiltersNew) &&
+      !filteredLocation &&
+      (searchByName === '' || searchByName === UNDEFINED)
+    ) {
       await getTicketHandler(
         searchByName,
         pageNumber,
         'false',
         oldInitialFilters
+      );
+    } else if (
+      hasChanges(newFilter, initialFiltersNew) &&
+      !filteredLocation &&
+      (searchByName !== '' || searchByName !== UNDEFINED)
+    ) {
+      await getTicketHandlerSearch(
+        searchByName,
+        pageNumber,
+        'false',
+        newFilter
       );
     } else {
       await getTicketFilterHandler(

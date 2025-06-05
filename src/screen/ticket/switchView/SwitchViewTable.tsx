@@ -1,5 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useMatch, useNavigate, useParams } from 'react-router-dom';
 import { NAVIGATE_TO_TICKET, UNDEFINED } from '../../../constantUtils/constant';
 import useTicketStore from '../../../store/ticketStore';
@@ -7,7 +8,8 @@ import {
   getAllCallReschedulerHandler,
   getAllReminderHandler,
   getTicketFilterHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../../api/ticket/ticketHandler';
 import { getAllNotesWithoutTicketId } from '../../../api/notes/allNote';
 import {
@@ -205,7 +207,17 @@ function SwitchViewTable() {
       ? filterTicketsDiago
       : localStorage.getItem('ticketType') === 'Follow-Up'
       ? filterTicketsFollowUp
-      : filterTickets;
+      : {
+          stageList: '',
+          representative: null,
+          results: null,
+          admissionType: '',
+          diagnosticsType: '',
+          dateRange: [],
+          status: '',
+          followUp: null,
+          payerType: ''
+        };
 
   // const [filteredTickets, setFilteredTickets] = useState<iTicket[]>();
   const [searchName, setSearchName] = useState<string>(UNDEFINED);
@@ -261,40 +273,51 @@ function SwitchViewTable() {
     pageNo: number
   ) => {
     setPageNumber(pageNo);
+    setPage(pageNo);
     if (pageNo !== page) {
       setTickets([]);
-      // if (
-      //   ticketCache[pageNo] &&
-      //   ticketCache[pageNo]?.length > 0 &&
-      //   searchName === UNDEFINED &&
-      //   ticketFilterCount(filterTickets) < 1
-      // ) {
-      //   setTickets(ticketCache[pageNo]);
-      // } else {
-      //   await getTicketHandler(searchName, pageNo, 'false', filterTickets);
-      // }
-      // await getTicketHandler(searchName, pageNo, 'false', newFilter);
-      try {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-          await getTicketHandler(
-            searchByName,
-            pageNo,
-            'false',
-            oldInitialFilters
-          );
-        } else {
-          await getTicketFilterHandler(
-            searchByName,
-            pageNo,
-            'false',
-            newFilter
-          );
+      if (searchByName === '' || searchByName === 'undefined') {
+        // await getTicketHandler(searchByName, pageNo, 'false', newFilter);
+        console.log(hasChanges(newFilter, initialFiltersNew));
+        console.log(!filteredLocation);
+        try {
+          if (
+            hasChanges(newFilter, initialFiltersNew) &&
+            !filteredLocation &&
+            (searchByName === '' || searchByName === UNDEFINED)
+          ) {
+            await getTicketHandler(
+              searchByName,
+              pageNo,
+              'false',
+              oldInitialFilters
+            );
+          } else if (
+            hasChanges(newFilter, initialFiltersNew) &&
+            !filteredLocation &&
+            (searchByName !== '' || searchByName !== UNDEFINED)
+          ) {
+            await getTicketHandlerSearch(
+              searchByName,
+              pageNo,
+              'false',
+              newFilter
+            );
+          } else {
+            await getTicketFilterHandler(
+              searchByName,
+              pageNo,
+              'false',
+              newFilter
+            );
+          }
+        } catch (error) {
+          console.log(error);
+          setDownloadDisable(false);
         }
-      } catch (error) {
-        console.log(error);
-        setDownloadDisable(false);
+      } else {
+        await getTicketHandlerSearch(searchByName, pageNo, 'false', newFilter);
       }
-      setPage(pageNo);
       setPageNumber(pageNo);
 
       // redirectTicket();
@@ -306,34 +329,80 @@ function SwitchViewTable() {
     setPage(pageNumber);
   }, [tickets, searchByName]);
 
-  const fetchTicketsOnEmpthySearch = async () => {
-    setSearchName(UNDEFINED);
-    setSearchByName(UNDEFINED);
-    // setTicketCount(ticketCache["count"]);
-    // setTickets(ticketCache[1]);
-    setPage(1);
-    setPageNumber(1);
-    // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
-    try {
-      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-        await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-      } else {
-        await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+  // const fetchTicketsOnEmpthySearch = async () => {
+  //   setSearchName(UNDEFINED);
+  //   setSearchByName(UNDEFINED);
+  //   // setTicketCount(ticketCache["count"]);
+  //   // setTickets(ticketCache[1]);
+  //   setPage(1);
+  //   setPageNumber(1);
+  //   // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
+  //   try {
+  //     if (
+  //       hasChanges(newFilter, initialFiltersNew) &&
+  //       !filteredLocation &&
+  //       (searchByName === '' || searchByName === UNDEFINED)
+  //     ) {
+  //       await getTicketHandler(searchByName, 1, 'false', oldInitialFilters);
+  //     } else if (
+  //       hasChanges(newFilter, initialFiltersNew) &&
+  //       !filteredLocation &&
+  //       (searchByName !== '' || searchByName !== UNDEFINED)
+  //     ) {
+  //       await getTicketHandlerSearch(searchByName, 1, 'false', newFilter);
+  //     } else {
+  //       await getTicketFilterHandler(searchByName, 1, 'false', newFilter);
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //     setDownloadDisable(false);
+  //   }
+  // };
+
+  useEffect(() => {
+    const data = async () => {
+      try {
+        setDownloadDisable(true);
+        if (searchByName === '' || searchByName === 'undefined') {
+          // await getTicketHandler(searchByName, 1, 'false', oldInitialFilters);
+          if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+            await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+          } else {
+            await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+          }
+        } else {
+          await getTicketHandlerSearch(searchByName, 1, 'false', newFilter);
+        }
+        searchByName === '' || searchByName === 'undefined'
+          ? setSearchError('Type to search & Enter')
+          : setSearchError(
+              `remove "${searchName.toUpperCase()}" to reset & Enter`
+            );
+        setPageNumber(1);
+        setPage(1);
+        setDownloadDisable(false);
+      } catch (error) {
+        setDownloadDisable(false);
+        setPageNumber(1);
+        setPage(1);
+        console.log(error);
       }
-    } catch (error) {
-      console.log(error);
-      setDownloadDisable(false);
-    }
-  };
+    };
+    data();
+  }, [searchByName]);
 
   const handleSearchKeyPress = async (e: any) => {
-    if (e.key === 'Enter' && searchName === '') {
+    if (e.key === 'Enter' && (searchName === '' || searchName === UNDEFINED)) {
       setSearchName('');
       setSearchByName(UNDEFINED);
       setSearchError('Type to search & Enter');
       return;
     } else if (e.key === 'Enter') {
-      setSearchByName(searchName);
+      if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        setSearchByName(searchName);
+      } else {
+        toast.error('Clear Filter First');
+      }
     }
     // setSearchByName(searchName);
     // if (e.key === 'Enter') {
@@ -358,16 +427,26 @@ function SwitchViewTable() {
     setDownloadDisable(true);
     (async function () {
       // await getTicketHandler(UNDEFINED, 1, 'false', newFilter);
-      try {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-        } else {
-          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
-        }
-      } catch (error) {
-        console.log(error);
-        setDownloadDisable(false);
-      }
+      // try {
+      //   if (
+      //     hasChanges(newFilter, initialFiltersNew) &&
+      //     !filteredLocation &&
+      //     (searchByName === '' || searchByName === UNDEFINED)
+      //   ) {
+      //     await getTicketHandler(searchByName, 1, 'false', oldInitialFilters);
+      //   } else if (
+      //     hasChanges(newFilter, initialFiltersNew) &&
+      //     !filteredLocation &&
+      //     (searchByName !== '' || searchByName !== UNDEFINED)
+      //   ) {
+      //     await getTicketHandlerSearch(searchByName, 1, 'false', newFilter);
+      //   } else {
+      //     await getTicketFilterHandler(searchByName, 1, 'false', newFilter);
+      //   }
+      // } catch (error) {
+      //   console.log(error);
+      //   setDownloadDisable(false);
+      // }
       await getAllNotesWithoutTicketId();
       await getStagesHandler();
       await getSubStagesHandler();
@@ -376,6 +455,9 @@ function SwitchViewTable() {
       await getAllReminderHandler();
       await getAllCallReschedulerHandler();
     })();
+    setIsAuditor(false);
+    setSearchName('');
+    setSearchByName(UNDEFINED);
     setDownloadDisable(false);
     setPageNumber(1);
   }, [localStorage.getItem('ticketType')]);
@@ -413,65 +495,91 @@ function SwitchViewTable() {
     });
     AllIntervals = [];
   };
+
+  const pageNumberRef = useRef(pageNumber);
+  const searchByNameRef = useRef(searchByName);
+  const newFilterRef = useRef(newFilter);
+
+  useEffect(() => {
+    pageNumberRef.current = pageNumber;
+    searchByNameRef.current = searchByName;
+    newFilterRef.current = newFilter;
+  }, [pageNumber, searchByName, newFilter]);
+
   useEffect(() => {
     const refetchTickets = async () => {
-      console.log('refetch called');
-      // let pageNumber = page;
-      if (!ticketID) {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-          await getTicketHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            oldInitialFilters
-          );
-        } else {
-          await getTicketFilterHandler(
-            searchByName,
-            pageNumber,
-            'false',
-            newFilter
-          );
-        }
-        localStorage.getItem('ticketType') === 'Admission' &&
-          (await getTicketAfterNotification(
-            searchName,
-            pageNumber,
-            'false',
-            newFilter
-          ));
+      const initialStateForFilter = {
+        stageList: '',
+        representative: null,
+        results: null,
+        admissionType: '',
+        diagnosticsType: '',
+        dateRange: [],
+        status: '',
+        followUp: null
+      };
+      if (
+        pageNumberRef.current === 1 &&
+        (searchByNameRef.current == '' ||
+          searchByNameRef.current == UNDEFINED) &&
+        hasChanges(newFilterRef.current, initialStateForFilter) &&
+        !filteredLocation &&
+        localStorage.getItem('ticketType') === 'Diagnostics'
+      ) {
+        await getTicketHandler(
+          searchByNameRef.current,
+          pageNumberRef.current,
+          'false',
+          oldInitialFilters
+        );
+        // if (localStorage.getItem('ticketType') === 'Admission') {
+        //   await getTicketAfterNotification(
+        //     searchByNameRef.current,
+        //     pageNumberRef.current,
+        //     'false',
+        //     newFilterRef.current
+        //   );
+        // }
+      }
+    };
+    const initializeSocketListeners = () => {
+      const ticketType = localStorage.getItem('ticketType');
+      if (ticketType === 'Diagnostics') {
+        socket.on(
+          socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
+          refetchTickets
+        );
+      } else if (ticketType === 'Follow-Up') {
+        socket.on(
+          socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
+          refetchTickets
+        );
+      } else if (ticketType === 'Admission') {
+        socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
       }
     };
 
-    // socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-    if (localStorage.getItem('ticketType') === 'Diagnostics') {
-      socket.on(
-        socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
-        refetchTickets
-      );
-    } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
-      socket.on(socketEventConstants.FOLLOWUP_REFETCH_TICKETS, refetchTickets);
-    } else if (localStorage.getItem('ticketType') === 'Admission') {
-      socket.on(socketEventConstants.REFETCH_TICKETS, refetchTickets);
-    }
+    // Delay the listener setup slightly to ensure resources are ready
+    const timer = setTimeout(initializeSocketListeners, 100);
 
     return () => {
-      if (localStorage.getItem('ticketType') === 'Diagnostics') {
+      clearTimeout(timer);
+      const ticketType = localStorage.getItem('ticketType');
+      if (ticketType === 'Diagnostics') {
         socket.off(
           socketEventConstants.DIAGNOSTICS_REFETCH_TICKETS,
           refetchTickets
         );
-      } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+      } else if (ticketType === 'Follow-Up') {
         socket.off(
           socketEventConstants.FOLLOWUP_REFETCH_TICKETS,
           refetchTickets
         );
-      } else if (localStorage.getItem('ticketType') === 'Admission') {
+      } else if (ticketType === 'Admission') {
         socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
       }
-      // socket.off(socketEventConstants.REFETCH_TICKETS, refetchTickets);
     };
-  }, [pageNumber, searchName]);
+  }, [pageNumber, searchByName, newFilter]);
 
   useEffect(() => {
     clearAllInterval(AllIntervals);
@@ -774,32 +882,6 @@ function SwitchViewTable() {
   console.log(page, 'sssssss');
   console.log(pageNumber, 'sssssss');
 
-  useEffect(() => {
-    const data = async () => {
-      setDownloadDisable(true);
-      // await getTicketHandler(searchByName, 1, 'false', newFilter);
-      try {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-        } else {
-          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
-        }
-      } catch (error) {
-        console.log(error);
-        setDownloadDisable(false);
-      }
-      searchByName === '' || searchByName === 'undefined'
-        ? setSearchError('Type to search & Enter')
-        : setSearchError(
-            `remove "${searchName.toUpperCase()}" to reset & Enter`
-          );
-      setPageNumber(1);
-      setPage(1);
-      setDownloadDisable(false);
-    };
-    data();
-  }, [searchByName]);
-
   return (
     <>
       <Box className={styles.SwitchView_container}>
@@ -830,6 +912,7 @@ function SwitchViewTable() {
               onClick={() => {
                 backToDashboard();
                 setIsSwitchView(false);
+                setSearchByName(UNDEFINED);
                 setPageNumber(1);
               }}
             >
@@ -871,6 +954,7 @@ function SwitchViewTable() {
                     type="text"
                     className={styles.search_input}
                     placeholder=" Search..."
+                    value={searchName !== 'undefined' ? searchName : ''}
                     onChange={(e) => setSearchName(e.target.value)}
                     onKeyDown={handleSearchKeyPress}
                   />

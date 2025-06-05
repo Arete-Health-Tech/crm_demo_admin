@@ -180,7 +180,8 @@ const TicketFilter = (props: {
     filteredLocation,
     setFilterTicketsFollowUp,
     filterTicketsFollowUp,
-    setDownloadDisable
+    setDownloadDisable,
+    searchByName
   } = useTicketStore();
 
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
@@ -436,7 +437,11 @@ const TicketFilter = (props: {
   };
 
   const handleFilterOpen = () => {
-    setIsFilterOpen(true);
+    if (searchByName === '' || searchByName === UNDEFINED) {
+      setIsFilterOpen(true);
+    } else {
+      toast.error('Clear the search field');
+    }
   };
 
   // const departments = [
@@ -686,7 +691,7 @@ const TicketFilter = (props: {
   useEffect(() => {
     handleClearFilter();
     handleApplyFilterOnTicketTypeChange();
-  }, [localStorage.getItem('ticketType')]);
+  }, [localStorage.getItem('ticketType'), isSwitchView]);
 
   const handleToggleChange = (event, newValue: any) => {
     setSelectedValue(newValue === selectedValue ? null : newValue);

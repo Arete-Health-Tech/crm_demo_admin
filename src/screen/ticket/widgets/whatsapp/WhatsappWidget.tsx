@@ -45,7 +45,8 @@ import {
   getAllWhtsappCountHandler,
   getTicketHandler,
   getAllAuditTicketHandler,
-  getTicketFilterHandler
+  getTicketFilterHandler,
+  getTicketHandlerSearch
 } from '../../../../api/ticket/ticketHandler';
 import { UNDEFINED } from '../../../../constantUtils/constant';
 import {
@@ -120,12 +121,27 @@ const MessagingWidget = (props: Props) => {
     } else {
       // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName === '' || searchByName === UNDEFINED)
+        ) {
           await getTicketHandler(
             searchByName,
             pageNumber,
             'false',
             oldInitialFilters
+          );
+        } else if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName !== '' || searchByName !== UNDEFINED)
+        ) {
+          await getTicketHandlerSearch(
+            searchByName,
+            pageNumber,
+            'false',
+            newFilter
           );
         } else {
           await getTicketFilterHandler(
@@ -155,10 +171,35 @@ const MessagingWidget = (props: Props) => {
     } else {
       // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
       try {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
-          await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName === '' || searchByName === UNDEFINED)
+        ) {
+          await getTicketHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            oldInitialFilters
+          );
+        } else if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName !== '' || searchByName !== UNDEFINED)
+        ) {
+          await getTicketHandlerSearch(
+            searchByName,
+            pageNumber,
+            'false',
+            newFilter
+          );
         } else {
-          await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilter);
+          await getTicketFilterHandler(
+            searchByName,
+            pageNumber,
+            'false',
+            newFilter
+          );
         }
       } catch (error) {
         console.log(error);

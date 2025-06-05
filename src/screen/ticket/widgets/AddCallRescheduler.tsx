@@ -26,7 +26,8 @@ import {
   getAllReminderHandler,
   getAllTaskCountHandler,
   getTicketFilterHandler,
-  getTicketHandler
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../../api/ticket/ticketHandler';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
@@ -49,6 +50,7 @@ import {
   oldInitialFilters
 } from '../../../constants/commomFunctions';
 import { toast } from 'react-toastify';
+import { UNDEFINED } from '../../../constantUtils/constant';
 
 const customTheme = (outerTheme: Theme) =>
   createTheme({
@@ -130,8 +132,7 @@ const AddCallRescheduler = () => {
     filterTickets,
     filterTicketsDiago,
     filterTicketsFollowUp,
-    filteredLocation,
-
+    filteredLocation
   } = useTicketStore();
 
   const style = {
@@ -213,13 +214,29 @@ const AddCallRescheduler = () => {
       await getAllCallReschedulerHandler();
       await getAllTaskCountHandler();
       // await getTicketHandler(searchByName, pageNumber, 'false', newFilter);
+     
       try {
-        if (hasChanges(newFilter, initialFiltersNew) && !filteredLocation) {
+        if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName === '' || searchByName === UNDEFINED)
+        ) {
           await getTicketHandler(
             searchByName,
             pageNumber,
             'false',
             oldInitialFilters
+          );
+        } else if (
+          hasChanges(newFilter, initialFiltersNew) &&
+          !filteredLocation &&
+          (searchByName !== '' || searchByName !== UNDEFINED)
+        ) {
+          await getTicketHandlerSearch(
+            searchByName,
+            pageNumber,
+            'false',
+            newFilter
           );
         } else {
           await getTicketFilterHandler(

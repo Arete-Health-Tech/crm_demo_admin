@@ -695,6 +695,16 @@ const TicketFilter = (props: {
     setIsAuditorFilterOn(false);
   };
 
+  // Function is for checking filter is cleared then call apply button
+  const handleClose = () => {
+    if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
+      handleApplyFilterOnTicketTypeChange();
+      setIsFilterOpen(false);
+    } else {
+      setIsFilterOpen(false);
+    }
+  };
+
   return (
     <Box>
       <Stack display={'flex'} flexDirection={'row'} gap={'10px'}>
@@ -742,7 +752,7 @@ const TicketFilter = (props: {
 
       <Drawer
         open={isFilterOpen}
-        onClose={() => (setIsFilterOpen(false), handleClearFilter())}
+        onClose={handleClose}
         anchor={
           isSwitchView == true || location.pathname.includes('/bulk-assign')
             ? 'right'

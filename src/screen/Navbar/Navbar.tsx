@@ -413,15 +413,17 @@ const Navbar = ({ children }) => {
                   <Stack
                     // onClick={() => goToPage('/ticket')}
                     onClick={() => {
-                      localStorage.setItem('ticketType', 'Admission');
-                      getTicketHandler(
-                        UNDEFINED,
-                        1,
-                        'false',
-                        oldInitialFilters
-                      );
-                      handleGoToTicket('Admission');
-                      setFilteredLocation('');
+                      if (!location.pathname.includes('admission')) {
+                        localStorage.setItem('ticketType', 'Admission');
+                        getTicketHandler(
+                          UNDEFINED,
+                          1,
+                          'false',
+                          oldInitialFilters
+                        );
+                        handleGoToTicket('Admission');
+                        setFilteredLocation('');
+                      }
                     }}
                     sx={{
                       display: 'flex',
@@ -465,15 +467,17 @@ const Navbar = ({ children }) => {
                   <Stack
                     // onClick={() => goToPage('/ticket')}
                     onClick={() => {
-                      localStorage.setItem('ticketType', 'Diagnostics');
-                      getTicketHandler(
-                        UNDEFINED,
-                        1,
-                        'false',
-                        oldInitialFilters
-                      );
-                      handleGoToTicket('Diagnostics');
-                      setFilteredLocation('');
+                      if (!location.pathname.includes('diagnostics')) {
+                        localStorage.setItem('ticketType', 'Diagnostics');
+                        getTicketHandler(
+                          UNDEFINED,
+                          1,
+                          'false',
+                          oldInitialFilters
+                        );
+                        handleGoToTicket('Diagnostics');
+                        setFilteredLocation('');
+                      }
                     }}
                     sx={{
                       display: 'flex',
@@ -517,15 +521,17 @@ const Navbar = ({ children }) => {
                   <Stack
                     // onClick={() => goToPage('/ticket')}
                     onClick={() => {
-                      localStorage.setItem('ticketType', 'Follow-Up');
-                      getTicketHandler(
-                        UNDEFINED,
-                        1,
-                        'false',
-                        oldInitialFilters
-                      );
-                      handleGoToTicket('Follow-Up');
-                      setFilteredLocation('');
+                      if (!location.pathname.includes('follow-up')) {
+                        localStorage.setItem('ticketType', 'Follow-Up');
+                        getTicketHandler(
+                          UNDEFINED,
+                          1,
+                          'false',
+                          oldInitialFilters
+                        );
+                        handleGoToTicket('Follow-Up');
+                        setFilteredLocation('');
+                      }
                     }}
                     sx={{
                       display: 'flex',

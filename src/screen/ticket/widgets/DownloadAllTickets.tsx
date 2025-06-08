@@ -228,7 +228,7 @@ const DownloadAllTickets = (props: Props) => {
     // }
 
     try {
-      setDownloadDisable(true);
+      // setDownloadDisable(true);
 
       const ticketType = localStorage.getItem('ticketType');
       let sortedTickets = [];
@@ -417,7 +417,7 @@ const DownloadAllTickets = (props: Props) => {
       //   'Error generating CSV: Check Your Internet Connectivity if still facing issue while Downloading - Please Contact Octa Admin for Download Data)'
       // );
     } finally {
-      setDownloadDisable(false);
+      // setDownloadDisable(false);
       setAnchorEl(null);
       setSelectedDate(null);
       setSelectedUnit('');

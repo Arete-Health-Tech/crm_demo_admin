@@ -443,6 +443,36 @@ export const getAllTicketFollowUp = async (value: any, location: any) => {
     return data;
   }
 };
+export const getAllTicketAdmissionNew = async (
+  startDate: any,
+  endDate: any,
+  phone: any
+) => {
+  const { data } = await apiClient.get(
+    `/download/downloadAdmission?admission=Surgery&phone=${phone}&startDate=${startDate}&endDate=${endDate}`
+  );
+  return data;
+};
+export const getAllTicketDiagonticsNew = async (
+  startDate: any,
+  endDate: any,
+  phone: any
+) => {
+  const { data } = await apiClient.get(
+    `/download/downloadDiagnostics?diagnostics=true&phone=${phone}&startDate=${startDate}&endDate=${endDate}`
+  );
+  return data;
+};
+export const getAllTicketFollowUpNew = async (
+  startDate: any,
+  endDate: any,
+  phone: any
+) => {
+  const { data } = await apiClient.get(
+    `/download/downloadDiagnostics?diagnostics=true&phone=916397401855&startDate=2025-05-28&endDate=2025-05-31`
+  );
+  return data;
+};
 
 export const getticketRescedulerAbove = async (ticketId?: string | null) => {
   // const timestamp = new Date().getTime();

@@ -30,8 +30,11 @@ import DownloadAllFileIcon from '../../../../src/assets/DownloadAllFiles.svg';
 import { apiClient } from '../../../api/apiClient';
 import {
   getAllTicketAdmission,
+  getAllTicketAdmissionNew,
   getAllTicketDiagontics,
-  getAllTicketFollowUp
+  getAllTicketDiagonticsNew,
+  getAllTicketFollowUp,
+  getAllTicketFollowUpNew
 } from '../../../api/ticket/ticket';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -40,6 +43,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { Popover } from '@mui/material';
 import DownloadIcon from '@mui/icons-material/Download';
 import { toast } from 'react-toastify';
+import useUserStore from '../../../store/userStore';
 
 type Props = {};
 const materilaFieldCss = {
@@ -69,6 +73,8 @@ const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
 const DownloadAllTickets = (props: Props) => {
   const { doctors, departments, stages, allNotes } = useServiceStore();
   // const { allUnits } = useServiceStore();
+  const { user } = useUserStore.getState();
+  const phoneNumber = user?.phone;
   const [errors, setErrors] = useState({ unit: false, date: false });
   const { representative } = useReprentativeStore();
   const {
@@ -155,6 +161,8 @@ const DownloadAllTickets = (props: Props) => {
   const returnedDate = (date: string | null | Date) => {
     return dayjs(date).format('DD/MMM/YYYY');
   };
+  const [startDate, setStartDate] = useState<Dayjs | null>(null);
+  const [endDate, setEndDate] = useState<Dayjs | null>(null);
 
   // From here this is used for select download the data with the date
 
@@ -180,217 +188,241 @@ const DownloadAllTickets = (props: Props) => {
   // const latestAllowedYear = currentDate.year(); // Dynamically set the latest allowed year
   // const latestAllowedMonth = currentDate.month();
 
-  const handleDateChange = (newDate: Dayjs | null) => {
-    if (newDate) {
-      // const year = newDate.year();
-      // const month = newDate.month(); // 0-based index (0 = January)
+  // const handleDateChange = (newDate: Dayjs | null) => {
+  //   if (newDate) {
+  //     // const year = newDate.year();
+  //     // const month = newDate.month(); // 0-based index (0 = January)
 
-      // // Allow only Jan - Mar for the latest year, and all months for previous years
-      // if (year === latestAllowedYear && month > latestAllowedMonth) {
-      //   return; // Prevent selection
-      // }
+  //     // // Allow only Jan - Mar for the latest year, and all months for previous years
+  //     // if (year === latestAllowedYear && month > latestAllowedMonth) {
+  //     //   return; // Prevent selection
+  //     // }
 
-      setSelectedDate(newDate);
+  //     setSelectedDate(newDate);
+  //   }
+  // };
+
+  const handleStartChange = (date: Dayjs | null) => {
+    if (date) {
+      const formattedDate = date.format('YYYY-MM-DD');
+      console.log('Start Date:', formattedDate);
     }
+    setStartDate(date);
   };
+  const handleEndChange = (date: Dayjs | null) => {
+    if (date) {
+      const formattedDate = date.format('YYYY-MM-DD');
+      console.log('End Date:', formattedDate);
+    }
+    setEndDate(date);
+  };
+
   // This function is for downloading the data
   const downloadData = async () => {
-    if (!selectedUnit || !selectedDate) {
-      setErrors({
-        unit: !selectedUnit,
-        date: !selectedDate
-      });
-      return;
-    }
+    // if (!selectedUnit || !selectedDate) {
+    //   setErrors({
+    //     unit: !selectedUnit,
+    //     date: !selectedDate
+    //   });
+    //   return;
+    // }
 
     try {
       setDownloadDisable(true);
 
       const ticketType = localStorage.getItem('ticketType');
       let sortedTickets = [];
+      const startDateFormatted = startDate?.format('YYYY-MM-DD');
+      const EndDateFormatted = endDate?.format('YYYY-MM-DD');
 
       if (ticketType === 'Admission') {
-        sortedTickets = await getAllTicketAdmission(selectedDate, selectedUnit);
+        // sortedTickets = await getAllTicketAdmission(selectedDate, selectedUnit);
+        // sortedTickets =
+        await getAllTicketAdmissionNew(startDateFormatted, EndDateFormatted, phoneNumber);
       } else if (ticketType === 'Diagnostics') {
-        sortedTickets = await getAllTicketDiagontics(
-          selectedDate,
-          selectedUnit
-        );
+        // sortedTickets = await getAllTicketDiagontics(
+        //   selectedDate,
+        //   selectedUnit
+        // );
+        // sortedTickets =
+        await getAllTicketDiagonticsNew(startDateFormatted, EndDateFormatted, phoneNumber);
       } else if (ticketType === 'Follow-Up') {
-        sortedTickets = await getAllTicketFollowUp(selectedDate, selectedUnit);
-      } else {
-        sortedTickets = await getAllTicketAdmission(selectedDate, selectedUnit);
+        return <>{toast.success('We are working on it ')}</>;
+        // sortedTickets = await getAllTicketFollowUp(selectedDate, selectedUnit);
+        // sortedTickets = await getAllTicketFollowUpNew(startDate, endDate,phoneNumber);
       }
 
       await Promise.all([getDoctorsHandler(), getDepartmentsHandler()]);
 
-      const data = sortedTickets?.map((ticket: any, index: number) => ({
-        serialNo: index + 1,
-        firstName: ticket?.consumer[0]?.firstName || '',
-        lastName: ticket?.consumer[0]?.lastName || '',
-        uhid: ticket?.consumer[0]?.uid || '',
-        gender: ticket?.consumer[0]?.gender || '',
-        phone: ticket?.consumer[0]?.phone ? `${ticket.consumer[0].phone}` : '',
-        age: Number(ticket?.consumer[0]?.age) || '',
-        location: ticket?.specialty || 'Mohali',
-        stage: stageSetter(ticket?.stage[0]?._id) || '',
-        department:
-          departmentSetter(ticket?.prescription[0]?.departments[0]) ||
-          ticket?.prescription[0]?.departmentDetails[0]?.name ||
-          '',
-        doctor:
-          doctorSetter(ticket?.prescription[0]?.doctor) ||
-          ticket?.prescription[0]?.doctorDetails[0]?.name ||
-          '',
-        admissionType: ticket.prescription[0].admission || 'Not Advised',
-        serviceName: ticket.prescription[0].service?.name || 'Not Advised',
-        isPharmacy: ticket?.prescription[0]?.isPharmacy
-          ? ticket?.prescription[0]?.isPharmacy
-          : 'No Advised',
-        assigned:
-          handleAssigne(ticket?.assigned[0]?._id).join(' ') ||
-          ticket?.assigned[0]?.firstName ||
-          '',
-        diagnostics:
-          ticket.prescription[0].diagnostics &&
-          ticket.prescription[0].diagnostics.length > 0
-            ? ticket.prescription[0].diagnostics
-            : 'Not Advised',
-        followUpDate: ['Invalid Date', '01/Jan/1970', '01/Jan/1900'].includes(
-          returnedDate(ticket?.prescription[0]?.followUp)
-        )
-          ? 'No Follow Up'
-          : returnedDate(ticket?.prescription[0]?.followUp),
-        // CTScan: ticket?.prescription[0]?.diagnostics.includes('CT-Scan')
-        //   ? 'Yes'
-        //   : 'No',
-        // LAB: ticket.prescription[0].diagnostics.includes('Lab')
-        //   ? 'Yes'
-        //   : 'No',
-        // MRI: ticket.prescription[0].diagnostics.includes('MRI')
-        //   ? 'Yes'
-        //   : 'No',
-        // EEG: ticket.prescription[0].diagnostics.includes('EEG')
-        //   ? 'Yes'
-        //   : 'No',
-        // EMG: ticket.prescription[0].diagnostics.includes('EMG')
-        //   ? 'Yes'
-        //   : 'No',
-        // XRAY: ticket.prescription[0].diagnostics.includes('X-RAY')
-        //   ? 'Yes'
-        //   : 'No',
-        // USG: ticket.prescription[0].diagnostics.includes('USG')
-        //   ? 'Yes'
-        //   : 'No',
-        // PETCT: ticket.prescription[0].diagnostics.includes('PET_CT')
-        //   ? 'Yes'
-        //   : 'No',
-        payerType: ticket.prescription[0].payerType || '',
-        capturedBy: ticket?.creator?.length
-          ? `${ticket.creator[0].firstName || ''} ${
-              ticket.creator[0].lastName || ''
-            }`.trim()
-          : 'Created by Livasa HMS',
-        prescriptionCreatedAt: ticket?.date.split('T')[0] || '',
-        prescriptionLink: ticket?.prescription[0]?.image || '',
-        prescriptionLink1: ticket?.prescription[0]?.image1 || '',
-        Lead_disposition:
-          ticket.result === '65991601a62baad220000001'
-            ? 'won'
-            : ticket.result === '65991601a62baad220000002'
-            ? 'loss'
-            : '',
-        isEstimateUpload: ticket?.estimateupload[0]?.total > 0 ? 'Yes' : 'No',
-        estimateValue: ticket?.estimateupload[0]?.total || 0,
-        PaymentType: ticket?.estimateupload[0]?.paymentType || 'Not Mentioned',
-        date: ticket?.date.split('T')[0] || '',
-        subStageName: subStageName(ticket?.subStageCode?.code) || '',
-        status: ['dnp', 'dnd', 'CallCompleted', 'RescheduledCall'].includes(
-          ticket?.status
-        )
-          ? 'N/A'
-          : ticket?.status,
-        notes: noteSetter(ticket._id) || '',
-        Second_opinion_hospital: ticket?.opinion[0]?.hospital,
-        Considering_Consultation:
-          ticket?.opinion[0]?.type === 'Considering Consultation'
-            ? 'Yes'
-            : 'No',
-        Consulted: ticket?.opinion[0]?.type === 'consulted' ? 'Yes' : 'No',
-        we_are_second_opinion:
-          ticket?.opinion[0]?.type === 'we are second opinon' ? 'Yes' : 'No',
-        Second_opinion_doctor: ticket?.opinion[0]?.doctor,
-        Second_opinion_add_info: ticket?.opinion[0]?.additionalInfo,
-        Awaiting_test_results: ticket?.opinion[0]?.challengeSelected?.includes(
-          'Awaiting test results'
-        )
-          ? 'Yes'
-          : 'No',
-        Awaiting_TPA_approvals: ticket?.opinion[0]?.challengeSelected?.includes(
-          'Awaiting TPA approvals'
-        )
-          ? 'Yes'
-          : 'No',
-        Bad_Experience: ticket?.opinion[0]?.challengeSelected?.includes(
-          'Bad Experience'
-        )
-          ? 'Yes'
-          : 'No',
-        Under_MM: ticket?.opinion[0]?.challengeSelected?.includes('Under MM')
-          ? 'Yes'
-          : 'No',
-        Financial_constatints: ticket?.opinion[0]?.challengeSelected?.includes(
-          'Financial constatints'
-        )
-          ? 'Yes'
-          : 'No',
-        Not_happy_with_doctor: ticket?.opinion[0]?.challengeSelected?.includes(
-          'Not happy with doctor'
-        )
-          ? 'Yes'
-          : 'No',
-        Lead_Probability: `${ticket?.Probability}%`,
-        Lead_Rating:
-          ticket?.auditorcomment[ticket?.auditorcomment.length - 1]?.ratings,
-        Call_disposition: [
-          'dnp',
-          'dnd',
-          'CallCompleted',
-          'RescheduledCall',
-          'Wrong Number'
-        ].includes(ticket?.status)
-          ? ticket?.status
-          : 'N/A',
-        Call_Recording:
-          ticket?.phoneData?.length > 0
-            ? ticket?.phoneData[ticket?.phoneData.length - 1]?.time
-            : 'Not Contacted yet',
-        Last_Activity_Date: ticket?.lastActivity || '',
-        lostReasons: ticket?.patientStatus[0]?.dropReason || ''
-      }));
+      // const data = sortedTickets?.map((ticket: any, index: number) => ({
+      //   serialNo: index + 1,
+      //   firstName: ticket?.consumer[0]?.firstName || '',
+      //   lastName: ticket?.consumer[0]?.lastName || '',
+      //   uhid: ticket?.consumer[0]?.uid || '',
+      //   gender: ticket?.consumer[0]?.gender || '',
+      //   phone: ticket?.consumer[0]?.phone ? `${ticket.consumer[0].phone}` : '',
+      //   age: Number(ticket?.consumer[0]?.age) || '',
+      //   location: ticket?.specialty || 'Mohali',
+      //   stage: stageSetter(ticket?.stage[0]?._id) || '',
+      //   department:
+      //     departmentSetter(ticket?.prescription[0]?.departments[0]) ||
+      //     ticket?.prescription[0]?.departmentDetails[0]?.name ||
+      //     '',
+      //   doctor:
+      //     doctorSetter(ticket?.prescription[0]?.doctor) ||
+      //     ticket?.prescription[0]?.doctorDetails[0]?.name ||
+      //     '',
+      //   admissionType: ticket.prescription[0].admission || 'Not Advised',
+      //   serviceName: ticket.prescription[0].service?.name || 'Not Advised',
+      //   isPharmacy: ticket?.prescription[0]?.isPharmacy
+      //     ? ticket?.prescription[0]?.isPharmacy
+      //     : 'No Advised',
+      //   assigned:
+      //     handleAssigne(ticket?.assigned[0]?._id).join(' ') ||
+      //     ticket?.assigned[0]?.firstName ||
+      //     '',
+      //   diagnostics:
+      //     ticket.prescription[0].diagnostics &&
+      //     ticket.prescription[0].diagnostics.length > 0
+      //       ? ticket.prescription[0].diagnostics
+      //       : 'Not Advised',
+      //   followUpDate: ['Invalid Date', '01/Jan/1970', '01/Jan/1900'].includes(
+      //     returnedDate(ticket?.prescription[0]?.followUp)
+      //   )
+      //     ? 'No Follow Up'
+      //     : returnedDate(ticket?.prescription[0]?.followUp),
+      //   // CTScan: ticket?.prescription[0]?.diagnostics.includes('CT-Scan')
+      //   //   ? 'Yes'
+      //   //   : 'No',
+      //   // LAB: ticket.prescription[0].diagnostics.includes('Lab')
+      //   //   ? 'Yes'
+      //   //   : 'No',
+      //   // MRI: ticket.prescription[0].diagnostics.includes('MRI')
+      //   //   ? 'Yes'
+      //   //   : 'No',
+      //   // EEG: ticket.prescription[0].diagnostics.includes('EEG')
+      //   //   ? 'Yes'
+      //   //   : 'No',
+      //   // EMG: ticket.prescription[0].diagnostics.includes('EMG')
+      //   //   ? 'Yes'
+      //   //   : 'No',
+      //   // XRAY: ticket.prescription[0].diagnostics.includes('X-RAY')
+      //   //   ? 'Yes'
+      //   //   : 'No',
+      //   // USG: ticket.prescription[0].diagnostics.includes('USG')
+      //   //   ? 'Yes'
+      //   //   : 'No',
+      //   // PETCT: ticket.prescription[0].diagnostics.includes('PET_CT')
+      //   //   ? 'Yes'
+      //   //   : 'No',
+      //   payerType: ticket.prescription[0].payerType || '',
+      //   capturedBy: ticket?.creator?.length
+      //     ? `${ticket.creator[0].firstName || ''} ${
+      //         ticket.creator[0].lastName || ''
+      //       }`.trim()
+      //     : 'Created by Livasa HMS',
+      //   prescriptionCreatedAt: ticket?.date.split('T')[0] || '',
+      //   prescriptionLink: ticket?.prescription[0]?.image || '',
+      //   prescriptionLink1: ticket?.prescription[0]?.image1 || '',
+      //   Lead_disposition:
+      //     ticket.result === '65991601a62baad220000001'
+      //       ? 'won'
+      //       : ticket.result === '65991601a62baad220000002'
+      //       ? 'loss'
+      //       : '',
+      //   isEstimateUpload: ticket?.estimateupload[0]?.total > 0 ? 'Yes' : 'No',
+      //   estimateValue: ticket?.estimateupload[0]?.total || 0,
+      //   PaymentType: ticket?.estimateupload[0]?.paymentType || 'Not Mentioned',
+      //   date: ticket?.date.split('T')[0] || '',
+      //   subStageName: subStageName(ticket?.subStageCode?.code) || '',
+      //   status: ['dnp', 'dnd', 'CallCompleted', 'RescheduledCall'].includes(
+      //     ticket?.status
+      //   )
+      //     ? 'N/A'
+      //     : ticket?.status,
+      //   notes: noteSetter(ticket._id) || '',
+      //   Second_opinion_hospital: ticket?.opinion[0]?.hospital,
+      //   Considering_Consultation:
+      //     ticket?.opinion[0]?.type === 'Considering Consultation'
+      //       ? 'Yes'
+      //       : 'No',
+      //   Consulted: ticket?.opinion[0]?.type === 'consulted' ? 'Yes' : 'No',
+      //   we_are_second_opinion:
+      //     ticket?.opinion[0]?.type === 'we are second opinon' ? 'Yes' : 'No',
+      //   Second_opinion_doctor: ticket?.opinion[0]?.doctor,
+      //   Second_opinion_add_info: ticket?.opinion[0]?.additionalInfo,
+      //   Awaiting_test_results: ticket?.opinion[0]?.challengeSelected?.includes(
+      //     'Awaiting test results'
+      //   )
+      //     ? 'Yes'
+      //     : 'No',
+      //   Awaiting_TPA_approvals: ticket?.opinion[0]?.challengeSelected?.includes(
+      //     'Awaiting TPA approvals'
+      //   )
+      //     ? 'Yes'
+      //     : 'No',
+      //   Bad_Experience: ticket?.opinion[0]?.challengeSelected?.includes(
+      //     'Bad Experience'
+      //   )
+      //     ? 'Yes'
+      //     : 'No',
+      //   Under_MM: ticket?.opinion[0]?.challengeSelected?.includes('Under MM')
+      //     ? 'Yes'
+      //     : 'No',
+      //   Financial_constatints: ticket?.opinion[0]?.challengeSelected?.includes(
+      //     'Financial constatints'
+      //   )
+      //     ? 'Yes'
+      //     : 'No',
+      //   Not_happy_with_doctor: ticket?.opinion[0]?.challengeSelected?.includes(
+      //     'Not happy with doctor'
+      //   )
+      //     ? 'Yes'
+      //     : 'No',
+      //   Lead_Probability: `${ticket?.Probability}%`,
+      //   Lead_Rating:
+      //     ticket?.auditorcomment[ticket?.auditorcomment.length - 1]?.ratings,
+      //   Call_disposition: [
+      //     'dnp',
+      //     'dnd',
+      //     'CallCompleted',
+      //     'RescheduledCall',
+      //     'Wrong Number'
+      //   ].includes(ticket?.status)
+      //     ? ticket?.status
+      //     : 'N/A',
+      //   Call_Recording:
+      //     ticket?.phoneData?.length > 0
+      //       ? ticket?.phoneData[ticket?.phoneData.length - 1]?.time
+      //       : 'Not Contacted yet',
+      //   Last_Activity_Date: ticket?.lastActivity || '',
+      //   lostReasons: ticket?.patientStatus[0]?.dropReason || ''
+      // }));
 
-      const csv = Papa.unparse(data);
-      const csvBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      // const csv = Papa.unparse(data);
+      // const csvBlob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
 
-      FileSaver.saveAs(
-        csvBlob,
-        `${dayjs(new Date()).format('DD-MM-YY')}Data.csv`
-      );
+      // FileSaver.saveAs(
+      //   csvBlob,
+      //   `${dayjs(new Date()).format('DD-MM-YY')}Data.csv`
+      // );
 
-      toast.success('Download Successful');
+      toast.success('Data will Sent to your mail');
     } catch (error) {
       console.error(
         'Error generating CSV:  Please Contact Octa Admin for Download Data',
         error
       );
-      toast.error(
-        'Error generating CSV: Check Your Internet Connectivity if still facing issue while Downloading - Please Contact Octa Admin for Download Data)'
-      );
+      // toast.error(
+      //   'Error generating CSV: Check Your Internet Connectivity if still facing issue while Downloading - Please Contact Octa Admin for Download Data)'
+      // );
     } finally {
       setDownloadDisable(false);
       setAnchorEl(null);
       setSelectedDate(null);
       setSelectedUnit('');
+      setStartDate(null);
+      setEndDate(null);
     }
   };
   const [selectedUnit, setSelectedUnit] = useState<string>('');
@@ -416,6 +448,10 @@ const DownloadAllTickets = (props: Props) => {
 
     return false; // Enable all months for other years
   };
+
+  const oneMonthAgo = dayjs().subtract(1, 'month');
+  const oneMonthAhead = dayjs().add(1, 'month');
+
   return (
     <Box p={1} px={2}>
       {/* <LightTooltip
@@ -443,7 +479,7 @@ const DownloadAllTickets = (props: Props) => {
         >
           <Box
             display={'flex'}
-            width={'250px'}
+            width={'25rem'}
             flexDirection={'column'}
             gap={'15px'}
             sx={{
@@ -451,7 +487,7 @@ const DownloadAllTickets = (props: Props) => {
               borderRadius: '16px'
             }}
           >
-            <FormControl fullWidth size="small">
+            {/* <FormControl fullWidth size="small">
               <InputLabel id="unit-select-label" sx={materilaFieldCss}>
                 Select Unit
               </InputLabel>
@@ -487,10 +523,10 @@ const DownloadAllTickets = (props: Props) => {
                   Please select a unit.
                 </Stack>
               )}
-            </FormControl>
+            </FormControl> */}
             <Stack>
               <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DatePicker
+                {/* <DatePicker
                   slotProps={{ textField: { size: 'small' } }}
                   label="MM/YYYY"
                   views={['month', 'year']}
@@ -500,7 +536,26 @@ const DownloadAllTickets = (props: Props) => {
                   // maxDate={dayjs(
                   //   `${latestAllowedYear}-${latestAllowedMonth + 1}-01`
                   // )} // Dynamically set maxDate
-                />
+                /> */}
+                <div style={{ display: 'flex', gap: '1rem' }}>
+                  <DatePicker
+                    label="Start Date"
+                    value={startDate}
+                    onChange={handleStartChange}
+                    slotProps={{ textField: { size: 'small' } }}
+                    // minDate={oneMonthAgo}
+                    // maxDate={oneMonthAhead}
+                  />
+
+                  <DatePicker
+                    label="End Date"
+                    value={endDate}
+                    onChange={handleEndChange}
+                    slotProps={{ textField: { size: 'small' } }}
+                    // minDate={oneMonthAgo}
+                    // maxDate={oneMonthAhead}
+                  />
+                </div>
               </LocalizationProvider>
               {errors.date && (
                 <Stack sx={{ fontSize: '12px', color: 'red' }}>

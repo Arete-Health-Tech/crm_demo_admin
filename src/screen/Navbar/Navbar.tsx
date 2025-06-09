@@ -413,7 +413,7 @@ const Navbar = ({ children }) => {
                   <Stack
                     // onClick={() => goToPage('/ticket')}
                     onClick={() => {
-                      if (!location.pathname.includes('admission')) {
+                      if (localStorage.getItem('ticketType') !== 'Admission') {
                         localStorage.setItem('ticketType', 'Admission');
                         getTicketHandler(
                           UNDEFINED,
@@ -467,7 +467,9 @@ const Navbar = ({ children }) => {
                   <Stack
                     // onClick={() => goToPage('/ticket')}
                     onClick={() => {
-                      if (!location.pathname.includes('diagnostics')) {
+                      if (
+                        localStorage.getItem('ticketType') !== 'Diagnostics'
+                      ) {
                         localStorage.setItem('ticketType', 'Diagnostics');
                         getTicketHandler(
                           UNDEFINED,
@@ -521,7 +523,7 @@ const Navbar = ({ children }) => {
                   <Stack
                     // onClick={() => goToPage('/ticket')}
                     onClick={() => {
-                      if (!location.pathname.includes('follow-up')) {
+                      if (localStorage.getItem('ticketType') !== 'Follow-Up') {
                         localStorage.setItem('ticketType', 'Follow-Up');
                         getTicketHandler(
                           UNDEFINED,

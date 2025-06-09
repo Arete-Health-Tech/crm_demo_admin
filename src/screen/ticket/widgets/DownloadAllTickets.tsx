@@ -277,7 +277,11 @@ const DownloadAllTickets = (props: Props) => {
           phoneNumber
         );
       } else if (ticketType === 'Follow-Up') {
-        return <>{toast.success('We are working on it ')}</>;
+        await getAllTicketFollowUpNew(
+          startDateFormatted,
+          EndDateFormatted,
+          phoneNumber
+        );
         // sortedTickets = await getAllTicketFollowUp(selectedDate, selectedUnit);
         // sortedTickets = await getAllTicketFollowUpNew(startDate, endDate,phoneNumber);
       }

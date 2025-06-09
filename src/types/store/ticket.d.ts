@@ -353,6 +353,7 @@ export interface iTicketFilter {
   status: string;
   followUp: Date | null;
   payerType?: string | null;
+  specialty?: string ;
 }
 
 export interface iTicketFilterOld {

@@ -40,7 +40,7 @@ export const getTicket = async (
     }&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
     &specialty=${localStorage.getItem(
       'location'
-    )}&specialtyforFilter=${filteredLocation}`
+    ) || ''}&specialtyforFilter=${filteredLocation}`
   );
   return data;
 };

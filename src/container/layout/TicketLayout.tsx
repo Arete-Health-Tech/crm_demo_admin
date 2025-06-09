@@ -147,6 +147,7 @@ const Ticket = () => {
     dateRange: [],
     status: [],
     followUp: null
+    // speciality: ''
   };
   const { ticketID } = useParams();
   const {
@@ -326,6 +327,7 @@ const Ticket = () => {
           status: '',
           followUp: null,
           payerType: ''
+          // speciality: ''
         };
 
   const handlePagination = async (
@@ -746,6 +748,7 @@ const Ticket = () => {
         dateRange: [],
         status: '',
         followUp: null
+        // speciality: ''
       };
       if (
         pageNumberRef.current === 1 &&

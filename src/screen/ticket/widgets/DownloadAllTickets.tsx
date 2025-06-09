@@ -235,25 +235,57 @@ const DownloadAllTickets = (props: Props) => {
       const startDateFormatted = startDate?.format('YYYY-MM-DD');
       const EndDateFormatted = endDate?.format('YYYY-MM-DD');
 
+      if (!startDateFormatted || !EndDateFormatted) {
+        toast.error('Please select both start and end dates.');
+        return;
+      }
+
+      // Check if the date range is more than 30 days
+      const diffDays = dayjs(EndDateFormatted).diff(
+        dayjs(startDateFormatted),
+        'day'
+      );
+      if (diffDays > 30) {
+        toast.error('Date range should not exceed 31 days.');
+        return;
+      }
+
+      toast.success('Data will Sent to your mail');
+      setAnchorEl(null);
+      setSelectedUnit('');
+      setStartDate(null);
+      setEndDate(null);
+
+      // New Process To download the data
       if (ticketType === 'Admission') {
         // sortedTickets = await getAllTicketAdmission(selectedDate, selectedUnit);
         // sortedTickets =
-        await getAllTicketAdmissionNew(startDateFormatted, EndDateFormatted, phoneNumber);
+        await getAllTicketAdmissionNew(
+          startDateFormatted,
+          EndDateFormatted,
+          phoneNumber
+        );
       } else if (ticketType === 'Diagnostics') {
         // sortedTickets = await getAllTicketDiagontics(
         //   selectedDate,
         //   selectedUnit
         // );
         // sortedTickets =
-        await getAllTicketDiagonticsNew(startDateFormatted, EndDateFormatted, phoneNumber);
+        await getAllTicketDiagonticsNew(
+          startDateFormatted,
+          EndDateFormatted,
+          phoneNumber
+        );
       } else if (ticketType === 'Follow-Up') {
         return <>{toast.success('We are working on it ')}</>;
         // sortedTickets = await getAllTicketFollowUp(selectedDate, selectedUnit);
         // sortedTickets = await getAllTicketFollowUpNew(startDate, endDate,phoneNumber);
       }
 
-      await Promise.all([getDoctorsHandler(), getDepartmentsHandler()]);
+      // No Use Doctors and Departments API for New Process of Downloading
+      // await Promise.all([getDoctorsHandler(), getDepartmentsHandler()]);
 
+      // Old Process To download the data
       // const data = sortedTickets?.map((ticket: any, index: number) => ({
       //   serialNo: index + 1,
       //   firstName: ticket?.consumer[0]?.firstName || '',
@@ -407,7 +439,11 @@ const DownloadAllTickets = (props: Props) => {
       //   `${dayjs(new Date()).format('DD-MM-YY')}Data.csv`
       // );
 
-      toast.success('Data will Sent to your mail');
+      toast.success('Data will Sent to your mail, within 1-2 Hours');
+      setAnchorEl(null);
+      setSelectedUnit('');
+      setStartDate(null);
+      setEndDate(null);
     } catch (error) {
       console.error(
         'Error generating CSV:  Please Contact Octa Admin for Download Data',

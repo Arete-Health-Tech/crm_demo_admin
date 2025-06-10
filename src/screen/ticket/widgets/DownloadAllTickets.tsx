@@ -443,7 +443,7 @@ const DownloadAllTickets = (props: Props) => {
       //   `${dayjs(new Date()).format('DD-MM-YY')}Data.csv`
       // );
 
-      toast.success('Data will Sent to your mail, within 1-2 Hours');
+      // toast.success('Data will Sent to your mail, within 1-2 Hours');
       setAnchorEl(null);
       setSelectedUnit('');
       setStartDate(null);

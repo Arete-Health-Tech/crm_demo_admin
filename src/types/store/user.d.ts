@@ -12,11 +12,10 @@ export interface iUser {
   access: string;
   refresh: string;
   status?: boolean;
-
+  location?: string;
 }
 
 export interface iUserStore {
   user: null | iUser;
   setUser: (user: iUser | null) => void;
-  
 }

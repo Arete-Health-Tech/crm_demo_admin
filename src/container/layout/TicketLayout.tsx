@@ -1352,12 +1352,14 @@ const Ticket = () => {
                     )}
                   </Box>
                 </Stack>
-                {user?.role === 'ADMIN' && (
+                
+                {user?.role === 'ADMIN' && user?.location !== undefined && (
                   <Stack>
                     <DownloadAllTickets />
                   </Stack>
                 )}
 
+                
                 <Stack
                   sx={{
                     marginTop: '5px',

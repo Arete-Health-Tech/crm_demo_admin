@@ -9,7 +9,10 @@ import {
   clearAssigneeTicketsHandler,
   getAllCallReschedulerHandler,
   getAllReminderHandler,
-  getBulkTicketHandler
+  getBulkTicketHandler,
+  getTicketFilterHandler,
+  getTicketHandler,
+  getTicketHandlerSearch
 } from '../../../api/ticket/ticketHandler';
 import { getAllNotesWithoutTicketId } from '../../../api/notes/allNote';
 import {
@@ -41,6 +44,11 @@ import { SpinnerDotted } from 'spinners-react';
 import BulkTicketFilter from '../widgets/BulkTicketFilter';
 import BulkTicketFilterDiago from '../widgets/BulkTicketFilterDiago';
 import BulkTicketFilterFollowup from '../widgets/BulkTicketFilterFollowup';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
 
 const menuItemStyles = {
   color: 'var(--Text-Black, #080F1A)',
@@ -171,6 +179,7 @@ function BulkAssign() {
     setBulkPageNumber,
     setDownloadDisable,
     downloadDisable,
+    filteredLocation,
     setBulkFilterTickets
   } = useTicketStore();
   const { representative } = useReprentativeStore();
@@ -259,27 +268,104 @@ function BulkAssign() {
       ? BulkFilterTicketsFollowUp
       : BulkFilterTickets;
 
-  console.log({ BulkFilterTickets });
   const handlePagination = async (
     event: React.ChangeEvent<unknown>,
     pageNo: number
   ) => {
     setBulkPageNumber(pageNo);
+    setPage(pageNo);
     if (pageNo !== page) {
       setBulkTickets([]);
+      console.log(hasChanges(newFilterBulk, initialFiltersNew));
 
-      try {
-        setDownloadDisable(true);
-        await getBulkTicketHandler(searchName, pageNo, 'false', newFilterBulk);
-        setDownloadDisable(false);
-      } catch {
-        toast.error('Error While Fetching Tickets');
-        setDownloadDisable(false);
+      if (bulkSearchByName === '' || bulkSearchByName === 'undefined') {
+        // await getTicketHandler(bulkSearchByName, pageNo, 'false', newFilter);
+        console.log(hasChanges(newFilterBulk, initialFiltersNew));
+        // console.log(!filteredLocation);
+        try {
+          if (
+            hasChanges(newFilterBulk, initialFiltersNew) &&
+            !filteredLocation &&
+            (bulkSearchByName === '' || bulkSearchByName === UNDEFINED)
+          ) {
+            await getBulkTicketHandler(
+              bulkSearchByName,
+              pageNo,
+              'false',
+              oldInitialFilters
+            );
+          } else if (
+            hasChanges(newFilterBulk, initialFiltersNew) &&
+            !filteredLocation &&
+            (bulkSearchByName !== '' || bulkSearchByName !== UNDEFINED)
+          ) {
+            await getTicketHandlerSearch(
+              bulkSearchByName,
+              pageNo,
+              'false',
+              newFilterBulk
+            );
+          } else {
+            await getTicketFilterHandler(
+              bulkSearchByName,
+              pageNo,
+              'false',
+              newFilterBulk
+            );
+          }
+        } catch (error) {
+          console.log(error);
+          setDownloadDisable(false);
+        }
+      } else {
+        await getTicketHandlerSearch(
+          bulkSearchByName,
+          pageNo,
+          'false',
+          newFilterBulk
+        );
       }
-      setPage(pageNo);
       setBulkPageNumber(pageNo);
     }
   };
+
+    useEffect(() => {
+      const data = async () => {
+        console.log(bulkSearchByName);
+        try {
+          setDownloadDisable(true);
+          if (bulkSearchByName === '' || bulkSearchByName === 'undefined') {
+            // await getTicketHandler(bulkSearchByName, 1, 'false', oldInitialFilters);
+            if (hasChanges(newFilterBulk, initialFiltersNew) && !filteredLocation) {
+              await getBulkTicketHandler(
+                UNDEFINED,
+                1,
+                'false',
+                oldInitialFilters
+              );
+            } else {
+              await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilterBulk);
+            }
+          } else {
+            await getTicketHandlerSearch(bulkSearchByName, 1, 'false', newFilterBulk);
+          }
+          bulkSearchByName === '' || bulkSearchByName === 'undefined'
+            ? setSearchError('Type to search & Enter')
+            : setSearchError(
+                `remove "${searchName.toUpperCase()}" to reset & Enter`
+              );
+          setBulkPageNumber(1);
+          setPage(1);
+          setDownloadDisable(false);
+        } catch (error) {
+          setDownloadDisable(false);
+          setBulkPageNumber(1);
+          setPage(1);
+          console.log(error);
+        }
+      };
+      data();
+    }, [bulkSearchByName]);
 
   useEffect(() => {
     setPageCount(Math.ceil(ticketCount / 10));
@@ -287,49 +373,132 @@ function BulkAssign() {
     // setSelectedTicketIds([]);
   }, [bulkTickets, bulkSearchByName]);
 
-  const fetchTicketsOnEmpthySearch = async () => {
-    setSearchName(UNDEFINED);
-    setBulkSearchByName(UNDEFINED);
-    setPage(1);
-    setBulkPageNumber(1);
-    try {
-      setDownloadDisable(true);
-      await getBulkTicketHandler(UNDEFINED, 1, 'false', newFilterBulk);
-      setDownloadDisable(false);
-    } catch {
-      toast.error('Error While Fetching Tickets');
-      setDownloadDisable(false);
-    }
-  };
+  // const fetchTicketsOnEmpthySearch = async () => {
+  //   setSearchName(UNDEFINED);
+  //   setBulkSearchByName(UNDEFINED);
+  //   setPage(1);
+  //   setBulkPageNumber(1);
+  //   try {
+  //     setDownloadDisable(true);
+  //     // await getBulkTicketHandler(UNDEFINED, 1, 'false', newFilterBulk);
+  //     try {
+  //       if (
+  //         hasChanges(newFilterBulk, initialFiltersNew) &&
+  //         !filteredLocation &&
+  //         (bulkSearchByName === '' || bulkSearchByName === UNDEFINED)
+  //       ) {
+  //         await getBulkTicketHandler(
+  //           bulkSearchByName,
+  //           bulkPageNumber,
+  //           'false',
+  //           oldInitialFilters
+  //         );
+  //       } else if (
+  //         hasChanges(newFilterBulk, initialFiltersNew) &&
+  //         !filteredLocation &&
+  //         (bulkSearchByName !== '' || bulkSearchByName !== UNDEFINED)
+  //       ) {
+  //         await getTicketHandlerSearch(
+  //           bulkSearchByName,
+  //           bulkPageNumber,
+  //           'false',
+  //           newFilterBulk
+  //         );
+  //       } else {
+  //         await getTicketFilterHandler(
+  //           bulkSearchByName,
+  //           bulkPageNumber,
+  //           'false',
+  //           newFilterBulk
+  //         );
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //       setDownloadDisable(false);
+  //     }
+  //     setDownloadDisable(false);
+  //   } catch {
+  //     toast.error('Error While Fetching Tickets');
+  //     setDownloadDisable(false);
+  //   }
+  // };
 
   const handleSearchKeyPress = async (e: any) => {
-    const value = e.target?.value;
-    if (value) {
-      setSearchName(value);
+    if (e.key === 'Enter' && (searchName === '' || searchName === UNDEFINED)) {
+      setSearchName('');
+      setBulkSearchByName(UNDEFINED);
+      setSearchError('Type to search & Enter');
+      return;
+    } else if (e.key === 'Enter') {
+      if (hasChanges(newFilterBulk, initialFiltersNew) && !filteredLocation) {
+        setBulkSearchByName(searchName);
+      } else {
+        toast.error('Clear Filter First');
+      }
     }
-    if (e.key === 'Enter') {
-      setBulkTickets([]);
 
-      if (value === '') {
-        fetchTicketsOnEmpthySearch();
-        setSearchError('Type to search & Enter');
-        // redirectTicket()
-        return;
-      }
-      try {
-        setDownloadDisable(true);
-        await getBulkTicketHandler(value, 1, 'false', newFilterBulk);
-        setDownloadDisable(false);
-      } catch {
-        toast.error('Error While Fetching Tickets');
-        setDownloadDisable(false);
-      }
-      setBulkSearchByName(value);
-      setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
-      setBulkPageNumber(1);
-      setPage(1);
-      // redirectTicket()
-    }
+    // const value = e.target?.value;
+    // if (value) {
+    //   setSearchName(value);
+    // }
+    // if (e.key === 'Enter') {
+    //   setBulkTickets([]);
+
+    //   if (value === '') {
+    //     fetchTicketsOnEmpthySearch();
+    //     setSearchError('Type to search & Enter');
+    //     // redirectTicket()
+    //     return;
+    //   }
+    //   // try {
+    //   //   setDownloadDisable(true);
+    //   //   await getBulkTicketHandler(value, 1, 'false', newFilterBulk);
+    //   //   setDownloadDisable(false);
+    //   // } catch {
+    //   //   toast.error('Error While Fetching Tickets');
+    //   //   setDownloadDisable(false);
+    //   // }
+    //   try {
+    //     if (
+    //       hasChanges(newFilterBulk, initialFiltersNew) &&
+    //       !filteredLocation &&
+    //       (bulkSearchByName === '' || bulkSearchByName === UNDEFINED)
+    //     ) {
+    //       await getBulkTicketHandler(
+    //         bulkSearchByName,
+    //         bulkPageNumber,
+    //         'false',
+    //         oldInitialFilters
+    //       );
+    //     } else if (
+    //       hasChanges(newFilterBulk, initialFiltersNew) &&
+    //       !filteredLocation &&
+    //       (bulkSearchByName !== '' || bulkSearchByName !== UNDEFINED)
+    //     ) {
+    //       await getTicketHandlerSearch(
+    //         bulkSearchByName,
+    //         bulkPageNumber,
+    //         'false',
+    //         newFilterBulk
+    //       );
+    //     } else {
+    //       await getTicketFilterHandler(
+    //         bulkSearchByName,
+    //         bulkPageNumber,
+    //         'false',
+    //         newFilterBulk
+    //       );
+    //     }
+    //   } catch (error) {
+    //     console.log(error);
+    //     setDownloadDisable(false);
+    //   }
+    //   setBulkSearchByName(value);
+    //   setSearchError(`remove "${value.toUpperCase()}" to reset & Enter`);
+    //   setBulkPageNumber(1);
+    //   setPage(1);
+    //   // redirectTicket()
+    // }
   };
 
   // window.onload = redirectTicket;
@@ -445,12 +614,41 @@ function BulkAssign() {
           setIsAssignTicketModal(false);
           try {
             setDownloadDisable(true);
-            await getBulkTicketHandler(
-              searchName,
-              bulkPageNumber,
-              'false',
-              newFilterBulk
-            );
+            try {
+              if (
+                hasChanges(newFilterBulk, initialFiltersNew) &&
+                !filteredLocation &&
+                (bulkSearchByName === '' || bulkSearchByName === UNDEFINED)
+              ) {
+                await getBulkTicketHandler(
+                  bulkSearchByName,
+                  bulkPageNumber,
+                  'false',
+                  oldInitialFilters
+                );
+              } else if (
+                hasChanges(newFilterBulk, initialFiltersNew) &&
+                !filteredLocation &&
+                (bulkSearchByName !== '' || bulkSearchByName !== UNDEFINED)
+              ) {
+                await getTicketHandlerSearch(
+                  bulkSearchByName,
+                  bulkPageNumber,
+                  'false',
+                  newFilterBulk
+                );
+              } else {
+                await getTicketFilterHandler(
+                  bulkSearchByName,
+                  bulkPageNumber,
+                  'false',
+                  newFilterBulk
+                );
+              }
+            } catch (error) {
+              console.log(error);
+              setDownloadDisable(false);
+            }
             setDownloadDisable(false);
             if (selectedTicketIds.length > 10) {
               setSelectedTicketIds([]);
@@ -521,12 +719,41 @@ function BulkAssign() {
           setSelectedTicketIds([]);
           try {
             setDownloadDisable(true);
-            await getBulkTicketHandler(
-              searchName,
-              bulkPageNumber,
-              'false',
-              newFilterBulk
-            );
+            try {
+              if (
+                hasChanges(newFilterBulk, initialFiltersNew) &&
+                !filteredLocation &&
+                (bulkSearchByName === '' || bulkSearchByName === UNDEFINED)
+              ) {
+                await getBulkTicketHandler(
+                  bulkSearchByName,
+                  bulkPageNumber,
+                  'false',
+                  oldInitialFilters
+                );
+              } else if (
+                hasChanges(newFilterBulk, initialFiltersNew) &&
+                !filteredLocation &&
+                (bulkSearchByName !== '' || bulkSearchByName !== UNDEFINED)
+              ) {
+                await getTicketHandlerSearch(
+                  bulkSearchByName,
+                  bulkPageNumber,
+                  'false',
+                  newFilterBulk
+                );
+              } else {
+                await getTicketFilterHandler(
+                  bulkSearchByName,
+                  bulkPageNumber,
+                  'false',
+                  newFilterBulk
+                );
+              }
+            } catch (error) {
+              console.log(error);
+              setDownloadDisable(false);
+            }
             setDownloadDisable(false);
           } catch {
             toast.error('Error While Fetching Tickets');
@@ -546,15 +773,15 @@ function BulkAssign() {
     if (option === 'Admission') {
       setSelectedTicketIds([]);
       localStorage.setItem('ticketBulkType', 'Admission');
-      await getBulkTicketHandler(UNDEFINED, 1, 'false', newFilterBulk);
+      await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
     } else if (option === 'Diagnostic') {
       setSelectedTicketIds([]);
       localStorage.setItem('ticketBulkType', 'Diagnostics');
-      await getBulkTicketHandler(UNDEFINED, 1, 'false', newFilterBulk);
-    } else {
+      await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+    } else if (option === 'Follow-Up') {
       localStorage.setItem('ticketBulkType', 'Follow-Up');
       setSelectedTicketIds([]);
-      await getBulkTicketHandler(UNDEFINED, 1, 'false', newFilterBulk);
+      await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
     }
     setSelectedOption(option);
   };
@@ -649,6 +876,7 @@ function BulkAssign() {
                       type="text"
                       className={styles.search_input}
                       placeholder=" Search..."
+                      onChange={(e) => setSearchName(e.target.value)}
                       onKeyDown={handleSearchKeyPress}
                     />
                   </div>

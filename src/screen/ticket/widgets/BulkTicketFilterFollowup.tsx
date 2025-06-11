@@ -41,7 +41,8 @@ import {
 } from '../../../constantUtils/constant';
 import {
   getAuditFilterTicketsHandler,
-  getBulkTicketHandler
+  getBulkTicketHandler,
+  getTicketFilterHandler
 } from '../../../api/ticket/ticketHandler';
 import useUserStore from '../../../store/userStore';
 import { apiClient } from '../../../api/apiClient';
@@ -50,31 +51,35 @@ import '../singleTicket.css';
 import AuditFilterIcon from '../../../assets/commentHeader.svg';
 import { Tooltip, TooltipProps, Zoom, tooltipClasses } from '@mui/material';
 import useReprentativeStore from '../../../store/representative';
+import { hasChanges, initialFiltersNew, oldInitialFilters } from '../../../constants/commomFunctions';
+import { toast } from 'react-toastify';
 
 const drawerWidth = 450;
 export const ticketFilterCount = (
   selectedFilters: iTicketFilter,
-  admissionType: string[],
-  diagnosticsType: string[],
+  admissionType: string,
+  pairType: string,
+  diagnosticsType: string,
   dateRange: string[],
-  statusType: string[],
+  statusType: string,
   filteredLocation: string,
   isAmritsarUser: boolean,
+  isMohaliUser: boolean,
   isHoshiarpurUser: boolean,
   isNawanshahrUser: boolean,
-  isMohaliUser: boolean,
   isKhannaUser: boolean,
   followUp: Date | null
 ) => {
-  const stageListCount = selectedFilters['stageList'].length;
+  const stageListCount = selectedFilters['stageList'] ? 1 : 0;
   const representativeCount = selectedFilters['representative'] ? 1 : 0;
+  const pairCount = pairType ? 1 : 0;
 
-  const admissionCount = admissionType ? admissionType.length : 0;
-  const diagnosticsCount = diagnosticsType ? diagnosticsType.length : 0;
+  const admissionCount = admissionType ? 1 : 0;
+  const diagnosticsCount = diagnosticsType ? 1 : 0;
   const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
 
   const resultCount = selectedFilters['results'] ? 1 : 0;
-  const statusCount = statusType ? statusType.length : 0;
+  const statusCount = statusType ? 1 : 0;
   const followUpCount = followUp !== null ? 1 : 0;
 
   let locationCount = 0;
@@ -104,6 +109,7 @@ export const ticketFilterCount = (
     representativeCount +
     resultCount +
     admissionCount +
+    pairCount +
     diagnosticsCount +
     DateCount +
     statusCount +
@@ -173,12 +179,10 @@ const BulkTicketFilterFollowup = (props: {
   } = useTicketStore();
 
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
-  const [admissionType, setAdmissionType] = React.useState<string[]>([]);
-  const [statusType, setStatusType] = React.useState<string[]>([]);
+  const [admissionType, setAdmissionType] = React.useState<string>('');
+  const [statusType, setStatusType] = React.useState<string>('');
   const [result, setResult] = React.useState('');
-  const [diagnosticsType, setDiagnosticsType] = React.useState<string[]>(
-    () => []
-  );
+  const [diagnosticsType, setDiagnosticsType] = React.useState<string>('');
   // const [speciality, setSpeciality] = React.useState<string[]>(() => []);
   const [stagesLabel, setStagesLabels] = React.useState<any>([]);
   const [representativeLabel, setRepresentativeLabel] = React.useState<any>([]);
@@ -190,11 +194,12 @@ const BulkTicketFilterFollowup = (props: {
   // const [startDate, setStartDate] = React.useState<string>('');
   // const [endDate, setEndDate] = React.useState<string>('');
   const [followUp, setFollowUp] = React.useState<Date | null>(null);
-  const [dateRange, setDateRange] = React.useState<string[]>(['', '']);
+  const [dateRange, setDateRange] = React.useState<string[]>([]);
   const [currentReperesentative, setCurrentRepresentative] = useState('');
   const [filterCount, setFilterCount] = useState(0);
   const [selectedValue, setSelectedValue] = useState(null);
   const [selectedValueLost, setSelectedValueLost] = useState(null);
+  const [pairType, setPairType] = React.useState<string>('');
 
   const { user } = useUserStore.getState();
   const phoneNumber = user?.phone;
@@ -301,7 +306,7 @@ const BulkTicketFilterFollowup = (props: {
 
   const handleAdmissionType = (
     event: React.MouseEvent<HTMLElement>,
-    newAdmission: string[]
+    newAdmission: string
   ) => {
     setAdmissionType(newAdmission);
 
@@ -313,7 +318,7 @@ const BulkTicketFilterFollowup = (props: {
 
   const handleStatusType = (
     event: React.MouseEvent<HTMLElement>,
-    Status: string[]
+    Status: string
   ) => {
     setStatusType(Status);
 
@@ -325,7 +330,7 @@ const BulkTicketFilterFollowup = (props: {
 
   const handleDiagnosticsType = (
     event: React.MouseEvent<HTMLElement>,
-    newDiagnostics: string[]
+    newDiagnostics: string
   ) => {
     setDiagnosticsType(newDiagnostics);
     dispatchBulkFilterFollowup({
@@ -477,18 +482,34 @@ const BulkTicketFilterFollowup = (props: {
     setIsFilterOpen(false);
     setBulkPageNumber(1);
     setBulkFilterTicketsFollowUp(selectedFilters);
-    await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    // await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+     try {
+       if (
+         hasChanges(selectedFilters, initialFiltersNew) &&
+         !filteredLocation
+       ) {
+         await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+         // setFilteredLocation(localStorage.getItem('location') || '');
+       } else {
+         await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
+       }
+     } catch (error) {
+       console.log({ error });
+       setDownloadDisable(false);
+       toast.error('Please Select Date Range');
+     }
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(
       ticketFilterCount(
         selectedFilters,
         admissionType,
+        pairType,
         diagnosticsType,
         dateRange,
         statusType,
         filteredLocation,
-        isAmritsarUser,
         isMohaliUser,
+        isAmritsarUser,
         isHoshiarpurUser,
         isNawanshahrUser,
         isKhannaUser,
@@ -524,7 +545,8 @@ const BulkTicketFilterFollowup = (props: {
     setDownloadDisable(true);
     setIsFilterOpen(false);
     setBulkPageNumber(1);
-    await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    setBulkFilterTicketsFollowUp(selectedFilters);
+    await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(0);
 
@@ -549,7 +571,7 @@ const BulkTicketFilterFollowup = (props: {
   const handleClearFilter = async () => {
     dispatchBulkFilterFollowup({
       type: bulkFilterActionsFollowUp.STAGES,
-      payload: []
+      payload: ''
     });
     dispatchBulkFilterFollowup({
       type: bulkFilterActionsFollowUp.REPRESENTATIVE,
@@ -557,11 +579,11 @@ const BulkTicketFilterFollowup = (props: {
     });
     dispatchBulkFilterFollowup({
       type: bulkFilterActionsFollowUp.ADMISSIONTYPE,
-      payload: []
+      payload: ''
     });
     dispatchBulkFilterFollowup({
       type: bulkFilterActionsFollowUp.DIAGNOSTICSTYPE,
-      payload: []
+      payload: ''
     });
     dispatchBulkFilterFollowup({
       type: bulkFilterActionsFollowUp.DATERANGE,
@@ -573,7 +595,7 @@ const BulkTicketFilterFollowup = (props: {
     });
     dispatchBulkFilterFollowup({
       type: bulkFilterActionsFollowUp.STATUS,
-      payload: []
+      payload: ''
     });
     dispatchBulkFilterFollowup({
       type: bulkFilterActionsFollowUp.FOLLOWUP,
@@ -585,12 +607,13 @@ const BulkTicketFilterFollowup = (props: {
       ticketFilterCount(
         selectedFilters,
         admissionType,
+        pairType,
         diagnosticsType,
         dateRange,
         statusType,
         filteredLocation,
-        isAmritsarUser,
         isMohaliUser,
+        isAmritsarUser,
         isHoshiarpurUser,
         isNawanshahrUser,
         isKhannaUser,
@@ -603,9 +626,9 @@ const BulkTicketFilterFollowup = (props: {
     setSelectedValueLost(null);
     setResult(' ');
     setFollowUp(null);
-    setAdmissionType((prev) => []);
-    setStatusType((prev) => []);
-    setDiagnosticsType((prev) => []);
+    setAdmissionType('');
+    setStatusType('');
+    setDiagnosticsType('');
     setDateRange(['', '']);
     // if (isAmritsarUser) {
     //   setFilteredLocation('Amritsar');
@@ -644,10 +667,10 @@ const BulkTicketFilterFollowup = (props: {
     await getAuditFilterTicketsHandler();
     setIsAuditorFilterOn(true);
   };
-  const handleClearAuditorFilter = async () => {
-    await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-    setIsAuditorFilterOn(false);
-  };
+  // const handleClearAuditorFilter = async () => {
+  //   await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+  //   setIsAuditorFilterOn(false);
+  // };
 
   return (
     <Box>

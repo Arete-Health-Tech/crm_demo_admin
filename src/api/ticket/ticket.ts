@@ -69,7 +69,10 @@ export const getFilteredTicket = async (
   }
   const params = new URLSearchParams();
 
-  if (localStorage.getItem('ticketType') === 'Admission') {
+  if (
+    localStorage.getItem('ticketType') === 'Admission' ||
+    localStorage.getItem('ticketBulkType') === 'Admission'
+  ) {
     console.log('calling admission api');
     //Below checking the conditions for calling filter combination api
     if (selectedFilters.results) {
@@ -174,7 +177,10 @@ export const getFilteredTicket = async (
       console.log(params);
       data = await apiClient.get(`/filters/filter-combo/?${params.toString()}`);
     }
-  } else if (localStorage.getItem('ticketType') === 'Diagnostics') {
+  } else if (
+    localStorage.getItem('ticketType') === 'Diagnostics' ||
+    localStorage.getItem('ticketBulkType') === 'Diagnostics'
+  ) {
     //Below checking the conditions for calling filter combination api
     if (selectedFilters.results) {
       params.set(
@@ -266,7 +272,10 @@ export const getFilteredTicket = async (
         `/filters/diagnostics-combo/?${params.toString()}`
       );
     }
-  } else if (localStorage.getItem('ticketType') === 'Follow-Up') {
+  } else if (
+    localStorage.getItem('ticketType') === 'Follow-Up' ||
+    localStorage.getItem('ticketBulkType') === 'Follow-Up'
+  ) {
     console.log(selectedFilters);
     console.log('inside followup');
     //Below checking the conditions for calling filter combination api

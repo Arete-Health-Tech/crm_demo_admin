@@ -415,6 +415,7 @@ const Navbar = ({ children }) => {
                     onClick={() => {
                       if (localStorage.getItem('ticketType') !== 'Admission') {
                         localStorage.setItem('ticketType', 'Admission');
+                        localStorage.setItem('ticketBulkType', '');
                         getTicketHandler(
                           UNDEFINED,
                           1,
@@ -471,6 +472,7 @@ const Navbar = ({ children }) => {
                         localStorage.getItem('ticketType') !== 'Diagnostics'
                       ) {
                         localStorage.setItem('ticketType', 'Diagnostics');
+                        localStorage.setItem('ticketBulkType', '');
                         getTicketHandler(
                           UNDEFINED,
                           1,
@@ -525,6 +527,7 @@ const Navbar = ({ children }) => {
                     onClick={() => {
                       if (localStorage.getItem('ticketType') !== 'Follow-Up') {
                         localStorage.setItem('ticketType', 'Follow-Up');
+                        localStorage.setItem('ticketBulkType', '');
                         getTicketHandler(
                           UNDEFINED,
                           1,

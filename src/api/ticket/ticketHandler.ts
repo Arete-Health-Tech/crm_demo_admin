@@ -101,6 +101,9 @@ export const getTicketFilterHandler = async (
     setEmptyDataText,
     setDownloadTickets,
     setLoaderOn,
+    setBulkTicketCache,
+    bulkTicketCache,
+    setBulkTickets,
     filteredLocation
   } = useTicketStore.getState();
   const { user } = useUserStore.getState();
@@ -113,25 +116,51 @@ export const getTicketFilterHandler = async (
     filteredLocation,
     phone
   );
-  const sortedTickets = data.tickets;
-  const count = data.count;
+  if (localStorage.getItem('ticketType') !== 'bulk-assign') {
+    const sortedTickets = data.tickets;
+    const count = data.count;
 
-  if (sortedTickets.length < 1) {
-    setEmptyDataText('No Data Found');
-  } else {
-    setEmptyDataText('');
-  }
-  if (name === UNDEFINED && downloadAll === 'false') {
-    setTicketCache({ ...ticketCache, [pageNumber]: sortedTickets, count });
-  }
-  if (downloadAll === 'true') {
-    setDownloadTickets(sortedTickets);
+    if (sortedTickets.length < 1) {
+      setEmptyDataText('No Data Found');
+    } else {
+      setEmptyDataText('');
+    }
+    if (name === UNDEFINED && downloadAll === 'false') {
+      setTicketCache({ ...ticketCache, [pageNumber]: sortedTickets, count });
+    }
+    if (downloadAll === 'true') {
+      setDownloadTickets(sortedTickets);
+      setLoaderOn(false);
+      return sortedTickets;
+    }
+    setTicketCount(count);
+    setTickets(sortedTickets);
     setLoaderOn(false);
-    return sortedTickets;
+  } else {
+    const sortedBulkTickets = data.tickets;
+    const count = data.count;
+
+    if (sortedBulkTickets.length < 1) {
+      setEmptyDataText('No Data Found');
+    } else {
+      setEmptyDataText('');
+    }
+    if (name === UNDEFINED && downloadAll === 'false') {
+      setBulkTicketCache({
+        ...bulkTicketCache,
+        [pageNumber]: sortedBulkTickets,
+        count
+      });
+    }
+    if (downloadAll === 'true') {
+      setDownloadTickets(sortedBulkTickets);
+      setLoaderOn(false);
+      return sortedBulkTickets;
+    }
+    setTicketCount(count);
+    setBulkTickets(sortedBulkTickets);
+    setLoaderOn(false);
   }
-  setTicketCount(count);
-  setTickets(sortedTickets);
-  setLoaderOn(false);
 };
 export const getTicketHandlerSearch = async (
   name: string,
@@ -149,6 +178,9 @@ export const getTicketHandlerSearch = async (
     setEmptyDataText,
     setDownloadTickets,
     setLoaderOn,
+    setBulkTicketCache,
+    bulkTicketCache,
+    setBulkTickets,
     filteredLocation
   } = useTicketStore.getState();
   const { user } = useUserStore.getState();
@@ -156,31 +188,57 @@ export const getTicketHandlerSearch = async (
 
   setLoaderOn(true);
   const data = await getSearchedTicket(name, pageNumber, phone);
-  const sortedTickets = data.tickets;
-  const count = data.count;
+  if (localStorage.getItem('ticketType') !== 'bulk-assign') {
+    const sortedTickets = data.tickets;
+    const count = data.count;
 
-  if (sortedTickets.length < 1) {
-    setEmptyDataText('No Data Found');
-  } else {
-    setEmptyDataText('');
-  }
-  if (name === UNDEFINED && downloadAll === 'false') {
-    setTicketCache({ ...ticketCache, [pageNumber]: sortedTickets, count });
-  }
-  if (downloadAll === 'true') {
-    setDownloadTickets(sortedTickets);
+    if (sortedTickets.length < 1) {
+      setEmptyDataText('No Data Found');
+    } else {
+      setEmptyDataText('');
+    }
+    if (name === UNDEFINED && downloadAll === 'false') {
+      setTicketCache({ ...ticketCache, [pageNumber]: sortedTickets, count });
+    }
+    if (downloadAll === 'true') {
+      setDownloadTickets(sortedTickets);
+      setLoaderOn(false);
+      return sortedTickets;
+    }
+    setTicketCount(count);
+    setTickets(sortedTickets);
     setLoaderOn(false);
-    return sortedTickets;
+  } else {
+    const sortedBulkTickets = data.tickets;
+    const count = data.count;
+
+    if (sortedBulkTickets.length < 1) {
+      setEmptyDataText('No Data Found');
+    } else {
+      setEmptyDataText('');
+    }
+    if (name === UNDEFINED && downloadAll === 'false') {
+      setBulkTicketCache({
+        ...bulkTicketCache,
+        [pageNumber]: sortedBulkTickets,
+        count
+      });
+    }
+    if (downloadAll === 'true') {
+      setDownloadTickets(sortedBulkTickets);
+      setLoaderOn(false);
+      return sortedBulkTickets;
+    }
+    setTicketCount(count);
+    setBulkTickets(sortedBulkTickets);
+    setLoaderOn(false);
   }
-  setTicketCount(count);
-  setTickets(sortedTickets);
-  setLoaderOn(false);
 };
 export const getBulkTicketHandler = async (
   name: string,
   pageNumber: number,
   downloadAll: 'true' | 'false' = 'false',
-  selectedFilters: iTicketFilter | null,
+  selectedFilters: iTicketFilterOld | null,
   ticketId: string = UNDEFINED,
   fetchUpdated: boolean = false
 ) => {

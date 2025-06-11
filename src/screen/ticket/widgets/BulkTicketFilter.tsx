@@ -35,7 +35,8 @@ import { bulkFilterActions } from '../ticketStateReducers/actions/filterAction';
 import { UNDEFINED } from '../../../constantUtils/constant';
 import {
   getAuditFilterTicketsHandler,
-  getBulkTicketHandler
+  getBulkTicketHandler,
+  getTicketFilterHandler
 } from '../../../api/ticket/ticketHandler';
 import useUserStore from '../../../store/userStore';
 import { apiClient } from '../../../api/apiClient';
@@ -44,14 +45,21 @@ import '../singleTicket.css';
 import AuditFilterIcon from '../../../assets/commentHeader.svg';
 import { Tooltip, TooltipProps, Zoom, tooltipClasses } from '@mui/material';
 import useReprentativeStore from '../../../store/representative';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
+import { toast } from 'react-toastify';
 
 const drawerWidth = 450;
 export const ticketFilterCount = (
-  selectedBulkFilters: iTicketFilter,
-  admissionType: string[],
-  diagnosticsType: string[],
+  selectedFilters: iTicketFilter,
+  admissionType: string,
+  diagnosticsType: string,
+  pairType: string,
   dateRange: string[],
-  statusType: string[],
+  statusType: string,
   filteredLocation: string,
   isAmritsarUser: boolean,
   isHoshiarpurUser: boolean,
@@ -60,15 +68,16 @@ export const ticketFilterCount = (
   isKhannaUser: boolean,
   followUp: Date | null
 ) => {
-  const stageListCount = selectedBulkFilters['stageList'].length;
-  const representativeCount = selectedBulkFilters['representative'] ? 1 : 0;
+  const stageListCount = selectedFilters['stageList'] ? 1 : 0;
+  const representativeCount = selectedFilters['representative'] ? 1 : 0;
 
-  const admissionCount = admissionType ? admissionType.length : 0;
-  const diagnosticsCount = diagnosticsType ? diagnosticsType.length : 0;
+  const admissionCount = admissionType ? 1 : 0;
+  const pairCount = pairType ? 1 : 0;
+  const diagnosticsCount = diagnosticsType ? 1 : 0;
   const DateCount = dateRange[0] && dateRange[1] ? 1 : 0;
 
-  const resultCount = selectedBulkFilters['results'] ? 1 : 0;
-  const statusCount = statusType ? statusType.length : 0;
+  const resultCount = selectedFilters['results'] ? 1 : 0;
+  const statusCount = statusType ? 1 : 0;
   const followUpCount = followUp !== null ? 1 : 0;
 
   let locationCount = 0;
@@ -98,6 +107,7 @@ export const ticketFilterCount = (
     representativeCount +
     resultCount +
     admissionCount +
+    pairCount +
     diagnosticsCount +
     DateCount +
     statusCount +
@@ -145,12 +155,11 @@ const BulkTicketFilter = (props: {
   } = useTicketStore();
 
   const [isFilterOpen, setIsFilterOpen] = React.useState(false);
-  const [admissionType, setAdmissionType] = React.useState<string[]>([]);
-  const [statusType, setStatusType] = React.useState<string[]>([]);
+  const [admissionType, setAdmissionType] = React.useState<string>('');
+  const [statusType, setStatusType] = React.useState<string>('');
   const [result, setResult] = React.useState('');
-  const [diagnosticsType, setDiagnosticsType] = React.useState<string[]>(
-    () => []
-  );
+  const [diagnosticsType, setDiagnosticsType] = React.useState<string>('');
+  const [pairType, setPairType] = React.useState<string>('');
   // const [speciality, setSpeciality] = React.useState<string[]>(() => []);
   const [stagesLabel, setStagesLabels] = React.useState<any>([]);
   const [representativeLabel, setRepresentativeLabel] = React.useState<any>([]);
@@ -274,7 +283,7 @@ const BulkTicketFilter = (props: {
 
   const handleAdmissionType = (
     event: React.MouseEvent<HTMLElement>,
-    newAdmission: string[]
+    newAdmission: string
   ) => {
     setAdmissionType(newAdmission);
 
@@ -284,9 +293,21 @@ const BulkTicketFilter = (props: {
     });
   };
 
+  const handlePairType = (
+    event: React.MouseEvent<HTMLElement>,
+    pairType: string
+  ) => {
+    setPairType(pairType);
+
+    dispatchBulkFilter({
+      type: bulkFilterActions.PAYERTYPE,
+      payload: pairType
+    });
+  };
+
   const handleStatusType = (
     event: React.MouseEvent<HTMLElement>,
-    Status: string[]
+    Status: string
   ) => {
     setStatusType(Status);
 
@@ -298,7 +319,7 @@ const BulkTicketFilter = (props: {
 
   const handleDiagnosticsType = (
     event: React.MouseEvent<HTMLElement>,
-    newDiagnostics: string[]
+    newDiagnostics: string
   ) => {
     setDiagnosticsType(newDiagnostics);
     dispatchBulkFilter({
@@ -384,6 +405,69 @@ const BulkTicketFilter = (props: {
     })();
   }, []);
 
+  const handleClearFilter = async () => {
+    console.log('inside bluk handle clear filter');
+    dispatchBulkFilter({ type: bulkFilterActions.STAGES, payload: '' });
+    dispatchBulkFilter({
+      type: bulkFilterActions.REPRESENTATIVE,
+      payload: null
+    });
+    dispatchBulkFilter({ type: bulkFilterActions.ADMISSIONTYPE, payload: '' });
+    dispatchBulkFilter({
+      type: bulkFilterActions.DIAGNOSTICSTYPE,
+      payload: ''
+    });
+    dispatchBulkFilter({ type: bulkFilterActions.DATERANGE, payload: [] });
+    dispatchBulkFilter({ type: bulkFilterActions.RESULTS, payload: null });
+    dispatchBulkFilter({ type: bulkFilterActions.STATUS, payload: '' });
+    dispatchBulkFilter({ type: bulkFilterActions.FOLLOWUP, payload: null });
+    dispatchBulkFilter({ type: bulkFilterActions.PAYERTYPE, payload: '' });
+
+    setCurrentRepresentative('');
+    setFilterCount(
+      ticketFilterCount(
+        selectedBulkFilters,
+        admissionType,
+        pairType,
+        diagnosticsType,
+        dateRange,
+        statusType,
+        filteredLocation,
+        isAmritsarUser,
+        isMohaliUser,
+        isHoshiarpurUser,
+        isNawanshahrUser,
+        isKhannaUser,
+        followUp
+      )
+    );
+    setFilteredLocation('');
+    setFilterCount(0);
+    setBulkPageNumber(1);
+    setSelectedValue(null);
+    setSelectedValueLost(null);
+    setResult(' ');
+    setFollowUp(null);
+    setAdmissionType('');
+    setPairType('');
+    setStatusType('');
+    setDiagnosticsType('');
+    setDateRange([]);
+    // if (isAmritsarUser) {
+    //   setFilteredLocation('Amritsar');
+    // } else if (isHoshiarpurUser) {
+    //   setFilteredLocation('Hoshiarpur');
+    // } else if (isMohaliUser) {
+    //   setFilteredLocation('Mohali');
+    // } else if (isNawanshahrUser) {
+    //   setFilteredLocation('Nawanshahr');
+    // } else if (isKhannaUser) {
+    //   setFilteredLocation('Khanna');
+    // } else {
+    //   setFilteredLocation('');
+    // }
+  };
+
   const handleApplyFilter = async () => {
     // setTicketFilters({
     //   stageList: selectedStageList,
@@ -396,12 +480,33 @@ const BulkTicketFilter = (props: {
     setIsFilterOpen(false);
     setBulkPageNumber(1);
     setBulkFilterTickets(selectedBulkFilters);
-    await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedBulkFilters);
-    // console.log(isAmritsarUser, "selected again")
+    // await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedBulkFilters);
+    try {
+      if (
+        hasChanges(selectedBulkFilters, initialFilters) &&
+        !filteredLocation
+      ) {
+        await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        // await getTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        // setFilteredLocation(localStorage.getItem('location') || '');
+      } else {
+        await getTicketFilterHandler(
+          UNDEFINED,
+          1,
+          'false',
+          selectedBulkFilters
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      toast.error('Please Select Date Range');
+    }
     setFilterCount(
       ticketFilterCount(
         selectedBulkFilters,
         admissionType,
+        pairType,
         diagnosticsType,
         dateRange,
         statusType,
@@ -444,7 +549,26 @@ const BulkTicketFilter = (props: {
     setIsFilterOpen(false);
     setBulkPageNumber(1);
     setBulkFilterTickets(selectedBulkFilters);
-    await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedBulkFilters);
+    try {
+      if (
+        hasChanges(selectedBulkFilters, initialFiltersNew) &&
+        !filteredLocation
+      ) {
+        await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      } else {
+        await getTicketFilterHandler(
+          UNDEFINED,
+          1,
+          'false',
+          selectedBulkFilters
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      setDownloadDisable(false);
+      handleClearFilter();
+      // toast.error('Please Select Date Range');
+    }
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(0);
 
@@ -464,65 +588,6 @@ const BulkTicketFilter = (props: {
       );
     }
     setDownloadDisable(false);
-  };
-
-  const handleClearFilter = async () => {
-    console.log('inside bluk handle clear filter');
-    dispatchBulkFilter({ type: bulkFilterActions.STAGES, payload: [] });
-    dispatchBulkFilter({
-      type: bulkFilterActions.REPRESENTATIVE,
-      payload: null
-    });
-    dispatchBulkFilter({ type: bulkFilterActions.ADMISSIONTYPE, payload: [] });
-    dispatchBulkFilter({
-      type: bulkFilterActions.DIAGNOSTICSTYPE,
-      payload: []
-    });
-    dispatchBulkFilter({ type: bulkFilterActions.DATERANGE, payload: [] });
-    dispatchBulkFilter({ type: bulkFilterActions.RESULTS, payload: null });
-    dispatchBulkFilter({ type: bulkFilterActions.STATUS, payload: [] });
-    dispatchBulkFilter({ type: bulkFilterActions.FOLLOWUP, payload: null });
-    
-    setCurrentRepresentative('');
-    setFilterCount(
-      ticketFilterCount(
-        selectedBulkFilters,
-        admissionType,
-        diagnosticsType,
-        dateRange,
-        statusType,
-        filteredLocation,
-        isAmritsarUser,
-        isMohaliUser,
-        isHoshiarpurUser,
-        isNawanshahrUser,
-        isKhannaUser,
-        followUp
-      )
-    );
-    setFilterCount(0);
-    setBulkPageNumber(1);
-    setSelectedValue(null);
-    setSelectedValueLost(null);
-    setResult(' ');
-    setFollowUp(null);
-    setAdmissionType((prev) => []);
-    setStatusType((prev) => []);
-    setDiagnosticsType((prev) => []);
-    setDateRange(['', '']);
-    // if (isAmritsarUser) {
-    //   setFilteredLocation('Amritsar');
-    // } else if (isHoshiarpurUser) {
-    //   setFilteredLocation('Hoshiarpur');
-    // } else if (isMohaliUser) {
-    //   setFilteredLocation('Mohali');
-    // } else if (isNawanshahrUser) {
-    //   setFilteredLocation('Nawanshahr');
-    // } else if (isKhannaUser) {
-    //   setFilteredLocation('Khanna');
-    // } else {
-    //   setFilteredLocation('');
-    // }
   };
 
   useEffect(() => {
@@ -901,6 +966,56 @@ const BulkTicketFilter = (props: {
               </ToggleButtonGroup>
             </Box>
           )}
+
+          <Box p={1} px={3}>
+            <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>
+              Payer Type
+            </Stack>
+            <ToggleButtonGroup
+              color="primary"
+              value={pairType}
+              exclusive
+              onChange={handlePairType}
+            >
+              <ToggleButton
+                value="CASH"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                CASH
+              </ToggleButton>
+              <ToggleButton
+                value="ECHS"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                ECHS
+              </ToggleButton>
+              <ToggleButton
+                value="TPA"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                TPA
+              </ToggleButton>
+              <ToggleButton
+                value="CGHS/PSU"
+                sx={{
+                  fontFamily: 'Outfit,sans-serif',
+                  fontSize: '12px'
+                }}
+              >
+                CGHS/PSU
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+
           {isAdminUser && (
             <Box p={1} px={3}>
               <Stack sx={{ fontFamily: 'Outfit,san-serif', fontWeight: '500' }}>

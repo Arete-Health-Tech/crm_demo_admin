@@ -41,7 +41,8 @@ import {
 } from '../../../constantUtils/constant';
 import {
   getAuditFilterTicketsHandler,
-  getBulkTicketHandler
+  getBulkTicketHandler,
+  getTicketFilterHandler
 } from '../../../api/ticket/ticketHandler';
 import useUserStore from '../../../store/userStore';
 import { apiClient } from '../../../api/apiClient';
@@ -50,6 +51,12 @@ import '../singleTicket.css';
 import AuditFilterIcon from '../../../assets/commentHeader.svg';
 import { Tooltip, TooltipProps, Zoom, tooltipClasses } from '@mui/material';
 import useReprentativeStore from '../../../store/representative';
+import {
+  hasChanges,
+  initialFiltersNew,
+  oldInitialFilters
+} from '../../../constants/commomFunctions';
+import { toast } from 'react-toastify';
 
 const drawerWidth = 450;
 export const ticketFilterCount = (
@@ -477,7 +484,19 @@ const BulkTicketFilterDiago = (props: {
     setIsFilterOpen(false);
     setBulkPageNumber(1);
     setBulkFilterTicketsDiago(selectedFilters);
-    await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    // await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    try {
+      if (hasChanges(selectedFilters, initialFiltersNew) && !filteredLocation) {
+        await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+        // setFilteredLocation(localStorage.getItem('location') || '');
+      } else {
+        await getTicketFilterHandler(UNDEFINED, 1, 'false', selectedFilters);
+      }
+    } catch (error) {
+      console.log({ error });
+      setDownloadDisable(false);
+      toast.error('Please Select Date Range');
+    }
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(
       ticketFilterCount(
@@ -524,7 +543,7 @@ const BulkTicketFilterDiago = (props: {
     setDownloadDisable(true);
     setIsFilterOpen(false);
     setBulkPageNumber(1);
-    await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+    await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(0);
 
@@ -644,10 +663,10 @@ const BulkTicketFilterDiago = (props: {
     await getAuditFilterTicketsHandler();
     setIsAuditorFilterOn(true);
   };
-  const handleClearAuditorFilter = async () => {
-    await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
-    setIsAuditorFilterOn(false);
-  };
+  // const handleClearAuditorFilter = async () => {
+  //   await getBulkTicketHandler(UNDEFINED, 1, 'false', selectedFilters);
+  //   setIsAuditorFilterOn(false);
+  // };
 
   return (
     <Box>

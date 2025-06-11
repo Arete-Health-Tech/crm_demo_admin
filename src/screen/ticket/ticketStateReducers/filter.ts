@@ -378,7 +378,7 @@ export function selectedBulkFiltersReducer(
   }
   if (action.type === filterActions.PAYERTYPE) {
     return {
-      ...selectedFiltersState,
+      ...selectedBulkFiltersState,
       payerType: action.payload
     };
   }
@@ -449,7 +449,7 @@ export function selectedBulkFiltersReducerDiago(
   }
   if (action.type === filterActions.PAYERTYPE) {
     return {
-      ...selectedFiltersState,
+      ...selectedBulkFiltersStateDiago,
       payerType: action.payload
     };
   }
@@ -520,7 +520,7 @@ export function selectedBulkFiltersReducerFollowUp(
   }
   if (action.type === filterActions.PAYERTYPE) {
     return {
-      ...selectedFiltersState,
+      ...selectedBulkFiltersStateFollowUp,
       payerType: action.payload
     };
   }

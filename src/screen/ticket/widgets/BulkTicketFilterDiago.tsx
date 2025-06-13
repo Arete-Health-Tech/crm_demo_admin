@@ -788,7 +788,7 @@ const BulkTicketFilterDiago = (props: {
                       <Checkbox
                         value={id}
                         onChange={handleStageList}
-                        checked={selectedFilters.stageList.includes(id)}
+                        checked={selectedFilters.stageList === id}
                       />
                     }
                     label={
@@ -911,6 +911,7 @@ const BulkTicketFilterDiago = (props: {
             <ToggleButtonGroup
               color="primary"
               value={statusType}
+              exclusive
               onChange={handleStatusType}
             >
               {/* <ToggleButton value="dnd"
@@ -975,6 +976,7 @@ const BulkTicketFilterDiago = (props: {
               <ToggleButtonGroup
                 color="primary"
                 value={admissionType}
+                exclusive
                 onChange={handleAdmissionType}
               >
                 <ToggleButton
@@ -1015,6 +1017,7 @@ const BulkTicketFilterDiago = (props: {
               <ToggleButtonGroup
                 color="primary"
                 value={diagnosticsType}
+                exclusive
                 onChange={handleDiagnosticsType}
               >
                 <ToggleButton
@@ -1065,6 +1068,7 @@ const BulkTicketFilterDiago = (props: {
               <ToggleButtonGroup
                 color="primary"
                 value={filteredLocation}
+                exclusive
                 // onChange={() => setFilteredLocation('Amritsar')}
                 onChange={handleLocation}
               >
@@ -1101,6 +1105,7 @@ const BulkTicketFilterDiago = (props: {
               <ToggleButtonGroup
                 color="primary"
                 value={filteredLocation}
+                exclusive
                 // onChange={() => setFilteredLocation('Amritsar')}
                 onChange={handleLocation}
                 sx={{ marginTop: '5px' }}

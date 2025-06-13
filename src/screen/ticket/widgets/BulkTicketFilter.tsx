@@ -697,7 +697,7 @@ const BulkTicketFilter = (props: {
                       <Checkbox
                         value={id}
                         onChange={handleStageList}
-                        checked={selectedBulkFilters.stageList.includes(id)}
+                        checked={selectedBulkFilters.stageList === id}
                       />
                     }
                     label={
@@ -820,6 +820,7 @@ const BulkTicketFilter = (props: {
             <ToggleButtonGroup
               color="primary"
               value={statusType}
+              exclusive
               onChange={handleStatusType}
             >
               {/* <ToggleButton value="dnd"
@@ -884,6 +885,7 @@ const BulkTicketFilter = (props: {
               <ToggleButtonGroup
                 color="primary"
                 value={admissionType}
+                exclusive
                 onChange={handleAdmissionType}
               >
                 <ToggleButton
@@ -924,6 +926,7 @@ const BulkTicketFilter = (props: {
               <ToggleButtonGroup
                 color="primary"
                 value={diagnosticsType}
+                exclusive
                 onChange={handleDiagnosticsType}
               >
                 <ToggleButton
@@ -1024,6 +1027,7 @@ const BulkTicketFilter = (props: {
               <ToggleButtonGroup
                 color="primary"
                 value={filteredLocation}
+                exclusive
                 // onChange={() => setFilteredLocation('Amritsar')}
                 onChange={handleLocation}
               >
@@ -1060,6 +1064,7 @@ const BulkTicketFilter = (props: {
               <ToggleButtonGroup
                 color="primary"
                 value={filteredLocation}
+                exclusive
                 // onChange={() => setFilteredLocation('Amritsar')}
                 onChange={handleLocation}
                 sx={{ marginTop: '5px' }}

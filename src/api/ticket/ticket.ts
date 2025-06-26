@@ -38,9 +38,9 @@ export const getTicket = async (
     }?page=${pageNumber}&name=${
       name !== '' ? name : 'undefined'
     }&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
-    &specialty=${localStorage.getItem(
-      'location'
-    ) || ''}&specialtyforFilter=${filteredLocation}`
+    &specialty=${
+      localStorage.getItem('location') || ''
+    }&specialtyforFilter=${filteredLocation}`
   );
   return data;
 };
@@ -357,6 +357,18 @@ export const getFilteredTicket = async (
 
   return data?.data;
 };
+export const getFilteredTicketTodo = async (
+  pageNumber: number,
+  selectedFilters: any,
+  filteredLocation: string,
+  phone?: any
+) => {
+  console.log(selectedFilters);
+  const { data } = await apiClient.get(
+    `/filters/ToDoTickets?agentId=${selectedFilters.representative}`
+  );
+  return data;
+};
 
 export const getSearchedTicket = async (
   name: string,
@@ -399,11 +411,30 @@ export const getBulkTicket = async (
         ? '/diagnostics/getRepresentativediagnosticsTickets/'
         : localStorage.getItem('ticketBulkType') === 'Follow-Up'
         ? '/followUp/FollowUpTickets'
+        : localStorage.getItem('ticketBulkType') === 'To-do'
+        ? '/filters/ToDoTickets'
         : '/ticket/'
     }?page=${pageNumber}&name=${
       name !== '' ? name : 'undefined'
     }&downloadAll=${downloadAll}&ticketId=${ticketId}&phonev=${phone}&fetchUpdated=${fetchUpdated}&${params}
     &specialty=&specialtyforFilter=${filteredLocation}`
+  );
+  return data;
+};
+export const getBulkTicketTodo = async (
+  name: string,
+  pageNumber: number,
+  downloadAll: string,
+  selectedFilters: any,
+  ticketId?: string | null,
+  fetchUpdated: boolean = false,
+  phone?: any,
+  filteredLocation?: string | '',
+  won?: any,
+  lose?: any
+) => {
+  const { data } = await apiClient.get(
+    `/filters/ToDoTickets?agentId=${selectedFilters.representative}`
   );
   return data;
 };
@@ -479,8 +510,7 @@ export const getAllTicketFollowUpNew = async (
   phone: any
 ) => {
   const { data } = await apiClient.get(
-    `/download/downloadFollowUp?followup=true&phone=${ phone }&startDate=${ startDate }&endDate=${ endDate }`
-    
+    `/download/downloadFollowUp?followup=true&phone=${phone}&startDate=${startDate}&endDate=${endDate}`
   );
   return data;
 };

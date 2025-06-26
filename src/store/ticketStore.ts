@@ -86,6 +86,16 @@ const useTicketStore = create<iTicketStore>((set, get) => ({
   },
   setBulkFilterTicketsFollowUp: (BulkFilterTicketsFollowUp) =>
     set({ BulkFilterTicketsFollowUp }),
+  BulkFilterTicketsTodo: {
+    stageList: '',
+    representative: null,
+    results: null,
+    dateRange: [],
+    status: '',
+    followUp: null
+  },
+  setBulkFilterTicketsTodo: (BulkFilterTicketsTodo) =>
+    set({ BulkFilterTicketsTodo }),
   loaderOn: false,
   setLoaderOn: (loaderOn) => set({ loaderOn }),
   pageNumber: 1,

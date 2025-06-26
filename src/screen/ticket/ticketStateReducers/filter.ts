@@ -2,6 +2,7 @@ import {
   bulkFilterActions,
   bulkFilterActionsDiago,
   bulkFilterActionsFollowUp,
+  bulkFilterActionsTodo,
   filterActions,
   filterActionsDiago,
   filterActionsFollowUp
@@ -92,6 +93,17 @@ export const selectedBulkFiltersStateFollowUp: iTicketFilter = {
   status: '',
   followUp: null
 };
+export const selectedBulkFiltersStateTodo: iTicketFilter = {
+  stageList: '',
+  representative: null,
+  results: null,
+  //  ....
+  admissionType: '',
+  diagnosticsType: '',
+  dateRange: [],
+  status: '',
+  followUp: null
+};
 
 interface actionType {
   type: string;
@@ -115,6 +127,10 @@ interface actionBulkTypeDiago {
   payload: any;
 }
 interface actionBulkTypeFollowup {
+  type: string;
+  payload: any;
+}
+interface actionBulkTypeTodo {
   type: string;
   payload: any;
 }
@@ -541,6 +557,77 @@ export function selectedBulkFiltersReducerFollowUp(
   if (action.type === bulkFilterActionsFollowUp.FOLLOWUP) {
     return {
       ...selectedBulkFiltersStateFollowUp,
+      followUp: action.payload
+    };
+  }
+
+  throw new Error('unknown action type');
+}
+export function selectedBulkFiltersReducerTodo(
+  selectedBulkFiltersStateTodo: iTicketFilter,
+  action: actionBulkTypeTodo
+): iTicketFilter {
+  if (action.type === bulkFilterActionsTodo.STAGES) {
+    return {
+      ...selectedBulkFiltersStateTodo,
+      stageList: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActionsTodo.REPRESENTATIVE) {
+    return {
+      ...selectedBulkFiltersStateTodo,
+      representative: action.payload
+    };
+  }
+  if (action.type === bulkFilterActionsTodo.RESULTS) {
+    return {
+      ...selectedBulkFiltersStateTodo,
+      results: action.payload
+    };
+  }
+  //  if (action.type === bulkFilterActionsTodo.LOSE) {
+  //   return {
+  //     ...selectedBulkFiltersStateTodo,
+  //     lose: action.payload
+  //   };
+  // }
+
+  if (action.type === bulkFilterActionsTodo.ADMISSIONTYPE) {
+    return {
+      ...selectedBulkFiltersStateTodo,
+      admissionType: action.payload
+    };
+  }
+  if (action.type === bulkFilterActionsTodo.DIAGNOSTICSTYPE) {
+    return {
+      ...selectedBulkFiltersStateTodo,
+      diagnosticsType: action.payload
+    };
+  }
+  if (action.type === filterActions.PAYERTYPE) {
+    return {
+      ...selectedBulkFiltersStateTodo,
+      payerType: action.payload
+    };
+  }
+  if (action.type === bulkFilterActionsTodo.DATERANGE) {
+    return {
+      ...selectedBulkFiltersStateTodo,
+      dateRange: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActionsTodo.STATUS) {
+    return {
+      ...selectedBulkFiltersStateTodo,
+      status: action.payload
+    };
+  }
+
+  if (action.type === bulkFilterActionsTodo.FOLLOWUP) {
+    return {
+      ...selectedBulkFiltersStateTodo,
       followUp: action.payload
     };
   }

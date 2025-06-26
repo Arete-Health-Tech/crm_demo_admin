@@ -49,6 +49,7 @@ import {
   initialFiltersNew,
   oldInitialFilters
 } from '../../../constants/commomFunctions';
+import BulkTicketFilterTodo from '../widgets/BulkTicketFilterTodo';
 
 const menuItemStyles = {
   color: 'var(--Text-Black, #080F1A)',
@@ -171,6 +172,7 @@ function BulkAssign() {
     BulkFilterTickets,
     BulkFilterTicketsDiago,
     BulkFilterTicketsFollowUp,
+    BulkFilterTicketsTodo,
     setBulkSearchByName,
     bulkSearchByName,
     ticketCount,
@@ -199,7 +201,7 @@ function BulkAssign() {
   const [phone, setPhone] = useState(null);
 
   //This option and selectedOption is for showing tickets according to the selected options
-  const options = ['Admission', 'Diagnostic', 'Follow-Up'];
+  const options = ['Admission', 'Diagnostic', 'Follow-Up', 'To-do'];
   const [selectedOption, setSelectedOption] = useState<string>(options[0]);
 
   const fetchRepresentatives = async () => {
@@ -266,6 +268,8 @@ function BulkAssign() {
       ? BulkFilterTicketsDiago
       : selectedOption === 'Follow-Up'
       ? BulkFilterTicketsFollowUp
+      : selectedOption === 'To-do'
+      ? BulkFilterTicketsTodo
       : BulkFilterTickets;
 
   const handlePagination = async (
@@ -329,43 +333,51 @@ function BulkAssign() {
     }
   };
 
-    useEffect(() => {
-      const data = async () => {
-        console.log(bulkSearchByName);
-        try {
-          setDownloadDisable(true);
-          if (bulkSearchByName === '' || bulkSearchByName === 'undefined') {
-            // await getTicketHandler(bulkSearchByName, 1, 'false', oldInitialFilters);
-            if (hasChanges(newFilterBulk, initialFiltersNew) && !filteredLocation) {
-              await getBulkTicketHandler(
-                UNDEFINED,
-                1,
-                'false',
-                oldInitialFilters
-              );
-            } else {
-              await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilterBulk);
-            }
+  useEffect(() => {
+    const data = async () => {
+      console.log(bulkSearchByName);
+      try {
+        setDownloadDisable(true);
+        if (bulkSearchByName === '' || bulkSearchByName === 'undefined') {
+          // await getTicketHandler(bulkSearchByName, 1, 'false', oldInitialFilters);
+          if (
+            hasChanges(newFilterBulk, initialFiltersNew) &&
+            !filteredLocation
+          ) {
+            await getBulkTicketHandler(
+              UNDEFINED,
+              1,
+              'false',
+              oldInitialFilters
+            );
           } else {
-            await getTicketHandlerSearch(bulkSearchByName, 1, 'false', newFilterBulk);
+            await getTicketFilterHandler(UNDEFINED, 1, 'false', newFilterBulk);
           }
-          bulkSearchByName === '' || bulkSearchByName === 'undefined'
-            ? setSearchError('Type to search & Enter')
-            : setSearchError(
-                `remove "${searchName.toUpperCase()}" to reset & Enter`
-              );
-          setBulkPageNumber(1);
-          setPage(1);
-          setDownloadDisable(false);
-        } catch (error) {
-          setDownloadDisable(false);
-          setBulkPageNumber(1);
-          setPage(1);
-          console.log(error);
+        } else {
+          await getTicketHandlerSearch(
+            bulkSearchByName,
+            1,
+            'false',
+            newFilterBulk
+          );
         }
-      };
-      data();
-    }, [bulkSearchByName]);
+        bulkSearchByName === '' || bulkSearchByName === 'undefined'
+          ? setSearchError('Type to search & Enter')
+          : setSearchError(
+              `remove "${searchName.toUpperCase()}" to reset & Enter`
+            );
+        setBulkPageNumber(1);
+        setPage(1);
+        setDownloadDisable(false);
+      } catch (error) {
+        setDownloadDisable(false);
+        setBulkPageNumber(1);
+        setPage(1);
+        console.log(error);
+      }
+    };
+    data();
+  }, [bulkSearchByName]);
 
   useEffect(() => {
     setPageCount(Math.ceil(ticketCount / 10));
@@ -593,6 +605,7 @@ function BulkAssign() {
   >([]);
 
   const [inputSearch, setInputSearch] = useState('');
+  const [disabled, setDisabled] = useState(false);
 
   const handleAssignedTicketModal = () => {
     setIsAssignTicketModal(true);
@@ -601,6 +614,7 @@ function BulkAssign() {
 
   const handleAssignedTicket = async () => {
     if (selectedRepresentativeIds.length > 0) {
+      setDisabled(true);
       try {
         const result = await bulkAssignTicketsHandler(
           selectedTicketIds,
@@ -612,6 +626,7 @@ function BulkAssign() {
           setSelectedRepresentativeIds([]);
           setSelectedTicketIds([]);
           setIsAssignTicketModal(false);
+          handleClearAssignee();
           try {
             setDownloadDisable(true);
             try {
@@ -645,6 +660,7 @@ function BulkAssign() {
                   newFilterBulk
                 );
               }
+              setDisabled(false);
             } catch (error) {
               console.log(error);
               setDownloadDisable(false);
@@ -656,11 +672,13 @@ function BulkAssign() {
           } catch {
             toast.error('Error While Fetching Tickets');
             setDownloadDisable(false);
+            setDisabled(false);
           }
         }
       } catch (error) {
         toast.error('Error While Assigning Tickets');
         setIsAssignTicketModal(false);
+        setDisabled(false);
       }
     } else {
       toast.info(
@@ -683,17 +701,20 @@ function BulkAssign() {
         selectedTicketIds.filter((id) => !currentPageIds.includes(id))
       );
     } else {
-      if (newSelection.size > 20) {
-        toast.info("You can't select more than 20 leads.");
-        return;
-      }
+      // if (newSelection.size > 20) {
+      //   toast.info("You can't select more than 20 leads.");
+      //   return;
+      // }
       setSelectedTicketIds(Array.from(newSelection));
     }
   };
 
   const handleSelectRepresentative = (id: string) => {
-    setSelectedRepresentativeIds((prevIds) =>
-      prevIds.includes(id) ? [] : [id]
+    setSelectedRepresentativeIds(
+      (prevIds) =>
+        prevIds.includes(id)
+          ? prevIds.filter((repId) => repId !== id) // remove if already selected
+          : [...prevIds, id] // add if not selected
     );
   };
 
@@ -770,20 +791,30 @@ function BulkAssign() {
   };
 
   const handleTicketType = async (option) => {
-    if (option === 'Admission') {
+    console.log(option);
+    try {
+      if (option === 'Admission') {
+        setSelectedTicketIds([]);
+        localStorage.setItem('ticketBulkType', 'Admission');
+        await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      } else if (option === 'Diagnostic') {
+        setSelectedTicketIds([]);
+        localStorage.setItem('ticketBulkType', 'Diagnostics');
+        await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      } else if (option === 'Follow-Up') {
+        localStorage.setItem('ticketBulkType', 'Follow-Up');
+        setSelectedTicketIds([]);
+        await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      } else if (option === 'To-do') {
+        localStorage.setItem('ticketBulkType', 'To-do');
+        setSelectedTicketIds([]);
+        // await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      }
+      setSelectedOption(option);
+    } catch {
       setSelectedTicketIds([]);
-      localStorage.setItem('ticketBulkType', 'Admission');
-      await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-    } else if (option === 'Diagnostic') {
-      setSelectedTicketIds([]);
-      localStorage.setItem('ticketBulkType', 'Diagnostics');
-      await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
-    } else if (option === 'Follow-Up') {
-      localStorage.setItem('ticketBulkType', 'Follow-Up');
-      setSelectedTicketIds([]);
-      await getBulkTicketHandler(UNDEFINED, 1, 'false', oldInitialFilters);
+      setSelectedOption(option);
     }
-    setSelectedOption(option);
   };
   useEffect(() => {
     console.log(selectedTicketIds, 'bulktickets');
@@ -866,39 +897,43 @@ function BulkAssign() {
             {/* Search Filter And Filters Component */}
             <Box display={'flex'} flexDirection={'row'} gap={'9px'}>
               {/* Search Filters */}
-              <Stack gap={'2px'}>
-                <Stack className={styles.search}>
-                  <div className={styles.search_container}>
-                    <span className={styles.search_icon}>
-                      <SearchIcon />
-                    </span>
-                    <input
-                      type="text"
-                      className={styles.search_input}
-                      placeholder=" Search..."
-                      onChange={(e) => setSearchName(e.target.value)}
-                      onKeyDown={handleSearchKeyPress}
-                    />
-                  </div>
+              {localStorage.getItem('ticketBulkType') !== 'To-do' && (
+                <Stack gap={'2px'}>
+                  <Stack className={styles.search}>
+                    <div className={styles.search_container}>
+                      <span className={styles.search_icon}>
+                        <SearchIcon />
+                      </span>
+                      <input
+                        type="text"
+                        className={styles.search_input}
+                        placeholder=" Search..."
+                        onChange={(e) => setSearchName(e.target.value)}
+                        onKeyDown={handleSearchKeyPress}
+                      />
+                    </div>
+                  </Stack>
+                  <Stack
+                    sx={{
+                      fontFamily: `Outfit,sanserif`,
+                      fontSize: '13px',
+                      color: '#647491',
+                      marginLeft: '5px'
+                    }}
+                  >
+                    {searchError && <div>{searchError}</div>}
+                  </Stack>
                 </Stack>
-                <Stack
-                  sx={{
-                    fontFamily: `Outfit,sanserif`,
-                    fontSize: '13px',
-                    color: '#647491',
-                    marginLeft: '5px'
-                  }}
-                >
-                  {searchError && <div>{searchError}</div>}
-                </Stack>
-              </Stack>
+              )}
               <Stack marginRight={'-10px'}>
                 {selectedOption === 'Admission' ? (
                   <BulkTicketFilter setPage={setPage} />
                 ) : selectedOption === 'Diagnostic' ? (
                   <BulkTicketFilterDiago setPage={setPage} />
-                ) : (
+                ) : selectedOption === 'Follow-Up' ? (
                   <BulkTicketFilterFollowup setPage={setPage} />
+                ) : (
+                  <BulkTicketFilterTodo setPage={setPage} />
                 )}
               </Stack>
             </Box>
@@ -1371,7 +1406,9 @@ function BulkAssign() {
             <Box
               className={styles.buttons_save}
               onClick={() => {
-                handleAssignedTicket();
+                if (!disabled) {
+                  handleAssignedTicket();
+                }
               }}
             >
               Assign

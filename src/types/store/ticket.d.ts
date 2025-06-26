@@ -219,6 +219,10 @@ export interface iTicketStore {
   setBulkFilterTicketsFollowUp: (
     BulkFilterTicketsFollowUp: iTicketFilter
   ) => void;
+  BulkFilterTicketsTodo: iTicketFilter;
+  setBulkFilterTicketsTodo: (
+    BulkFilterTicketsTodo: iTicketFilter
+  ) => void;
   loaderOn: boolean;
   setLoaderOn: (loaderOn: boolean) => void;
   pageNumber: number;

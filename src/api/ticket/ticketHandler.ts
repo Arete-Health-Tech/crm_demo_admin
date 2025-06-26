@@ -27,7 +27,8 @@ import {
   clearAssigneeTickets,
   getBulkTicket,
   getSearchedTicket,
-  getFilteredTicket
+  getFilteredTicket,
+  getFilteredTicketTodo
 } from './ticket';
 import { UNDEFINED } from '../../constantUtils/constant';
 import useUserStore from '../../store/userStore';
@@ -110,12 +111,26 @@ export const getTicketFilterHandler = async (
   const phone = user?.phone;
 
   setLoaderOn(true);
-  const data = await getFilteredTicket(
-    pageNumber,
-    selectedFilters,
-    filteredLocation,
-    phone
-  );
+  let data;
+  if (
+    localStorage.getItem('ticketType') === 'bulk-assign' &&
+    localStorage.getItem('ticketBulkType') === 'To-do'
+  ) {
+    data = await getFilteredTicketTodo(
+      pageNumber,
+      selectedFilters,
+      filteredLocation,
+      phone
+    );
+  } else {
+    data = await getFilteredTicket(
+      pageNumber,
+      selectedFilters,
+      filteredLocation,
+      phone
+    );
+  }
+
   if (localStorage.getItem('ticketType') !== 'bulk-assign') {
     const sortedTickets = data.tickets;
     const count = data.count;
@@ -256,39 +271,47 @@ export const getBulkTicketHandler = async (
   const phone = user?.phone;
 
   setLoaderOn(true);
-  const data = await getBulkTicket(
-    name,
-    pageNumber,
-    downloadAll,
-    selectedFilters,
-    ticketId,
-    fetchUpdated,
-    phone,
-    filteredLocation
-  );
-  const sortedBulkTickets = data.tickets;
-  const count = data.count;
+  try {
+    const data = await getBulkTicket(
+      name,
+      pageNumber,
+      downloadAll,
+      selectedFilters,
+      ticketId,
+      fetchUpdated,
+      phone,
+      filteredLocation
+    );
+    const sortedBulkTickets = data?.tickets;
+    const count = data?.count;
 
-  if (sortedBulkTickets.length < 1) {
-    setEmptyDataText('No Data Found');
-  } else {
-    setEmptyDataText('');
-  }
-  if (name === UNDEFINED && downloadAll === 'false') {
-    setBulkTicketCache({
-      ...bulkTicketCache,
-      [pageNumber]: sortedBulkTickets,
-      count
-    });
-  }
-  if (downloadAll === 'true') {
-    setDownloadTickets(sortedBulkTickets);
+    if (sortedBulkTickets.length < 1) {
+      setEmptyDataText('No Data Found');
+    } else {
+      setEmptyDataText('');
+    }
+    if (name === UNDEFINED && downloadAll === 'false') {
+      setBulkTicketCache({
+        ...bulkTicketCache,
+        [pageNumber]: sortedBulkTickets,
+        count
+      });
+    }
+    if (downloadAll === 'true') {
+      setDownloadTickets(sortedBulkTickets);
+      setLoaderOn(false);
+      return sortedBulkTickets;
+    }
+    console.log({ sortedBulkTickets });
+    setTicketCount(count);
+    setBulkTickets(sortedBulkTickets);
     setLoaderOn(false);
-    return sortedBulkTickets;
+  } catch {
+    setEmptyDataText('No Data Found');
+    setTicketCount(0);
+    setBulkTickets([]);
+    setLoaderOn(false);
   }
-  setTicketCount(count);
-  setBulkTickets(sortedBulkTickets);
-  setLoaderOn(false);
 };
 
 export const getAuditFilterTicketsHandler = async () => {

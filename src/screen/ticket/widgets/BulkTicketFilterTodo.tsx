@@ -498,7 +498,7 @@ const BulkTicketFilterTodo = (props: {
     } catch (error) {
       console.log({ error });
       setDownloadDisable(false);
-      toast.error('Please Select Date Range');
+    //   toast.error('Please Select Date Range');
     }
     // console.log(isAmritsarUser, "selected again")
     setFilterCount(

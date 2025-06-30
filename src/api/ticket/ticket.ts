@@ -124,6 +124,17 @@ export const getFilteredTicket = async (
       return count;
     };
 
+    if (selectedFilters?.results) {
+      data = await apiClient.get(
+        `/ticket/Resultfilter/?resultType=${
+          selectedFilters.results === '65991601a62baad220000001'
+            ? 'won'
+            : 'lost'
+        }&page=${pageNumber}&phone=${phone}&location=${location}`
+      );
+      return data?.data;
+    }
+
     if (countCheck(selectedFilters, filteredLocation) < 2) {
       // Api calls Start
 
@@ -163,14 +174,6 @@ export const getFilteredTicket = async (
       } else if (selectedFilters?.representative) {
         data = await apiClient.get(
           `/filters/representative/?assigned=${selectedFilters.representative}&page=${pageNumber}&phone=${phone}`
-        );
-      } else if (selectedFilters?.results) {
-        data = await apiClient.get(
-          `/ticket/Resultfilter/?resultType=${
-            selectedFilters.results === '65991601a62baad220000001'
-              ? 'won'
-              : 'lost'
-          }&page=${pageNumber}&phone=${phone}`
         );
       }
     } else {
@@ -230,6 +233,17 @@ export const getFilteredTicket = async (
       return count;
     };
 
+    if (selectedFilters?.results) {
+      data = await apiClient.get(
+        `/ticket/Resultfilter/?resultType=${
+          selectedFilters.results === '65991601a62baad220000001'
+            ? 'won'
+            : 'lost'
+        }&page=${pageNumber}&phone=${phone}&location=${location}`
+      );
+      return data?.data;
+    }
+
     if (countCheck(selectedFilters, filteredLocation) < 2) {
       // Api calls Start
 
@@ -256,14 +270,6 @@ export const getFilteredTicket = async (
       } else if (selectedFilters?.representative) {
         data = await apiClient.get(
           `/filters/Diagnosticsrepresentative/?assigned=${selectedFilters.representative}&page=${pageNumber}&phone=${phone}`
-        );
-      } else if (selectedFilters?.results) {
-        data = await apiClient.get(
-          `/ticket/Resultfilter/?resultType=${
-            selectedFilters.results === '65991601a62baad220000001'
-              ? 'won'
-              : 'lost'
-          }&page=${pageNumber}&phone=${phone}`
         );
       }
     } else {

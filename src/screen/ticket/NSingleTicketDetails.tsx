@@ -1626,12 +1626,12 @@ const NSingleTicketDetails = (props: Props) => {
                 {/* <MenuItem sx={menuItemStyles} onClick={handleKebabClose}>
                                     Initate RFA
                                 </MenuItem> */}
-                {user?.role === 'ADMIN' && (
+                {(user?._id === '672b457a60db9917f6e07e1c' ||
+                  user?._id === '6668914ff72636bfa572229f') && (
                   <MenuItem
                     sx={menuItemStyles}
                     onClick={() => setDeleteModal(true)}
                   >
-                    {/* <MenuItem sx={menuItemStyles} onClick={handleLeadDelete}> */}
                     Delete Lead
                   </MenuItem>
                 )}

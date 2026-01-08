@@ -23,12 +23,14 @@ import NoData from './../../assets/Error.svg';
 import useTicketStore from '../../store/ticketStore';
 import useDashboardStore from '../../store/dashboardStore';
 
+
 interface TodayTaskForAdmin {
   name: string;
   todaysTaskAnsweredForAdmin: number;
   totalcallLAttemptedForAdmin: number;
   totalcallLAnsweredforGraphForAdmin: number;
 }
+
 
 const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
   const {
@@ -52,11 +54,13 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
     setFollowUpTodayTaskForAdminAdmission
   } = useDashboardStore();
 
+
   console.log('commit');
   const { user } = useUserStore.getState();
   const handleDateFormat = (e) => {
     return e.toISOString().split('T')[0];
   };
+
 
   useEffect(() => {
     (async () => {
@@ -82,14 +86,17 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             payload
           );
 
+
           // Similarly calculate the sum if needed
           const completedTaskSum: number = Object.values(
             totalCompletedTaskAbove.counts as Record<string, number>
           ).reduce((sum, value) => sum + value, 0);
 
+
           // setTodayCallCompletedAbove(completedTaskSum);
           setFollowUptodayCallCompletedAbove(completedTaskSum); //store
         }
+
 
         //This is for todays all completed task data
         const combinedData =
@@ -102,8 +109,10 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
         // setTodayTaskNotAnswered(combinedData.notAnsweredCalls);
         setFollowUpTodayTaskNotAnswered(combinedData.notAnsweredCalls); //store
 
+
         //This is for todays all completed task data
         const completedData = await getTodaysTaskCompletedFollowup(payload);
+
 
         // setTotalAnswered(completedData.counts);
         setFollowUpTotalAnswered(completedData.counts); // store
@@ -113,10 +122,12 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
     })();
   }, [selectedAgents]);
 
+
   useEffect(() => {
     const data = async () => {
       if (user?.role === 'ADMIN' && selectedAgents._id === '') {
         const updatedTasks: TodayTaskForAdmin[] = []; // Define the array to hold task data
+
 
         for (let i = 0; i < fetchAgents.length; i++) {
           const rep = fetchAgents[i];
@@ -126,9 +137,11 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             representativeId: rep._id
           };
 
+
           try {
             // Fetch today's answered task data
             const assignedData = await getTotalCallAssignedFollowUp(payloads);
+
 
             // Fetch total calls attempted data
             const fetchCombined =
@@ -140,6 +153,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             // const totalCallAnsweredForGraph =
             //   await getTotalcallLAnsweredforGraphAdmission(payloads);
 
+
             // Push data for this representative
             updatedTasks.push({
               name: rep.firstName, // Representative's name
@@ -148,12 +162,14 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               totalcallLAnsweredforGraphForAdmin:
                 fetchCombined?.answeredCalls || 0
 
+
               // Answered calls for graph
             });
           } catch (error) {
             console.error(`Error fetching data for ${rep._id}:`, error);
           }
         }
+
 
         // Update state after all tasks are fetched
         console.log(updatedTasks, 'data 11');
@@ -190,6 +206,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
     data();
   }, [fetchAgents, selectedAgents]);
 
+
   return (
     <>
       <Stack className={Styles.container_head}>
@@ -206,7 +223,12 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             </Stack>
             <Stack className={Styles.todat_task_common_count}>
               {' '}
-              {followUpSummaryTodayTaskAll || <CircularProgress size="30px" />}
+              {followUpSummaryTodayTaskAll === null ||
+              followUpSummaryTodayTaskAll === undefined ? (
+                <CircularProgress size="30px" />
+              ) : (
+                followUpSummaryTodayTaskAll
+              )}
             </Stack>
           </Stack>
           <Stack className={Styles.todat_task_completed}>
@@ -215,14 +237,16 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             </Stack>
             <Stack className={Styles.todat_task_common_count}>
               {' '}
-              {followUpTodayCallCompletedAbove !== null ? (
-                followUpTodayCallCompletedAbove
-              ) : (
+              {followUpTodayCallCompletedAbove === null ||
+              followUpTodayCallCompletedAbove === undefined ? (
                 <CircularProgress size="30px" />
+              ) : (
+                followUpTodayCallCompletedAbove
               )}
             </Stack>
           </Stack>
         </Stack>
+
 
         {/* Calling Data */}
         <Stack className={Styles.calling_data}>
@@ -233,12 +257,14 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_head}>Call Attempted</Stack>
             <Stack className={Styles.call_common_count}>
               {' '}
-              {followUpTodayTaskAnswered !== null &&
-              followUpTodayTaskNotAnswered !== null ? (
+              {followUpTodayTaskAnswered === null ||
+              followUpTodayTaskNotAnswered === null ||
+              followUpTodayTaskAnswered === undefined ||
+              followUpTodayTaskNotAnswered === undefined ? (
+                <CircularProgress size="30px" />
+              ) : (
                 Number(followUpTodayTaskAnswered ?? 0) +
                 Number(followUpTodayTaskNotAnswered ?? 0)
-              ) : (
-                <CircularProgress size="30px" />
               )}
             </Stack>
           </Stack>
@@ -249,10 +275,11 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_head}>Call Answered</Stack>
             <Stack className={Styles.call_common_count}>
               {' '}
-              {followUpTodayTaskAnswered !== null ? (
-                followUpTodayTaskAnswered
-              ) : (
+              {followUpTodayTaskAnswered === null ||
+              followUpTodayTaskAnswered === undefined ? (
                 <CircularProgress size="30px" />
+              ) : (
+                followUpTodayTaskAnswered
               )}
             </Stack>
           </Stack>
@@ -263,14 +290,16 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             <Stack className={Styles.call_common_head}>Call Not Answered</Stack>
             <Stack className={Styles.call_common_count}>
               {' '}
-              {followUpTodayTaskNotAnswered !== null ? (
-                followUpTodayTaskNotAnswered
-              ) : (
+              {followUpTodayTaskNotAnswered === null ||
+              followUpTodayTaskNotAnswered === undefined ? (
                 <CircularProgress size="30px" />
+              ) : (
+                followUpTodayTaskNotAnswered
               )}
             </Stack>
           </Stack>
         </Stack>
+
 
         {/* Call Answered Not Answered */}
         <Stack className={Styles.answered_notAnswered}>
@@ -280,10 +309,11 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
               <Stack className={Styles.answered_call_total_count}>
                 {' '}
                 <Stack className={Styles.answered_call_total_count_value}>
-                  {followUpTodayTaskAnswered !== null ? (
-                    followUpTodayTaskAnswered
-                  ) : (
+                  {followUpTodayTaskAnswered === null ||
+                  followUpTodayTaskAnswered === undefined ? (
                     <CircularProgress size="30px" />
+                  ) : (
+                    followUpTodayTaskAnswered
                   )}
                 </Stack>
                 <Stack className={Styles.answered_call_total_count_title}>
@@ -315,6 +345,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
                   <img
                     src={NoData}
                     style={{ width: '100px', height: '100px' }}
+                    alt=""
                   />
                   <Stack className={Styles.answered_call_division}>
                     No data available
@@ -371,6 +402,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
           </Stack> */}
         </Stack>
 
+
         {/* Pie Chart */}
         <Stack className={Styles.line_graph_container}>
           <Stack className={Styles.line_graph}>
@@ -386,6 +418,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
                   <img
                     src={DeafaultGraph}
                     style={{ width: '200px', height: '200px' }}
+                    alt=""
                   />
                   <Stack sx={{ marginBottom: '30px' }}>No data available</Stack>
                 </>
@@ -393,28 +426,34 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
             </Stack>
           </Stack>
 
+
           <Stack className={Styles.line_graph}>
             <Stack className={Styles.line_graph_head}> Call Not Answered</Stack>
             <Stack
               className={Styles.bar_graph_component}
               paddingBottom={'40px'}
             >
-              {followUpTodayTaskNotAnswered ? (
-                <CallNotAnswered
-                  todayTaskNotAnswered={followUpTodayTaskNotAnswered}
-                />
-              ) : (
+              {followUpTodayTaskNotAnswered === null ||
+              followUpTodayTaskNotAnswered === undefined ? (
                 <>
                   <img
                     src={DeafaultGraph}
                     style={{ width: '200px', height: '200px' }}
+                    alt="No data available"
                   />
-                  <Stack sx={{ marginBottom: '30px' }}>No data available</Stack>
+                  <Stack sx={{ marginBottom: '30px' }}>
+                    No data available
+                  </Stack>
                 </>
+              ) : (
+                <CallNotAnswered
+                  todayTaskNotAnswered={followUpTodayTaskNotAnswered}
+                />
               )}
             </Stack>
           </Stack>
         </Stack>
+
 
         {/* line Graph */}
         <Stack className={Styles.line_graph_container}>
@@ -443,12 +482,14 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
                   <img
                     src={DeafaultGraph}
                     style={{ width: '200px', height: '200px' }}
+                    alt="No data available"
                   />
                   <Stack sx={{ marginBottom: '30px' }}>No data available</Stack>
                 </>
               )}
             </Stack>
           </Stack>
+
 
           <Stack className={Styles.line_graph}>
             <Stack className={Styles.line_graph_head}>
@@ -476,6 +517,7 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
                   <img
                     src={DeafaultGraph}
                     style={{ width: '200px', height: '200px' }}
+                    alt="No data available"
                   />
                   <Stack sx={{ marginBottom: '30px' }}>No data available</Stack>
                 </>
@@ -487,5 +529,6 @@ const FollowUpSummary = ({ selectedAgents, dateRange, fetchAgents }) => {
     </>
   );
 };
+
 
 export default FollowUpSummary;

@@ -576,7 +576,7 @@ const Navbar = ({ children }) => {
                     </LightTooltip>
                   </Stack>
                 </Stack>
-                {Number(user?.phone) === 917743001986 && (
+                {Number(user?.phone) === 918091763886 && (
                   <Stack className={styles.nav_Icon}>
                     <Stack
                       onClick={() => {

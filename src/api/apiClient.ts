@@ -10,6 +10,7 @@ enum StatusCode {
   InternalServerError = 500
 }
 
+
 export const SERVER_URL = 'https://arete.demo.aretehealth.tech/prod/api/v1/';
 // export const SERVER_URL = 'http://localhost:3000/prod/api/v1/';
 // export const BACKEND_URL = 'http://localhost:5050';
